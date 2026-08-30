@@ -54,7 +54,12 @@ def cap(s):
 
 
 mod = pd.read_csv("out/modelo_v3_departamento.csv", encoding="utf-8-sig")
-log = pd.read_csv("out/logistica_sector.csv", encoding="utf-8-sig")
+log = pd.read_csv("out/ruteo_sector.csv", encoding="utf-8-sig")
+# Measured routing replaces the geodesic proxy; keep the column names the
+# figures already use so the rest of the module is unchanged.
+log = log.rename(columns={"horas_capital_real": "horas_capital",
+                          "horas_puerto_real": "horas_puerto"})
+log = log[np.isfinite(log["horas_capital"])]
 est_n = pd.read_csv("out/estacionalidad_nacional.csv", encoding="utf-8-sig")
 est_r = pd.read_csv("out/estacionalidad_region.csv", encoding="utf-8-sig")
 puertos = pd.read_csv("out/puertos.csv", encoding="utf-8-sig")
@@ -163,7 +168,7 @@ def mapa_accesibilidad():
     cb.ax.tick_params(labelsize=6.5, colors=MUTED, length=0, pad=3)
     cb.ax.set_title("A la capital\nprovincial", fontsize=6.5, color=MUTED,
                     loc="left", pad=7, linespacing=1.4)
-    ax.text(-81.3, -0.9, "Tiempo estimado de viaje\ndesde cada sector agrícola",
+    ax.text(-81.3, -0.9, "Tiempo de viaje medido sobre\nla red vial nacional",
             fontsize=7, color=MUTED, va="top", linespacing=1.5)
     save(fig, "accesibilidad")
 

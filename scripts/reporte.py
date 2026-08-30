@@ -542,7 +542,12 @@ page(f"""
   el territorio y menos sostiene una estructura fija.</p>
 """, "Parte III · El calendario de compra")
 
-_acc = pd.read_csv("out/logistica_sector.csv", encoding="utf-8-sig")
+_acc = pd.read_csv("out/ruteo_sector.csv", encoding="utf-8-sig")
+_acc = _acc.rename(columns={"horas_capital_real": "horas_capital",
+                            "horas_puerto_real": "horas_puerto",
+                            "costo_viaje_real": "costo_viaje_usd"})
+_acc = _acc[_acc["horas_capital"].notna() & (_acc["horas_capital"] < 1e6)]
+_rut = pd.read_csv("out/ruteo_departamento.csv", encoding="utf-8-sig")
 _bajo2 = 100 * _acc[_acc.horas_capital <= 2].s_sam_usd.sum() / _acc.s_sam_usd.sum()
 _sobre4 = 100 * _acc[_acc.horas_capital > 4].s_sam_usd.sum() / _acc.s_sam_usd.sum()
 _caros = int((100 * _acc.costo_viaje_usd /
@@ -552,11 +557,11 @@ page(f"""
   <h2 class="title">La distancia <em>es margen</em></h2>
 
   <div class="mapl" style="margin-top:12px">
-    <figure style="max-width:62mm">
+    <figure style="max-width:56mm;margin:0 auto">
       {fig("accesibilidad")}
-      <figcaption><b>Tiempo estimado de viaje</b> desde cada sector agrícola hasta
-      su centro provincial, corregido por velocidad efectiva y factor de rodeo
-      según región natural.</figcaption>
+      <figcaption><b>Tiempo de viaje medido</b> desde cada sector agrícola hasta
+      el centro provincial más próximo, ruteado sobre la red vial nacional:
+      88,962 vías, 5.2 millones de nodos.</figcaption>
     </figure>
     <div>
       <p>Dos sectores con las mismas hectáreas no son el mismo cliente si uno está
@@ -572,18 +577,22 @@ page(f"""
         obstáculo del negocio: es un argumento a favor.</p>
       </div>
 
-      <p>Donde sí manda es en el extremo. El costo de un viaje de reparto va de
-      <b>US$ 17</b> en Tumbes a <b>US$ 335</b> en Loreto —veinte veces—. A un
-      ticket mediano de US$ 408, Loreto no se atiende con entrega directa.</p>
+      <div class="note brass">
+        <span class="h">La medición corrigió a la estimación</span>
+        <p>Estimar por línea recta daba <b>2.31 horas</b> de promedio nacional; el
+        ruteo real da <b>1.84</b>. La estimación castigaba de más a la selva
+        —Madre de Dios pasó de 9.0 a <b>3.5 horas</b> por la Interoceánica— y era
+        optimista en la costa, donde la vía rodea el terreno.</p>
+      </div>
+
     </div>
   </div>
 
   <figure style="margin-top:12px">
     {fig("costo_mercado")}
     <figcaption><b>Mercado frente a costo de acceso.</b> Cada círculo es una
-    región y su área es proporcional al número de clientes; en verde oscuro, las
-    ocho prioritarias. La línea marca el umbral de dos horas, por encima del cual
-    la ruta deja de ser una visita de un día.</figcaption>
+    región; el área es proporcional al número de clientes y en verde oscuro van
+    las ocho prioritarias. La línea marca el umbral de dos horas.</figcaption>
   </figure>
 
 """, "Parte III · Costo de servir")
@@ -1050,12 +1059,13 @@ page(f"""
         cotizar a un productor determinado.</p>
       </div>
       <div class="note warn">
-        <span class="h">La accesibilidad es estimada, no medida</span>
-        <p>Los tiempos de viaje salen de distancia en línea recta corregida por
-        terreno, no de ruteo sobre la red vial. Sirven para comparar regiones y
-        priorizar territorio; no para planificar una ruta concreta. La red vial de
-        OpenStreetMap ya está descargada y permite reemplazar esta capa por
-        tiempos medidos.</p>
+        <span class="h">Alcance del ruteo</span>
+        <p>Los tiempos se rutean sobre la red vial de OpenStreetMap con velocidad
+        por clase de vía ajustada por superficie y limitada por la velocidad
+        máxima señalizada. Dos tercios de la red declara superficie y un tercio
+        velocidad; el resto usa el valor por defecto de su clase. No modela
+        congestión, estacionalidad de caminos ni cierres. <b>143 de 7,036
+        sectores</b> quedan fuera del grafo por no tener vía mapeada cerca.</p>
       </div>
       <div class="note warn">
         <span class="h">Cifra pendiente de conciliación</span>

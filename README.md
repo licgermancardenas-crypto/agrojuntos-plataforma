@@ -21,8 +21,9 @@ construye.
 | Empresas agrícolas formales con RUC | 21,063 |
 | Sectores estadísticos georreferenciados | 7,036 |
 
-El SAM está a distancia razonable: **71% a menos de dos horas** de un centro
-provincial. La demanda se concentra: **45% entre setiembre y diciembre**.
+El SAM está a distancia razonable: **74.6% a menos de dos horas** de un centro
+provincial, medido por ruteo sobre la red vial. La demanda se concentra:
+**45% entre setiembre y diciembre**.
 
 ---
 
@@ -46,7 +47,7 @@ docs/figuras/       mapas y gráficos generados
 |---|---|
 | `datos/mercado/modelo_v3_departamento.csv` | Modelo final: mercado, clientes, logística, estacionalidad y score por región |
 | `datos/territorio/sectores_2024.csv` | Los 7,036 sectores con UBIGEO, hectáreas y centroide |
-| `datos/logistica/logistica_sector.csv` | Horas al centro provincial y al puerto, costo de viaje |
+| `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial |
 | `datos/estacionalidad/estacionalidad_region.csv` | Demanda mes a mes, mes pico y concentración |
 | `datos/empresas/empresas_agro_activas.csv` | Empresas con RUC, razón social, clase y distrito |
 
@@ -104,9 +105,12 @@ de 2023–2024.
 distribuyen entre los 7,036 sectores en proporción a sus hectáreas. Sirve para
 priorizar territorio, no para cotizar a un productor concreto.
 
-**Los tiempos de viaje son estimados, no ruteados.** Distancia geodésica
-corregida por velocidad efectiva y factor de rodeo según región natural. La red
-vial de OSM ya permite reemplazarlos por tiempos medidos.
+**Los tiempos de viaje se rutean sobre la red vial** de OpenStreetMap: 88,962
+vías, 5.2 millones de nodos. La velocidad de cada tramo es su clase de vía
+ajustada por superficie y limitada por la velocidad máxima señalizada. No modela
+congestión ni cierres estacionales, y 143 de los 7,036 sectores quedan fuera del
+grafo por no tener vía mapeada cerca. `logistica_sector.csv` conserva la
+estimación geodésica previa para contraste.
 
 **Las empresas se clasifican por razón social**, no por código CIIU: el padrón
 reducido de SUNAT no lo incluye. La clasificación subestima —no ve a la empresa

@@ -1,0 +1,9 @@
+# Datos crudos: 1.6 GB, públicos y reproducibles con los scripts de descarga.
+data/
+*.zip
+*.pbf
+
+# Confidencial: libro de ventas y cotizaciones de AgroJuntos.
+# No va a un repositorio público.
+ventas_*.csv
+*cotizacion*

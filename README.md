@@ -47,6 +47,7 @@ datos/
   empresas/         21,063 empresas agrícolas con RUC; prospectos OSM
   comercio/         importadores de insumos y agroexportadores, desde aduanas
   geo/              geometrías: sectores y límites administrativos
+  geoespacial/      grilla H3, territorios de venta y centros de distribución
 scripts/            el pipeline completo, en orden de dependencia
 docs/figuras/       mapas y gráficos generados
 
@@ -69,6 +70,9 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/empresas/empresas_agro_activas.csv` | Empresas con RUC, razón social, clase y distrito |
 | `datos/comercio/comercio_importadores.csv` | Quién importa fertilizante y agroquímico, con valor FOB y distrito |
 | `datos/comercio/comercio_exportadores.csv` | Los agroexportadores del país, con RUC, FOB y destinos |
+| `datos/geoespacial/h3_r5.csv` | 1,992 celdas hexagonales de ~292 km² con mercado, clientes y accesibilidad |
+| `datos/geoespacial/clusters_territorio.csv` | 57 territorios de venta detectados por densidad |
+| `datos/geoespacial/hubs_cobertura.csv` | Orden óptimo de apertura de centros, a 2, 4 y 6 horas |
 | `agro_insumos_pe_data/processed_data/importadores_insumos_agro.csv` | 446 importadores de insumos, sin el nitrato de amonio de uso minero |
 | `agro_insumos_pe_data/processed_data/agroexportadores.csv` | 1,529 agroexportadores consolidados por RUC |
 
@@ -100,6 +104,11 @@ bajar_aduanas.py          los descarga con verificación de integridad
 build_aduanas.py          lee los DBF y filtra partidas de insumos agrícolas
 build_comercio.py         cruza aduanas con el padrón para ubicar cada empresa
 build_modelo_v3.py        modelo final con logística y estacionalidad
+grafo_vial.py             grafo vial contraído: de 5.2 M de nodos a 95 mil
+build_h3.py               agrega todas las capas a grilla hexagonal H3
+build_clusters.py         territorios de venta por densidad (DBSCAN)
+build_hubs.py             ubicación de centros por cobertura máxima
+build_mapa_geo.py         empaqueta las capas para el atlas web
 build_mapas_pdf.py        figuras del reporte
 reporte.py                reporte PDF
 ```
@@ -157,6 +166,34 @@ con nombre neutro— y se restringe a personas jurídicas.
 oficial. Los datos territoriales sí lo son y se citan uno a uno. Como contraste
 externo: el modelo estima US$ 1,038 MM de fertilizante a precio de finca, contra
 US$ 693 MM CIF importados en 2024, que cubren el 89.5% de la oferta nacional.
+
+---
+
+## Análisis geoespacial
+
+Sobre las capas anteriores se construyeron tres análisis, en
+`datos/geoespacial/`:
+
+**Grilla H3.** Los sectores estadísticos miden entre 200 y 30,000 hectáreas, de
+modo que comparar dos zonas mirando sectores mezcla densidad con tamaño de la
+unidad de medida. La grilla hexagonal tiene área constante: 1,992 celdas de
+~292 km² en r5, y 5,198 de ~42 km² en r6. **280 celdas concentran la mitad del
+mercado atendible.**
+
+**Territorios de venta.** DBSCAN con radio de 15 km sobre el 80% superior del
+mercado da **57 territorios**, de los cuales **48 miden menos de 120 km** de
+punta a punta y se recorren en una salida. Agrupar sobre el total encadenaba el
+país entero en un solo núcleo de 2,000 km: la agricultura peruana es continua a
+lo largo de los valles.
+
+**Centros de distribución.** Cobertura máxima con algoritmo voraz sobre 129
+ciudades capitales, evaluadas contra tiempos ruteados. El resultado corrige una
+intuición: **a dos horas, seis centros cubren apenas el 26%** del mercado —la
+agricultura está demasiado dispersa—, mientras que **a seis horas cubren el
+75%**. El radio de operación, no el número de almacenes, es lo que decide la
+cobertura.
+
+El atlas interactivo está en `docs/atlas_geo.html`.
 
 ---
 

@@ -886,10 +886,10 @@ page(f"""
       <div class="note brass">
         <span class="h">Sobre comercio exterior</span>
         <p>{EMP_EXP} empresas declaran exportación en su razón social,
-        {EMP_IMP} importación y {EMP_COM} operan como trading. Es un subconjunto
-        real y verificable, no el universo completo: <b>los registros aduaneros a
-        nivel de empresa no son de descarga pública en el Perú</b>. Las estadísticas
-        de SUNAT se publican agregadas por sector y partida, sin RUC.</p>
+        {EMP_IMP} importación y {EMP_COM} operan como trading. Esa lectura por
+        nombre es solo indicativa: el dato firme viene de los registros aduaneros,
+        que SUNAT sí publica a nivel de empresa y se analizan en la página
+        siguiente.</p>
       </div>
       <p>El padrón reducido tampoco incluye el código CIIU de actividad, que SUNAT
       solo expone consultando RUC por RUC. La clasificación por nombre subestima:
@@ -902,6 +902,77 @@ page(f"""
 
 
 
+# --------------------------------------------------- comercio exterior ----
+_impo = pd.read_csv("out/comercio_importadores.csv", encoding="utf-8-sig",
+                    dtype={"ruc": str})
+_expo = pd.read_csv("out/comercio_exportadores.csv", encoding="utf-8-sig",
+                    dtype={"ruc": str})
+_prot = _impo[_impo.rubro == "Proteccion de cultivos"].sort_values(
+    "fob", ascending=False)
+_fert = _impo[_impo.rubro == "Fertilizantes"]
+_impo_s = _impo.sort_values("fob", ascending=False)
+_tot_i = _impo_s["fob"].sum()
+_top10 = 100 * _impo_s.head(10)["fob"].sum() / _tot_i
+
+page(f"""
+  <span class="kicker">Parte IV · El mercado desde aduanas</span>
+  <h2 class="title">Quién trae el insumo <em>y quién exporta la cosecha</em></h2>
+  <p class="deck">SUNAT publica los microdatos de aduanas bajo la Ley de
+     Transparencia: cada línea de despacho con RUC, partida, valor FOB, peso y
+     país. Diez semanas dan el mapa competitivo y los mayores compradores.</p>
+
+  <div class="kpis">
+    <div><span class="v">{nf(len(_impo))}</span><span class="l">importadores<br>de insumos agrícolas</span></div>
+    <div><span class="v">US$ {nf(_impo.fob_anual.sum()/1e6)} MM</span><span class="l">importación anualizada<br>valor CIF</span></div>
+    <div><span class="v">{nf(len(_expo))}</span><span class="l">agroexportadores<br>con RUC verificado</span></div>
+    <div><span class="v">{_top10:.0f}%</span><span class="l">lo concentran<br>10 importadores</span></div>
+  </div>
+
+  <div class="two" style="margin-top:6px">
+    <div>
+      <h3 class="rule">El set competitivo</h3>
+      <p>La protección de cultivos mueve <b>US$ {nf(_prot.fob_anual.sum()/1e6)} MM</b>
+      anuales CIF entre <b>{len(_prot)}</b> importadores. Son, a la vez, los
+      proveedores a los que AgroJuntos compra y la competencia de su canal.</p>
+      {table([[r["razon_social"][:30], f'{r["fob_anual"]/1e6:,.1f}',
+               nf(r["tn"]), int(r["semanas"])]
+              for _, r in _prot.head(6).iterrows()],
+             ["Importador", "FOB anual MM", "Toneladas", "Sem."],
+             ["l","r","r","r"], cls="tight")}
+      <p class="sub">«Sem.» indica en cuántas de las diez semanas observadas la
+      empresa registró importación: diez significa flujo continuo.</p>
+    </div>
+    <div>
+      <h3 class="rule">Los mayores compradores</h3>
+      <p>Los agroexportadores son el cliente más solvente del mercado: facturan en
+      dólares, operan bajo certificación y gastan más insumo por hectárea que
+      cualquier otro productor.</p>
+      {table([[r["razon_social"][:30], f'{r["fob_anual"]/1e6:,.0f}',
+               int(r["destinos"])]
+              for _, r in _expo.head(6).iterrows()],
+             ["Agroexportador", "FOB anual MM", "Países"],
+             ["l","r","r"], cls="tight")}
+
+      <div class="note brass">
+        <span class="h">Corrección respecto de una versión anterior</span>
+        <p>Una versión previa de este informe afirmaba que los registros aduaneros
+        a nivel de empresa no eran de descarga pública en el Perú. <b>Es
+        incorrecto.</b> SUNAT los publica en aduanet.gob.pe/aduanas/informae como
+        archivos DBF semanales, en cumplimiento de la Ley 27806. Las cifras de
+        esta página provienen de esa fuente.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="rule">De dónde viene el fertilizante</h3>
+  <p>El fertilizante peruano es casi enteramente importado y depende de
+  <b>Rusia en un 30%</b> de su valor, seguida de China (16%), Colombia (7%) y
+  Arabia Saudita (6%). Ese es el origen de la volatilidad de precio que enfrenta
+  el productor —y que un canal con crédito puede amortiguar.</p>
+  <p class="sub">Diez semanas de registros, junio a agosto de 2026. El anualizado
+  extrapola ese período sin corregir estacionalidad, de modo que debe leerse como
+  orden de magnitud.</p>
+""", "Parte IV · El mercado desde aduanas")
 # ======================================================== PARTE IV =========
 divider("V", "Atlas <em>regional</em>",
         "Una ficha por cada una de las 24 regiones agrícolas del país: mapa de "
@@ -1116,6 +1187,11 @@ page(f"""
         <li><b>MIDAGRI e ICEX.</b> Importaciones peruanas de fertilizantes 2024 y
         participación de la oferta importada en el consumo nacional, empleadas como
         validación externa del modelo.</li>
+        <li><b>SUNAT · Microdatos de aduanas, regímenes definitivos.</b>
+        Archivos DBF semanales publicados en cumplimiento de la Ley 27806 de
+        Transparencia: cada línea de despacho con RUC, razón social, partida
+        NANDINA, valor FOB, peso y país. Diez semanas analizadas, junio a agosto
+        de 2026.</li>
         <li><b>SUNAT · Padrón Reducido del RUC.</b> 18.4 millones de registros,
         actualizado a diario. Aporta razón social, estado, condición de domicilio,
         ubigeo y domicilio fiscal. <b>No incluye el código CIIU de actividad</b>,

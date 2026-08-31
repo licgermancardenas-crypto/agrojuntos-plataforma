@@ -19,6 +19,8 @@ construye.
 | **SAM** — productores comerciales que ya compran | **US$ 512 MM** |
 | Clientes en el mercado atendible | 156,880 |
 | Empresas agrícolas formales con RUC | 21,063 |
+| Importadores de insumos agrícolas | 384 |
+| Agroexportadores con RUC verificado | 1,487 |
 | Sectores estadísticos georreferenciados | 7,036 |
 
 El SAM está a distancia razonable: **74.6% a menos de dos horas** de un centro
@@ -36,6 +38,7 @@ datos/
   logistica/        tiempos de viaje, costo de servir, puertos
   estacionalidad/   calendario mensual de demanda por región y cultivo
   empresas/         21,063 empresas agrícolas con RUC; prospectos OSM
+  comercio/         importadores de insumos y agroexportadores, desde aduanas
   geo/              geometrías: sectores y límites administrativos
 scripts/            el pipeline completo, en orden de dependencia
 docs/figuras/       mapas y gráficos generados
@@ -50,6 +53,8 @@ docs/figuras/       mapas y gráficos generados
 | `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial |
 | `datos/estacionalidad/estacionalidad_region.csv` | Demanda mes a mes, mes pico y concentración |
 | `datos/empresas/empresas_agro_activas.csv` | Empresas con RUC, razón social, clase y distrito |
+| `datos/comercio/comercio_importadores.csv` | Quién importa fertilizante y agroquímico, con valor FOB y distrito |
+| `datos/comercio/comercio_exportadores.csv` | Los 1,487 agroexportadores del país, con RUC, FOB y destinos |
 
 ---
 
@@ -74,6 +79,10 @@ harvest_vial.py           OSM  · red vial y terminales
 build_puertos.py          APN  · terminales portuarios, geocodificados
 build_logistica.py        tiempos de viaje y costo de servir
 build_empresas.py         SUNAT · padrón RUC -> empresas agrícolas
+listar_aduanas.py         lista los archivos de aduanas publicados
+bajar_aduanas.py          los descarga con verificación de integridad
+build_aduanas.py          lee los DBF y filtra partidas de insumos agrícolas
+build_comercio.py         cruza aduanas con el padrón para ubicar cada empresa
 build_modelo_v3.py        modelo final con logística y estacionalidad
 build_mapas_pdf.py        figuras del reporte
 reporte.py                reporte PDF
@@ -90,6 +99,7 @@ reporte.py                reporte PDF
 | **INEI** · Costos de producción (ENA 2018) | Costo por hectárea desagregado por ítem, 73 cultivos |
 | **INEI** · IV Censo Nacional Agropecuario 2012 | Productores, tamaño de unidad, uso de insumos y crédito |
 | **SUNAT** · Padrón Reducido del RUC | 18.4 M registros. Razón social, estado, ubigeo y domicilio fiscal |
+| **SUNAT** · Microdatos de aduanas, regímenes definitivos | Archivos DBF semanales bajo Ley 27806 de Transparencia: RUC, partida NANDINA, FOB, peso y país por línea de despacho |
 | **Autoridad Portuaria Nacional** | Terminales portuarios de uso público |
 | **OpenStreetMap** | Entidades agrícolas nombradas y red vial · © colaboradores de OSM, [ODbL](https://opendatacommons.org/licenses/odbl/) |
 
@@ -111,6 +121,17 @@ ajustada por superficie y limitada por la velocidad máxima señalizada. No mode
 congestión ni cierres estacionales, y 143 de los 7,036 sectores quedan fuera del
 grafo por no tener vía mapeada cerca. `logistica_sector.csv` conserva la
 estimación geodésica previa para contraste.
+
+**Los datos de aduanas cubren diez semanas**, de junio a agosto de 2026 —
+SUNAT mantiene una ventana móvil, no un histórico—. Las cifras anualizadas
+extrapolan ese período sin corregir estacionalidad y deben leerse como orden de
+magnitud. La partida 3102 incluye nitrato de amonio, que es fertilizante y a la
+vez base de explosivos de minería: empresas como Orica o Famesa aparecen por ese
+uso y no por el agro; el campo `uso_dual` las marca.
+
+**El domicilio de una empresa no es donde cultiva.** La ubicación viene del
+domicilio fiscal del padrón, y los agroexportadores suelen estar registrados en
+Lima aunque su fundo esté en La Libertad o Ica.
 
 **Las empresas se clasifican por razón social**, no por código CIIU: el padrón
 reducido de SUNAT no lo incluye. La clasificación subestima —no ve a la empresa

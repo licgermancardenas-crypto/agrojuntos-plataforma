@@ -174,6 +174,92 @@ except FileNotFoundError:
     vial = {"niveles": {}, "refs": []}
 
 # ------------------------------------------------------------------ salida -
+
+# ===================================================================== #
+#  Representaciones alternativas del mapa.                               #
+#                                                                        #
+#  La grilla hexagonal compara áreas iguales, que es su virtud, pero un   #
+#  hexágono no es un lugar: nadie lo reconoce ni puede señalarlo. Estas    #
+#  dos capas dan las dos cosas que la grilla no da —la ubicación real de   #
+#  la producción y una forma que el usuario reconoce— y habilitan además   #
+#  el mapa de calor, que se calcula en el navegador a partir de los        #
+#  puntos y no cuesta un solo byte de payload.                            #
+# ===================================================================== #
+
+# ------------------------------------------------------- puntos por sector -
+# El sector estadístico del MIDAGRI es la unidad real: tiene centroide,
+# hectáreas y mercado propios. Coordenadas a tres decimales (~110 m) porque
+# un punto de tres píxeles no distingue más, y eso baja el peso a la mitad.
+sec_pt = sec_ruteo.copy()
+sec_pt = sec_pt[sec_pt["s_sam_usd"] > 0]
+
+i_dep_sec = {d["k"]: i for i, d in enumerate(deps_geo)}
+i_reg_sec = {r: i for i, r in enumerate(REG)}
+
+
+def finito(v, dec=1):
+    """El ruteo deja `inf` en los sectores sin camino; JSON no lo admite."""
+    try:
+        v = float(v)
+    except (TypeError, ValueError):
+        return None
+    return round(v, dec) if np.isfinite(v) else None
+
+
+# La provincia viaja como indice a un catalogo: el buscador tiene que filtrar
+# igual en puntos que en hexagonos, y repetir la cadena 6,873 veces pesa mas
+# que el catalogo entero.
+cat_prov = sorted({cap(v) for v in sec_pt["prov"].dropna().unique()})
+i_prov_sec = {v: i for i, v in enumerate(cat_prov)}
+
+sectores_pt = []
+for _, r in sec_pt.sort_values("s_sam_usd", ascending=False).iterrows():
+    sectores_pt.append([
+        round(float(r["lon"]), 3), round(float(r["lat"]), 3),
+        int(round(float(r["s_sam_usd"]) / 1000)),      # SAM en miles de US$
+        int(round(float(r["s_clientes_sam"]))),
+        finito(r["horas_capital_real"]),
+        i_dep_sec.get(key(r["dep"]), -1),
+        i_reg_sec.get(str(r["region_nat"]).upper(), -1),
+        i_prov_sec.get(cap(r["prov"]), -1),
+    ])
+
+# --------------------------------------------------------- coropleta real -
+# Provincias y no distritos: 196 formas se reconocen a escala nacional y
+# 1,874 se leen como ruido, además de pesar tres veces más.
+prov_g = gpd.read_file("data/peru_provincial_simple.geojson").to_crs(4326)
+prov_g["geometry"] = prov_g.geometry.buffer(0).simplify(
+    0.01, preserve_topology=True)
+
+sec_pv = sec_ruteo.assign(
+    kd=sec_ruteo["dep"].map(key), kp=sec_ruteo["prov"].map(key))
+agg_pv = sec_pv.groupby(["kd", "kp"]).agg(
+    sam=("s_sam_usd", "sum"), cli=("s_clientes_sam", "sum"),
+    ha=("s_ha_cosechada", "sum"), n=("cod_se", "size")).reset_index()
+agg_pv = agg_pv.set_index(["kd", "kp"])
+
+provs_geo = []
+for _, r in prov_g.iterrows():
+    kd, kp = key(r["FIRST_NOMB"]), key(r["NOMBPROV"])
+    a = agg_pv.loc[(kd, kp)] if (kd, kp) in agg_pv.index else None
+    anl = anillos(r.geometry)
+    if not anl:
+        continue
+    xs = [p[0] for ring in anl for p in ring]
+    ys = [p[1] for ring in anl for p in ring]
+    provs_geo.append({
+        "n": cap(r["NOMBPROV"]), "d": cap(r["FIRST_NOMB"]),
+        "i": i_dep_sec.get(kd, -1),
+        "sam": int(a["sam"]) if a is not None else 0,
+        "cli": int(round(a["cli"])) if a is not None else 0,
+        "ha": int(a["ha"]) if a is not None else 0,
+        "r": anl,
+        "bb": [min(xs), min(ys), max(xs), max(ys)],
+    })
+
+sin_dato = sum(1 for p in provs_geo if p["sam"] == 0)
+
+
 payload = {
     "meta": {
         "celdas": len(hex_cells),
@@ -189,6 +275,9 @@ payload = {
     "ciudades": ciudades,
     "vial": vial,
     "hex": hex_cells,
+    "sect": sectores_pt,
+    "sect_prov": cat_prov,
+    "provs": provs_geo,
     "territorios": territorios,
     "hubs": hubs_out,
     "cobertura": cob,
@@ -211,3 +300,6 @@ print(f"  departamentos: {len(deps_geo)}")
 print(f"  ciudades    : {len(ciudades)}")
 print(f"  trazos viales: "
       f"{sum(len(v) for v in vial['niveles'].values()):,}")
+print(f"  sectores punto: {len(sectores_pt):,}")
+print(f"  provincias    : {len(provs_geo)} "
+      f"({sin_dato} sin mercado registrado)")

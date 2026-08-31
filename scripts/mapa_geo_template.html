@@ -292,6 +292,12 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
         <button data-um="4">4 h</button>
         <button data-um="6">6 h</button>
       </div>
+      <div class="seg" id="vistaCtl" role="group" aria-label="Representación">
+        <button data-vista="hex" aria-pressed="true">Hexágonos</button>
+        <button data-vista="pts">Puntos</button>
+        <button data-vista="prov">Provincias</button>
+        <button data-vista="calor">Calor</button>
+      </div>
       <div class="seg">
         <button id="tCiudades" aria-pressed="true">Ciudades</button>
         <button id="tPuertos" aria-pressed="true">Puertos</button>
@@ -329,11 +335,15 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 "use strict";
 var D = JSON.parse(document.getElementById("DATA").textContent);
 var M=D.meta, HEX=D.hex, TER=D.territorios, HUBS=D.hubs, COB=D.cobertura,
-    PUE=D.puertos, DEPS=D.deps, CIU=D.ciudades, VIAL=D.vial, REG=D.regiones;
+    PUE=D.puertos, DEPS=D.deps, CIU=D.ciudades, VIAL=D.vial, REG=D.regiones,
+    SECT=D.sect, SPROV=D.sect_prov, PROVS=D.provs;
 
 /* posiciones en la tupla del hexágono */
 var VS=0, SAM=1, CLI=2, HA=3, HRS=4, EMP=5, EXP=6, PRO=7, DEP=8, PROV=9,
     IDEP=10, IREG=11;
+
+/* posiciones en la tupla del sector: lon, lat, SAM en miles, clientes, horas */
+var IS_SAM=2, IS_CLI=3, IS_HRS=4, IS_DEP=5, IS_REG=6, IS_PROV=7;
 
 var css=getComputedStyle(document.documentElement);
 function tok(n){ return css.getPropertyValue(n).trim(); }
@@ -349,17 +359,39 @@ function norm(s){ return String(s).normalize("NFD")
   .replace(/[̀-ͯ]/g,"").toLowerCase(); }
 
 /* ---------------- estado ---------------- */
-var st = { capa:"sam", umbral:"2", vial:1, dep:-1, reg:-1, q:"",
+var st = { capa:"sam", vista:"hex", umbral:"2", vial:1, dep:-1, reg:-1, q:"",
+           hovP:-1,
            sel:-1, hov:-1, ciudades:true, puertos:true };
 
 /* ---------------- KPIs ---------------- */
-document.getElementById("kpis").innerHTML = [
-  {v:nf(M.celdas), l:"celdas"},
-  {v:usd(M.sam), l:"mercado"},
-  {v:nf(M.clientes), l:"clientes"},
-  {v:M.territorios, l:"territorios"}
-].map(function(k){ return '<div class="kpi"><span class="v">'+k.v+
-  '</span><span class="l">'+k.l+'</span></div>'; }).join("");
+/* Los totales del encabezado son los de la representacion activa. El SAM del
+   pais es 512.3 MM medido sobre los 6,873 sectores; agregarlos a la grilla H3
+   pierde un 1.9% en las celdas que quedan sin sector asignado. Mostrar las dos
+   cifras bajo la misma etiqueta seria confuso, asi que cada representacion
+   declara la suya. */
+function renderKpis(){
+  var k;
+  var porCelda = st.capa==="territorios" || st.capa==="hubs";
+  if(!porCelda && (st.vista==="pts"||st.vista==="calor")){
+    k=[{v:nf(SECT.length), l:"sectores"},
+       {v:usd(SECT.reduce(function(a,x){ return a+x[IS_SAM]; },0)*1000),
+        l:"mercado"},
+       {v:nf(SECT.reduce(function(a,x){ return a+x[IS_CLI]; },0)), l:"clientes"}];
+  } else if(!porCelda && st.vista==="prov"){
+    k=[{v:nf(PROVS.length), l:"provincias"},
+       {v:usd(PROVS.reduce(function(a,p){ return a+p.sam; },0)), l:"mercado"},
+       {v:nf(PROVS.reduce(function(a,p){ return a+p.cli; },0)), l:"clientes"}];
+  } else {
+    k=[{v:nf(M.celdas), l:"celdas"},
+       {v:usd(M.sam), l:"mercado"},
+       {v:nf(M.clientes), l:"clientes"}];
+  }
+  k.push({v:M.territorios, l:"territorios"});
+  document.getElementById("kpis").innerHTML = k.map(function(x){
+    return '<div class="kpi"><span class="v">'+x.v+
+      '</span><span class="l">'+x.l+'</span></div>'; }).join("");
+}
+renderKpis();
 
 /* ---------------- proyección ---------------- */
 var cv=document.getElementById("map"), ctx=cv.getContext("2d"),
@@ -413,11 +445,31 @@ function visible(h){
 function hexFiltrados(){ return HEX.filter(visible); }
 
 function aplicarFiltros(){
-  var f=hexFiltrados();
-  var sam=f.reduce(function(s,h){ return s+h[SAM]; },0)*1000;
-  var cli=f.reduce(function(s,h){ return s+h[CLI]; },0);
+  /* El contador cuenta lo que se está dibujando. Decir "1,992 celdas" con los
+     sectores en pantalla es una cifra que no corresponde a nada visible. */
+  var n, sam, cli, unidad;
+  if(st.vista==="pts"||st.vista==="calor"){
+    var fs=SECT.filter(visibleSect);
+    n=fs.length; unidad=n===1?" sector":" sectores";
+    sam=fs.reduce(function(s,x){ return s+x[IS_SAM]; },0)*1000;
+    cli=fs.reduce(function(s,x){ return s+x[IS_CLI]; },0);
+  } else if(st.vista==="prov"){
+    var fp=PROVS.filter(function(p){
+      if(st.dep>=0 && p.i!==st.dep) return false;
+      if(st.q && norm(p.n+" "+p.d).indexOf(st.q)<0) return false;
+      return true;
+    });
+    n=fp.length; unidad=n===1?" provincia":" provincias";
+    sam=fp.reduce(function(s,p){ return s+p.sam; },0);
+    cli=fp.reduce(function(s,p){ return s+p.cli; },0);
+  } else {
+    var f=hexFiltrados();
+    n=f.length; unidad=n===1?" celda":" celdas";
+    sam=f.reduce(function(s,h){ return s+h[SAM]; },0)*1000;
+    cli=f.reduce(function(s,h){ return s+h[CLI]; },0);
+  }
   document.getElementById("cuenta").textContent =
-    nf(f.length)+" celdas · "+usd(sam)+" · "+nf(cli)+" clientes";
+    nf(n)+unidad+" · "+usd(sam)+" · "+nf(cli)+" clientes";
   renderList(); renderDet(); draw();
 }
 
@@ -483,6 +535,14 @@ toggle("tCiudades","ciudades"); toggle("tPuertos","puertos");
 /* ---------------- escalas ---------------- */
 var RAMPA=["#EDF2EA","#C9DCC2","#93BE93","#559A78","#22755F","#0B4C40"];
 var RAMPA_ACC=["#1F6B4C","#5D9330","#C9A227","#C1873F","#A34A25"];
+
+/* Cuatro bandas de isócrona. Los cortes son los del negocio —2, 4 y 6 h— y no
+   cuartiles: es el radio de reparto lo que se está decidiendo. */
+var BANDAS=[[2,"#0B4C40"],[4,"#3E8E6B"],[6,"#C9A227"],[1e9,"#A34A25"]];
+function BANDA(h){
+  for(var i=0;i<BANDAS.length;i++) if(h<=BANDAS[i][0]) return BANDAS[i][1];
+  return BANDAS[BANDAS.length-1][1];
+}
 function maxOf(i,sub){ var m=0; sub.forEach(function(h){ if(h[i]>m)m=h[i]; }); return m; }
 var MX={sam:0,clientes:0};
 function recalcMax(sub){ MX.sam=maxOf(SAM,sub)||1; MX.clientes=maxOf(CLI,sub)||1; }
@@ -572,6 +632,126 @@ function dibujarVias(){
   ctx.globalAlpha=1;
 }
 
+/* =================================================== representaciones ==== */
+/* La grilla hexagonal compara áreas iguales, que es su virtud, pero un
+   hexágono no es un lugar: nadie lo reconoce ni puede señalarlo en una
+   reunión. Estas tres representaciones dibujan exactamente el mismo dato de
+   otra manera, y cada una responde algo distinto:
+
+     puntos      dónde está de verdad la producción, sector por sector
+     provincias  la forma que el usuario reconoce y sabe nombrar
+     calor       dónde se concentra la masa, sin bordes que la interrumpan  */
+
+function visibleSect(s){
+  if(st.dep>=0 && s[IS_DEP]!==st.dep) return false;
+  if(st.reg>=0 && s[IS_REG]!==st.reg) return false;
+  if(st.q){
+    var pv = s[IS_PROV]>=0 ? SPROV[s[IS_PROV]] : "";
+    var dp = s[IS_DEP]>=0 ? DEPS[s[IS_DEP]].n : "";
+    if(norm(pv+" "+dp).indexOf(st.q)<0) return false;
+  }
+  return true;
+}
+
+function dibujarPuntos(filtrando){
+  /* El radio va con la raíz cuarta y no con el valor: el mercado está tan
+     concentrado que en escala lineal Lambayeque taparía media costa. */
+  var mx=1;
+  SECT.forEach(function(s){ if(s[2]>mx) mx=s[2]; });
+  var esc = Math.min(1+Math.log(view.k+1)*0.5, 2.4);
+
+  function punto(s, alfa){
+    var X=sx(s[0]), Y=sy(s[1]);
+    if(X<-20||X>W+20||Y<-20||Y>H+20) return;
+    var t=Math.pow(s[2]/mx,0.25);
+    var r=(1.1+t*5.2)*esc;
+    ctx.beginPath(); ctx.arc(X,Y,r,0,6.2832);
+    ctx.fillStyle=RAMPA[Math.min(RAMPA.length-1,Math.floor(t*RAMPA.length))];
+    ctx.globalAlpha=alfa; ctx.fill();
+  }
+
+  if(filtrando){
+    SECT.forEach(function(s){ if(!visibleSect(s)) punto(s,.09); });
+  }
+  SECT.forEach(function(s){ if(visibleSect(s)) punto(s,.82); });
+  ctx.globalAlpha=1;
+}
+
+function dibujarProv(filtrando){
+  var mx=1;
+  PROVS.forEach(function(p){ if(p.sam>mx) mx=p.sam; });
+  var ll=tok("--land-line");
+  PROVS.forEach(function(p){
+    var fuera = (st.dep>=0 && p.i!==st.dep) ||
+                (st.q && norm(p.n+" "+p.d).indexOf(st.q)<0);
+    var X0=sx(p.bb[0]), X1=sx(p.bb[2]), Y0=sy(p.bb[3]), Y1=sy(p.bb[1]);
+    if(X1<-40||X0>W+40||Y1<-40||Y0>H+40) return;
+    var t=p.sam?Math.pow(p.sam/mx,0.25):0;
+    var c=p.sam?RAMPA[Math.min(RAMPA.length-1,Math.floor(t*RAMPA.length))]
+               :tok("--land");
+    p.r.forEach(function(a){
+      poly(a);
+      ctx.fillStyle=c; ctx.globalAlpha=fuera?.12:.9; ctx.fill();
+      ctx.strokeStyle=ll; ctx.lineWidth=.5; ctx.globalAlpha=fuera?.15:.55;
+      ctx.stroke();
+    });
+  });
+  ctx.globalAlpha=1;
+}
+
+/* Mapa de calor. Se acumula en un lienzo a un tercio de escala: además de
+   costar nueve veces menos por cuadro, el reescalado posterior aporta el
+   difuminado sin filtro alguno. La rampa se aplica píxel a píxel sobre ese
+   lienzo pequeño, no sobre el grande. */
+var heatCv=null, heatCx=null;
+function dibujarCalor(){
+  var f=3, w=Math.max(1,Math.ceil(W/f)), h=Math.max(1,Math.ceil(H/f));
+  if(!heatCv){ heatCv=document.createElement("canvas"); heatCx=heatCv.getContext("2d"); }
+  if(heatCv.width!==w||heatCv.height!==h){ heatCv.width=w; heatCv.height=h; }
+  heatCx.clearRect(0,0,w,h);
+  heatCx.globalCompositeOperation="lighter";
+
+  var mx=1;
+  SECT.forEach(function(s){ if(s[2]>mx) mx=s[2]; });
+  var radio=Math.max(3.5,(8+view.k*1.3)/f);
+
+  SECT.forEach(function(s){
+    if(!visibleSect(s)) return;
+    var X=sx(s[0])/f, Y=sy(s[1])/f;
+    if(X<-radio||X>w+radio||Y<-radio||Y>h+radio) return;
+    /* El exponente decide qué mide el mapa. Con 0.30 todos los sectores
+       pesaban casi igual y la franja andina saturaba por cantidad de puntos,
+       no por mercado; con 0.6 el gradiente vuelve a ser el del dato. */
+    var peso=Math.pow(s[2]/mx,0.6);
+    var g=heatCx.createRadialGradient(X,Y,0,X,Y,radio);
+    g.addColorStop(0,"rgba(255,255,255,"+(0.012+peso*0.34).toFixed(3)+")");
+    g.addColorStop(1,"rgba(255,255,255,0)");
+    heatCx.fillStyle=g;
+    heatCx.beginPath(); heatCx.arc(X,Y,radio,0,6.2832); heatCx.fill();
+  });
+  heatCx.globalCompositeOperation="source-over";
+
+  /* La densidad acumulada llega como alfa; aquí se convierte en color de la
+     misma rampa que usan las otras representaciones, para que un tono
+     signifique lo mismo se mire como se mire. */
+  var img=heatCx.getImageData(0,0,w,h), px=img.data;
+  var lut=RAMPA.map(function(c){
+    return [parseInt(c.substr(1,2),16), parseInt(c.substr(3,2),16),
+            parseInt(c.substr(5,2),16)];
+  });
+  for(var i=0;i<px.length;i+=4){
+    var a=px[i+3];
+    if(!a){ continue; }
+    var t=Math.min(a/255,1);
+    var c=lut[Math.min(lut.length-1,Math.floor(Math.pow(t,1.10)*lut.length))];
+    px[i]=c[0]; px[i+1]=c[1]; px[i+2]=c[2];
+    px[i+3]=Math.min(225, 30+a*0.95);
+  }
+  heatCx.putImageData(img,0,0);
+  ctx.imageSmoothingEnabled=true;
+  ctx.drawImage(heatCv,0,0,W,H);
+}
+
 function draw(){
   ctx.clearRect(0,0,W,H);
   var land=tok("--land"), ll=tok("--land-line"), ink=tok("--ink"),
@@ -598,13 +778,17 @@ function draw(){
   recalcMax(sub);
 
   if(st.capa==="hubs"){
+    /* Isócronas: la banda de tiempo dice cuánto se tarda, no solo si entra o
+       no en el umbral. Un sector a 2.1 h y otro a 9 h eran el mismo gris. */
     var rad=Math.max(1.6,2.2*Math.sqrt(view.k));
+    var lim=+st.umbral;
     COB.forEach(function(c){
       var X=sx(c[0]), Y=sy(c[1]);
       if(X<-30||X>W+30||Y<-30||Y>H+30) return;
+      var hrs=c[3], dentroLim=hrs!==null&&hrs<=lim;
       ctx.beginPath(); ctx.arc(X,Y,rad,0,6.2832);
-      ctx.fillStyle=c[2]?forest:tok("--faint");
-      ctx.globalAlpha=c[2]?.6:.2; ctx.fill();
+      ctx.fillStyle=hrs===null?tok("--faint"):BANDA(hrs);
+      ctx.globalAlpha=dentroLim?.72:.14; ctx.fill();
     });
     ctx.globalAlpha=1;
     (HUBS[st.umbral]||[]).forEach(function(h,i){
@@ -633,6 +817,12 @@ function draw(){
       }
     });
     ctx.globalAlpha=1;
+  } else if(st.vista==="pts"){
+    dibujarPuntos(filtrando);
+  } else if(st.vista==="prov"){
+    dibujarProv(filtrando);
+  } else if(st.vista==="calor"){
+    dibujarCalor();
   } else {
     /* fuera del filtro se dibuja tenue: da contexto sin competir */
     if(filtrando){
@@ -729,6 +919,18 @@ document.getElementById("zreset").onclick=function(){
 cv.addEventListener("click",function(e){
   if(drag&&drag.moved) return;
   if(st.capa==="territorios"||st.capa==="hubs") return;
+  if(st.vista==="pts"||st.vista==="calor") return;
+  if(st.vista==="prov"){
+    if(st.hovP<0) return;
+    var d=PROVS[st.hovP].i;
+    if(d<0) return;
+    if(st.dep===d){ document.getElementById("reset").click(); return; }
+    st.dep=d;
+    document.getElementById("fDep").value=String(d);
+    encuadrar(DEPS[d].bb);
+    aplicarFiltros();
+    return;
+  }
   if(st.hov<0) return;
   var h=HEX[st.hov];
   if(st.dep===h[IDEP]){ document.getElementById("reset").click(); return; }
@@ -747,8 +949,42 @@ function dentro(pts,x,y){
   }
   return d;
 }
+/* Provincia bajo el cursor. Solo se recorre al mover el ratón, no por cuadro,
+   asi que 197 poligonos no cuestan nada. */
+function pickProv(mx,my){
+  for(var i=0;i<PROVS.length;i++){
+    var p=PROVS[i];
+    var X0=sx(p.bb[0]), X1=sx(p.bb[2]), Y0=sy(p.bb[3]), Y1=sy(p.bb[1]);
+    if(mx<X0-2||mx>X1+2||my<Y0-2||my>Y1+2) continue;
+    for(var j=0;j<p.r.length;j++) if(dentro(p.r[j],mx,my)) return i;
+  }
+  return -1;
+}
+
 function pick(mx,my,cx,cy){
   if(st.capa==="territorios"||st.capa==="hubs"){ hideTip(); return; }
+
+  /* Sin esta salida, mover el ratón sobre puntos o calor mostraría la ficha
+     de un hexágono que no está dibujado. */
+  if(st.vista==="pts"||st.vista==="calor"){
+    if(st.hov>=0){ st.hov=-1; draw(); }
+    hideTip(); return;
+  }
+
+  if(st.vista==="prov"){
+    var ip=pickProv(mx,my);
+    if(ip!==st.hovP){ st.hovP=ip; }
+    if(ip<0){ hideTip(); return; }
+    var p=PROVS[ip];
+    tip.innerHTML="<b>"+p.n+"</b><div class='m'>"+p.d+"</div><dl>"+
+      "<dt>Mercado anual</dt><dd>"+(p.sam?usd(p.sam):"sin registro")+"</dd>"+
+      "<dt>Clientes</dt><dd>"+nf(p.cli)+"</dd>"+
+      "<dt>Ha cosechadas</dt><dd>"+nf(p.ha)+"</dd></dl>";
+    tip.classList.add("on");
+    situarTip(cx,cy);
+    return;
+  }
+
   var found=-1;
   for(var i=0;i<HEX.length;i++){
     if(!visible(HEX[i])) continue;
@@ -769,6 +1005,12 @@ function pick(mx,my,cx,cy){
     "<dt>Agroexportadores</dt><dd>"+nf(h[EXP])+"</dd></dl>"+
     "<div class='m' style='margin:6px 0 0'>Clic para aislar "+h[DEP]+"</div>";
   tip.classList.add("on");
+  situarTip(cx,cy);
+}
+
+/* La ficha se coloca junto al cursor y se repliega al otro lado cuando no
+   cabe. La usan el hexágono y la provincia, de ahí que viva aparte. */
+function situarTip(cx,cy){
   var wr=wrap.getBoundingClientRect(), tw=tip.offsetWidth, th=tip.offsetHeight;
   var lx=cx-wr.left+14, ly=cy-wr.top+14;
   if(lx+tw>wr.width-8) lx=cx-wr.left-tw-14;
@@ -777,6 +1019,19 @@ function pick(mx,my,cx,cy){
 }
 
 /* ---------------- capas ---------------- */
+/* La representación es ortogonal a la capa: Territorios y Centros dibujan su
+   propia geometría, así que el control se oculta en vez de mentir. */
+document.querySelectorAll("#vistaCtl [data-vista]").forEach(function(b){
+  b.onclick=function(){
+    st.vista=b.dataset.vista;
+    document.querySelectorAll("#vistaCtl [data-vista]").forEach(function(o){
+      if(o===b) o.setAttribute("aria-pressed","true");
+      else o.removeAttribute("aria-pressed");
+    });
+    hideTip(); renderKpis(); renderLegend(); aplicarFiltros();
+  };
+});
+
 document.querySelectorAll(".seg [data-capa]").forEach(function(b){
   b.onclick=function(){
     st.capa=b.dataset.capa;
@@ -784,8 +1039,10 @@ document.querySelectorAll(".seg [data-capa]").forEach(function(b){
       o.setAttribute("aria-pressed", String(o===b)); });
     document.getElementById("hubCtl").style.display =
       st.capa==="hubs" ? "flex" : "none";
-    st.sel=-1; st.hov=-1; hideTip();
-    renderList(); renderLegend(); renderDet(); draw();
+    document.getElementById("vistaCtl").style.display =
+      (st.capa==="territorios"||st.capa==="hubs") ? "none" : "flex";
+    st.sel=-1; st.hov=-1; st.hovP=-1; hideTip();
+    renderKpis(); renderList(); renderLegend(); renderDet(); aplicarFiltros();
   };
 });
 document.querySelectorAll("#hubCtl [data-um]").forEach(function(b){
@@ -810,16 +1067,17 @@ function renderLegend(){
       '<div class="row"><span class="dot" style="background:'+PALETA[0]+
       '"></span>cada color, un núcleo</div>';
   } else if(st.capa==="hubs"){
-    h='<div class="eyebrow">Cobertura a '+st.umbral+' h</div>'+
-      '<div class="row"><span class="dot" style="background:'+tok("--forest")+
-      '"></span>cubierta</div>'+
-      '<div class="row"><span class="dot" style="background:'+tok("--faint")+
-      '"></span>fuera de alcance</div>'+
+    h='<div class="eyebrow">Isócronas · umbral '+st.umbral+' h</div>'+
+      ['0 a 2 h','2 a 4 h','4 a 6 h','más de 6 h'].map(function(t,i){
+        return '<div class="row"><span class="dot" style="background:'+
+          BANDAS[i][1]+'"></span>'+t+'</div>'; }).join("")+
       '<div class="row"><span class="dot" style="background:'+tok("--brass")+
       ';border:1px solid var(--ink)"></span>centro elegido</div>';
   } else {
+    var UNI={hex:" por celda", pts:" por sector", prov:" por provincia",
+             calor:", densidad"};
     h='<div class="eyebrow">'+(st.capa==="clientes"?"Clientes":"Mercado")+
-      ' por celda</div><div class="ramp">'+RAMPA.map(function(c){
+      (UNI[st.vista]||"")+'</div><div class="ramp">'+RAMPA.map(function(c){
         return '<i style="background:'+c+'"></i>'; }).join("")+'</div>'+
       '<div class="rampL"><span>bajo</span><span>alto</span></div>';
   }
@@ -882,7 +1140,11 @@ function renderList(){
     return;
   }
   var sub=hexFiltrados().slice(0,80);
-  t.textContent="Celdas de mayor mercado";
+  /* La lista enumera celdas H3 en cualquier representación: es el ranking que
+     alimenta la selección y el detalle. Se dice "zonas" y no "celdas" para no
+     prometer la unidad que el mapa está dibujando en ese momento. */
+  t.textContent = st.vista==="hex" ? "Celdas de mayor mercado"
+                                   : "Zonas de mayor mercado";
   m.textContent=st.dep>=0?DEPS[st.dep].n:"Perú";
   if(!sub.length){ el.innerHTML='<div class="vacio">Ninguna celda con estos filtros.</div>'; return; }
   var mx2=sub[0][SAM]||1;
@@ -965,9 +1227,19 @@ function renderDet(){
     ? "Cada color agrupa celdas cuyo mercado está lo bastante junto como para "+
       "sostener un <b>territorio de venta</b>. Elige uno de la lista para "+
       "acercar el mapa."
-    : "Cada hexágono cubre <b>~292 km²</b>. Filtra por departamento o región "+
-      "natural, activa la <b>red vial</b> para ver por qué unos valles son "+
-      "accesibles, y haz clic en una celda para aislar su departamento.";
+    : ({
+        hex: "Cada hexágono cubre <b>~292 km²</b>: áreas iguales, comparables "+
+             "entre sí. Haz clic en una celda para aislar su departamento.",
+        pts: "Cada punto es un <b>sector estadístico</b> del MIDAGRI en su "+
+             "ubicación real, con el tamaño según su mercado. Son 6,873, y es "+
+             "lo más cerca que se puede estar de un mapa de clientes.",
+        prov: "Las <b>197 provincias</b> con su forma real, pintadas por "+
+              "mercado. Haz clic en una para aislar su departamento.",
+        calor: "Densidad de mercado sin bordes. Muestra dónde se concentra la "+
+               "masa; para leer una cifra concreta, usa puntos o provincias."
+      }[st.vista]||"") +
+      " Filtra por departamento o región natural y activa la <b>red vial</b> "+
+      "para ver por qué unos valles son accesibles y otros no.";
 }
 
 /* ---------------- tema ---------------- */

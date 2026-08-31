@@ -187,6 +187,22 @@ with sync_playwright() as pw:
         pg.wait_for_timeout(300)
     print("  niveles de red vial: ok")
 
+    # Cada representación dibuja geometría distinta y cuenta una unidad
+    # distinta. Se comprueba que el contador cambie de unidad: si siguiera
+    # diciendo "celdas" con los sectores en pantalla, la cifra no
+    # correspondería a nada visible.
+    for vista, unidad in (("pts", "sectores"), ("prov", "provincias"),
+                          ("calor", "sectores"), ("hex", "celdas")):
+        pg.click(f'#vistaCtl button[data-vista="{vista}"]')
+        pg.wait_for_timeout(1100)
+        txt = pg.text_content("#cuenta").strip()
+        kpi = pg.text_content(".kpis").strip()
+        print(f"  {vista:5s} {txt}")
+        if unidad not in txt or unidad not in kpi:
+            print(f"  LA VISTA {vista} NO DECLARA SU UNIDAD ({unidad})")
+            ok = False
+    print("  representaciones del mapa: ok")
+
     pg.click('.tema button[data-tema="dark"]')
     pg.wait_for_timeout(400)
     if pg.evaluate("() => document.documentElement.dataset.theme") != "dark":

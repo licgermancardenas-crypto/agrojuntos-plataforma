@@ -132,6 +132,15 @@ input[type="search"]::placeholder{color:var(--faint)}
   font-size:11.5px; padding:5px 10px; border-radius:5px; cursor:pointer;
   white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--forest); color:#fff; font-weight:500}
+.seg button[disabled]{opacity:.5; cursor:progress}
+.seg.cargando{position:relative}
+.seg.cargando::after{content:""; position:absolute; left:3px; right:3px;
+  bottom:-2px; height:2px; border-radius:2px; background:var(--brass);
+  animation:cargando 1s ease-in-out infinite}
+@keyframes cargando{0%,100%{opacity:.25} 50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .seg.cargando::after{animation:none; opacity:.7}
+}
 .zoom{position:absolute; bottom:11px; left:10px; display:flex; gap:5px}
 .zoom button{width:29px; height:29px; border:1px solid var(--line);
   background:var(--surf); color:var(--ink); border-radius:7px; cursor:pointer;
@@ -336,7 +345,36 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 var D = JSON.parse(document.getElementById("DATA").textContent);
 var M=D.meta, HEX=D.hex, TER=D.territorios, HUBS=D.hubs, COB=D.cobertura,
     PUE=D.puertos, DEPS=D.deps, CIU=D.ciudades, VIAL=D.vial, REG=D.regiones,
-    SECT=D.sect, SPROV=D.sect_prov, PROVS=D.provs;
+    SECT=D.sect||null, SPROV=D.sect_prov||null, PROVS=D.provs||null;
+
+/* Puntos y provincias son el 28% del peso y solo hacen falta si se eligen esa
+   representación, así que se piden al elegirla. El atlas suelto de docs/ las
+   trae embebidas —abierto desde el disco no hay a quién pedírselas— y ahí
+   D.sect ya viene lleno y esto no llega a ejecutarse. */
+var CAPAS_URL=D.capas_url||null, cargandoCapas=false;
+
+function marcarCargando(on){
+  var c=document.getElementById("vistaCtl");
+  c.classList.toggle("cargando", !!on);
+  c.querySelectorAll("[data-vista]").forEach(function(b){ b.disabled=!!on; });
+}
+
+function conCapas(cb){
+  if(SECT) return cb(true);
+  if(!CAPAS_URL || cargandoCapas) return cb(false);
+  cargandoCapas=true; marcarCargando(true);
+  fetch(CAPAS_URL).then(function(r){
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return r.json();
+  }).then(function(c){
+    SECT=c.sect; SPROV=c.sect_prov; PROVS=c.provs;
+    cargandoCapas=false; marcarCargando(false); cb(true);
+  }).catch(function(e){
+    cargandoCapas=false; marcarCargando(false);
+    console.error("capas del mapa:", e);
+    cb(false);
+  });
+}
 
 /* posiciones en la tupla del hexágono */
 var VS=0, SAM=1, CLI=2, HA=3, HRS=4, EMP=5, EXP=6, PRO=7, DEP=8, PROV=9,
@@ -371,7 +409,7 @@ var st = { capa:"sam", vista:"hex", umbral:"2", vial:1, dep:-1, reg:-1, q:"",
    declara la suya. */
 function renderKpis(){
   var k;
-  var porCelda = st.capa==="territorios" || st.capa==="hubs";
+  var porCelda = st.capa==="territorios" || st.capa==="hubs" || !SECT;
   if(!porCelda && (st.vista==="pts"||st.vista==="calor")){
     k=[{v:nf(SECT.length), l:"sectores"},
        {v:usd(SECT.reduce(function(a,x){ return a+x[IS_SAM]; },0)*1000),
@@ -448,12 +486,12 @@ function aplicarFiltros(){
   /* El contador cuenta lo que se está dibujando. Decir "1,992 celdas" con los
      sectores en pantalla es una cifra que no corresponde a nada visible. */
   var n, sam, cli, unidad;
-  if(st.vista==="pts"||st.vista==="calor"){
+  if(SECT && (st.vista==="pts"||st.vista==="calor")){
     var fs=SECT.filter(visibleSect);
     n=fs.length; unidad=n===1?" sector":" sectores";
     sam=fs.reduce(function(s,x){ return s+x[IS_SAM]; },0)*1000;
     cli=fs.reduce(function(s,x){ return s+x[IS_CLI]; },0);
-  } else if(st.vista==="prov"){
+  } else if(PROVS && st.vista==="prov"){
     var fp=PROVS.filter(function(p){
       if(st.dep>=0 && p.i!==st.dep) return false;
       if(st.q && norm(p.n+" "+p.d).indexOf(st.q)<0) return false;
@@ -817,11 +855,11 @@ function draw(){
       }
     });
     ctx.globalAlpha=1;
-  } else if(st.vista==="pts"){
+  } else if(SECT && st.vista==="pts"){
     dibujarPuntos(filtrando);
-  } else if(st.vista==="prov"){
+  } else if(PROVS && st.vista==="prov"){
     dibujarProv(filtrando);
-  } else if(st.vista==="calor"){
+  } else if(SECT && st.vista==="calor"){
     dibujarCalor();
   } else {
     /* fuera del filtro se dibuja tenue: da contexto sin competir */
@@ -971,7 +1009,7 @@ function pick(mx,my,cx,cy){
     hideTip(); return;
   }
 
-  if(st.vista==="prov"){
+  if(PROVS && st.vista==="prov"){
     var ip=pickProv(mx,my);
     if(ip!==st.hovP){ st.hovP=ip; }
     if(ip<0){ hideTip(); return; }
@@ -1021,14 +1059,34 @@ function situarTip(cx,cy){
 /* ---------------- capas ---------------- */
 /* La representación es ortogonal a la capa: Territorios y Centros dibujan su
    propia geometría, así que el control se oculta en vez de mentir. */
+function marcarVista(v){
+  document.querySelectorAll("#vistaCtl [data-vista]").forEach(function(o){
+    if(o.dataset.vista===v) o.setAttribute("aria-pressed","true");
+    else o.removeAttribute("aria-pressed");
+  });
+}
+function aplicarVista(v){
+  st.vista=v; marcarVista(v);
+  hideTip(); renderKpis(); renderLegend(); aplicarFiltros();
+}
+
 document.querySelectorAll("#vistaCtl [data-vista]").forEach(function(b){
   b.onclick=function(){
-    st.vista=b.dataset.vista;
-    document.querySelectorAll("#vistaCtl [data-vista]").forEach(function(o){
-      if(o===b) o.setAttribute("aria-pressed","true");
-      else o.removeAttribute("aria-pressed");
+    var v=b.dataset.vista;
+    if(v==="hex"){ aplicarVista(v); return; }
+    /* Se marca el botón antes de que llegue la respuesta: si no, el control
+       se queda sin pulsar y parece que el clic no hizo nada. */
+    marcarVista(v);
+    conCapas(function(ok){
+      if(ok){ aplicarVista(v); return; }
+      marcarVista("hex");
+      aplicarVista("hex");
+      var el=document.getElementById("det");
+      el.className="hint";
+      el.innerHTML="<b>No se pudieron cargar esas capas.</b> Puntos, "+
+        "provincias y calor se descargan aparte; vuelve a intentarlo o "+
+        "revisa la conexión. El mapa sigue funcionando con la grilla.";
     });
-    hideTip(); renderKpis(); renderLegend(); aplicarFiltros();
   };
 });
 

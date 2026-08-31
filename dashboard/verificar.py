@@ -139,6 +139,8 @@ with sync_playwright() as pw:
             ok = False
 
     print("\nmapa")
+    pedidos = []
+    pg.on("request", lambda r: pedidos.append(r.url))
     pg.goto(BASE + "/mapa", wait_until="networkidle")
     pg.wait_for_timeout(2500)
     n = pg.evaluate("() => document.querySelectorAll('.item').length")
@@ -187,6 +189,15 @@ with sync_playwright() as pw:
         pg.wait_for_timeout(300)
     print("  niveles de red vial: ok")
 
+    # Las capas pesadas se piden solo al elegirlas. Que la página cargue no
+    # prueba nada: hay que ver que la petición NO salga al abrir y sí al elegir
+    # Puntos, o la carga diferida estaría rota sin que nadie se entere.
+    if any("mapa_capas.json" in u for u in pedidos):
+        print("  LAS CAPAS SE DESCARGAN SIN QUE NADIE LAS PIDA")
+        ok = False
+    else:
+        print("  capas diferidas: no se piden al abrir")
+
     # Cada representación dibuja geometría distinta y cuenta una unidad
     # distinta. Se comprueba que el contador cambie de unidad: si siguiera
     # diciendo "celdas" con los sectores en pantalla, la cifra no
@@ -201,6 +212,11 @@ with sync_playwright() as pw:
         if unidad not in txt or unidad not in kpi:
             print(f"  LA VISTA {vista} NO DECLARA SU UNIDAD ({unidad})")
             ok = False
+    if not any("mapa_capas.json" in u for u in pedidos):
+        print("  LAS CAPAS NUNCA SE DESCARGARON")
+        ok = False
+    else:
+        print("  capas diferidas: descargadas al elegir una representación")
     print("  representaciones del mapa: ok")
 
     pg.click('.tema button[data-tema="dark"]')

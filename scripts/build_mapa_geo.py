@@ -275,9 +275,6 @@ payload = {
     "ciudades": ciudades,
     "vial": vial,
     "hex": hex_cells,
-    "sect": sectores_pt,
-    "sect_prov": cat_prov,
-    "provs": provs_geo,
     "territorios": territorios,
     "hubs": hubs_out,
     "cobertura": cob,
@@ -288,6 +285,14 @@ payload = {
 # aquí y no en el navegador del usuario.
 with open("out/mapa_geo.json", "w", encoding="utf-8") as fh:
     json.dump(payload, fh, separators=(",", ":"), ensure_ascii=False,
+              allow_nan=False)
+
+# Los puntos y las provincias viajan aparte: son el 28% del peso y solo hacen
+# falta si el usuario elige esa representacion. Quien entra a ver el mapa
+# nacional no deberia descargarlas nunca.
+capas = {"sect": sectores_pt, "sect_prov": cat_prov, "provs": provs_geo}
+with open("out/mapa_capas.json", "w", encoding="utf-8") as fh:
+    json.dump(capas, fh, separators=(",", ":"), ensure_ascii=False,
               allow_nan=False)
 
 print(f"mapa_geo.json : {os.path.getsize('out/mapa_geo.json')/1e6:.2f} MB")
@@ -303,3 +308,5 @@ print(f"  trazos viales: "
 print(f"  sectores punto: {len(sectores_pt):,}")
 print(f"  provincias    : {len(provs_geo)} "
       f"({sin_dato} sin mercado registrado)")
+print(f"mapa_capas.json: {os.path.getsize('out/mapa_capas.json')/1e6:.2f} MB "
+      f"(carga diferida)")

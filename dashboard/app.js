@@ -384,6 +384,41 @@ function vistaExpansion(D) {
   pintar();
 }
 
+/* ----------------------------------------------------------------- tema -- */
+/* Tres estados. "auto" borra el atributo y deja que mande el sistema; los
+   otros dos lo fijan. El gráfico de la curva se dibuja en canvas leyendo
+   variables CSS, así que hay que repintarlo cuando el tema cambia: el CSS solo
+   se ocupa del DOM. */
+function aplicarTema(t) {
+  if (t === "auto") delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = t;
+  try { localStorage.setItem("tema", t); } catch (e) {}
+  document.querySelectorAll(".tema button").forEach(function (b) {
+    b.setAttribute("aria-pressed", String(b.dataset.tema === t));
+  });
+  if (cache.resumen) {
+    cache.resumen.then(function (D) { dibujarCurva(D.curva); });
+  }
+}
+
+(function initTema() {
+  var guardado = "auto";
+  try { guardado = localStorage.getItem("tema") || "auto"; } catch (e) {}
+  document.querySelectorAll(".tema button").forEach(function (b) {
+    b.onclick = function () { aplicarTema(b.dataset.tema); };
+  });
+  aplicarTema(guardado);
+  // Si el usuario dejó "auto", seguir los cambios del sistema en vivo.
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  var cb = function () {
+    if (!document.documentElement.dataset.theme && cache.resumen) {
+      cache.resumen.then(function (D) { dibujarCurva(D.curva); });
+    }
+  };
+  if (mq.addEventListener) mq.addEventListener("change", cb);
+  else if (mq.addListener) mq.addListener(cb);
+})();
+
 /* ------------------------------------------------------------ navegación -*/
 function fallo(e) {
   console.error(e);

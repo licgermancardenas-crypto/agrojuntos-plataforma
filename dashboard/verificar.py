@@ -1,0 +1,138 @@
+# -*- coding: utf-8 -*-
+"""Abre el dashboard en un navegador real y comprueba que no esté roto.
+
+Un `200` del servidor no dice nada sobre si la página se ve: un error de
+JavaScript la deja en blanco y el servidor ni se entera. Esto recorre las cinco
+vistas, ejecuta una búsqueda de verdad, prueba los tres estados del tema y
+falla ante cualquier error de consola.
+
+Así se detectó que `Infinity` en el JSON del mapa —que Python escribe sin
+protestar y `JSON.parse` rechaza— dejaba el atlas sin dibujar.
+
+Uso:
+    python -m http.server 8899 --directory .
+    python verificar.py
+"""
+import io
+import sys
+
+from playwright.sync_api import sync_playwright
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
+                              errors="replace")
+BASE = "http://127.0.0.1:8899"
+
+# El selector apunta a una celda con datos y no a una fila cualquiera: la fila
+# de "Cargando…" también es un <tr> y daría por buena una vista vacía.
+VISTAS = [
+    ("#resumen", "#tRegiones tbody tr", "Resumen"),
+    ("#territorios", "#tTerritorios tbody tr", "Territorios"),
+    ("#empresas", "#tEmpresas tbody tr td.name", "Empresas"),
+    ("#estacionalidad", ".cal tbody tr", "Estacionalidad"),
+    ("#expansion", "#tHubs tbody tr", "Expansión"),
+]
+
+errores = []
+ok = True
+
+with sync_playwright() as pw:
+    b = pw.chromium.launch(channel="chrome")
+    pg = b.new_page(viewport={"width": 1500, "height": 1000})
+    pg.on("console", lambda m: errores.append(m.text) if m.type == "error" else None)
+    pg.on("pageerror", lambda e: errores.append(str(e)))
+    pg.on("response", lambda r: errores.append(f"HTTP {r.status} {r.url}")
+          if r.status >= 400 else None)
+
+    pg.goto(BASE + "/", wait_until="networkidle")
+
+    print("vistas")
+    for hash_, sel, nombre in VISTAS:
+        pg.evaluate("h => location.hash = h", hash_)
+        try:
+            pg.wait_for_selector(sel, timeout=25000)
+            pg.wait_for_function("s => document.querySelectorAll(s).length > 1",
+                                 arg=sel, timeout=25000)
+            n = pg.eval_on_selector_all(sel, "e => e.length")
+            print(f"  {nombre:16s} {n:>5} filas")
+        except Exception:
+            print(f"  {nombre:16s} SIN CONTENIDO")
+            ok = False
+
+    print("\nbusqueda")
+    pg.evaluate("() => location.hash = '#empresas'")
+    pg.wait_for_selector("#tEmpresas tbody tr td.name")
+    pg.fill("#q", "camposol")
+    pg.wait_for_timeout(700)
+    fila = pg.text_content("#tEmpresas tbody tr:first-child") or ""
+    print(f"  'camposol' -> {pg.text_content('#cCount').strip()}")
+    if "camposol" not in fila.lower():
+        print("  LA BUSQUEDA NO FILTRA")
+        ok = False
+    pg.fill("#q", "")
+    pg.wait_for_timeout(400)
+
+    # El tema se prueba contra el sistema opuesto: es donde se rompen los
+    # colores que se declararon solo dentro de prefers-color-scheme.
+    print("\ntema")
+    for elegido, espera in (("dark", "dark"), ("light", "light"), ("auto", None)):
+        pg.click(f'.tema button[data-tema="{elegido}"]')
+        pg.wait_for_timeout(350)
+        real = pg.evaluate("() => document.documentElement.dataset.theme || null")
+        bg = pg.evaluate("() => getComputedStyle(document.body).backgroundColor")
+        marcado = pg.evaluate(
+            "() => [...document.querySelectorAll('.tema button')]"
+            ".filter(b => b.getAttribute('aria-pressed') === 'true')"
+            ".map(b => b.dataset.tema).join(',')")
+        bien = real == espera and marcado == elegido
+        print(f"  {elegido:5s} -> data-theme={str(real):5s} body={bg:22s} "
+              f"{'ok' if bien else 'FALLA'}")
+        if not bien:
+            ok = False
+
+    # Contraste real de una etiqueta en oscuro forzado: si su color solo
+    # existiera bajo prefers-color-scheme, aquí saldría texto claro sobre
+    # fondo claro.
+    pg.click('.tema button[data-tema="dark"]')
+    pg.wait_for_timeout(350)
+    par = pg.evaluate(
+        "() => {const t = document.querySelector('.tag'); if(!t) return null;"
+        "const s = getComputedStyle(t); return [s.backgroundColor, s.color];}")
+    if par:
+        def lum(c):
+            v = [int(x) / 255 for x in c[c.find("(") + 1:c.find(")")].split(",")[:3]]
+            v = [(x / 12.92 if x <= .03928 else ((x + .055) / 1.055) ** 2.4) for x in v]
+            return .2126 * v[0] + .7152 * v[1] + .0722 * v[2]
+        a, z = lum(par[0]), lum(par[1])
+        ratio = (max(a, z) + .05) / (min(a, z) + .05)
+        print(f"  contraste de etiqueta en oscuro: {ratio:.1f}:1 "
+              f"{'ok' if ratio >= 3 else 'INSUFICIENTE'}")
+        if ratio < 3:
+            ok = False
+
+    print("\nmapa")
+    pg.goto(BASE + "/mapa.html", wait_until="networkidle")
+    pg.wait_for_timeout(2500)
+    n = pg.evaluate("() => document.querySelectorAll('.item').length")
+    print(f"  {n} elementos en la lista lateral")
+    if n == 0:
+        ok = False
+    pg.click('.tema button[data-tema="dark"]')
+    pg.wait_for_timeout(400)
+    if pg.evaluate("() => document.documentElement.dataset.theme") != "dark":
+        print("  el tema no se aplica en el mapa")
+        ok = False
+    else:
+        print("  tema oscuro aplicado")
+
+    b.close()
+
+# El favicon lo pide el navegador solo; su ausencia no es un fallo del sitio.
+errores = [e for e in errores if "favicon" not in e.lower()]
+if errores:
+    print("\nERRORES:")
+    for e in errores[:10]:
+        print("  ", e[:170])
+    ok = False
+
+print("\n" + ("TODO OK" if ok else "HAY FALLAS"))
+sys.exit(0 if ok else 1)

@@ -219,8 +219,15 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 Cada vista carga su propio JSON la primera vez que se abre: el directorio de
 empresas pesa 1.7 MB —460 KB comprimido— y no debe frenar la portada.
 
+**Tema claro y oscuro**, con tres estados: *Auto* sigue al sistema operativo,
+y *Claro* u *Oscuro* lo fijan. La elección se guarda en el navegador y se
+aplica antes de pintar, de modo que la página no aparece un instante en claro
+antes de volverse oscura. El mapa se dibuja en canvas leyendo variables CSS,
+así que cambiar el tema lo obliga a repintarse: el CSS solo alcanza al DOM.
+
 `verificar.py` abre el sitio en un navegador real, recorre las cinco vistas,
-prueba la búsqueda y falla si aparece un error de consola. Un `200` del
+prueba la búsqueda, recorre los tres estados del tema, mide el contraste real
+de una etiqueta en modo oscuro y falla si aparece un error de consola. Un `200` del
 servidor no garantiza que la página no esté en blanco por un error de
 JavaScript: así fue como se detectó que `Infinity` en el JSON del mapa —válido
 en Python, inválido en JSON— dejaba el atlas sin dibujar.

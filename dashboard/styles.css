@@ -124,14 +124,28 @@ tbody td.name{max-width:280px; overflow:hidden; text-overflow:ellipsis}
 .tag.V{background:#F2E7F4; color:#6E4A80}
 .tag.E{background:#DDEEE6; color:#0F4C3F}
 .tag.I{background:#F8E5DC; color:#A34A25}
+/* Las etiquetas llevan color propio, no tokens, asi que necesitan las
+   dos ramas del tema. Sin la de [data-theme="dark"], elegir oscuro a
+   mano sobre un sistema claro las dejaba ilegibles. */
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .tag{background:#1E2926; color:#BDC7BF}
-  :root:not([data-theme="light"]) .tag.P{background:#173026; color:#7FC7A4}
-  :root:not([data-theme="light"]) .tag.A{background:#332913; color:#D9A94E}
-  :root:not([data-theme="light"]) .tag.C{background:#152A33; color:#6FB4D0}
-  :root:not([data-theme="light"]) .tag.V{background:#2A1E33; color:#B48FC7}
-  :root:not([data-theme="light"]) .tag.E{background:#12302A; color:#4FBF9C}
-  :root:not([data-theme="light"]) .tag.I{background:#33201A; color:#E09070}
+  :root:not([data-theme="light"]){
+    .tag.P{background:#173026; color:#7FC7A4}
+    .tag.A{background:#332913; color:#D9A94E}
+    .tag.C{background:#152A33; color:#6FB4D0}
+    .tag.V{background:#2A1E33; color:#B48FC7}
+    .tag.E{background:#12302A; color:#4FBF9C}
+    .tag.I{background:#33201A; color:#E09070}
+    .tag{background:#1E2926; color:#BDC7BF}
+  }
+}
+:root[data-theme="dark"]{
+  .tag.P{background:#173026; color:#7FC7A4}
+  .tag.A{background:#332913; color:#D9A94E}
+  .tag.C{background:#152A33; color:#6FB4D0}
+  .tag.V{background:#2A1E33; color:#B48FC7}
+  .tag.E{background:#12302A; color:#4FBF9C}
+  .tag.I{background:#33201A; color:#E09070}
+  .tag{background:#1E2926; color:#BDC7BF}
 }
 
 .mini{display:inline-block; width:46px; height:5px; border-radius:3px;
@@ -185,3 +199,15 @@ footer b{color:var(--ink2); font-weight:500}
 .mapframe{width:100%; height:78vh; min-height:560px; border:0;
   border-radius:10px; background:var(--surf); box-shadow:var(--shadow)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ----------------------------------------------------------- selector -- */
+/* Tres estados y no dos: "auto" deja mandar al sistema operativo, que es lo
+   que la mayoría espera hasta que decide lo contrario. */
+.tema{display:flex; gap:2px; background:var(--surf2); border:1px solid var(--line);
+  border-radius:8px; padding:2px}
+.tema button{border:0; background:none; color:var(--muted); font:inherit;
+  font-size:11.5px; line-height:1; padding:5px 9px; border-radius:6px;
+  cursor:pointer}
+.tema button:hover{color:var(--ink)}
+.tema button[aria-pressed="true"]{background:var(--surf); color:var(--forest);
+  font-weight:600; box-shadow:var(--shadow)}

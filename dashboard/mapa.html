@@ -155,8 +155,22 @@ header{display:flex; flex-wrap:wrap; align-items:flex-end; gap:18px 30px;
 footer{margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
   color:var(--muted); font-size:11px; line-height:1.7}
 footer b{color:var(--ink2); font-weight:500}
+.tema{display:flex; gap:2px; background:var(--surf2); border:1px solid var(--line);
+  border-radius:8px; padding:2px; align-self:flex-end}
+.tema button{border:0; background:none; color:var(--muted); font:inherit;
+  font-size:11.5px; line-height:1; padding:5px 9px; border-radius:6px;
+  cursor:pointer}
+.tema button:hover{color:var(--ink)}
+.tema button[aria-pressed="true"]{background:var(--surf); color:var(--forest);
+  font-weight:600; box-shadow:var(--shadow)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<script>
+/* El tema se fija antes de pintar: si esto viviera al final del documento, la
+   página aparecería un instante en claro antes de volverse oscura. */
+(function(){try{var t=localStorage.getItem("tema");
+if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
 
 <div class="wrap">
 <header>
@@ -167,6 +181,11 @@ footer b{color:var(--ink2); font-weight:500}
        distribución, medidos sobre la red vial nacional.</p>
   </div>
   <div class="kpis" id="kpis"></div>
+  <div class="tema" role="group" aria-label="Tema de la interfaz">
+    <button data-tema="auto" title="Seguir al sistema">Auto</button>
+    <button data-tema="light" title="Modo claro" aria-label="Modo claro">☀</button>
+    <button data-tema="dark" title="Modo oscuro" aria-label="Modo oscuro">☾</button>
+  </div>
 </header>
 
 <div class="stage">
@@ -640,6 +659,26 @@ function select(r){
     b.setAttribute("aria-pressed", String(+b.dataset.t===sel)); });
   renderDet(); draw();
 }
+
+// ---------- tema ----------
+// El mapa se pinta en canvas leyendo variables CSS, de modo que cambiar el
+// tema exige releer los tokens y redibujar: el CSS solo alcanza al DOM.
+function aplicarTema(t){
+  if(t==="auto") delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme=t;
+  try{ localStorage.setItem("tema",t); }catch(e){}
+  document.querySelectorAll(".tema button").forEach(function(b){
+    b.setAttribute("aria-pressed", String(b.dataset.tema===t)); });
+  refresh(); renderLegend(); renderDet(); draw();
+}
+(function(){
+  var g="auto";
+  try{ g=localStorage.getItem("tema")||"auto"; }catch(e){}
+  document.querySelectorAll(".tema button").forEach(function(b){
+    b.onclick=function(){ aplicarTema(b.dataset.tema); }; });
+  document.querySelectorAll(".tema button").forEach(function(b){
+    b.setAttribute("aria-pressed", String(b.dataset.tema===g)); });
+})();
 
 // ---------- arranque ----------
 var mq=window.matchMedia("(prefers-color-scheme: dark)");

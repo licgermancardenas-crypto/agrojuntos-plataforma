@@ -38,6 +38,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   <a href="#departamentos">Departamentos</a>
   <a href="#territorios">Territorios</a>
   <a href="#empresas">Empresas</a>
+  <a href="#productos">Productos</a>
   <a href="#comercio">Comercio</a>
   <a href="#estacionalidad">Estacionalidad</a>
   <a href="#logistica">Logística</a>
@@ -224,6 +225,54 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   </div>
 
   <p class="sub" id="comNota"></p>
+</section>
+
+<!-- ---------------------------------------------------------- productos -->
+<section class="view" id="v-productos">
+  <div class="kpis" id="proKpis"><div class="load">Cargando…</div></div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Qué se cultiva</h3>
+      <span class="eyebrow">Superficie cosechada · MIDAGRI 2023</span></div>
+    <div class="filters">
+      <select id="fProDep"></select>
+      <span class="count" id="proDepMeta"></span>
+    </div>
+    <div class="b">
+      <div class="grid2">
+        <div class="sub-card">
+          <div class="eyebrow" id="proCultTit">Cultivos de mayor superficie</div>
+          <div class="barras compact" id="proCultivos"></div>
+        </div>
+        <div class="sub-card">
+          <div class="eyebrow" id="proExpTit">Qué exporta</div>
+          <div class="barras compact" id="proExpDep"></div>
+          <p class="sub" id="proExpNota"></p>
+        </div>
+      </div>
+    </div>
+    <div class="tw"><table id="tCultivos"></table></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Qué se exporta</h3>
+      <span class="eyebrow">FOB anualizado por partida</span></div>
+    <div class="tw"><table id="tProductos"></table></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Por dónde sale</h3>
+      <span class="eyebrow">Aduana de embarque</span></div>
+    <div class="b">
+      <p>La aduana de salida es la operativa, no la más cercana en línea
+      recta: dice por dónde embarca de verdad la carga. Pulsa una fila para
+      ver su mezcla de producto.</p>
+    </div>
+    <div class="tw"><table id="tAduanas"></table></div>
+    <div class="b" id="proAduDet"></div>
+  </div>
+
+  <p class="sub" id="proNota"></p>
 </section>
 
 <!-- ---------------------------------------------------------- logistica -->

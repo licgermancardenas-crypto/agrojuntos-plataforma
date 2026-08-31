@@ -2,7 +2,7 @@
 """Abre el dashboard en un navegador real y comprueba que no esté roto.
 
 Un `200` del servidor no dice nada sobre si la página se ve: un error de
-JavaScript la deja en blanco y el servidor ni se entera. Esto recorre las nueve
+JavaScript la deja en blanco y el servidor ni se entera. Esto recorre las diez
 vistas, recorre las 24 fichas departamentales, ejerce los filtros del mapa,
 prueba los tres estados del tema y falla ante cualquier error de consola.
 
@@ -29,6 +29,7 @@ VISTAS = [
     ("#departamentos", "#depFicha .pares dd", "Departamentos"),
     ("#territorios", "#tTerritorios tbody tr", "Territorios"),
     ("#empresas", "#tEmpresas tbody tr td.name", "Empresas"),
+    ("#productos", "#tProductos tbody tr", "Productos"),
     ("#comercio", "#tExportadores tbody tr", "Comercio"),
     ("#estacionalidad", ".cal tbody tr", "Estacionalidad"),
     ("#logistica", "#tLogistica tbody tr", "Logística"),
@@ -233,7 +234,7 @@ with sync_playwright() as pw:
     nav = pg.eval_on_selector_all("nav a", "e => e.map(a => a.textContent.trim())")
     activo = pg.eval_on_selector_all("nav a.on", "e => e.map(a => a.textContent.trim())")
     print(f"  nav: {len(nav)} enlaces, activo {activo}")
-    if len(nav) != 10 or activo != ["Mapa"]:
+    if len(nav) != 11 or activo != ["Mapa"]:
         print("  LA NAVEGACION DEL MAPA NO COINCIDE CON LA DEL SITIO")
         ok = False
     pg.click('nav a[href="/#empresas"]')

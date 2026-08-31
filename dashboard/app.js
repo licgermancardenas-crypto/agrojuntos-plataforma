@@ -429,12 +429,16 @@ function barras(el, filas, opts) {
   var mx = Math.max.apply(null, filas.map(function (r) { return r.v; })) || 1;
   var tot = filas.reduce(function (a, r) { return a + r.v; }, 0) || 1;
   el.innerHTML = filas.map(function (r) {
+    // Si la fila trae su propio porcentaje se respeta: cuando la lista es un
+    // recorte —los 12 cultivos mayores de un departamento, por ejemplo—, el
+    // reparto sobre lo mostrado no es el reparto real y contradice la tabla.
+    var p = r.p === undefined ? 100 * r.v / tot : r.p;
     return '<div class="bar">' +
       '<span class="bn">' + esc(r.n) + "</span>" +
       '<span class="bv mono">' + r.t + "</span>" +
       '<span class="bt"><i style="width:' + (100 * r.v / mx).toFixed(1) +
       '%"></i></span>' +
-      '<span class="bp mono">' + pct(100 * r.v / tot, 1) + "</span>" +
+      '<span class="bp mono">' + pct(p, 1) + "</span>" +
       "</div>";
   }).join("");
 }
@@ -859,6 +863,177 @@ function vistaMetodo() {
   }).catch(fallo);
 }
 
+
+/* ------------------------------------------------------------ productos -- */
+/* Tres preguntas que el resto del sitio no respondía: qué se siembra en cada
+   departamento, qué producto se exporta y por qué aduana sale. Las dos
+   primeras vienen de fuentes distintas —MIDAGRI para la tierra, SUNAT para el
+   embarque— y no se suman entre sí: una mide hectáreas, la otra dólares FOB. */
+function vistaProductos() {
+  cargar("productos").then(function (D) {
+    var m = D.meta, anual = 52 / m.semanas;
+    var dep = "";                       // "" = todo el país
+
+    document.getElementById("proKpis").innerHTML = [
+      [nf(m.ha), "hectáreas cosechadas", "en " + nf(m.cultivos) + " cultivos"],
+      [D.cultivos[0].n, "mayor superficie", nf(D.cultivos[0].ha) + " ha"],
+      [usd(m.fob_exp), "agroexportación embarcada",
+       m.semanas + " semanas · " + usd(m.fob_exp * anual) + " anualizado"],
+      [D.aduanas[0].n, "principal salida", pct(100 * D.aduanas[0].fob /
+       m.fob_exp, 0) + " del FOB"],
+    ].map(function (k) {
+      return "<div><span class='v'>" + esc(k[0]) + "</span><span class='l'>" +
+        k[1] + "</span><span class='s'>" + esc(k[2]) + "</span></div>";
+    }).join("");
+
+    /* ---- selector de departamento ---- */
+    var deps = Object.keys(D.cult_dep).sort(function (a, b) {
+      return a.localeCompare(b, "es"); });
+    document.getElementById("fProDep").innerHTML =
+      '<option value="">Todo el Perú</option>' +
+      deps.map(function (d) {
+        return '<option value="' + esc(d) + '">' + esc(d) + "</option>"; }).join("");
+
+    function pintarDep() {
+      var cult = dep ? (D.cult_dep[dep] || []) : null;
+      var titC = document.getElementById("proCultTit");
+      var titE = document.getElementById("proExpTit");
+
+      if (cult) {
+        titC.textContent = "Cultivos de " + dep;
+        barras(document.getElementById("proCultivos"),
+          cult.map(function (c) {
+            return { n: c.n, v: c.ha, t: nf(c.ha) + " ha", p: c.pct }; }));
+      } else {
+        titC.textContent = "Cultivos de mayor superficie del país";
+        barras(document.getElementById("proCultivos"),
+          D.cultivos.slice(0, 12).map(function (c) {
+            return { n: c.n, v: c.ha, t: nf(c.ha) + " ha" }; }));
+      }
+
+      var ex = dep ? (D.exp_por_dep[dep] || []) : null;
+      titE.textContent = dep ? "Qué exporta " + dep : "Qué se exporta del país";
+      var fuente = ex || D.productos.slice(0, 6).map(function (p) {
+        return { n: p.n, v: p.fob, tn: p.tn }; });
+      if (!fuente.length) {
+        document.getElementById("proExpDep").innerHTML =
+          "<p class='sub'>Sin agroexportación registrada en las " +
+          m.semanas + " semanas publicadas.</p>";
+      } else {
+        barras(document.getElementById("proExpDep"),
+          fuente.map(function (p) {
+            return { n: p.n, v: p.v, t: usd(p.v * anual) }; }));
+      }
+
+      var fila = D.exp_dep.filter(function (r) { return r.n === dep; })[0];
+      document.getElementById("proExpNota").innerHTML = dep
+        ? (fila
+            ? "<b>" + nf(fila.emp) + "</b> empresas exportan desde " + esc(dep) +
+              ", " + usd(fila.fob * anual) + " al año. La ubicación es el " +
+              "domicilio fiscal declarado ante SUNAT, no necesariamente donde " +
+              "está el fundo."
+            : "Ninguna empresa con domicilio fiscal en " + esc(dep) +
+              " registra agroexportación en el periodo.")
+        : "La superficie es de MIDAGRI y el FOB de SUNAT: miden cosas " +
+          "distintas —hectáreas y dólares embarcados— y no se suman entre sí.";
+
+      var tot = cult
+        ? cult.reduce(function (a, c) { return a + c.ha; }, 0) : m.ha;
+      document.getElementById("proDepMeta").textContent = cult
+        ? nf(tot) + " ha en los " + cult.length + " cultivos principales"
+        : nf(m.ha) + " ha en " + nf(m.cultivos) + " cultivos";
+
+      tabla(document.getElementById("tCultivos"), cult ? [
+        { k: "n", t: "Cultivo", l: 1, f: function (r) {
+            return "<b>" + esc(r.n) + "</b>"; } },
+        { k: "tipo", t: "Tipo", l: 1, f: function (r) {
+            return "<span class='tag'>" +
+              (r.tipo === "tran" ? "transitorio" : "permanente") + "</span>"; } },
+        { k: "ha", t: "Hectáreas", f: function (r) { return nf(r.ha); } },
+        { k: "pct", t: "% del dep.", f: function (r) { return pct(r.pct, 1); } },
+        { k: "usd", t: "Mercado de insumos", f: function (r) {
+            return usd(r.usd); } },
+        { k: "mes", t: "Pico de siembra", f: function (r) { return r.mes; } },
+      ] : [
+        { k: "n", t: "Cultivo", l: 1, f: function (r) {
+            return "<b>" + esc(r.n) + "</b>"; } },
+        { k: "ha", t: "Hectáreas", f: function (r) { return nf(r.ha); } },
+        { k: "usd", t: "Mercado de insumos", f: function (r) {
+            return usd(r.usd); } },
+        { k: "usdha", t: "US$ por ha", f: function (r) {
+            return nf(r.usdha); } },
+        { k: "deps", t: "Departamentos", f: function (r) { return nf(r.deps); } },
+        { k: "lider", t: "Dónde se concentra", l: 1, f: function (r) {
+            return esc(r.lider) + "<span class='sub2'>" + pct(r.pct, 1) +
+              " de la superficie</span>"; } },
+      ], cult || D.cultivos, { sort: "ha" });
+    }
+
+    document.getElementById("fProDep").onchange = function () {
+      dep = this.value; pintarDep();
+    };
+    pintarDep();
+
+    /* ---- qué se exporta ---- */
+    tabla(document.getElementById("tProductos"), [
+      { k: "n", t: "Producto", l: 1, f: function (r) {
+          return "<b>" + esc(r.n) + "</b><span class='sub2'>partida " +
+            r.p + "</span>"; } },
+      { k: "fob", t: "FOB anual", f: function (r) {
+          return usd(r.fob * anual); } },
+      { k: "tn", t: "Toneladas", f: function (r) {
+          return nf(Math.round(r.tn * anual)); } },
+      { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
+      { k: "dest", t: "Destinos", f: function (r) { return nf(r.dest); } },
+    ], D.productos, { sort: "fob" });
+
+    /* ---- por dónde sale ---- */
+    tabla(document.getElementById("tAduanas"), [
+      { k: "n", t: "Aduana", l: 1, f: function (r) {
+          return "<b>" + esc(r.n) + "</b><span class='sub2'>código " +
+            r.c + "</span>"; } },
+      { k: "via", t: "Vía", l: 1, f: function (r) {
+          return "<span class='tag'>" + esc(r.via) + "</span>"; } },
+      { k: "fob", t: "FOB anual", f: function (r) {
+          return usd(r.fob * anual); } },
+      { k: "tn", t: "Toneladas", f: function (r) {
+          return nf(Math.round(r.tn * anual)); } },
+      { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
+      { k: "lider", t: "Producto principal", l: 1, f: function (r) {
+          return esc(r.lider) + "<span class='sub2'>" + pct(r.pct, 1) +
+            " de su FOB</span>"; } },
+    ], D.aduanas, { sort: "fob" });
+
+    /* La mezcla de producto de cada aduana explica por qué existe: Paita es
+       café, Pisco es uva. Se despliega al pulsar la fila. */
+    var tA = document.getElementById("tAduanas");
+    tA.onclick = function (ev) {
+      var tr = ev.target.closest("tbody tr");
+      if (!tr) return;
+      var nombre = (tr.querySelector("td.l b") || {}).textContent;
+      var a = D.aduanas.filter(function (x) { return x.n === nombre; })[0];
+      if (!a) return;
+      var mezcla = D.exp_por_adu[a.n] || [];
+      document.getElementById("proAduDet").innerHTML =
+        "<div class='eyebrow'>Mezcla de producto · " + esc(a.n) + "</div>" +
+        "<div class='barras compact' id='proMez'></div>";
+      barras(document.getElementById("proMez"), mezcla.map(function (p) {
+        return { n: p.n, v: p.v, t: usd(p.v * anual) }; }));
+    };
+
+    document.getElementById("proNota").innerHTML =
+      "Superficie cosechada del anuario de producción agrícola de MIDAGRI " +
+      "(2023); agroexportación de los microdatos de manifiestos de SUNAT bajo " +
+      "la Ley 27806, anualizando " + m.semanas + " semanas. La aduana de " +
+      "salida sale del campo <span class='mono'>CADU</span> del manifiesto y " +
+      "se nombra con la Tabla 4 del Anexo 01 de SUNAT; el código 370 " +
+      "corresponde a Chancay, habilitada el 21 de octubre de 2024 y todavía " +
+      "ausente de ese anexo. El reparto por departamento usa el domicilio " +
+      "fiscal del exportador, porque el ubigeo del propio manifiesto viene " +
+      "vacío en el 97% del FOB.";
+  }).catch(fallo);
+}
+
 /* ------------------------------------------------------------ navegación -*/
 function fallo(e) {
   console.error(e);
@@ -883,6 +1058,7 @@ function ir(hash) {
     if (id === "estacionalidad") vistaEstacionalidad();
     if (id === "departamentos") vistaDepartamentos();
     if (id === "comercio") vistaComercio();
+    if (id === "productos") vistaProductos();
     if (id === "logistica") vistaLogistica();
     if (id === "metodo") vistaMetodo();
   }

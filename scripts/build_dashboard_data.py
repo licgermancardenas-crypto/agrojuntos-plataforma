@@ -393,3 +393,84 @@ guardar("comercio.json", {
     } for _, r in expo.sort_values("fob_anual", ascending=False)
         .head(100).iterrows()],
 })
+
+
+# ===================================================================== #
+#  Productos: qué se cultiva, qué se exporta y por qué puerto sale.      #
+#                                                                        #
+#  El sitio decía cuánto vale cada región pero no qué se siembra en ella. #
+#  Para vender insumos eso es la mitad de la conversación: no se le       #
+#  ofrece lo mismo a un valle de arroz que a uno de palta.                #
+# ===================================================================== #
+
+cul_n = pd.read_csv("out/cultivos_nacional.csv", encoding="utf-8-sig")
+cul_d = pd.read_csv("out/cultivos_departamento.csv", encoding="utf-8-sig")
+ax_p = pd.read_csv("out/agroexport_producto.csv", encoding="utf-8-sig")
+ax_a = pd.read_csv("out/agroexport_aduana.csv", encoding="utf-8-sig",
+                   dtype={"codigo": str})
+ax_d = pd.read_csv("out/agroexport_departamento.csv", encoding="utf-8-sig")
+ax_dp = pd.read_csv("out/agroexport_dep_producto.csv", encoding="utf-8-sig")
+ax_ap = pd.read_csv("out/agroexport_aduana_producto.csv", encoding="utf-8-sig",
+                    dtype={"codigo": str})
+
+SEM = 10                       # semanas de manifiestos publicadas
+ANUAL = 52 / SEM
+
+
+def top_por(df, clave, n=6, etiqueta="producto", valor="fob_usd"):
+    """Los n productos mayores de cada clave, ya ordenados."""
+    out = {}
+    for k, g in df.sort_values(valor, ascending=False).groupby(clave):
+        out[k] = [{"n": r[etiqueta], "v": int(r[valor]),
+                   "tn": int(round(r["kg"] / 1000))}
+                  for _, r in g.head(n).iterrows()]
+    return out
+
+
+cult_por_dep = {}
+for k, g in cul_d.sort_values("ha", ascending=False).groupby("dep"):
+    cult_por_dep[k] = [{"n": r["cultivo"], "ha": int(r["ha"]),
+                        "usd": int(r["usd"]), "pct": round(float(r["pct_dep"]), 1),
+                        "mes": r["mes_pico"], "tipo": r["tipo"][:4]}
+                       for _, r in g.head(12).iterrows()]
+
+exp_por_dep = top_por(ax_dp, "dep")
+exp_por_adu = top_por(ax_ap, "aduana")
+
+guardar("productos.json", {
+    "meta": {
+        "semanas": SEM,
+        "ha": int(cul_n["ha_nac"].sum()),
+        "cultivos": int(len(cul_n)),
+        "fob_exp": int(ax_p["fob_usd"].sum()),
+        "partidas": int(len(ax_p)),
+        "aduanas": int(len(ax_a)),
+    },
+    # --- lo que se cultiva -------------------------------------------------
+    "cultivos": [{
+        "n": r["cultivo"], "ha": int(r["ha_nac"]), "usd": int(r["usd_nac"]),
+        "usdha": int(r["usd_ha"]), "deps": int(r["deps"]),
+        "lider": r["dep_lider"], "pct": round(float(r["pct_lider"]), 1),
+    } for _, r in cul_n.sort_values("ha_nac", ascending=False).head(60).iterrows()],
+    "cult_dep": cult_por_dep,
+    # --- lo que se exporta -------------------------------------------------
+    "productos": [{
+        "p": str(r["partida4"]).zfill(4), "n": r["producto"],
+        "fob": int(r["fob_usd"]), "tn": int(round(r["kg"] / 1000)),
+        "emp": int(r["empresas"]), "dest": int(r["destinos"]),
+    } for _, r in ax_p.sort_values("fob_usd", ascending=False).head(40).iterrows()],
+    # --- por dónde sale ----------------------------------------------------
+    "aduanas": [{
+        "c": r["codigo"], "n": r["aduana"], "fob": int(r["fob_usd"]),
+        "tn": int(round(r["kg"] / 1000)), "emp": int(r["empresas"]),
+        "lider": r["producto_lider"], "pct": round(float(r["pct_lider"]), 1),
+        "via": r["via_principal"],
+    } for _, r in ax_a.sort_values("fob_usd", ascending=False).iterrows()],
+    "exp_dep": [{
+        "n": r["dep"], "fob": int(r["fob_usd"]),
+        "tn": int(round(r["kg"] / 1000)), "emp": int(r["empresas"]),
+        "lider": r["producto_lider"], "pct": round(float(r["pct_lider"]), 1),
+    } for _, r in ax_d.sort_values("fob_usd", ascending=False).iterrows()],
+    "exp_por_dep": exp_por_dep,
+    "exp_por_adu": exp_por_adu,
+})

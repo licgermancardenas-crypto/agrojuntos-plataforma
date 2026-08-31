@@ -1,0 +1,1599 @@
+﻿k,dep,cultivo,tipo,ha,usd,pct_dep,rank_dep,rank_nac,mes_pico
+amazonas,Amazonas,Café,permanente,60214.75,9801355.573333334,22.31,1,2,Set
+amazonas,Amazonas,Arroz,transitorio,38850.95,24672114.49306667,14.39,2,3,Feb
+amazonas,Amazonas,Brachiaria (pasto),permanente,27438.999999999996,5069263.786666667,10.16,3,1,Ene
+amazonas,Amazonas,Pasto elefante,permanente,21523.0,8980543.493333332,7.97,4,19,Ago
+amazonas,Amazonas,Maíz amarillo duro,transitorio,12717.0,5306210.64,4.71,5,5,Dic
+amazonas,Amazonas,Plátano,permanente,12043.610000000002,3185936.298666667,4.46,6,9,Ago
+amazonas,Amazonas,Grama azul,permanente,11993.0,2215666.7733333325,4.44,7,48,Mar
+amazonas,Amazonas,Yuca,transitorio,10237.0,1136170.5066666668,3.79,8,11,Ago
+amazonas,Amazonas,Maíz amiláceo,transitorio,9775.0,4078651.333333333,3.62,9,8,Dic
+amazonas,Amazonas,Ryegrass (pasto),permanente,9391.0,1734955.9466666668,3.48,10,17,Dic
+amazonas,Amazonas,Cacao,permanente,9272.0,2475500.373333333,3.43,11,7,Jun
+amazonas,Amazonas,Pasto gramalote,permanente,8888.0,1642028.373333333,3.29,12,35,Set
+amazonas,Amazonas,Frijol,transitorio,6867.0,2865278.64,2.54,13,15,Dic
+amazonas,Amazonas,Trébol,permanente,6656.0,1229673.813333333,2.47,14,45,Abr
+amazonas,Amazonas,Papa,transitorio,4138.5,2402493.056,1.53,15,4,Abr
+amazonas,Amazonas,Grama chilena,permanente,2677.0,494566.82666666666,0.99,16,39,Jul
+amazonas,Amazonas,Maíz choclo,transitorio,2287.0,954258.3733333333,0.85,17,21,Dic
+amazonas,Amazonas,Caña de azúcar para alcohol,permanente,2005.0,836592.9333333333,0.74,18,32,Feb
+amazonas,Amazonas,Pacae,permanente,1353.9999999999998,564961.0133333333,0.5,19,61,Nov
+amazonas,Amazonas,Frijol grano verde,transitorio,1307.0,545350.1066666666,0.48,20,62,Dic
+amazonas,Amazonas,Piña,permanente,1189.5,498923.88,0.44,21,40,Ene
+amazonas,Amazonas,Papaya,permanente,1105.5,318000.76,0.41,22,42,Oct
+amazonas,Amazonas,Arracacha,transitorio,1007.5,420382.73333333334,0.37,23,92,Ago
+amazonas,Amazonas,Arveja grano verde,transitorio,890.0,371355.4666666667,0.33,24,23,Abr
+amazonas,Amazonas,Limón,permanente,685.0,431334.45333333337,0.25,25,30,Jun
+amazonas,Amazonas,Maní,transitorio,563.0,234913.62666666668,0.21,26,75,Oct
+amazonas,Amazonas,Naranja,permanente,541.9999999999999,322569.4933333334,0.2,27,27,Ago
+amazonas,Amazonas,Col,transitorio,352.5,147081.8,0.13,28,91,Nov
+amazonas,Amazonas,Zanahoria,transitorio,297.5,166647.60000000003,0.11,29,56,Nov
+amazonas,Amazonas,Pituca,transitorio,281.5,117456.81333333334,0.1,30,85,Nov
+amazonas,Amazonas,Mango,permanente,248.0,165148.16,0.09,31,25,May
+amazonas,Amazonas,Cocona,permanente,236.0,98471.78666666668,0.09,32,84,Nov
+amazonas,Amazonas,Soya,transitorio,204.0,85119.68000000001,0.08,33,108,Feb
+amazonas,Amazonas,Tomate,transitorio,176.0,155579.30666666667,0.07,34,66,Nov
+amazonas,Amazonas,Granadilla,permanente,164.5,57197.74666666667,0.06,35,64,Set
+amazonas,Amazonas,Trigo,transitorio,161.0,19577.6,0.06,36,12,Mar
+amazonas,Amazonas,Palta,permanente,160.0,139797.33333333334,0.06,37,16,Dic
+amazonas,Amazonas,Alfalfa,permanente,155.0,28635.73333333333,0.06,38,6,Abr
+amazonas,Amazonas,Lechuga,transitorio,150.5,34610.986666666664,0.06,39,65,Nov
+amazonas,Amazonas,Haba grano verde,transitorio,146.0,60918.986666666664,0.05,40,47,Nov
+amazonas,Amazonas,Olluco,transitorio,132.0,50395.840000000004,0.05,41,33,Nov
+amazonas,Amazonas,Arveja grano seco,transitorio,129.0,53825.68,0.05,42,22,Nov
+amazonas,Amazonas,Caigua,transitorio,126.5,52782.54666666666,0.05,43,106,Nov
+amazonas,Amazonas,Zapallo,transitorio,113.0,68565.38666666667,0.04,44,57,Oct
+amazonas,Amazonas,Betarraga,transitorio,92.5,38595.933333333334,0.03,45,89,Nov
+amazonas,Amazonas,Tarwi,transitorio,92.0,38387.306666666664,0.03,46,50,Nov
+amazonas,Amazonas,Haba grano seco,transitorio,78.0,32545.760000000002,0.03,47,20,Nov
+amazonas,Amazonas,Coco,permanente,72.1,30083.96533333333,0.03,48,82,Ago
+amazonas,Amazonas,Lima,permanente,71.8,29958.789333333334,0.03,49,101,Dic
+amazonas,Amazonas,Sandía,transitorio,60.0,37393.6,0.02,50,67,Dic
+amazonas,Amazonas,Achiote,permanente,58.0,24200.693333333333,0.02,51,43,Ene
+amazonas,Amazonas,Sacha inchi,permanente,57.5,23992.066666666666,0.02,52,107,Mar
+amazonas,Amazonas,Chirimoya,permanente,49.0,13491.333333333332,0.02,53,78,May
+amazonas,Amazonas,Cebada grano,transitorio,43.0,5228.8,0.02,54,13,Feb
+amazonas,Amazonas,Espinaca,transitorio,36.5,15229.746666666666,0.01,55,104,Dic
+amazonas,Amazonas,Pijuayo,permanente,36.0,1920.0,0.01,56,72,Set
+amazonas,Amazonas,Limón dulce,permanente,35.6,14854.218666666668,0.01,57,123,Feb
+amazonas,Amazonas,Camote,transitorio,35.0,11327.866666666669,0.01,58,38,Nov
+amazonas,Amazonas,Caimito,permanente,33.0,13769.36,0.01,59,116,Dic
+amazonas,Amazonas,Tamarindo,permanente,30.0,12517.599999999999,0.01,60,133,Nov
+amazonas,Amazonas,Ciruela,permanente,29.499999999999996,12308.973333333337,0.01,61,119,May
+amazonas,Amazonas,Ají,transitorio,28.0,22398.506666666668,0.01,62,70,Nov
+amazonas,Amazonas,Coliflor,transitorio,24.5,10222.706666666667,0.01,63,109,Set
+amazonas,Amazonas,Melocotón,permanente,24.0,16896.0,0.01,64,71,Oct
+amazonas,Amazonas,Oca,transitorio,19.0,11146.666666666666,0.01,65,44,Nov
+amazonas,Amazonas,Zapote,permanente,15.0,6258.799999999999,0.01,66,113,Oct
+amazonas,Amazonas,Rocoto,transitorio,12.5,3526.6666666666665,0.0,67,102,Nov
+amazonas,Amazonas,Calabaza,transitorio,12.0,5007.039999999999,0.0,68,112,Dic
+amazonas,Amazonas,Rabanito,transitorio,10.5,4381.16,0.0,69,120,Set
+amazonas,Amazonas,Guayaba,permanente,9.0,3755.2799999999997,0.0,70,114,Ago
+amazonas,Amazonas,Mashua,transitorio,6.0,2503.52,0.0,71,60,Oct
+amazonas,Amazonas,Carambola,permanente,4.66,1944.4005333333334,0.0,72,129,Mar
+amazonas,Amazonas,Ajo,transitorio,4.5,2337.7200000000003,0.0,73,54,Nov
+amazonas,Amazonas,Cebolla de cabeza,transitorio,3.0,2363.84,0.0,74,41,Nov
+amazonas,Amazonas,Acelga,transitorio,2.0,834.5066666666667,0.0,75,130,Set
+amazonas,Amazonas,Manzana,permanente,0.9999999999999996,454.02666666666664,0.0,76,58,May
+ancash,Áncash,Papa,transitorio,10031.0,5823222.869333332,12.13,1,4,Oct
+ancash,Áncash,Trigo,transitorio,9811.0,1193017.6,11.86,2,12,Ene
+ancash,Ancash,Alfalfa,permanente,9271.0,1712786.3466666667,11.21,3,6,Dic
+ancash,Áncash,Maíz amarillo duro,transitorio,9214.0,3844572.2133333334,11.14,4,5,Jul
+ancash,Áncash,Maíz amiláceo,transitorio,5858.0,2444270.026666667,7.08,5,8,Nov
+ancash,Áncash,Arroz,transitorio,5072.0,3220949.9306666665,6.13,6,3,Nov
+ancash,Áncash,Cebada grano,transitorio,4958.0,602892.8,6.0,7,13,Ene
+ancash,Áncash,Maíz choclo,transitorio,3826.0,1596411.2533333334,4.63,8,21,Dic
+ancash,Ancash,Palta,permanente,3702.5,3234997.666666667,4.48,9,16,Abr
+ancash,Ancash,Espárrago,permanente,2037.0,1747691.68,2.46,10,28,May
+ancash,Áncash,Camote,transitorio,1872.0,605879.04,2.26,11,38,May
+ancash,Ancash,Mango,permanente,1838.0,1223960.96,2.22,12,25,Jul
+ancash,Ancash,Arándano,permanente,1281.0,534501.52,1.55,13,37,May
+ancash,Áncash,Arveja grano verde,transitorio,1162.0,484848.37333333335,1.41,14,23,Nov
+ancash,Áncash,Olluco,transitorio,928.0,354298.0266666667,1.12,15,33,Oct
+ancash,Áncash,Haba grano seco,transitorio,748.0,312105.4933333333,0.9,16,20,Dic
+ancash,Áncash,Maíz chala,transitorio,723.0,301674.16,0.87,17,26,Set
+ancash,Ancash,Manzana,permanente,709.5,322131.92,0.86,18,58,Nov
+ancash,Áncash,Lechuga,transitorio,612.0,140743.68,0.74,19,65,Jul
+ancash,Ancash,Uva,permanente,540.0,398462.39999999997,0.65,20,24,Ene
+ancash,Áncash,Algodón,transitorio,529.0,165950.82666666666,0.64,21,46,Jun
+ancash,Ancash,Tuna,permanente,525.0,111944.0,0.63,22,49,Jul
+ancash,Áncash,Páprika,transitorio,493.0,352120.32,0.6,23,68,Ene
+ancash,Ancash,Melocotón,permanente,445.0,313280.0,0.54,24,71,Mar
+ancash,Ancash,Maracuyá,permanente,432.0,206784.0,0.52,25,59,Set
+ancash,Ancash,Alcachofa,permanente,410.0,326294.4,0.5,26,55,Dic
+ancash,Áncash,Frijol,transitorio,397.0,165649.57333333333,0.48,27,15,Mar
+ancash,Áncash,Tarwi,transitorio,352.0,146873.17333333334,0.43,28,50,Dic
+ancash,Áncash,Oca,transitorio,345.0,202399.99999999997,0.42,29,44,Nov
+ancash,Áncash,Frijol loctao,transitorio,305.0,127262.26666666666,0.37,30,53,Nov
+ancash,Ancash,Naranja,permanente,299.0,177948.85333333336,0.36,31,27,Abr
+ancash,Áncash,Maíz morado,transitorio,298.0,124341.49333333333,0.36,32,76,Oct
+ancash,Áncash,Zapallo,transitorio,246.0,149266.24,0.3,33,57,Abr
+ancash,Áncash,Ají,transitorio,242.0,193587.09333333332,0.29,34,70,May
+ancash,Áncash,Tomate,transitorio,236.0,208617.70666666667,0.29,35,66,Dic
+ancash,Áncash,Arveja grano seco,transitorio,219.0,91378.48,0.26,36,22,Ene
+ancash,Áncash,Zanahoria,transitorio,172.0,96347.52,0.21,37,56,May
+ancash,Áncash,Col,transitorio,171.0,71350.31999999999,0.21,38,91,Ene
+ancash,Áncash,Espinaca,transitorio,170.0,70933.06666666667,0.21,39,104,Nov
+ancash,Áncash,Yuca,transitorio,163.0,18090.826666666668,0.2,40,11,Ago
+ancash,Ancash,Plátano,permanente,158.0,41796.26666666667,0.19,41,9,Abr
+ancash,Áncash,Fresa,transitorio,155.0,93520.80000000003,0.19,42,99,Abr
+ancash,Áncash,Betarraga,transitorio,152.0,63422.50666666667,0.18,43,89,May
+ancash,Áncash,Cebolla de cabeza,transitorio,147.0,115828.16,0.18,44,41,May
+ancash,Áncash,Poro,transitorio,129.0,53825.68,0.16,45,110,Dic
+ancash,Áncash,Kiwicha,transitorio,128.0,53408.426666666666,0.15,46,86,Abr
+ancash,Áncash,Haba grano verde,transitorio,115.0,47984.13333333333,0.14,47,47,Ene
+ancash,Áncash,Apio,transitorio,106.0,44228.85333333333,0.13,48,95,Nov
+ancash,Áncash,Pepinillo,transitorio,91.0,37970.05333333333,0.11,49,87,Jun
+ancash,Ancash,Lima,permanente,86.0,35883.78666666667,0.1,50,101,Dic
+ancash,Áncash,Frijol grano verde,transitorio,82.0,34214.77333333333,0.1,51,62,Nov
+ancash,Áncash,Acelga,transitorio,76.0,31711.25333333333,0.09,52,130,Dic
+ancash,Áncash,Coliflor,transitorio,73.0,30459.493333333332,0.09,53,109,Dic
+ancash,Ancash,Limón,permanente,56.0,35262.37866666667,0.07,54,30,Jun
+ancash,Áncash,Vainita,transitorio,49.0,7868.746666666667,0.06,55,90,Dic
+ancash,Áncash,Nabo,transitorio,46.0,19193.653333333332,0.06,56,124,Set
+ancash,Ancash,Guayaba,permanente,41.0,17107.386666666665,0.05,57,114,May
+ancash,Áncash,Rabanito,transitorio,39.0,16272.88,0.05,58,120,Dic
+ancash,Ancash,Granada,permanente,34.0,24091.039999999997,0.04,59,79,Mar
+ancash,Áncash,Caigua,transitorio,34.0,14186.613333333333,0.04,60,106,Dic
+ancash,Áncash,Sandía,transitorio,30.0,18696.8,0.04,61,67,Jul
+ancash,Ancash,Ciruela,permanente,27.999999999999996,11683.093333333334,0.03,62,119,Dic
+ancash,Ancash,Limón dulce,permanente,26.0,10848.586666666666,0.03,63,123,Jul
+ancash,Áncash,Pallar grano seco,transitorio,26.0,10848.586666666666,0.03,64,63,Ago
+ancash,Ancash,Pacae,permanente,20.0,8345.066666666666,0.02,65,61,Dic
+ancash,Ancash,Membrillo,permanente,19.0,7927.813333333333,0.02,66,128,Mar
+ancash,Ancash,Chirimoya,permanente,15.0,4130.0,0.02,67,78,Dic
+ancash,Ancash,Lúcuma,permanente,15.0,7332.4,0.02,68,105,Dic
+ancash,Ancash,Papaya,permanente,15.0,4314.800000000001,0.02,69,42,Ago
+ancash,Ancash,Toronja,permanente,15.0,6258.799999999999,0.02,70,115,Dic
+ancash,Áncash,Ajo,transitorio,14.0,7272.906666666667,0.02,71,54,Jun
+ancash,Ancash,Granadilla,permanente,11.0,3824.7733333333335,0.01,72,64,Set
+ancash,Ancash,Higo,permanente,11.0,4589.786666666667,0.01,73,126,Ago
+ancash,Ancash,Pera,permanente,9.0,3755.2799999999997,0.01,74,125,Ene
+ancash,Ancash,Capuli,permanente,4.0,1669.0133333333333,0.0,75,139,Nov
+apurimac,Apurímac,Maíz amiláceo,transitorio,22225.0,9273455.333333334,22.16,1,8,Oct
+apurimac,Apurímac,Papa,transitorio,20903.0,12134665.30133333,20.84,2,4,Oct
+apurimac,Apurímac,Quinua,transitorio,5389.5,2727949.32,5.37,3,18,Nov
+apurimac,Apurímac,Trigo,transitorio,5386.0,654937.6,5.37,4,12,Ene
+apurimac,Apurímac,Haba grano seco,transitorio,5135.0,2142595.8666666667,5.12,5,20,Oct
+apurimac,Apurímac,Cebada grano,transitorio,4888.0,594380.8,4.87,6,13,Dic
+apurimac,Apurimac,Alfalfa,permanente,3303.33,610279.2063999999,3.29,7,6,Mar
+apurimac,Apurímac,Frijol,transitorio,3147.5,1313304.8666666667,3.14,8,15,Ene
+apurimac,Apurímac,Olluco,transitorio,2516.5,960766.1466666667,2.51,9,33,Oct
+apurimac,Apurímac,Maíz choclo,transitorio,2304.0,961351.6799999999,2.3,10,21,Set
+apurimac,Apurimac,Trébol,permanente,2293.1,423642.5813333333,2.29,11,45,Nov
+apurimac,Apurímac,Maíz amarillo duro,transitorio,2289.0,955092.88,2.28,12,5,Dic
+apurimac,Apurimac,Palta,permanente,2170.5,1896438.2,2.16,13,16,Ago
+apurimac,Apurimac,Ryegrass (pasto),permanente,2095.75,387182.8266666666,2.09,14,17,Abr
+apurimac,Apurímac,Kiwicha,transitorio,1981.0,826578.8533333333,1.98,15,86,Ene
+apurimac,Apurimac,Tuna,permanente,1448.0000000000002,308752.2133333333,1.44,16,49,Ago
+apurimac,Apurímac,Arveja grano seco,transitorio,1210.0,504876.5333333333,1.21,17,22,Nov
+apurimac,Apurímac,Tarwi,transitorio,1175.5,490481.29333333333,1.17,18,50,Nov
+apurimac,Apurímac,Oca,transitorio,1145.0,671733.3333333333,1.14,19,44,Oct
+apurimac,Apurímac,Arveja grano verde,transitorio,1120.5,467532.36,1.12,20,23,Nov
+apurimac,Apurímac,Haba grano verde,transitorio,1019.5,425389.7733333333,1.02,21,47,Nov
+apurimac,Apurímac,Mashua,transitorio,861.0,359255.12,0.86,22,60,Oct
+apurimac,Apurímac,Frijol grano verde,transitorio,745.0,310853.73333333334,0.74,23,62,Ene
+apurimac,Apurímac,Cebada forrajera,transitorio,735.0,306681.2,0.73,24,36,Nov
+apurimac,Apurímac,Avena forrajera,transitorio,632.0,263704.1066666667,0.63,25,10,Nov
+apurimac,Apurímac,Avena grano,transitorio,538.0,224482.29333333336,0.54,26,51,Nov
+apurimac,Apurimac,Melocotón,permanente,276.45000000000005,194620.8,0.28,27,71,Ene
+apurimac,Apurímac,Zanahoria,transitorio,240.0,134438.40000000002,0.24,28,56,Dic
+apurimac,Apurímac,Calabaza,transitorio,235.5,98263.16,0.23,29,112,Nov
+apurimac,Apurímac,Zapallo,transitorio,225.0,136524.0,0.22,30,57,Dic
+apurimac,Apurimac,Chirimoya,permanente,222.99999999999994,61399.33333333333,0.22,31,78,May
+apurimac,Apurimac,Manzana,permanente,192.14999999999998,87241.22399999999,0.19,32,58,Jun
+apurimac,Apurímac,Cebolla de cabeza,transitorio,185.7,146321.696,0.19,33,41,Dic
+apurimac,Apurimac,Caña de azúcar para alcohol,permanente,177.0,73853.84,0.18,34,32,Ago
+apurimac,Apurímac,Camote,transitorio,156.75,50732.66,0.16,35,38,Dic
+apurimac,Apurímac,Yuca,transitorio,122.0,13540.373333333335,0.12,36,11,Set
+apurimac,Apurímac,Tomate,transitorio,94.0,83093.49333333333,0.09,37,66,Feb
+apurimac,Apurímac,Ajo,transitorio,92.5,48053.13333333333,0.09,38,54,Dic
+apurimac,Apurimac,Plátano,permanente,92.2,24389.973333333335,0.09,39,9,Dic
+apurimac,Apurimac,Naranja,permanente,91.56,54491.62880000002,0.09,40,27,Nov
+apurimac,Apurimac,Papaya,permanente,87.22,25089.123733333345,0.09,41,42,Dic
+apurimac,Apurímac,Maíz morado,transitorio,80.0,33380.26666666666,0.08,42,76,Feb
+apurimac,Apurimac,Mango,permanente,76.5,50942.88,0.08,43,25,Dic
+apurimac,Apurimac,Limón,permanente,72.5,45652.18666666667,0.07,44,30,Nov
+apurimac,Apurimac,Ciruelo,permanente,72.25,30146.553333333333,0.07,45,137,May
+apurimac,Apurimac,Granadilla,permanente,65.0,22600.933333333338,0.06,46,64,Jun
+apurimac,Apurimac,Pera,permanente,64.45,26891.977333333332,0.06,47,125,Ago
+apurimac,Apurímac,Lechuga,transitorio,64.15,14752.789333333334,0.06,48,65,Dic
+apurimac,Apurímac,Col,transitorio,62.2,25953.157333333333,0.06,49,91,Nov
+apurimac,Apurimac,Sauco,permanente,56.620000000000005,23624.883733333336,0.06,50,142,Feb
+apurimac,Apurimac,Capuli,permanente,56.3,23491.362666666668,0.06,51,139,Jul
+apurimac,Apurímac,Vainita,transitorio,52.0,8350.506666666668,0.05,52,90,Ene
+apurimac,Apurimac,Pacae,permanente,49.2,20528.864,0.05,53,61,Oct
+apurimac,Apurimac,Orégano,permanente,47.230000000000004,10886.829866666669,0.05,54,81,Set
+apurimac,Apurímac,Coliflor,transitorio,39.0,16272.88,0.04,55,109,Jul
+apurimac,Apurímac,Brócoli,transitorio,37.0,18906.506666666664,0.04,56,83,Set
+apurimac,Apurimac,Níspero,permanente,33.54,13994.676800000003,0.03,57,136,Feb
+apurimac,Apurimac,Lúcuma,permanente,30.0,14664.8,0.03,58,105,Ago
+apurimac,Apurímac,Betarraga,transitorio,30.0,12517.599999999999,0.03,59,89,Dic
+apurimac,Apurímac,Fresa,transitorio,30.0,18100.800000000003,0.03,60,99,Set
+apurimac,Apurímac,Ají,transitorio,25.0,19998.666666666668,0.02,61,70,May
+apurimac,Apurimac,Membrillo,permanente,24.0,10014.08,0.02,62,128,Oct
+apurimac,Apurímac,Albahaca,transitorio,16.0,6676.053333333333,0.02,63,131,Feb
+apurimac,Apurimac,Higo,permanente,15.899999999999999,6634.3279999999995,0.02,64,126,Abr
+apurimac,Apurímac,Pepinillo,transitorio,15.0,6258.8,0.01,65,87,Ago
+apurimac,Apurímac,Lenteja,transitorio,10.0,4172.533333333333,0.01,66,73,Dic
+apurimac,Apurímac,Apio,transitorio,6.5,2712.1466666666665,0.01,67,95,Dic
+apurimac,Apurímac,Rocoto,transitorio,6.5,1833.8666666666666,0.01,68,102,Oct
+apurimac,Apurímac,Pallar grano seco,transitorio,5.0,2086.2666666666664,0.0,69,63,Abr
+apurimac,Apurímac,Maca,transitorio,3.0,1251.76,0.0,70,80,Nov
+apurimac,Apurimac,Alcachofa,permanente,1.9999999999999991,1591.6799999999998,0.0,71,55,Oct
+apurimac,Apurimac,Pasto elefante,permanente,1.9999999999999991,834.5066666666667,0.0,72,19,Oct
+apurimac,Apurímac,Rabanito,transitorio,1.0,417.2533333333334,0.0,73,120,Ene
+apurimac,Apurimac,Granada,permanente,0.9999999999999996,708.56,0.0,74,79,May
+apurimac,Apurímac,Arracacha,transitorio,0.7,292.0773333333333,0.0,75,92,Dic
+arequipa,Arequipa,Alfalfa,permanente,36181.0,6684319.1466666665,27.28,1,6,Dic
+arequipa,Arequipa,Arroz,transitorio,20683.0,13134642.629333334,15.6,2,3,Nov
+arequipa,Arequipa,Maíz chala,transitorio,14503.0,6051425.093333333,10.94,3,26,Set
+arequipa,Arequipa,Papa,transitorio,9172.0,5324553.898666666,6.92,4,4,May
+arequipa,Arequipa,Cebolla de cabeza,transitorio,7812.0,6155439.36,5.89,5,41,Mar
+arequipa,Arequipa,Ajo,transitorio,5160.0,2680585.6,3.89,6,54,May
+arequipa,Arequipa,Olivo,permanente,4767.0,2367101.52,3.59,7,29,Jun
+arequipa,Arequipa,Frijol,transitorio,3581.0,1494184.1866666665,2.7,8,15,Mar
+arequipa,Arequipa,Alcachofa,permanente,2638.9999999999995,2100221.7600000002,1.99,9,55,Feb
+arequipa,Arequipa,Maíz amiláceo,transitorio,2468.0,1029781.2266666667,1.86,10,8,Set
+arequipa,Arequipa,Zanahoria,transitorio,1951.0,1092872.1600000001,1.47,11,56,Set
+arequipa,Arequipa,Maíz choclo,transitorio,1909.0,796536.6133333333,1.44,12,21,May
+arequipa,Arequipa,Arveja grano verde,transitorio,1883.0,785688.0266666667,1.42,13,23,Set
+arequipa,Arequipa,Tuna,permanente,1808.0,385513.8133333333,1.36,14,49,Feb
+arequipa,Arequipa,Palta,permanente,1779.0,1554371.6,1.34,15,16,Jun
+arequipa,Arequipa,Quinua,transitorio,1707.0,864015.12,1.29,16,18,May
+arequipa,Arequipa,Uva,permanente,1680.0,1239660.8000000003,1.27,17,24,May
+arequipa,Arequipa,Haba grano verde,transitorio,1402.0,584989.1733333333,1.06,18,47,Set
+arequipa,Arequipa,Zapallo,transitorio,1272.0,771815.68,0.96,19,57,Ago
+arequipa,Arequipa,Páprika,transitorio,1182.0,844231.6799999999,0.89,20,68,Nov
+arequipa,Arequipa,Trigo,transitorio,1100.0,133760.0,0.83,21,12,Jun
+arequipa,Arequipa,Tomate,transitorio,864.0,763752.96,0.65,22,66,Abr
+arequipa,Arequipa,Vainita,transitorio,598.0,96030.82666666666,0.45,23,90,Abr
+arequipa,Arequipa,Orégano,permanente,594.0,136920.96000000002,0.45,24,81,Abr
+arequipa,Arequipa,Cebada forrajera,transitorio,486.0,202785.12,0.37,25,36,Ene
+arequipa,Arequipa,Avena forrajera,transitorio,476.0,198612.58666666667,0.36,26,10,Ene
+arequipa,Arequipa,Haba grano seco,transitorio,412.0,171908.37333333335,0.31,27,20,Oct
+arequipa,Arequipa,Apio,transitorio,356.0,148542.18666666668,0.27,28,95,Ene
+arequipa,Arequipa,Ají,transitorio,297.0,237584.16,0.22,29,70,Nov
+arequipa,Arequipa,Col,transitorio,237.0,98889.04,0.18,30,91,Feb
+arequipa,Arequipa,Mandarina,permanente,231.99999999999994,183632.63999999998,0.17,31,34,Abr
+arequipa,Arequipa,Algodón,transitorio,220.0,69015.46666666667,0.17,32,46,Oct
+arequipa,Arequipa,Betarraga,transitorio,212.0,88457.70666666667,0.16,33,89,Mar
+arequipa,Arequipa,Lechuga,transitorio,203.0,46684.58666666666,0.15,34,65,Nov
+arequipa,Arequipa,Cebada grano,transitorio,202.0,24563.2,0.15,35,13,Ene
+arequipa,Arequipa,Brócoli,transitorio,174.0,88911.68,0.13,36,83,Mar
+arequipa,Arequipa,Maíz morado,transitorio,171.0,71350.32,0.13,37,76,Set
+arequipa,Arequipa,Maíz amarillo duro,transitorio,155.0,64674.26666666667,0.12,38,5,Feb
+arequipa,Arequipa,Poro,transitorio,155.0,64674.26666666666,0.12,39,110,Dic
+arequipa,Arequipa,Coliflor,transitorio,142.0,59249.973333333335,0.11,40,109,Dic
+arequipa,Arequipa,Nabo,transitorio,140.0,58415.46666666667,0.11,41,124,Ene
+arequipa,Arequipa,Manzana,permanente,138.0,62655.67999999999,0.1,42,58,Oct
+arequipa,Arequipa,Granada,permanente,134.0,94947.03999999998,0.1,43,79,Ene
+arequipa,Arequipa,Acelga,transitorio,110.0,45897.86666666667,0.08,44,130,Jul
+arequipa,Arequipa,Camote,transitorio,107.0,34630.90666666667,0.08,45,38,Jul
+arequipa,Arequipa,Rabanito,transitorio,96.0,40056.32,0.07,46,120,Jun
+arequipa,Arequipa,Melocotón,permanente,93.0,65472.0,0.07,47,71,Jun
+arequipa,Arequipa,Higo,permanente,87.0,36301.04,0.07,48,126,Feb
+arequipa,Arequipa,Lúcuma,permanente,73.0,35684.346666666665,0.06,49,105,Jul
+arequipa,Arequipa,Pecana,permanente,73.0,37763.38666666667,0.06,50,93,Mar
+arequipa,Arequipa,Kiwicha,transitorio,60.0,25035.2,0.05,51,86,Nov
+arequipa,Arequipa,Sandía,transitorio,60.0,37393.600000000006,0.05,52,67,Jul
+arequipa,Arequipa,Caña de azúcar para alcohol,permanente,55.0,22948.933333333334,0.04,53,32,Set
+arequipa,Arequipa,Pepinillo,transitorio,44.0,18359.146666666664,0.03,54,87,Oct
+arequipa,Arequipa,Pera,permanente,44.0,18359.146666666667,0.03,55,125,Feb
+arequipa,Arequipa,Mango,permanente,36.0,23973.12,0.03,56,25,Oct
+arequipa,Arequipa,Fresa,transitorio,34.0,20514.240000000005,0.03,57,99,Set
+arequipa,Arequipa,Albahaca,transitorio,33.0,13769.359999999999,0.02,58,131,Dic
+arequipa,Arequipa,Espinaca,transitorio,31.0,12934.853333333333,0.02,59,104,Dic
+arequipa,Arequipa,Sorgo,transitorio,31.0,12934.853333333333,0.02,60,143,Oct
+arequipa,Arequipa,Cebolla china,transitorio,30.0,23638.4,0.02,61,96,May
+arequipa,Arequipa,Pallar grano seco,transitorio,30.0,12517.6,0.02,62,63,Mar
+arequipa,Arequipa,Melon,transitorio,28.0,11683.093333333332,0.02,63,103,Set
+arequipa,Arequipa,Yuca,transitorio,25.0,2774.666666666667,0.02,64,11,May
+arequipa,Arequipa,Pacae,permanente,24.999999999999996,10431.333333333334,0.02,65,61,Jun
+arequipa,Arequipa,Membrillo,permanente,23.0,9596.826666666668,0.02,66,128,Ago
+arequipa,Arequipa,Olluco,transitorio,23.0,8781.093333333334,0.02,67,33,Oct
+arequipa,Arequipa,Oca,transitorio,21.0,12320.0,0.02,68,44,Oct
+arequipa,Arequipa,Naranja,permanente,20.0,11902.933333333334,0.02,69,27,Feb
+arequipa,Arequipa,Calabaza,transitorio,18.0,7510.5599999999995,0.01,70,112,May
+arequipa,Arequipa,Arveja grano seco,transitorio,13.0,5424.293333333333,0.01,71,22,Mar
+arequipa,Arequipa,Guayaba,permanente,13.0,5424.293333333333,0.01,72,114,Abr
+arequipa,Arequipa,Limón,permanente,13.0,8185.909333333333,0.01,73,30,Nov
+arequipa,Arequipa,Ryegrass (pasto),permanente,9.0,1662.7199999999998,0.01,74,17,Jun
+arequipa,Arequipa,Chirimoya,permanente,6.0,1652.0,0.0,75,78,Jul
+arequipa,Arequipa,Ciruelo,permanente,4.0,1669.0133333333333,0.0,76,137,Ene
+arequipa,Arequipa,Papaya,permanente,4.0,1150.6133333333332,0.0,77,42,Mar
+arequipa,Arequipa,Damasco,permanente,1.9999999999999991,834.5066666666667,0.0,78,140,Ene
+arequipa,Arequipa,Plátano,permanente,1.9999999999999991,529.0666666666666,0.0,79,9,Set
+arequipa,Arequipa,Níspero,permanente,0.9999999999999996,417.25333333333333,0.0,80,136,Ene
+ayacucho,Ayacucho,Papa,transitorio,31133.0,18073412.181333333,20.21,1,4,Oct
+ayacucho,Ayacucho,Maíz amiláceo,transitorio,19228.0,8022947.093333333,12.48,2,8,Oct
+ayacucho,Ayacucho,Quinua,transitorio,14249.0,7212273.84,9.25,3,18,Dic
+ayacucho,Ayacucho,Cebada grano,transitorio,12661.0,1539577.5999999999,8.22,4,13,Dic
+ayacucho,Ayacucho,Alfalfa,permanente,10588.0,1956097.7066666665,6.87,5,6,Dic
+ayacucho,Ayacucho,Trigo,transitorio,8305.0,1009888.0,5.39,6,12,Dic
+ayacucho,Ayacucho,Cacao,permanente,7172.0,1914828.3733333333,4.65,7,7,Abr
+ayacucho,Ayacucho,Haba grano seco,transitorio,6866.0,2864861.3866666663,4.46,8,20,Oct
+ayacucho,Ayacucho,Palta,permanente,5398.0,4716412.533333333,3.5,9,16,Jun
+ayacucho,Ayacucho,Avena forrajera,transitorio,4998.0,2085432.1600000001,3.24,10,10,Dic
+ayacucho,Ayacucho,Arveja grano seco,transitorio,4476.0,1867625.92,2.91,11,22,Dic
+ayacucho,Ayacucho,Tuna,permanente,3338.0,711750.6133333333,2.17,12,49,Feb
+ayacucho,Ayacucho,Café,permanente,2884.0,469438.29333333345,1.87,13,2,Feb
+ayacucho,Ayacucho,Olluco,transitorio,2841.0,1084655.9200000002,1.84,14,33,Oct
+ayacucho,Ayacucho,Maíz choclo,transitorio,2049.0,854952.08,1.33,15,21,Set
+ayacucho,Ayacucho,Oca,transitorio,2042.0,1197973.3333333333,1.33,16,44,Oct
+ayacucho,Ayacucho,Arveja grano verde,transitorio,1925.0,803212.6666666666,1.25,17,23,Set
+ayacucho,Ayacucho,Mashua,transitorio,1782.0,743545.44,1.16,18,60,Oct
+ayacucho,Ayacucho,Haba grano verde,transitorio,1778.0,741876.4266666665,1.15,19,47,Set
+ayacucho,Ayacucho,Frijol,transitorio,1461.0,609607.12,0.95,20,15,Dic
+ayacucho,Ayacucho,Maíz morado,transitorio,1172.0,489020.9066666666,0.76,21,76,Nov
+ayacucho,Ayacucho,Maíz amarillo duro,transitorio,1101.0,459395.92,0.71,22,5,Ago
+ayacucho,Ayacucho,Yuca,transitorio,844.0,93672.74666666667,0.55,23,11,Ago
+ayacucho,Ayacucho,Frijol loctao,transitorio,712.0,297084.3733333333,0.46,24,53,Ago
+ayacucho,Ayacucho,Melocotón,permanente,706.0,497024.00000000006,0.46,25,71,Set
+ayacucho,Ayacucho,Avena grano,transitorio,524.0,218640.74666666664,0.34,26,51,Dic
+ayacucho,Ayacucho,Ajo,transitorio,484.0,251434.77333333335,0.31,27,54,Oct
+ayacucho,Ayacucho,Naranja,permanente,306.99999999999994,182710.02666666667,0.2,28,27,Feb
+ayacucho,Ayacucho,Plátano,permanente,287.0,75921.06666666668,0.19,29,9,Nov
+ayacucho,Ayacucho,Cebolla de cabeza,transitorio,220.0,173348.26666666666,0.14,30,41,Dic
+ayacucho,Ayacucho,Zanahoria,transitorio,190.0,106430.40000000002,0.12,31,56,Ago
+ayacucho,Ayacucho,Calabaza,transitorio,173.0,72184.82666666666,0.11,32,112,Set
+ayacucho,Ayacucho,Guinda,permanente,146.0,60918.986666666664,0.09,33,135,Nov
+ayacucho,Ayacucho,Manzana,permanente,126.0,57207.36,0.08,34,58,Ene
+ayacucho,Ayacucho,Col,transitorio,124.0,51739.41333333333,0.08,35,91,Dic
+ayacucho,Ayacucho,Pacae,permanente,119.0,49653.14666666666,0.08,36,61,Oct
+ayacucho,Ayacucho,Chirimoya,permanente,110.0,30286.666666666664,0.07,37,78,Jul
+ayacucho,Ayacucho,Tomate,transitorio,98.0,86629.38666666666,0.06,38,66,Dic
+ayacucho,Ayacucho,Mango,permanente,91.0,60598.71999999999,0.06,39,25,Jul
+ayacucho,Ayacucho,Limón,permanente,90.0,56671.68000000001,0.06,40,30,Ene
+ayacucho,Ayacucho,Tarwi,transitorio,81.0,33797.52,0.05,41,50,Ene
+ayacucho,Ayacucho,Betarraga,transitorio,73.0,30459.493333333332,0.05,42,89,Dic
+ayacucho,Ayacucho,Zapallo,transitorio,70.0,42474.13333333333,0.05,43,57,Dic
+ayacucho,Ayacucho,Papaya,permanente,68.0,19560.42666666667,0.04,44,42,Ene
+ayacucho,Ayacucho,Lechuga,transitorio,64.0,14718.293333333333,0.04,45,65,Oct
+ayacucho,Ayacucho,Apio,transitorio,63.0,26286.96,0.04,46,95,Dic
+ayacucho,Ayacucho,Mandarina,permanente,63.0,49865.759999999995,0.04,47,34,Abr
+ayacucho,Ayacucho,Coliflor,transitorio,62.0,25869.706666666665,0.04,48,109,Set
+ayacucho,Ayacucho,Garbanzo,transitorio,61.0,25452.453333333335,0.04,49,117,Ene
+ayacucho,Ayacucho,Lúcuma,permanente,60.0,29329.6,0.04,50,105,May
+ayacucho,Ayacucho,Coco,permanente,59.0,24617.946666666674,0.04,51,82,Set
+ayacucho,Ayacucho,Níspero,permanente,50.0,20862.666666666668,0.03,52,136,Ago
+ayacucho,Ayacucho,Higo,permanente,49.0,20445.413333333334,0.03,53,126,Abr
+ayacucho,Ayacucho,Granadilla,permanente,48.0,16689.920000000002,0.03,54,64,Ene
+ayacucho,Ayacucho,Tangelo,permanente,45.0,33790.8,0.03,55,77,Set
+ayacucho,Ayacucho,Lima,permanente,42.0,17524.64,0.03,56,101,Jun
+ayacucho,Ayacucho,Caigua,transitorio,28.0,11683.093333333332,0.02,57,106,Dic
+ayacucho,Ayacucho,Kiwicha,transitorio,28.0,11683.093333333334,0.02,58,86,Set
+ayacucho,Ayacucho,Poro,transitorio,26.0,10848.586666666666,0.02,59,110,Set
+ayacucho,Ayacucho,Achiote,permanente,23.0,9596.826666666668,0.01,60,43,Dic
+ayacucho,Ayacucho,Camote,transitorio,23.0,7444.026666666668,0.01,61,38,Set
+ayacucho,Ayacucho,Nabo,transitorio,22.0,9179.573333333334,0.01,62,124,Dic
+ayacucho,Ayacucho,Pera,permanente,22.0,9179.573333333334,0.01,63,125,Abr
+ayacucho,Ayacucho,Ají,transitorio,20.0,15998.933333333334,0.01,64,70,Oct
+ayacucho,Ayacucho,Pallar grano seco,transitorio,20.0,8345.066666666666,0.01,65,63,Nov
+ayacucho,Ayacucho,Vainita,transitorio,20.0,3211.7333333333336,0.01,66,90,Oct
+ayacucho,Ayacucho,Ciruelo,permanente,17.0,7093.306666666667,0.01,67,137,Ago
+ayacucho,Ayacucho,Cebada forrajera,transitorio,16.0,6676.053333333333,0.01,68,36,Dic
+ayacucho,Ayacucho,Lenteja,transitorio,13.0,5424.293333333333,0.01,69,73,Oct
+ayacucho,Ayacucho,Orégano,permanente,10.0,2305.0666666666666,0.01,70,81,Set
+ayacucho,Ayacucho,Membrillo,permanente,8.0,3338.0266666666666,0.01,71,128,Ene
+ayacucho,Ayacucho,Piña,permanente,6.0,2516.64,0.0,72,40,Dic
+ayacucho,Ayacucho,Rabanito,transitorio,5.0,2086.2666666666664,0.0,73,120,Dic
+ayacucho,Ayacucho,Pepinillo,transitorio,4.0,1669.0133333333333,0.0,74,87,Dic
+ayacucho,Ayacucho,Uva,permanente,4.0,2951.5733333333333,0.0,75,24,Jul
+ayacucho,Ayacucho,Caña de azúcar para alcohol,permanente,3.0,1251.7599999999998,0.0,76,32,Ago
+ayacucho,Ayacucho,Guayaba,permanente,0.9999999999999996,417.25333333333333,0.0,77,114,Oct
+ayacucho,Ayacucho,Maracuyá,permanente,0.9999999999999996,478.66666666666663,0.0,78,59,Ene
+cajamarca,Cajamarca,Café,permanente,70394.0,11458266.02666667,18.37,1,2,Oct
+cajamarca,Cajamarca,Ryegrass (pasto),permanente,38884.5,7183781.759999998,10.15,2,17,Nov
+cajamarca,Cajamarca,Maíz amiláceo,transitorio,33189.0,13848220.879999999,8.66,3,8,Oct
+cajamarca,Cajamarca,Papa,transitorio,26493.0,15379787.008,6.91,4,4,Oct
+cajamarca,Cajamarca,Trigo,transitorio,22748.0,2766156.8000000003,5.94,5,12,Feb
+cajamarca,Cajamarca,Arroz,transitorio,22608.25,14357263.657333333,5.9,6,3,Dic
+cajamarca,Cajamarca,Maíz amarillo duro,transitorio,18221.0,7602772.986666667,4.75,7,5,Dic
+cajamarca,Cajamarca,Frijol,transitorio,15726.0,6561725.92,4.1,8,15,Oct
+cajamarca,Cajamarca,Arveja grano seco,transitorio,15277.0,6374379.173333333,3.99,9,22,Abr
+cajamarca,Cajamarca,Grama chilena,permanente,14284.299999999997,2638976.8106666664,3.73,10,39,Abr
+cajamarca,Cajamarca,Arveja grano verde,transitorio,13582.5,5667343.4,3.54,11,23,Mar
+cajamarca,Cajamarca,Pasto elefante,permanente,11000.930000000002,4590174.712266668,2.87,12,19,Oct
+cajamarca,Cajamarca,Pasto gramalote,permanente,9965.0,1841000.5333333327,2.6,13,35,Set
+cajamarca,Cajamarca,Maíz choclo,transitorio,8548.5,3566890.1199999996,2.23,14,21,Oct
+cajamarca,Cajamarca,Caña de azúcar para alcohol,permanente,7769.521999999999,3241858.9529066663,2.03,15,32,Ene
+cajamarca,Cajamarca,Cebada grano,transitorio,7422.0,902515.2,1.94,16,13,Feb
+cajamarca,Cajamarca,Yuca,transitorio,6388.0,708982.8266666668,1.67,17,11,Dic
+cajamarca,Cajamarca,Plátano,permanente,6099.05,1613402.0266666668,1.59,18,9,Abr
+cajamarca,Cajamarca,Alfalfa,permanente,4034.0,745268.0533333332,1.05,19,6,Feb
+cajamarca,Cajamarca,Haba grano seco,transitorio,3885.5,1621237.8266666664,1.01,20,20,Oct
+cajamarca,Cajamarca,Frijol grano verde,transitorio,3337.5,1392582.9999999998,0.87,21,62,Oct
+cajamarca,Cajamarca,Lenteja,transitorio,2430.0,1013925.6,0.63,22,73,Dic
+cajamarca,Cajamarca,Olluco,transitorio,2395.0,914379.0666666668,0.62,23,33,Set
+cajamarca,Cajamarca,Cacao,permanente,1375.5,367240.16000000003,0.36,24,7,Jun
+cajamarca,Cajamarca,Arracacha,transitorio,1202.0,501538.50666666665,0.31,25,92,Feb
+cajamarca,Cajamarca,Mango,permanente,1158.8,771668.0959999999,0.3,26,25,Feb
+cajamarca,Cajamarca,Ajo,transitorio,1067.0,554299.3866666667,0.28,27,54,Oct
+cajamarca,Cajamarca,Pacae,permanente,1059.9,442246.808,0.28,28,61,Feb
+cajamarca,Cajamarca,Naranja,permanente,1030.7,613417.6693333335,0.27,29,27,Ago
+cajamarca,Cajamarca,Haba grano verde,transitorio,974.0,406404.7466666667,0.25,30,47,Oct
+cajamarca,Cajamarca,Chirimoya,permanente,902.5,248488.3333333333,0.24,31,78,Feb
+cajamarca,Cajamarca,Avena forrajera,transitorio,897.0,374276.24,0.23,32,10,Dic
+cajamarca,Cajamarca,Oca,transitorio,870.0,510400.0,0.23,33,44,Oct
+cajamarca,Cajamarca,Granadilla,permanente,837.3,291134.792,0.22,34,64,Dic
+cajamarca,Cajamarca,Palta,permanente,744.4999999999999,650494.4666666667,0.19,35,16,Oct
+cajamarca,Cajamarca,Camote,transitorio,684.0,221378.88,0.18,36,38,Oct
+cajamarca,Cajamarca,Zapallo,transitorio,606.25,367856.3333333333,0.16,37,57,Oct
+cajamarca,Cajamarca,Maíz morado,transitorio,592.0,247013.97333333333,0.15,38,76,Dic
+cajamarca,Cajamarca,Piña,permanente,559.9999999999999,234886.39999999997,0.15,39,40,Jun
+cajamarca,Cajamarca,Zanahoria,transitorio,503.75,282180.60000000003,0.13,40,56,Dic
+cajamarca,Cajamarca,Quinua,transitorio,451.0,228278.15999999997,0.12,41,18,Dic
+cajamarca,Cajamarca,Tarwi,transitorio,380.0,158556.26666666666,0.1,42,50,Oct
+cajamarca,Cajamarca,Lima,permanente,322.69,134643.47813333332,0.08,43,101,Set
+cajamarca,Cajamarca,Papaya,permanente,279.72999999999996,80465.26693333335,0.07,44,42,Set
+cajamarca,Cajamarca,Pituca,transitorio,257.0,107234.10666666666,0.07,45,85,Ene
+cajamarca,Cajamarca,Maíz chala,transitorio,247.0,103061.57333333333,0.06,46,26,Mar
+cajamarca,Cajamarca,Uva,permanente,221.0,163074.42666666667,0.06,47,24,Set
+cajamarca,Cajamarca,Cebolla de cabeza,transitorio,178.0,140254.50666666668,0.05,48,41,Mar
+cajamarca,Cajamarca,Tuna,permanente,147.60000000000002,31472.256,0.04,49,49,Mar
+cajamarca,Cajamarca,Tomate,transitorio,140.5,124198.25333333334,0.04,50,66,Dic
+cajamarca,Cajamarca,Frijol zarandaja,transitorio,136.0,56746.45333333333,0.04,51,88,Feb
+cajamarca,Cajamarca,Limón,permanente,134.64999999999998,84787.13013333334,0.04,52,30,Jul
+cajamarca,Cajamarca,Trébol,permanente,114.0,21061.119999999995,0.03,53,45,Set
+cajamarca,Cajamarca,Caigua,transitorio,105.05,43832.462666666666,0.03,54,106,Oct
+cajamarca,Cajamarca,Limón dulce,permanente,82.0,34214.77333333333,0.02,55,123,Set
+cajamarca,Cajamarca,Pepino,transitorio,41.0,17107.386666666665,0.01,56,127,Feb
+cajamarca,Cajamarca,Níspero,permanente,39.5,16481.506666666668,0.01,57,136,Dic
+cajamarca,Cajamarca,Manzana,permanente,38.0,17253.013333333332,0.01,58,58,Oct
+cajamarca,Cajamarca,Frijol loctao,transitorio,36.0,15021.119999999999,0.01,59,53,May
+cajamarca,Cajamarca,Ají,transitorio,26.0,20798.613333333335,0.01,60,70,Mar
+cajamarca,Cajamarca,Achiote,permanente,19.0,7927.813333333333,0.0,61,43,Feb
+cajamarca,Cajamarca,Betarraga,transitorio,19.0,7927.8133333333335,0.0,62,89,Mar
+cajamarca,Cajamarca,Col,transitorio,19.0,7927.8133333333335,0.0,63,91,Ene
+cajamarca,Cajamarca,Maracuyá,permanente,18.0,8616.0,0.0,64,59,Nov
+cajamarca,Cajamarca,Coco,permanente,14.0,5841.546666666667,0.0,65,82,Jul
+cajamarca,Cajamarca,Páprika,transitorio,9.0,6428.16,0.0,66,68,Feb
+cajamarca,Cajamarca,Rabanito,transitorio,8.0,3338.0266666666666,0.0,67,120,Ene
+cajamarca,Cajamarca,Mamey,permanente,4.0,1669.0133333333333,0.0,68,141,Oct
+cajamarca,Cajamarca,Lechuga,transitorio,3.0,689.92,0.0,69,65,Dic
+cusco,Cusco,Café,permanente,54425.0,8858938.66666667,22.38,1,2,May
+cusco,Cusco,Papa,transitorio,29860.0,17334406.826666668,12.28,2,4,Oct
+cusco,Cusco,Maíz amiláceo,transitorio,24858.0,10372083.36,10.22,3,8,Set
+cusco,Cusco,Cacao,permanente,20427.0,5453736.64,8.4,4,7,Feb
+cusco,Cusco,Avena forrajera,transitorio,17525.0,7312364.666666666,7.21,5,10,Nov
+cusco,Cusco,Cebada grano,transitorio,14597.0,1774995.2,6.0,6,13,Dic
+cusco,Cusco,Haba grano seco,transitorio,9617.0,4012725.3066666666,3.95,7,20,Oct
+cusco,Cusco,Trigo,transitorio,9046.0,1099993.6,3.72,8,12,Nov
+cusco,Cusco,Achiote,permanente,6914.0,2884889.5466666664,2.84,9,43,Abr
+cusco,Cusco,Plátano,permanente,4176.0,1104691.2000000002,1.72,10,9,Mar
+cusco,Cusco,Yuca,transitorio,3763.0,417642.82666666666,1.55,11,11,Set
+cusco,Cusco,Quinua,transitorio,3472.0,1757387.52,1.43,12,18,Nov
+cusco,Cusco,Ryegrass (pasto),permanente,3184.0,588233.3866666666,1.31,13,17,Mar
+cusco,Cusco,Alfalfa,permanente,3175.55,586672.2773333333,1.31,14,6,Mar
+cusco,Cusco,Olluco,transitorio,3142.0,1199573.7066666665,1.29,15,33,Set
+cusco,Cusco,Maíz amarillo duro,transitorio,2781.0,1160381.52,1.14,16,5,Set
+cusco,Cusco,Tarwi,transitorio,2629.0,1096959.0133333334,1.08,17,50,Oct
+cusco,Cusco,Avena grano,transitorio,2612.0,1089865.7066666668,1.07,18,51,Nov
+cusco,Cusco,Naranja,permanente,2374.9999999999995,1413473.3333333333,0.98,19,27,Jun
+cusco,Cusco,Maíz choclo,transitorio,2250.0,938820.0,0.93,20,21,Ago
+cusco,Cusco,Arveja grano seco,transitorio,2168.0,904605.2266666667,0.89,21,22,Nov
+cusco,Cusco,Té,permanente,1850.0,771918.6666666667,0.76,22,97,Jun
+cusco,Cusco,Oca,transitorio,1794.0,1052480.0,0.74,23,44,Set
+cusco,Cusco,Frijol,transitorio,1605.0,669691.6,0.66,24,15,Set
+cusco,Cusco,Mashua,transitorio,1543.0,643821.8933333333,0.63,25,60,Oct
+cusco,Cusco,Tuna,permanente,1454.0000000000002,310031.57333333336,0.6,26,49,Mar
+cusco,Cusco,Cebada forrajera,transitorio,1225.0,511135.3333333333,0.5,27,36,Nov
+cusco,Cusco,Piña,permanente,1075.5,451107.72,0.44,28,40,Oct
+cusco,Cusco,Arroz,transitorio,940.0,596942.6133333334,0.39,29,3,Oct
+cusco,Cusco,Papaya,permanente,926.5,266510.8133333334,0.38,30,42,Nov
+cusco,Cusco,Palta,permanente,921.0,804708.4000000001,0.38,31,16,Nov
+cusco,Cusco,Haba grano verde,transitorio,847.0,353413.5733333333,0.35,32,47,Ago
+cusco,Cusco,Alcachofa,permanente,785.0,624734.3999999999,0.32,33,55,Feb
+cusco,Cusco,Cañihua,transitorio,587.0,244927.70666666667,0.24,34,69,Oct
+cusco,Cusco,Zanahoria,transitorio,572.5,320691.60000000003,0.24,35,56,Nov
+cusco,Cusco,Cebolla de cabeza,transitorio,534.5,421157.49333333335,0.22,36,41,Set
+cusco,Cusco,Arveja grano verde,transitorio,453.0,189015.76,0.19,37,23,Set
+cusco,Cusco,Granadilla,permanente,371.0,128999.17333333335,0.15,38,64,Feb
+cusco,Cusco,Melocotón,permanente,294.99999999999994,207679.99999999997,0.12,39,71,Set
+cusco,Cusco,Mango,permanente,240.99999999999994,160486.71999999997,0.1,40,25,Nov
+cusco,Cusco,Kiwicha,transitorio,236.0,98471.78666666667,0.1,41,86,Dic
+cusco,Cusco,Lima,permanente,228.99999999999994,95551.01333333332,0.09,42,101,Jun
+cusco,Cusco,Mandarina,permanente,215.0,170176.8,0.09,43,34,Dic
+cusco,Cusco,Limón,permanente,195.0,122788.64000000001,0.08,44,30,Set
+cusco,Cusco,Zapallo,transitorio,191.0,115893.70666666667,0.08,45,57,Oct
+cusco,Cusco,Coliflor,transitorio,141.0,58832.72,0.06,46,109,Mar
+cusco,Cusco,Col,transitorio,130.0,54242.933333333334,0.05,47,91,Ago
+cusco,Cusco,Frijol loctao,transitorio,126.0,52573.91999999999,0.05,48,53,May
+cusco,Cusco,Manzana,permanente,115.0,52213.066666666666,0.05,49,58,Nov
+cusco,Cusco,Camote,transitorio,100.0,32365.333333333336,0.04,50,38,Oct
+cusco,Cusco,Lechuga,transitorio,98.0,22537.386666666665,0.04,51,65,Nov
+cusco,Cusco,Chirimoya,permanente,89.0,24504.666666666668,0.04,52,78,Ago
+cusco,Cusco,Fresa,transitorio,59.0,35598.240000000005,0.02,53,99,Ago
+cusco,Cusco,Capuli,permanente,55.0,22948.933333333334,0.02,54,139,Jun
+cusco,Cusco,Pera,permanente,50.0,20862.666666666668,0.02,55,125,Abr
+cusco,Cusco,Tomate,transitorio,38.0,33590.986666666664,0.02,56,66,Set
+cusco,Cusco,Garbanzo,transitorio,37.0,15438.373333333331,0.02,57,117,Dic
+cusco,Cusco,Trébol,permanente,20.0,3694.9333333333334,0.01,58,45,Dic
+cusco,Cusco,Ciruelo,permanente,10.0,4172.533333333333,0.0,59,137,Jun
+cusco,Cusco,Frijol de palo,transitorio,10.0,4172.533333333333,0.0,60,111,Oct
+cusco,Cusco,Soya,transitorio,10.0,4172.533333333333,0.0,61,108,Set
+huancavelica,Huancavelica,Papa,transitorio,21786.0,12647266.816,22.55,1,4,Oct
+huancavelica,Huancavelica,Maíz amiláceo,transitorio,17490.0,7297760.8,18.11,2,8,Oct
+huancavelica,Huancavelica,Cebada grano,transitorio,11739.0,1427462.4,12.15,3,13,Ene
+huancavelica,Huancavelica,Haba grano seco,transitorio,6386.0,2664579.7866666666,6.61,4,20,Dic
+huancavelica,Huancavelica,Frijol,transitorio,6211.0,2591560.453333333,6.43,5,15,Nov
+huancavelica,Huancavelica,Alfalfa,permanente,5605.0,1035505.0666666664,5.8,6,6,Feb
+huancavelica,Huancavelica,Arveja grano verde,transitorio,5303.0,2212694.4266666668,5.49,7,23,Dic
+huancavelica,Huancavelica,Trigo,transitorio,4509.0,548294.4,4.67,8,12,Ene
+huancavelica,Huancavelica,Palta,permanente,2714.7999999999997,2372011.253333334,2.81,9,16,Feb
+huancavelica,Huancavelica,Arveja grano seco,transitorio,2615.0,1091117.4666666668,2.71,10,22,Dic
+huancavelica,Huancavelica,Olluco,transitorio,2280.0,870473.6000000001,2.36,11,33,Oct
+huancavelica,Huancavelica,Haba grano verde,transitorio,1564.0,652584.2133333333,1.62,12,47,Dic
+huancavelica,Huancavelica,Quinua,transitorio,1427.0,722290.32,1.48,13,18,Ene
+huancavelica,Huancavelica,Tuna,permanente,1076.0,229431.89333333337,1.11,14,49,Oct
+huancavelica,Huancavelica,Avena forrajera,transitorio,1048.0,437281.49333333335,1.08,15,10,Dic
+huancavelica,Huancavelica,Maíz choclo,transitorio,773.0,322536.82666666666,0.8,16,21,Oct
+huancavelica,Huancavelica,Avena grano,transitorio,675.0,281646.0,0.7,17,51,Dic
+huancavelica,Huancavelica,Oca,transitorio,520.0,305066.6666666666,0.54,18,44,Oct
+huancavelica,Huancavelica,Mashua,transitorio,498.0,207792.16,0.52,19,60,Oct
+huancavelica,Huancavelica,Maíz amarillo duro,transitorio,392.0,163563.30666666664,0.41,20,5,Oct
+huancavelica,Huancavelica,Zapallo,transitorio,370.0,224506.13333333333,0.38,21,57,Nov
+huancavelica,Huancavelica,Maca,transitorio,204.0,85119.68,0.21,22,80,Oct
+huancavelica,Huancavelica,Zanahoria,transitorio,157.0,87945.12000000001,0.16,23,56,Abr
+huancavelica,Huancavelica,Ajo,transitorio,142.0,73768.05333333333,0.15,24,54,Oct
+huancavelica,Huancavelica,Plátano,permanente,122.0,32273.06666666667,0.13,25,9,Oct
+huancavelica,Huancavelica,Caña de azúcar para alcohol,permanente,118.0,49235.89333333334,0.12,26,32,Mar
+huancavelica,Huancavelica,Ryegrass (pasto),permanente,98.0,18105.17333333333,0.1,27,17,Ago
+huancavelica,Huancavelica,Tarwi,transitorio,88.0,36718.293333333335,0.09,28,50,Nov
+huancavelica,Huancavelica,Cebolla de cabeza,transitorio,79.0,62247.78666666667,0.08,29,41,Dic
+huancavelica,Huancavelica,Trébol,permanente,70.0,12932.266666666663,0.07,30,45,May
+huancavelica,Huancavelica,Chirimoya,permanente,62.0,17070.666666666664,0.06,31,78,Abr
+huancavelica,Huancavelica,Melocotón,permanente,48.0,33792.0,0.05,32,71,Abr
+huancavelica,Huancavelica,Maíz morado,transitorio,45.0,18776.4,0.05,33,76,Set
+huancavelica,Huancavelica,Naranja,permanente,45.0,26781.600000000002,0.05,34,27,Jul
+huancavelica,Huancavelica,Café,permanente,40.0,6510.933333333334,0.04,35,2,Abr
+huancavelica,Huancavelica,Limón,permanente,40.0,25187.413333333338,0.04,36,30,Jul
+huancavelica,Huancavelica,Papaya,permanente,32.0,9204.906666666668,0.03,37,42,Ago
+huancavelica,Huancavelica,Manzana,permanente,29.0,13166.77333333333,0.03,38,58,Feb
+huancavelica,Huancavelica,Tomate,transitorio,25.0,22099.333333333336,0.03,39,66,Oct
+huancavelica,Huancavelica,Camote,transitorio,22.0,7120.373333333334,0.02,40,38,Mar
+huancavelica,Huancavelica,Cebada forrajera,transitorio,21.0,8762.32,0.02,41,36,Oct
+huancavelica,Huancavelica,Pacae,permanente,21.0,8762.32,0.02,42,61,Abr
+huancavelica,Huancavelica,Capuli,permanente,17.0,7093.306666666667,0.02,43,139,Dic
+huancavelica,Huancavelica,Níspero,permanente,16.0,6676.053333333333,0.02,44,136,Feb
+huancavelica,Huancavelica,Mango,permanente,15.0,9988.8,0.02,45,25,Abr
+huancavelica,Huancavelica,Higo,permanente,11.0,4589.786666666667,0.01,46,126,Feb
+huancavelica,Huancavelica,Lenteja,transitorio,10.0,4172.533333333333,0.01,47,73,Dic
+huancavelica,Huancavelica,Lúcuma,permanente,8.0,3910.613333333333,0.01,48,105,Ago
+huancavelica,Huancavelica,Toronja,permanente,8.0,3338.0266666666666,0.01,49,115,Abr
+huancavelica,Huancavelica,Pallar grano seco,transitorio,4.0,1669.013333333333,0.0,50,63,Set
+huancavelica,Huancavelica,Membrillo,permanente,3.0,1251.7599999999998,0.0,51,128,Set
+huancavelica,Huancavelica,Kiwicha,transitorio,2.0,834.5066666666667,0.0,52,86,Ene
+huancavelica,Huancavelica,Guinda,permanente,1.9999999999999991,834.5066666666667,0.0,53,135,Feb
+huancavelica,Huancavelica,Limón dulce,permanente,1.9999999999999991,834.5066666666667,0.0,54,123,May
+huancavelica,Huancavelica,Pera,permanente,1.9999999999999991,834.5066666666667,0.0,55,125,Ene
+huancavelica,Huancavelica,Pepino,transitorio,1.0,417.2533333333333,0.0,56,127,Jul
+huancavelica,Huancavelica,Granadilla,permanente,0.9999999999999996,347.7066666666667,0.0,57,64,Nov
+huanuco,Huánuco,Brachiaria (pasto),permanente,203662.0,37625875.626666665,50.97,1,1,Dic
+huanuco,Huánuco,Papa,transitorio,42840.5,24869881.30133333,10.72,2,4,Oct
+huanuco,Huánuco,Cacao,permanente,25015.25,6678738.213333333,6.26,3,7,Abr
+huanuco,Huánuco,Café,permanente,20845.25,3393050.826666667,5.22,4,2,Set
+huanuco,Huánuco,Plátano,permanente,19642.25,5196029.866666667,4.92,5,9,Oct
+huanuco,Huánuco,Maíz amiláceo,transitorio,12647.5,5277211.533333333,3.17,6,8,Oct
+huanuco,Huánuco,Maíz amarillo duro,transitorio,9670.5,4035048.36,2.42,7,5,Oct
+huanuco,Huánuco,Arroz,transitorio,9651.0,6128822.512,2.42,8,3,Set
+huanuco,Huánuco,Trigo,transitorio,7833.5,952553.6,1.96,9,12,Ene
+huanuco,Huánuco,Cebada grano,transitorio,6216.5,755926.4,1.56,10,13,Ene
+huanuco,Huánuco,Yuca,transitorio,4710.0,522747.20000000007,1.18,11,11,Ago
+huanuco,Huánuco,Frijol,transitorio,4378.5,1826943.72,1.1,12,15,Nov
+huanuco,Huánuco,Palma,permanente,3842.0,1603087.3066666669,0.96,13,14,May
+huanuco,Huánuco,Haba grano seco,transitorio,3059.5,1276586.5733333332,0.77,14,20,Set
+huanuco,Huánuco,Arveja grano verde,transitorio,2100.5,876440.6266666667,0.53,15,23,Ene
+huanuco,Huánuco,Olluco,transitorio,2009.0,767009.4133333333,0.5,16,33,Oct
+huanuco,Huánuco,Alfalfa,permanente,1825.5,337255.0399999999,0.46,17,6,Abr
+huanuco,Huánuco,Ryegrass (pasto),permanente,1814.5,335222.82666666666,0.45,18,17,Mar
+huanuco,Huánuco,Arveja grano seco,transitorio,1221.75,509779.26,0.31,19,22,Ene
+huanuco,Huánuco,Trébol,permanente,1178.4999999999998,217723.9466666666,0.29,20,45,Ene
+huanuco,Huánuco,Maíz choclo,transitorio,1094.75,456788.08666666667,0.27,21,21,Oct
+huanuco,Huánuco,Avena forrajera,transitorio,1072.5,447504.2,0.27,22,10,Dic
+huanuco,Huánuco,Tarwi,transitorio,989.75,412976.4866666667,0.25,23,50,Oct
+huanuco,Huánuco,Avena grano,transitorio,961.0,400980.4533333333,0.24,24,51,Nov
+huanuco,Huánuco,Zapallo,transitorio,941.0,570973.7066666667,0.24,25,57,Nov
+huanuco,Huánuco,Naranja,permanente,920.0,547534.9333333335,0.23,26,27,Jul
+huanuco,Huánuco,Haba grano verde,transitorio,834.0,347989.28,0.21,27,47,Oct
+huanuco,Huánuco,Piña,permanente,762.0,319613.27999999997,0.19,28,40,May
+huanuco,Huánuco,Oca,transitorio,731.5,429146.6666666666,0.18,29,44,Oct
+huanuco,Huánuco,Quinua,transitorio,714.0,361398.24000000005,0.18,30,18,Oct
+huanuco,Huánuco,Palta,permanente,655.0,572295.3333333334,0.16,31,16,Dic
+huanuco,Huánuco,Granadilla,permanente,514.5,178895.08000000002,0.13,32,64,Oct
+huanuco,Huánuco,Achiote,permanente,416.5,173786.01333333337,0.1,33,43,Ago
+huanuco,Huánuco,Calabaza,transitorio,389.0,162311.54666666666,0.1,34,112,Oct
+huanuco,Huánuco,Maíz chala,transitorio,382.75,159703.71333333332,0.1,35,26,Dic
+huanuco,Huánuco,Pacae,permanente,305.49999999999994,127470.89333333334,0.08,36,61,Ene
+huanuco,Huánuco,Mashua,transitorio,295.25,123194.04666666668,0.07,37,60,Oct
+huanuco,Huánuco,Melocotón,permanente,287.0,202048.00000000003,0.07,38,71,Mar
+huanuco,Huánuco,Maíz morado,transitorio,278.5,116205.05333333333,0.07,39,76,Oct
+huanuco,Huánuco,Camote,transitorio,254.5,82369.77333333335,0.06,40,38,Oct
+huanuco,Huánuco,Frijol grano verde,transitorio,194.0,80947.14666666667,0.05,41,62,Feb
+huanuco,Huánuco,Zanahoria,transitorio,187.25,104889.96000000002,0.05,42,56,Oct
+huanuco,Huánuco,Papaya,permanente,185.75,53431.606666666674,0.05,43,42,Feb
+huanuco,Huánuco,Té,permanente,175.0,73019.33333333333,0.04,44,97,Oct
+huanuco,Huánuco,Ají,transitorio,167.0,133591.09333333332,0.04,45,70,May
+huanuco,Huánuco,Coco,permanente,157.0,65508.77333333333,0.04,46,82,Feb
+huanuco,Huánuco,Limón,permanente,156.25,98388.33333333334,0.04,47,30,Jun
+huanuco,Huánuco,Col,transitorio,138.5,57789.58666666666,0.03,48,91,Mar
+huanuco,Huánuco,Mandarina,permanente,133.0,105272.16,0.03,49,34,Nov
+huanuco,Huánuco,Mango,permanente,125.87,83819.3504,0.03,50,25,Jul
+huanuco,Huánuco,Carambola,permanente,102.0,42559.84,0.03,51,129,Ene
+huanuco,Huánuco,Cocona,permanente,96.0,40056.31999999999,0.02,52,84,Mar
+huanuco,Huánuco,Cebolla de cabeza,transitorio,81.0,63823.68000000001,0.02,53,41,Oct
+huanuco,Huánuco,Zapote,permanente,68.0,28373.226666666676,0.02,54,113,Oct
+huanuco,Huánuco,Tuna,permanente,58.0,12367.146666666664,0.01,55,49,Oct
+huanuco,Huánuco,Tomate,transitorio,50.25,44419.66,0.01,56,66,Feb
+huanuco,Huánuco,Anona,permanente,46.0,19193.653333333335,0.01,57,121,Oct
+huanuco,Huánuco,Ajo,transitorio,38.0,19740.746666666666,0.01,58,54,Oct
+huanuco,Huánuco,Poro,transitorio,37.5,15647.0,0.01,59,110,Ago
+huanuco,Huánuco,Betarraga,transitorio,36.5,15229.746666666666,0.01,60,89,Oct
+huanuco,Huánuco,Rocoto,transitorio,33.25,9380.933333333332,0.01,61,102,Nov
+huanuco,Huánuco,Pomarosa,permanente,32.0,13352.106666666667,0.01,62,134,Set
+huanuco,Huánuco,Caimito,permanente,30.0,12517.599999999999,0.01,63,116,Jun
+huanuco,Huánuco,Vainita,transitorio,24.5,3934.3733333333334,0.01,64,90,Oct
+huanuco,Huánuco,Cebolla china,transitorio,24.0,18910.72,0.01,65,96,Set
+huanuco,Huánuco,Brócoli,transitorio,23.75,12135.933333333332,0.01,66,83,Abr
+huanuco,Huánuco,Caigua,transitorio,23.75,9909.766666666666,0.01,67,106,Dic
+huanuco,Huánuco,Lúcuma,permanente,23.13,11306.5608,0.01,68,105,Feb
+huanuco,Huánuco,Maní,transitorio,22.75,9492.513333333332,0.01,69,75,Oct
+huanuco,Huánuco,Lechuga,transitorio,21.0,4829.44,0.01,70,65,Oct
+huanuco,Huánuco,Chirimoya,permanente,19.0,5231.333333333333,0.0,71,78,Ene
+huanuco,Huánuco,Apio,transitorio,16.0,6676.053333333333,0.0,72,95,Abr
+huanuco,Huánuco,Guanábana,permanente,16.0,6676.053333333333,0.0,73,100,Jul
+huanuco,Huánuco,Manzana,permanente,15.0,6810.4,0.0,74,58,Jul
+huanuco,Huánuco,Pijuayo,permanente,13.5,720.0,0.0,75,72,Dic
+huanuco,Huánuco,Fresa,transitorio,13.0,7843.680000000002,0.0,76,99,Nov
+huanuco,Huánuco,Guayaba,permanente,13.0,5424.293333333333,0.0,77,114,Jul
+huanuco,Huánuco,Taperibá,permanente,10.5,4381.16,0.0,78,118,Nov
+huanuco,Huánuco,Maracuyá,permanente,10.0,4786.666666666667,0.0,79,59,Feb
+huanuco,Huánuco,Toronja,permanente,10.0,4172.533333333333,0.0,80,115,Oct
+huanuco,Huánuco,Coliflor,transitorio,5.5,2294.8933333333334,0.0,81,109,Ago
+huanuco,Huánuco,Sacha inchi,permanente,4.0,1669.0133333333333,0.0,82,107,Set
+huanuco,Huánuco,Lima,permanente,3.0,1251.7599999999998,0.0,83,101,Jul
+huanuco,Huánuco,Níspero,permanente,1.9999999999999991,834.5066666666667,0.0,84,136,Jun
+ica,Ica,Maíz amarillo duro,transitorio,19526.3,8147413.762666667,18.01,1,5,Ene
+ica,Ica,Uva,permanente,17877.379999999997,13191599.519466665,16.49,2,24,May
+ica,Ica,Espárrago,permanente,13302.850000000002,11413490.557333335,12.27,3,28,Set
+ica,Ica,Alfalfa,permanente,7398.49,1366846.3658666664,6.83,4,6,Set
+ica,Ica,Palta,permanente,7063.52,6171632.874666668,6.52,5,16,Nov
+ica,Ica,Algodón,transitorio,6539.0,2051327.8933333335,6.03,6,46,Oct
+ica,Ica,Mandarina,permanente,4664.5,3692045.04,4.3,7,34,Abr
+ica,Ica,Papa,transitorio,4138.15,2402289.8730666665,3.82,8,4,Mar
+ica,Ica,Granada,permanente,2907.57,2060187.7991999995,2.68,9,79,Jul
+ica,Ica,Alcachofa,permanente,2440.0,1941849.6,2.25,10,55,Mar
+ica,Ica,Pallar grano seco,transitorio,2406.0,1003911.52,2.22,11,63,Abr
+ica,Ica,Pecana,permanente,2067.28,1069417.7258666668,1.91,12,93,Jul
+ica,Ica,Arándano,permanente,1772.2,739456.3573333333,1.63,13,37,Ago
+ica,Ica,Olivo,permanente,1669.1999999999998,828857.952,1.54,14,29,Feb
+ica,Ica,Maíz choclo,transitorio,1430.0,596672.2666666666,1.32,15,21,Jun
+ica,Ica,Cebolla de cabeza,transitorio,1298.5,1023148.7466666667,1.2,16,41,Jul
+ica,Ica,Camote,transitorio,1287.5,416703.66666666674,1.19,17,38,Mar
+ica,Ica,Tomate,transitorio,1052.0,929939.9466666667,0.97,18,66,Jul
+ica,Ica,Naranja,permanente,1003.19,597045.1845333334,0.93,19,27,Abr
+ica,Ica,Zapallo,transitorio,945.0,573400.8,0.87,20,57,Abr
+ica,Ica,Sandía,transitorio,862.5,537533.0,0.8,21,67,Oct
+ica,Ica,Páprika,transitorio,791.5,565320.96,0.73,22,68,Abr
+ica,Ica,Tangelo,permanente,628.0699999999999,471621.95013333333,0.58,23,77,Ene
+ica,Ica,Mango,permanente,549.0899999999999,365650.0127999999,0.51,24,25,Ago
+ica,Ica,Frijol,transitorio,453.0,189015.76,0.42,25,15,May
+ica,Ica,Yuca,transitorio,414.0,45948.48000000001,0.38,26,11,Oct
+ica,Ica,Ají,transitorio,343.5,274781.68,0.32,27,70,Jul
+ica,Ica,Tuna,permanente,333.0,71004.48,0.31,28,49,Oct
+ica,Ica,Garbanzo,transitorio,276.5,115370.54666666666,0.26,29,117,Abr
+ica,Ica,Castilla,transitorio,227.0,94716.50666666667,0.21,30,31,Ago
+ica,Ica,Higo,permanente,210.45,87810.96399999999,0.19,31,126,Jul
+ica,Ica,Lúcuma,permanente,181.2,88575.39199999999,0.17,32,105,Dic
+ica,Ica,Melon,transitorio,174.5,72810.70666666667,0.16,33,103,Ago
+ica,Ica,Ciruela,permanente,164.55,68659.03600000001,0.15,34,119,Nov
+ica,Ica,Manzana,permanente,156.78,71182.3008,0.14,35,58,Nov
+ica,Ica,Datil,permanente,156.25,65195.833333333336,0.14,36,138,Feb
+ica,Ica,Plátano,permanente,150.75,39878.4,0.14,37,9,Mar
+ica,Ica,Maíz morado,transitorio,145.5,60710.36,0.13,38,76,May
+ica,Ica,Pacae,permanente,120.5,50279.02666666666,0.11,39,61,Nov
+ica,Ica,Toronja,permanente,114.5,47775.50666666666,0.11,40,115,Feb
+ica,Ica,Melocotón,permanente,95.5,67232.0,0.09,41,71,Abr
+ica,Ica,Arveja grano verde,transitorio,91.0,37970.05333333334,0.08,42,23,Ene
+ica,Ica,Pallar verde,transitorio,91.0,37970.05333333333,0.08,43,132,Mar
+ica,Ica,Lechuga,transitorio,85.0,19547.733333333334,0.08,44,65,Mar
+ica,Ica,Limón,permanente,78.07,49159.53397333333,0.07,45,30,Oct
+ica,Ica,Cebada grano,transitorio,73.0,8876.8,0.07,46,13,Ene
+ica,Ica,Albahaca,transitorio,68.0,28373.226666666666,0.06,47,131,Dic
+ica,Ica,Maíz amiláceo,transitorio,61.0,25452.45333333333,0.06,48,8,Set
+ica,Ica,Betarraga,transitorio,57.0,23783.44,0.05,49,89,Mar
+ica,Ica,Papaya,permanente,55.349999999999994,15921.612000000001,0.05,50,42,Dic
+ica,Ica,Nabo,transitorio,54.0,22531.68,0.05,51,124,Jun
+ica,Ica,Espinaca,transitorio,40.0,16690.13333333333,0.04,52,104,Feb
+ica,Ica,Chirimoya,permanente,37.7,10380.066666666668,0.03,53,78,Set
+ica,Ica,Guanábana,permanente,35.0,14603.866666666665,0.03,54,100,Dic
+ica,Ica,Acelga,transitorio,33.0,13769.359999999999,0.03,55,130,Ene
+ica,Ica,Trigo,transitorio,32.0,3891.2,0.03,56,12,Ene
+ica,Ica,Pimiento,transitorio,29.0,25784.48,0.03,57,94,Set
+ica,Ica,Maracuyá,permanente,27.79,13302.146666666667,0.03,58,59,Jun
+ica,Ica,Membrillo,permanente,24.0,10014.08,0.02,59,128,Set
+ica,Ica,Pepinillo,transitorio,18.0,7510.5599999999995,0.02,60,87,Jun
+ica,Ica,Cebolla china,transitorio,12.0,9455.36,0.01,61,96,Mar
+ica,Ica,Pepino,transitorio,10.0,4172.533333333333,0.01,62,127,Feb
+ica,Ica,Quinua,transitorio,10.0,5061.6,0.01,63,18,Nov
+ica,Ica,Pera,permanente,8.5,3546.6533333333336,0.01,64,125,May
+ica,Ica,Frijol grano verde,transitorio,6.0,2503.52,0.01,65,62,May
+ica,Ica,Granadilla,permanente,5.0,1738.5333333333335,0.0,66,64,Mar
+ica,Ica,Haba grano verde,transitorio,5.0,2086.2666666666664,0.0,67,47,Ago
+ica,Ica,Olluco,transitorio,5.0,1908.9333333333334,0.0,68,33,Oct
+ica,Ica,Rabanito,transitorio,5.0,2086.2666666666664,0.0,69,120,Dic
+ica,Ica,Ajo,transitorio,2.0,1038.986666666667,0.0,70,54,Abr
+ica,Ica,Guayaba,permanente,0.9999999999999996,417.25333333333333,0.0,71,114,Oct
+ica,Ica,Lima,permanente,0.9999999999999996,417.25333333333333,0.0,72,101,Ago
+junin,Junín,Café,permanente,87366.0,14220855.040000003,30.83,1,2,Feb
+junin,Junín,Cacao,permanente,28425.999999999996,7589362.986666667,10.03,2,7,Ene
+junin,Junín,Papa,transitorio,22560.0,13096591.36,7.96,3,4,Oct
+junin,Junín,Plátano,permanente,17825.5,4715438.933333334,6.29,4,9,May
+junin,Junín,Naranja,permanente,14154.0,8423705.920000002,4.99,5,27,Ene
+junin,Junín,Cebada grano,transitorio,7846.0,954073.6,2.77,6,13,Dic
+junin,Junín,Ryegrass (pasto),permanente,7644.0,1412203.5199999996,2.7,7,17,Jun
+junin,Junín,Yuca,transitorio,7059.0,783454.8800000001,2.49,8,11,Oct
+junin,Junín,Maíz choclo,transitorio,6974.0,2909924.7466666666,2.46,9,21,Set
+junin,Junín,Piña,permanente,6738.0,2826186.7199999997,2.38,10,40,May
+junin,Junín,Maíz amarillo duro,transitorio,6062.0,2529389.7066666665,2.14,11,5,Set
+junin,Junín,Maíz amiláceo,transitorio,5577.0,2327021.84,1.97,12,8,Oct
+junin,Junín,Avena forrajera,transitorio,5319.0,2219370.48,1.88,13,10,Oct
+junin,Junín,Palta,permanente,4836.75,4226029.7,1.71,14,16,Nov
+junin,Junín,Brachiaria (pasto),permanente,4551.0,840782.0799999998,1.61,15,1,May
+junin,Junín,Arveja grano verde,transitorio,4265.0,1779585.4666666666,1.5,16,23,Oct
+junin,Junín,Mandarina,permanente,4051.0,3206447.5200000005,1.43,17,34,Dic
+junin,Junín,Alfalfa,permanente,3509.0,648276.0533333333,1.24,18,6,Jun
+junin,Junín,Frijol,transitorio,3503.0,1461638.4266666665,1.24,19,15,Nov
+junin,Junín,Pasto elefante,permanente,3251.0,1356490.5866666667,1.15,20,19,Feb
+junin,Junín,Haba grano verde,transitorio,2724.0,1136598.08,0.96,21,47,Oct
+junin,Junín,Maca,transitorio,2706.0,1129087.52,0.95,22,80,Oct
+junin,Junín,Tangelo,permanente,2628.0,1973382.72,0.93,23,77,May
+junin,Junín,Quinua,transitorio,2404.0,1216808.64,0.85,24,18,Dic
+junin,Junín,Olluco,transitorio,2314.0,883454.3466666667,0.82,25,33,Set
+junin,Junín,Trigo,transitorio,2055.0,249888.0,0.73,26,12,Dic
+junin,Junín,Trébol,permanente,1960.0,362103.4666666666,0.69,27,45,Jun
+junin,Junín,Haba grano seco,transitorio,1226.0,511552.5866666666,0.43,28,20,Oct
+junin,Junín,Zanahoria,transitorio,1088.0,609454.0800000001,0.38,29,56,Oct
+junin,Junín,Guanábana,permanente,1003.0,418505.09333333327,0.35,30,100,Nov
+junin,Junín,Cebada forrajera,transitorio,837.0,349241.04,0.3,31,36,Dic
+junin,Junín,Papaya,permanente,700.9999999999999,201644.9866666667,0.25,32,42,Nov
+junin,Junín,Granadilla,permanente,696.0,242003.84000000003,0.25,33,64,Jun
+junin,Junín,Espinaca,transitorio,691.0,288322.05333333334,0.24,34,104,Set
+junin,Junín,Tarwi,transitorio,598.0,249517.49333333335,0.21,35,50,Oct
+junin,Junín,Oca,transitorio,577.0,338506.6666666666,0.2,36,44,Set
+junin,Junín,Mashua,transitorio,482.0,201116.10666666666,0.17,37,60,Set
+junin,Junín,Arveja grano seco,transitorio,463.0,193188.29333333333,0.16,38,22,Oct
+junin,Junín,Lechuga,transitorio,455.0,104637.86666666665,0.16,39,65,Set
+junin,Junín,Achiote,permanente,433.9999999999999,181087.94666666663,0.15,40,43,Set
+junin,Junín,Ajo,transitorio,426.0,221304.16,0.15,41,54,Oct
+junin,Junín,Avena grano,transitorio,351.0,146455.92,0.12,42,51,Dic
+junin,Junín,Limón dulce,permanente,350.0,146038.66666666666,0.12,43,123,Ago
+junin,Junín,Maracuyá,permanente,345.0,165140.0,0.12,44,59,Ene
+junin,Junín,Mango,permanente,306.0,203771.52,0.11,45,25,Feb
+junin,Junín,Limón,permanente,294.99999999999994,185757.1733333333,0.1,46,30,Feb
+junin,Junín,Maní,transitorio,278.0,115996.42666666667,0.1,47,75,Set
+junin,Junín,Alcachofa,permanente,257.0,204530.88,0.09,48,55,Dic
+junin,Junín,Brócoli,transitorio,249.0,127235.67999999998,0.09,49,83,Set
+junin,Junín,Zapallo,transitorio,240.0,145625.59999999998,0.08,50,57,Set
+junin,Junín,Pacae,permanente,212.0,88457.70666666667,0.07,51,61,Feb
+junin,Junín,Sacha inchi,permanente,178.0,74271.09333333334,0.06,52,107,Dic
+junin,Junín,Col,transitorio,176.0,73436.58666666667,0.06,53,91,Set
+junin,Junín,Arroz,transitorio,163.0,103512.38933333334,0.06,54,3,Ene
+junin,Junín,Ají,transitorio,162.0,129591.36,0.06,55,70,Oct
+junin,Junín,Apio,transitorio,149.0,62170.746666666666,0.05,56,95,Set
+junin,Junín,Carambola,permanente,135.0,56329.200000000004,0.05,57,129,Dic
+junin,Junín,Zapote,permanente,129.0,53825.68,0.05,58,113,Jun
+junin,Junín,Lima,permanente,110.0,45897.86666666667,0.04,59,101,Set
+junin,Junín,Coco,permanente,99.0,41308.08,0.03,60,82,Feb
+junin,Junín,Chirimoya,permanente,98.0,26982.666666666664,0.03,61,78,Jun
+junin,Junín,Betarraga,transitorio,95.0,39639.066666666666,0.03,62,89,Set
+junin,Junín,Coliflor,transitorio,82.0,34214.77333333333,0.03,63,109,Oct
+junin,Junín,Frijol loctao,transitorio,81.0,33797.52,0.03,64,53,Ago
+junin,Junín,Anona,permanente,75.0,31293.999999999996,0.03,65,121,Mar
+junin,Junín,Cebolla de cabeza,transitorio,69.0,54368.32000000001,0.02,66,41,Set
+junin,Junín,Toronja,permanente,69.0,28790.479999999996,0.02,67,115,May
+junin,Junín,Guinda,permanente,67.0,27955.973333333328,0.02,68,135,Ago
+junin,Junín,Caigua,transitorio,54.0,22531.68,0.02,69,106,Nov
+junin,Junín,Nabo,transitorio,54.0,22531.679999999997,0.02,70,124,Set
+junin,Junín,Rabanito,transitorio,54.0,22531.679999999997,0.02,71,120,Set
+junin,Junín,Acelga,transitorio,52.0,21697.173333333332,0.02,72,130,Set
+junin,Junín,Poro,transitorio,50.0,20862.666666666664,0.02,73,110,Oct
+junin,Junín,Melocotón,permanente,38.0,26751.999999999996,0.01,74,71,Jun
+junin,Junín,Rocoto,transitorio,35.0,9874.666666666666,0.01,75,102,Jun
+junin,Junín,Orégano,permanente,33.5,7721.973333333334,0.01,76,81,Dic
+junin,Junín,Lúcuma,permanente,30.0,14664.8,0.01,77,105,Nov
+junin,Junín,Calabaza,transitorio,29.0,12100.346666666666,0.01,78,112,Oct
+junin,Junín,Cocona,permanente,27.0,11265.84,0.01,79,84,Ago
+junin,Junín,Soya,transitorio,26.0,10848.586666666666,0.01,80,108,Abr
+junin,Junín,Tuna,permanente,24.0,5117.44,0.01,81,49,Dic
+junin,Junín,Guayaba,permanente,17.0,7093.306666666667,0.01,82,114,Dic
+junin,Junín,Caimito,permanente,16.0,6676.053333333333,0.01,83,116,Oct
+junin,Junín,Manzana,permanente,15.0,6810.4,0.01,84,58,Abr
+junin,Junín,Sauco,permanente,13.0,5424.293333333333,0.0,85,142,Set
+junin,Junín,Marañón,permanente,12.0,5007.039999999999,0.0,86,122,Set
+junin,Junín,Ciruelo,permanente,11.0,4589.786666666667,0.0,87,137,Dic
+junin,Junín,Níspero,permanente,6.0,2503.5200000000004,0.0,88,136,Jul
+junin,Junín,Pera,permanente,6.0,2503.5200000000004,0.0,89,125,Ene
+junin,Junín,Tomate,transitorio,6.0,5303.84,0.0,90,66,Oct
+junin,Junín,Maíz morado,transitorio,5.0,2086.2666666666664,0.0,91,76,Dic
+lalibertad,La Libertad,Trigo,transitorio,28958.0,3521292.8,12.29,1,12,Feb
+lalibertad,La Libertad,Arroz,transitorio,28677.0,18211195.024,12.17,2,3,Dic
+lalibertad,La Libertad,Papa,transitorio,26262.0,15245686.272,11.15,3,4,Oct
+lalibertad,La Libertad,Cebada grano,transitorio,25452.0,3094963.2,10.81,4,13,Feb
+lalibertad,La Libertad,Palta,permanente,16979.75,14835773.566666666,7.21,5,16,Abr
+lalibertad,La Libertad,Maíz amiláceo,transitorio,14155.0,5906220.933333334,6.01,6,8,Oct
+lalibertad,La Libertad,Maíz amarillo duro,transitorio,12922.0,5391747.573333333,5.49,7,5,Feb
+lalibertad,La Libertad,Espárrago,permanente,11824.599999999999,10145191.477333333,5.02,8,28,Ago
+lalibertad,La Libertad,Arándano,permanente,9056.94,3779038.4047999997,3.84,9,37,Set
+lalibertad,La Libertad,Arveja grano seco,transitorio,9022.5,3764668.2,3.83,10,22,Feb
+lalibertad,La Libertad,Alfalfa,permanente,5458.0,1008347.3066666664,2.32,11,6,Set
+lalibertad,La Libertad,Haba grano seco,transitorio,4574.0,1908516.7466666666,1.94,12,20,Oct
+lalibertad,La Libertad,Maíz chala,transitorio,4178.0,1743284.4266666665,1.77,13,26,Feb
+lalibertad,La Libertad,Tarwi,transitorio,3792.5,1582433.2666666666,1.61,14,50,Dic
+lalibertad,La Libertad,Uva,permanente,2766.97,2041728.7165333335,1.17,15,24,Nov
+lalibertad,La Libertad,Frijol loctao,transitorio,2438.0,1017263.6266666666,1.04,16,53,Abr
+lalibertad,La Libertad,Frijol,transitorio,2357.0,983466.1066666667,1.0,17,15,Oct
+lalibertad,La Libertad,Lenteja,transitorio,1724.0,719344.7466666667,0.73,18,73,Feb
+lalibertad,La Libertad,Alcachofa,permanente,1600.0,1273344.0,0.68,19,55,Set
+lalibertad,La Libertad,Olluco,transitorio,1528.0,583370.0266666667,0.65,20,33,Oct
+lalibertad,La Libertad,Arveja grano verde,transitorio,1510.5,630261.16,0.64,21,23,Feb
+lalibertad,La Libertad,Yuca,transitorio,1385.0,153716.53333333335,0.59,22,11,Mar
+lalibertad,La Libertad,Avena forrajera,transitorio,1228.5,512595.72000000003,0.52,23,10,Feb
+lalibertad,La Libertad,Quinua,transitorio,1218.0,616502.88,0.52,24,18,Feb
+lalibertad,La Libertad,Maracuyá,permanente,1153.1999999999998,551998.4000000001,0.49,25,59,Jul
+lalibertad,La Libertad,Piña,permanente,1107.5000000000002,464529.8,0.47,26,40,Jul
+lalibertad,La Libertad,Maíz choclo,transitorio,938.5,391592.2533333333,0.4,27,21,Nov
+lalibertad,La Libertad,Oca,transitorio,925.5,542960.0,0.39,28,44,Oct
+lalibertad,La Libertad,Mandarina,permanente,866.8,686089.536,0.37,29,34,May
+lalibertad,La Libertad,Cebolla de cabeza,transitorio,772.0,608294.8266666667,0.33,30,41,Ago
+lalibertad,La Libertad,Plátano,permanente,696.0,184115.2,0.3,31,9,Ago
+lalibertad,La Libertad,Sandía,transitorio,620.0,386400.5333333333,0.26,32,67,Feb
+lalibertad,La Libertad,Pimiento,transitorio,583.0,518356.96,0.25,33,94,Jun
+lalibertad,La Libertad,Pepinillo,transitorio,518.0,216137.22666666665,0.22,34,87,Jun
+lalibertad,La Libertad,Pimiento piquillo,transitorio,506.0,719005.76,0.21,35,98,Dic
+lalibertad,La Libertad,Camote,transitorio,476.0,154058.9866666667,0.2,36,38,Oct
+lalibertad,La Libertad,Zapallo,transitorio,466.0,282756.3733333333,0.2,37,57,Oct
+lalibertad,La Libertad,Brócoli,transitorio,399.5,204139.1733333333,0.17,38,83,Feb
+lalibertad,La Libertad,Cebolla china,transitorio,359.70000000000005,283424.416,0.15,39,96,Jul
+lalibertad,La Libertad,Zanahoria,transitorio,357.0,199977.12000000002,0.15,40,56,Oct
+lalibertad,La Libertad,Mango,permanente,319.5,212761.44,0.14,41,25,Nov
+lalibertad,La Libertad,Tomate,transitorio,317.0,280219.54666666663,0.13,42,66,Abr
+lalibertad,La Libertad,Pasto elefante,permanente,306.99999999999994,128096.77333333332,0.13,43,19,Ene
+lalibertad,La Libertad,Haba grano verde,transitorio,289.0,120586.21333333333,0.12,44,47,Nov
+lalibertad,La Libertad,Ají,transitorio,283.0,226384.90666666668,0.12,45,70,Jun
+lalibertad,La Libertad,Lima,permanente,257.49999999999994,107442.73333333332,0.11,46,101,Abr
+lalibertad,La Libertad,Frijol zarandaja,transitorio,202.0,84285.17333333334,0.09,47,88,May
+lalibertad,La Libertad,Olivo,permanente,188.0,93353.28,0.08,48,29,Dic
+lalibertad,La Libertad,Naranja,permanente,177.7,105757.56266666666,0.08,49,27,Dic
+lalibertad,La Libertad,Lechuga,transitorio,175.0,40245.33333333333,0.07,50,65,May
+lalibertad,La Libertad,Café,permanente,168.1,27362.197333333337,0.07,51,2,Feb
+lalibertad,La Libertad,Col,transitorio,166.60000000000002,69514.40533333333,0.07,52,91,Feb
+lalibertad,La Libertad,Frijol de palo,transitorio,166.0,69264.05333333333,0.07,53,111,Jun
+lalibertad,La Libertad,Ajo,transitorio,147.0,76365.52,0.06,54,54,Nov
+lalibertad,La Libertad,Tuna,permanente,144.5,30811.25333333333,0.06,55,49,Oct
+lalibertad,La Libertad,Granadilla,permanente,138.0,47983.520000000004,0.06,56,64,Abr
+lalibertad,La Libertad,Apio,transitorio,135.0,56329.2,0.06,57,95,Mar
+lalibertad,La Libertad,Limón,permanente,133.5,84062.992,0.06,58,30,Jun
+lalibertad,La Libertad,Maíz morado,transitorio,127.0,52991.17333333333,0.05,59,76,Abr
+lalibertad,La Libertad,Papaya,permanente,123.5,35525.18666666667,0.05,60,42,Ene
+lalibertad,La Libertad,Membrillo,permanente,118.54,49461.210133333334,0.05,61,128,Nov
+lalibertad,La Libertad,Pepino,transitorio,117.0,48818.64,0.05,62,127,Mar
+lalibertad,La Libertad,Poro,transitorio,112.5,46941.0,0.05,63,110,Jul
+lalibertad,La Libertad,Granada,permanente,107.2,75957.632,0.05,64,79,Jun
+lalibertad,La Libertad,Castilla,transitorio,98.5,41099.45333333333,0.04,65,31,Dic
+lalibertad,La Libertad,Ciruela,permanente,97.0,40473.573333333334,0.04,66,119,May
+lalibertad,La Libertad,Garbanzo,transitorio,90.0,37552.8,0.04,67,117,Set
+lalibertad,La Libertad,Pallar grano seco,transitorio,90.0,37552.8,0.04,68,63,Jun
+lalibertad,La Libertad,Trébol,permanente,87.0,16072.96,0.04,69,45,Jun
+lalibertad,La Libertad,Manzana,permanente,84.25,38251.74666666667,0.04,70,58,May
+lalibertad,La Libertad,Pacae,permanente,63.0,26286.96,0.03,71,61,Ene
+lalibertad,La Libertad,Páprika,transitorio,58.5,41783.04,0.02,72,68,Oct
+lalibertad,La Libertad,Lúcuma,permanente,55.0,26885.466666666667,0.02,73,105,Nov
+lalibertad,La Libertad,Chirimoya,permanente,52.5,14455.0,0.02,74,78,Ago
+lalibertad,La Libertad,Espinaca,transitorio,50.0,20862.666666666668,0.02,75,104,Feb
+lalibertad,La Libertad,Betarraga,transitorio,44.5,18567.773333333334,0.02,76,89,Feb
+lalibertad,La Libertad,Kiwicha,transitorio,43.0,17941.893333333333,0.02,77,86,Feb
+lalibertad,La Libertad,Rabanito,transitorio,42.5,17733.266666666666,0.02,78,120,Mar
+lalibertad,La Libertad,Fresa,transitorio,40.5,24436.080000000005,0.02,79,99,May
+lalibertad,La Libertad,Vainita,transitorio,35.5,5700.826666666667,0.02,80,90,Jun
+lalibertad,La Libertad,Guanábana,permanente,32.5,13560.733333333334,0.01,81,100,Mar
+lalibertad,La Libertad,Melon,transitorio,31.5,13143.48,0.01,82,103,May
+lalibertad,La Libertad,Cebada forrajera,transitorio,30.0,12517.599999999999,0.01,83,36,Feb
+lalibertad,La Libertad,Coliflor,transitorio,30.0,12517.599999999999,0.01,84,109,Mar
+lalibertad,La Libertad,Rocoto,transitorio,28.4,8012.586666666666,0.01,85,102,Ago
+lalibertad,La Libertad,Cacao,permanente,21.5,5740.213333333335,0.01,86,7,Mar
+lalibertad,La Libertad,Acelga,transitorio,20.0,8345.066666666666,0.01,87,130,Mar
+lalibertad,La Libertad,Capuli,permanente,16.0,6676.053333333333,0.01,88,139,Ene
+lalibertad,La Libertad,Mamey,permanente,16.0,6676.053333333333,0.01,89,141,Feb
+lalibertad,La Libertad,Melocotón,permanente,16.0,11264.0,0.01,90,71,Dic
+lalibertad,La Libertad,Mashua,transitorio,9.5,3963.9066666666668,0.0,91,60,Ago
+lalibertad,La Libertad,Guayaba,permanente,7.5,3129.3999999999996,0.0,92,114,Dic
+lalibertad,La Libertad,Nabo,transitorio,7.0,2920.773333333333,0.0,93,124,Ene
+lalibertad,La Libertad,Caigua,transitorio,6.0,2503.5199999999995,0.0,94,106,Ene
+lalibertad,La Libertad,Níspero,permanente,6.0,2503.5200000000004,0.0,95,136,Oct
+lalibertad,La Libertad,Higo,permanente,5.0,2086.2666666666664,0.0,96,126,Feb
+lalibertad,La Libertad,Maní,transitorio,4.0,1669.013333333333,0.0,97,75,Ene
+lalibertad,La Libertad,Achiote,permanente,1.5,625.88,0.0,98,43,Jul
+lalibertad,La Libertad,Cereza,permanente,0.9999999999999996,417.25333333333333,0.0,99,144,Mar
+lalibertad,La Libertad,Pecana,permanente,0.9999999999999996,517.3066666666667,0.0,100,93,Dic
+lambayeque,Lambayeque,Arroz,transitorio,49585.5,31489040.376,39.89,1,3,Ene
+lambayeque,Lambayeque,Maíz amarillo duro,transitorio,19264.0,8037968.213333333,15.5,2,5,Jun
+lambayeque,Lambayeque,Palta,permanente,5849.0,5110466.266666668,4.7,3,16,Nov
+lambayeque,Lambayeque,Mango,permanente,4092.0,2724944.64,3.29,4,25,Jul
+lambayeque,Lambayeque,Camote,transitorio,3588.0,1161268.1600000001,2.89,5,38,Jun
+lambayeque,Lambayeque,Arándano,permanente,3572.0,1490428.9066666667,2.87,6,37,Abr
+lambayeque,Lambayeque,Maíz choclo,transitorio,3437.0,1434099.7066666665,2.76,7,21,Feb
+lambayeque,Lambayeque,Café,permanente,3219.0,523967.3600000001,2.59,8,2,Abr
+lambayeque,Lambayeque,Pallar grano seco,transitorio,3185.0,1328951.8666666667,2.56,9,63,Jun
+lambayeque,Lambayeque,Limón,permanente,2136.0,1345007.8719999997,1.72,10,30,Mar
+lambayeque,Lambayeque,Frijol zarandaja,transitorio,2066.0,862045.3866666666,1.66,11,88,Jun
+lambayeque,Lambayeque,Frijol loctao,transitorio,2025.0,844938.0,1.63,12,53,Jun
+lambayeque,Lambayeque,Uva,permanente,2018.0,1489068.7466666666,1.62,13,24,Jul
+lambayeque,Lambayeque,Maíz chala,transitorio,1756.0,732696.8533333333,1.41,14,26,Feb
+lambayeque,Lambayeque,Arveja grano verde,transitorio,1531.0,638814.8533333333,1.23,15,23,Jun
+lambayeque,Lambayeque,Yuca,transitorio,1454.0,161374.61333333334,1.17,16,11,Mar
+lambayeque,Lambayeque,Alfalfa,permanente,1335.5000000000002,246729.17333333328,1.07,17,6,Mar
+lambayeque,Lambayeque,Trigo,transitorio,1255.0,152608.0,1.01,18,12,Feb
+lambayeque,Lambayeque,Espárrago,permanente,1075.0,922321.3333333333,0.86,19,28,Abr
+lambayeque,Lambayeque,Algodón,transitorio,1069.0,335352.4266666667,0.86,20,46,Dic
+lambayeque,Lambayeque,Maíz amiláceo,transitorio,1032.0,430605.44,0.83,21,8,Oct
+lambayeque,Lambayeque,Frijol,transitorio,810.0,337975.2,0.65,22,15,Jun
+lambayeque,Lambayeque,Maracuyá,permanente,763.9999999999999,365701.3333333333,0.61,23,59,Ene
+lambayeque,Lambayeque,Cebolla de cabeza,transitorio,682.0,537379.6266666667,0.55,24,41,Jul
+lambayeque,Lambayeque,Papa,transitorio,662.0,384306.0053333333,0.53,25,4,Jul
+lambayeque,Lambayeque,Castilla,transitorio,637.0,265790.37333333335,0.51,26,31,Jun
+lambayeque,Lambayeque,Plátano,permanente,628.0,166126.93333333335,0.51,27,9,Nov
+lambayeque,Lambayeque,Arveja grano seco,transitorio,627.0,261617.84,0.5,28,22,Mar
+lambayeque,Lambayeque,Pimiento piquillo,transitorio,617.0,876732.3200000001,0.5,29,98,Jun
+lambayeque,Lambayeque,Frijol de palo,transitorio,604.0,252021.01333333334,0.49,30,111,Ago
+lambayeque,Lambayeque,Pimiento,transitorio,461.05,409928.776,0.37,31,94,May
+lambayeque,Lambayeque,Caña de azúcar para alcohol,permanente,451.9999999999999,188598.50666666665,0.36,32,32,Feb
+lambayeque,Lambayeque,Garbanzo,transitorio,427.0,178167.17333333334,0.34,33,117,Jun
+lambayeque,Lambayeque,Olluco,transitorio,335.0,127898.53333333335,0.27,34,33,Oct
+lambayeque,Lambayeque,Haba grano seco,transitorio,300.0,125176.0,0.24,35,20,Oct
+lambayeque,Lambayeque,Sandía,transitorio,241.0,150197.62666666668,0.19,36,67,Ago
+lambayeque,Lambayeque,Naranja,permanente,228.99999999999994,136288.58666666667,0.18,37,27,Ago
+lambayeque,Lambayeque,Páprika,transitorio,200.0,142848.0,0.16,38,68,Jun
+lambayeque,Lambayeque,Tomate,transitorio,159.0,140551.76,0.13,39,66,Feb
+lambayeque,Lambayeque,Pepinillo,transitorio,134.0,55911.94666666666,0.11,40,87,Ago
+lambayeque,Lambayeque,Zapallo,transitorio,113.0,68565.38666666666,0.09,41,57,May
+lambayeque,Lambayeque,Melon,transitorio,85.0,35466.53333333333,0.07,42,103,Ago
+lambayeque,Lambayeque,Mamey,permanente,72.0,30042.239999999998,0.06,43,141,May
+lambayeque,Lambayeque,Zanahoria,transitorio,64.0,35850.240000000005,0.05,44,56,Feb
+lambayeque,Lambayeque,Tamarindo,permanente,61.0,25452.45333333333,0.05,45,133,Mar
+lambayeque,Lambayeque,Cebada grano,transitorio,45.0,5472.0,0.04,46,13,Feb
+lambayeque,Lambayeque,Quinua,transitorio,44.0,22271.04,0.04,47,18,Jun
+lambayeque,Lambayeque,Ciruela,permanente,37.0,15438.373333333333,0.03,48,119,Abr
+lambayeque,Lambayeque,Pacae,permanente,36.0,15021.119999999999,0.03,49,61,May
+lambayeque,Lambayeque,Caigua,transitorio,31.0,12934.853333333333,0.02,50,106,Feb
+lambayeque,Lambayeque,Lima,permanente,26.0,10848.586666666666,0.02,51,101,Nov
+lambayeque,Lambayeque,Col,transitorio,25.5,10639.96,0.02,52,91,Feb
+lambayeque,Lambayeque,Chirimoya,permanente,23.0,6332.666666666666,0.02,53,78,May
+lambayeque,Lambayeque,Ají,transitorio,22.0,17598.826666666668,0.02,54,70,Ene
+lambayeque,Lambayeque,Coco,permanente,22.0,9179.573333333334,0.02,55,82,Dic
+lambayeque,Lambayeque,Papaya,permanente,22.0,6328.373333333335,0.02,56,42,Jul
+lambayeque,Lambayeque,Cacao,permanente,17.0,4538.773333333334,0.01,57,7,Oct
+lambayeque,Lambayeque,Oca,transitorio,17.0,9973.333333333332,0.01,58,44,Nov
+lambayeque,Lambayeque,Granadilla,permanente,10.0,3477.066666666667,0.01,59,64,Ago
+lambayeque,Lambayeque,Rabanito,transitorio,7.0,2920.773333333333,0.01,60,120,Jun
+lambayeque,Lambayeque,Guanábana,permanente,5.0,2086.2666666666664,0.0,61,100,Ene
+lambayeque,Lambayeque,Tuna,permanente,5.0,1066.1333333333334,0.0,62,49,Ene
+lambayeque,Lambayeque,Betarraga,transitorio,4.0,1669.013333333333,0.0,63,89,Feb
+lambayeque,Lambayeque,Lechuga,transitorio,3.0,689.92,0.0,64,65,Nov
+lambayeque,Lambayeque,Pomarosa,permanente,3.0,1251.7599999999998,0.0,65,134,Set
+lambayeque,Lambayeque,Limón dulce,permanente,1.9999999999999991,834.5066666666667,0.0,66,123,Feb
+lambayeque,Lambayeque,Toronja,permanente,1.9999999999999991,834.5066666666667,0.0,67,115,Feb
+lambayeque,Lambayeque,Cebolla china,transitorio,1.0,787.9466666666667,0.0,68,96,Nov
+lambayeque,Lambayeque,Lúcuma,permanente,0.9999999999999996,488.8266666666666,0.0,69,105,Jul
+lima,Lima,Maíz amarillo duro,transitorio,15196.0,6340581.653333333,12.65,1,5,Feb
+lima,Lima,Maíz chala,transitorio,11056.5,4613361.48,9.2,2,26,Ene
+lima,Lima,Mandarina,permanente,8750.099999999999,6925879.151999999,7.28,3,34,Feb
+lima,Lima,Palta,permanente,8007.040000000001,6996017.749333335,6.67,4,16,Set
+lima,Lima,Papa,transitorio,6209.0,3604465.2373333327,5.17,5,4,Ago
+lima,Lima,Camote,transitorio,6099.5,1974123.5066666668,5.08,6,38,Jul
+lima,Lima,Manzana,permanente,5407.629999999999,2455208.223466666,4.5,7,58,Feb
+lima,Lima,Alfalfa,permanente,3958.6399999999994,731345.544533333,3.3,8,6,May
+lima,Lima,Uva,permanente,3711.2999999999997,2738543.528,3.09,9,24,Jun
+lima,Lima,Maíz choclo,transitorio,3037.5,1267407.0,2.53,10,21,Ago
+lima,Lima,Lechuga,transitorio,2378.0,546876.5866666667,1.98,11,65,Feb
+lima,Lima,Melocotón,permanente,2296.9999999999995,1617087.9999999998,1.91,12,71,Feb
+lima,Lima,Páprika,transitorio,2076.0,1482762.24,1.73,13,68,Ago
+lima,Lima,Zanahoria,transitorio,2068.0,1158410.8800000001,1.72,14,56,Abr
+lima,Lima,Maracuyá,permanente,1973.4,944600.8000000003,1.64,15,59,Jul
+lima,Lima,Espárrago,permanente,1479.1,1269028.3573333332,1.23,16,28,Ago
+lima,Lima,Arándano,permanente,1478.9,617075.9546666667,1.23,17,37,Jun
+lima,Lima,Fresa,transitorio,1343.0,810312.4800000002,1.12,18,99,Abr
+lima,Lima,Vainita,transitorio,1342.5,215587.6,1.12,19,90,Abr
+lima,Lima,Chirimoya,permanente,1227.1599999999999,337878.0533333333,1.02,20,78,Abr
+lima,Lima,Ajo,transitorio,1198.0,622353.0133333333,1.0,21,54,Jul
+lima,Lima,Brócoli,transitorio,1127.5,576137.4666666666,0.94,22,83,Ene
+lima,Lima,Yuca,transitorio,1061.0,117756.85333333333,0.88,23,11,Ago
+lima,Lima,Cebolla china,transitorio,1025.0,807645.3333333334,0.85,24,96,May
+lima,Lima,Castilla,transitorio,994.5,414958.44000000006,0.83,25,31,Feb
+lima,Lima,Ají,transitorio,993.5,794747.0133333333,0.83,26,70,Feb
+lima,Lima,Maíz morado,transitorio,945.5,394513.0266666667,0.79,27,76,Jul
+lima,Lima Metropolitana,Maíz chala,transitorio,920.0,383873.06666666665,0.77,28,26,Ene
+lima,Lima,Betarraga,transitorio,909.0,379283.27999999997,0.76,29,89,Jul
+lima,Lima Metropolitana,Lechuga,transitorio,825.0,189728.0,0.69,30,65,Feb
+lima,Lima,Frijol,transitorio,778.5,324831.72,0.65,31,15,Ago
+lima,Lima Metropolitana,Brócoli,transitorio,753.0,384772.95999999996,0.63,32,83,Ene
+lima,Lima,Cebolla de cabeza,transitorio,747.0,588596.16,0.62,33,41,Feb
+lima,Lima,Naranja,permanente,726.0,432076.48000000004,0.6,34,27,Oct
+lima,Lima,Algodón,transitorio,724.0,227123.62666666668,0.6,35,46,Nov
+lima,Lima,Pepinillo,transitorio,671.5,280185.61333333334,0.56,36,87,Feb
+lima,Lima,Apio,transitorio,668.0,278725.2266666667,0.56,37,95,Jul
+lima,Lima,Coliflor,transitorio,656.0,273718.18666666665,0.55,38,109,Feb
+lima,Lima,Tomate,transitorio,598.0,528616.0533333333,0.5,39,66,Feb
+lima,Lima,Mango,permanente,595.3,396422.1759999999,0.5,40,25,Abr
+lima,Lima,Lúcuma,permanente,569.9000000000001,278582.31733333337,0.47,41,105,Dic
+lima,Lima,Arveja grano verde,transitorio,540.1,225358.52533333332,0.45,42,23,Feb
+lima,Lima Metropolitana,Betarraga,transitorio,527.0,219892.50666666665,0.44,43,89,Jul
+lima,Lima Metropolitana,Apio,transitorio,505.0,210712.93333333332,0.42,44,95,Jul
+lima,Lima,Pimiento,transitorio,498.0,442781.76,0.41,45,94,Feb
+lima,Lima Metropolitana,Rabanito,transitorio,470.0,196109.06666666665,0.39,46,120,Jun
+lima,Lima,Col,transitorio,445.0,185677.73333333334,0.37,47,91,Feb
+lima,Lima,Poro,transitorio,430.0,179418.93333333332,0.36,48,110,Jul
+lima,Lima,Zapallo,transitorio,426.0,258485.44,0.35,49,57,Jul
+lima,Lima,Frijol grano verde,transitorio,416.0,173577.38666666666,0.35,50,62,Feb
+lima,Lima,Tuna,permanente,408.1,87017.80266666667,0.34,51,49,Abr
+lima,Lima,Melon,transitorio,344.5,143743.77333333332,0.29,52,103,Ene
+lima,Lima,Granadilla,permanente,335.1,116516.50400000002,0.28,53,64,Abr
+lima,Lima,Plátano,permanente,328.92,87010.304,0.27,54,9,Feb
+lima,Lima Metropolitana,Cebolla china,transitorio,328.0,258446.50666666665,0.27,55,96,May
+lima,Lima Metropolitana,Mandarina,permanente,319.4,252811.488,0.27,56,34,Feb
+lima,Lima Metropolitana,Ají,transitorio,305.0,243983.73333333334,0.25,57,70,Feb
+lima,Lima,Sandía,transitorio,294.5,183540.25333333333,0.25,58,67,Feb
+lima,Lima,Maíz amiláceo,transitorio,293.5,122463.85333333332,0.24,59,8,Mar
+lima,Lima,Pepino,transitorio,292.0,121837.97333333333,0.24,60,127,Mar
+lima,Lima Metropolitana,Espinaca,transitorio,287.0,119751.70666666667,0.24,61,104,May
+lima,Lima Metropolitana,Albahaca,transitorio,280.0,116830.93333333333,0.23,62,131,Feb
+lima,Lima Metropolitana,Poro,transitorio,276.0,115161.92,0.23,63,110,Jul
+lima,Lima,Alcachofa,permanente,258.4,205645.05600000004,0.22,64,55,Feb
+lima,Lima,Pallar verde,transitorio,257.5,107442.73333333334,0.21,65,132,Dic
+lima,Lima,Haba grano verde,transitorio,232.0,96802.77333333333,0.19,66,47,Ene
+lima,Lima Metropolitana,Camote,transitorio,225.0,72822.00000000001,0.19,67,38,Jul
+lima,Lima,Cebada grano,transitorio,197.5,24016.0,0.16,68,13,Ene
+lima,Lima,Membrillo,permanente,192.60000000000002,80362.992,0.16,69,128,Abr
+lima,Lima,Tangelo,permanente,192.60000000000002,144624.624,0.16,70,77,Jul
+lima,Lima Metropolitana,Lúcuma,permanente,191.15,93439.21733333333,0.16,71,105,Dic
+lima,Lima Metropolitana,Nabo,transitorio,162.0,67595.04000000001,0.13,72,124,Jun
+lima,Lima Metropolitana,Cebolla de cabeza,transitorio,156.0,122919.68000000001,0.13,73,41,Feb
+lima,Lima,Pera,permanente,155.9,65049.79466666667,0.13,74,125,Ago
+lima,Lima,Pecana,permanente,153.1,79199.65066666667,0.13,75,93,Jun
+lima,Lima,Granada,permanente,145.70000000000002,103237.19200000001,0.12,76,79,Jul
+lima,Lima,Olluco,transitorio,144.20000000000002,55053.63733333334,0.12,77,33,Oct
+lima,Lima Metropolitana,Pepinillo,transitorio,143.0,59667.22666666667,0.12,78,87,Feb
+lima,Lima Metropolitana,Acelga,transitorio,142.0,59249.973333333335,0.12,79,130,Jul
+lima,Lima,Trigo,transitorio,136.0,16537.6,0.11,80,12,Feb
+lima,Lima Metropolitana,Col,transitorio,132.0,55077.44,0.11,81,91,Feb
+lima,Lima,Caigua,transitorio,108.0,45063.36,0.09,82,106,Feb
+lima,Lima,Haba grano seco,transitorio,105.5,44020.22666666667,0.09,83,20,Dic
+lima,Lima,Espinaca,transitorio,105.0,43811.6,0.09,84,104,May
+lima,Lima Metropolitana,Palta,permanente,92.2,80558.21333333335,0.08,85,16,Set
+lima,Lima,Olivo,permanente,91.4,45385.584,0.08,86,29,Nov
+lima,Lima,Maní,transitorio,84.0,35049.28,0.07,87,75,Feb
+lima,Lima,Damasco,permanente,74.6,31127.098666666665,0.06,88,140,Ene
+lima,Lima Metropolitana,Manzana,permanente,72.39999999999999,32871.53066666666,0.06,89,58,Feb
+lima,Lima Metropolitana,Tomate,transitorio,72.0,63646.079999999994,0.06,90,66,Feb
+lima,Lima Metropolitana,Olivo,permanente,71.0,35255.76,0.06,91,29,Nov
+lima,Lima Metropolitana,Vainita,transitorio,69.0,11080.48,0.06,92,90,Abr
+lima,Lima Metropolitana,Fresa,transitorio,64.0,38615.04000000001,0.05,93,99,Abr
+lima,Lima Metropolitana,Maíz choclo,transitorio,60.0,25035.2,0.05,94,21,Ago
+lima,Lima Metropolitana,Papa,transitorio,58.0,33670.314666666665,0.05,95,4,Ago
+lima,Lima Metropolitana,Tuna,permanente,58.0,12367.146666666664,0.05,96,49,Abr
+lima,Lima,Níspero,permanente,55.3,23074.109333333334,0.05,97,136,Nov
+lima,Lima,Pasto elefante,permanente,49.2,20528.864,0.04,98,19,Ago
+lima,Lima,Papaya,permanente,48.0,13807.359999999999,0.04,99,42,Dic
+lima,Lima Metropolitana,Pimiento,transitorio,45.0,40010.4,0.04,100,94,Feb
+lima,Lima,Guanábana,permanente,40.8,17023.935999999998,0.03,101,100,Mar
+lima,Lima,Higo,permanente,40.518,16906.27056,0.03,102,126,Oct
+lima,Lima Metropolitana,Coliflor,transitorio,40.0,16690.13333333333,0.03,103,109,Feb
+lima,Lima Metropolitana,Frijol,transitorio,37.0,15438.373333333333,0.03,104,15,Ago
+lima,Lima Metropolitana,Arveja grano verde,transitorio,37.0,15438.373333333333,0.03,105,23,Feb
+lima,Lima,Oca,transitorio,35.0,20533.33333333333,0.03,106,44,Oct
+lima,Lima Metropolitana,Alfalfa,permanente,30.999999999999996,5727.1466666666665,0.03,107,6,May
+lima,Lima Metropolitana,Maíz amarillo duro,transitorio,27.0,11265.839999999998,0.02,108,5,Feb
+lima,Lima Metropolitana,Uva,permanente,24.0,17709.44,0.02,109,24,Jun
+lima,Lima Metropolitana,Ajo,transitorio,23.0,11948.346666666668,0.02,110,54,Jul
+lima,Lima,Toronja,permanente,20.0,8345.066666666666,0.02,111,115,Nov
+lima,Lima Metropolitana,Yuca,transitorio,20.0,2219.7333333333336,0.02,112,11,Ago
+lima,Lima Metropolitana,Zapallo,transitorio,19.0,11528.693333333333,0.02,113,57,Jul
+lima,Lima,Arveja grano seco,transitorio,16.0,6676.053333333333,0.01,114,22,Oct
+lima,Lima,Ciruela,permanente,15.800000000000002,6592.602666666666,0.01,115,119,Oct
+lima,Lima,Pacae,permanente,15.800000000000002,6592.602666666666,0.01,116,61,Dic
+lima,Lima Metropolitana,Plátano,permanente,15.800000000000002,4179.626666666667,0.01,117,9,Feb
+lima,Lima,Ciruelo,permanente,12.5,5215.666666666667,0.01,118,137,Abr
+lima,Lima Metropolitana,Membrillo,permanente,11.0,4589.786666666667,0.01,119,128,Abr
+lima,Lima,Pimiento piquillo,transitorio,10.0,14209.6,0.01,120,98,Nov
+lima,Lima,Ryegrass (pasto),permanente,9.4,1736.6186666666665,0.01,121,17,Set
+lima,Lima Metropolitana,Pecana,permanente,8.9,4604.029333333334,0.01,122,93,Jun
+lima,Lima,Limón,permanente,8.4,5289.356800000001,0.01,123,30,Ago
+lima,Lima Metropolitana,Caigua,transitorio,8.0,3338.0266666666666,0.01,124,106,Feb
+lima,Lima,Guayaba,permanente,7.0,2920.7733333333335,0.01,125,114,Jun
+lima,Lima Metropolitana,Cebada grano,transitorio,6.0,729.6,0.0,126,13,Ene
+lima,Lima Metropolitana,Melocotón,permanente,6.0,4224.0,0.0,127,71,Feb
+lima,Lima Metropolitana,Zanahoria,transitorio,6.0,3360.9600000000005,0.0,128,56,Abr
+lima,Lima Metropolitana,Pasto elefante,permanente,5.0,2086.2666666666664,0.0,129,19,Ago
+lima,Lima Metropolitana,Quinua,transitorio,5.0,2530.8,0.0,130,18,Nov
+lima,Lima Metropolitana,Maíz amiláceo,transitorio,4.0,1669.0133333333333,0.0,131,8,Mar
+lima,Lima,Nabo,transitorio,3.5,1460.3866666666665,0.0,132,124,Jun
+lima,Lima Metropolitana,Algodón,transitorio,3.0,941.12,0.0,133,46,Nov
+lima,Lima Metropolitana,Chirimoya,permanente,2.7,743.4000000000001,0.0,134,78,Abr
+lima,Lima Metropolitana,Higo,permanente,2.4999999999999996,1043.1333333333332,0.0,135,126,Oct
+lima,Lima Metropolitana,Maíz morado,transitorio,2.0,834.5066666666667,0.0,136,76,Jul
+lima,Lima Metropolitana,Trigo,transitorio,2.0,243.2,0.0,137,12,Feb
+lima,Lima Metropolitana,Pepino,transitorio,2.0,834.5066666666667,0.0,138,127,Mar
+lima,Lima Metropolitana,Sandía,transitorio,2.0,1246.4533333333334,0.0,139,67,Feb
+lima,Lima Metropolitana,Mango,permanente,1.9999999999999991,1331.8399999999997,0.0,140,25,Abr
+lima,Lima,Lima,permanente,1.8999999999999995,792.7813333333334,0.0,141,101,May
+lima,Lima Metropolitana,Guanábana,permanente,0.4999999999999992,208.62666666666667,0.0,142,100,Mar
+lima,Lima Metropolitana,Naranja,permanente,0.4999999999999992,297.5733333333334,0.0,143,27,Oct
+loreto,Loreto,Yuca,transitorio,50801.0,5638233.653333334,23.0,1,11,Ago
+loreto,Loreto,Maíz amarillo duro,transitorio,36999.0,15437956.079999998,16.75,2,5,Ago
+loreto,Loreto,Arroz,transitorio,36822.0,23383639.264,16.67,3,3,Jul
+loreto,Loreto,Plátano,permanente,25785.999999999996,6821256.533333335,11.68,4,9,Oct
+loreto,Loreto,Palma,permanente,13245.0,5526520.3999999985,6.0,5,14,Abr
+loreto,Loreto,Castilla,transitorio,6701.0,2796014.586666667,3.03,6,31,Jul
+loreto,Loreto,Brachiaria (pasto),permanente,5471.0,1010749.0133333332,2.48,7,1,Ago
+loreto,Loreto,Caña de azúcar para alcohol,permanente,5388.0,2248160.96,2.44,8,32,Dic
+loreto,Loreto,Frijol,transitorio,4910.0,2048713.8666666667,2.22,9,15,Jun
+loreto,Loreto,Maíz choclo,transitorio,4021.0,1677775.6533333333,1.82,10,21,Jul
+loreto,Loreto,Camu camu,permanente,3285.0,1370677.2000000002,1.49,11,74,Oct
+loreto,Loreto,Pasto elefante,permanente,2476.9999999999995,1033536.5066666666,1.12,12,19,Jul
+loreto,Loreto,Piña,permanente,2395.0,1004558.8,1.08,13,40,Ene
+loreto,Loreto,Cacao,permanente,2383.9999999999995,636496.2133333333,1.08,14,7,Feb
+loreto,Loreto,Pijuayo,permanente,2080.0,110933.33333333331,0.94,15,72,Mar
+loreto,Loreto,Limón,permanente,1833.0,1154213.2160000002,0.83,16,30,Mar
+loreto,Loreto,Papaya,permanente,1744.0,501667.41333333345,0.79,17,42,May
+loreto,Loreto,Sandía,transitorio,1433.0,893083.8133333332,0.65,18,67,Jul
+loreto,Loreto,Maní,transitorio,1372.0,572471.5733333332,0.62,19,75,Jul
+loreto,Loreto,Cocona,permanente,1303.71,543977.3432,0.59,20,84,Jun
+loreto,Loreto,Pacae,permanente,969.0,404318.48,0.44,21,61,Oct
+loreto,Loreto,Coco,permanente,878.0,366348.42666666675,0.4,22,82,Mar
+loreto,Loreto,Toronja,permanente,640.0,267042.1333333333,0.29,23,115,Ene
+loreto,Loreto,Naranja,permanente,565.0,336257.86666666676,0.26,24,27,Ene
+loreto,Loreto,Melon,transitorio,557.0,232410.10666666663,0.25,25,103,Jul
+loreto,Loreto,Caigua,transitorio,502.0,209461.17333333334,0.23,26,106,Jul
+loreto,Loreto,Guayaba,permanente,502.0,209461.17333333334,0.23,27,114,Feb
+loreto,Loreto,Tomate,transitorio,464.0,410163.62666666665,0.21,28,66,Jul
+loreto,Loreto,Ají,transitorio,443.0,354376.37333333335,0.2,29,70,Jul
+loreto,Loreto,Mandarina,permanente,436.0,345102.72000000003,0.2,30,34,Ago
+loreto,Loreto,Caimito,permanente,409.0,170656.61333333334,0.19,31,116,Feb
+loreto,Loreto,Sacha inchi,permanente,381.0,158973.51999999996,0.17,32,107,Jul
+loreto,Loreto,Zapallo,transitorio,372.0,225719.68,0.17,33,57,Jul
+loreto,Loreto,Palta,permanente,362.0,316291.4666666667,0.16,34,16,Set
+loreto,Loreto,Pepinillo,transitorio,345.0,143952.4,0.16,35,87,Ago
+loreto,Loreto,Mango,permanente,308.0,205103.36,0.14,36,25,Ene
+loreto,Loreto,Zapote,permanente,291.0,121420.71999999997,0.13,37,113,Dic
+loreto,Loreto,Cebolla china,transitorio,282.0,222200.96000000002,0.13,38,96,Jul
+loreto,Loreto,Marañón,permanente,249.0,103896.07999999999,0.11,39,122,Mar
+loreto,Loreto,Taperibá,permanente,197.0,82198.90666666668,0.09,40,118,Ene
+loreto,Loreto,Pomarosa,permanente,192.0,80112.64,0.09,41,134,Ene
+loreto,Loreto,Café,permanente,183.0,29787.520000000008,0.08,42,2,Jul
+loreto,Loreto,Carambola,permanente,177.0,73853.84,0.08,43,129,Mar
+loreto,Loreto,Anona,permanente,134.0,55911.946666666656,0.06,44,121,Feb
+loreto,Loreto,Guanábana,permanente,91.0,37970.05333333333,0.04,45,100,Set
+loreto,Loreto,Maracuyá,permanente,85.0,40686.66666666667,0.04,46,59,Abr
+loreto,Loreto,Granadilla,permanente,76.0,26425.706666666665,0.03,47,64,Ago
+loreto,Loreto,Lechuga,transitorio,73.0,16788.053333333333,0.03,48,65,Jul
+loreto,Loreto,Col,transitorio,71.0,29624.986666666664,0.03,49,91,Jul
+loreto,Loreto,Achiote,permanente,55.0,22948.933333333334,0.02,50,43,Nov
+loreto,Loreto,Limón dulce,permanente,42.0,17524.64,0.02,51,123,Ene
+loreto,Loreto,Lima,permanente,30.999999999999996,12934.853333333336,0.01,52,101,Feb
+loreto,Loreto,Lúcuma,permanente,26.0,12709.493333333332,0.01,53,105,Nov
+madrededios,Madre de Dios,Brachiaria (pasto),permanente,28731.999999999996,5308141.226666667,58.68,1,1,Jul
+madrededios,Madre de Dios,Maíz amarillo duro,transitorio,9390.0,3918008.8,19.18,2,5,Oct
+madrededios,Madre de Dios,Plátano,permanente,2929.0,774818.1333333335,5.98,3,9,Mar
+madrededios,Madre de Dios,Arroz,transitorio,2015.0,1279616.3466666667,4.11,4,3,Nov
+madrededios,Madre de Dios,Cacao,permanente,1995.0,532638.4,4.07,5,7,Oct
+madrededios,yucare de Dios,Yuca,transitorio,1676.0,186013.65333333335,3.42,6,11,Feb
+madrededios,Madre de Dios,Papaya,permanente,731.25,210346.50000000006,1.49,7,42,May
+madrededios,Madre de Dios,Piña,permanente,422.0,177003.67999999996,0.86,8,40,Set
+madrededios,Madre de Dios,Naranja,permanente,181.0,107721.54666666669,0.37,9,27,Abr
+madrededios,Madre de Dios,Limón,permanente,101.75,64070.48266666666,0.21,10,30,Ene
+madrededios,Madre de Dios,Cocona,permanente,95.8,39972.869333333336,0.2,11,84,Dic
+madrededios,Madre de Dios,Coco,permanente,79.5,33171.64,0.16,12,82,May
+madrededios,Madre de Dios,Mandarina,permanente,75.75,59957.64,0.15,13,34,Ene
+madrededios,Madre de Dios,Palta,permanente,67.5,58977.0,0.14,14,16,Feb
+madrededios,Madre de Dios,Pijuayo,permanente,62.75,3346.666666666667,0.13,15,72,Dic
+madrededios,Madre de Dios,Camote,transitorio,62.5,20228.333333333336,0.13,16,38,Feb
+madrededios,Madre de Dios,Frijol,transitorio,59.0,24617.946666666667,0.12,17,15,Abr
+madrededios,Madre de Dios,Lima,permanente,52.0,21697.17333333333,0.11,18,101,Mar
+madrededios,sandre de Dios,Sandía,transitorio,45.5,28356.813333333335,0.09,19,67,Mar
+madrededios,Madre de Dios,Mango,permanente,40.0,26636.799999999996,0.08,20,25,Mar
+madrededios,Madre de Dios,Carambola,permanente,37.25,15542.686666666665,0.08,21,129,May
+madrededios,Madre de Dios,Camu camu,permanente,36.0,15021.119999999999,0.07,22,74,Jun
+madrededios,Madre de Dios,Café,permanente,27.0,4394.880000000001,0.06,23,2,Nov
+madrededios,Madre de Dios,Achiote,permanente,21.5,8970.946666666667,0.04,24,43,Dic
+madrededios,Madre de Dios,Caimito,permanente,13.25,5528.606666666667,0.03,25,116,Ene
+madrededios,pillore de Dios,Pepinillo,transitorio,10.75,4485.473333333333,0.02,26,87,May
+madrededios,Madre de Dios,Marañón,permanente,5.5,2294.8933333333334,0.01,27,122,Jul
+madrededios,tomare de Dios,Tomate,transitorio,2.0,1767.9466666666667,0.0,28,66,May
+madrededios,Madre de Dios,Caigua,transitorio,1.0,417.2533333333333,0.0,29,106,Mar
+moquegua,Moquegua,Alfalfa,permanente,10329.0,1908248.3199999996,61.57,1,6,May
+moquegua,Moquegua,Palta,permanente,1481.0000000000002,1293999.0666666667,8.83,2,16,Nov
+moquegua,Moquegua,Maíz amiláceo,transitorio,715.0,298336.1333333333,4.26,3,8,Set
+moquegua,Moquegua,Papa,transitorio,635.0,368631.8933333333,3.79,4,4,Oct
+moquegua,Moquegua,Tuna,permanente,586.0,124950.82666666665,3.49,5,49,Nov
+moquegua,Moquegua,Orégano,permanente,481.0,110873.70666666668,2.87,6,81,Oct
+moquegua,Moquegua,Uva,permanente,457.9999999999999,337955.14666666667,2.73,7,24,Oct
+moquegua,Moquegua,Olivo,permanente,229.5,113960.51999999999,1.37,8,29,Nov
+moquegua,Moquegua,Lima,permanente,192.0,80112.64,1.14,9,101,Ene
+moquegua,Moquegua,Haba grano seco,transitorio,146.0,60918.986666666664,0.87,10,20,Ago
+moquegua,Moquegua,Cebada grano,transitorio,110.5,13436.8,0.66,11,13,Ene
+moquegua,Moquegua,Manzana,permanente,110.0,49942.93333333333,0.66,12,58,Feb
+moquegua,Moquegua,Maíz chala,transitorio,105.0,43811.6,0.63,13,26,Ago
+moquegua,Moquegua,Maíz amarillo duro,transitorio,85.0,35466.53333333333,0.51,14,5,Ago
+moquegua,Moquegua,Vainita,transitorio,85.0,13649.866666666667,0.51,15,90,Ago
+moquegua,Moquegua,Zapallo,transitorio,85.0,51575.73333333333,0.51,16,57,Abr
+moquegua,Moquegua,Trigo,transitorio,72.0,8755.2,0.43,17,12,Nov
+moquegua,Moquegua,Arándano,permanente,72.0,30042.239999999998,0.43,18,37,Dic
+moquegua,Moquegua,Cebolla de cabeza,transitorio,69.0,54368.32000000001,0.41,19,41,Nov
+moquegua,Moquegua,Maíz choclo,transitorio,56.0,23366.18666666667,0.33,20,21,Ago
+moquegua,Moquegua,Haba grano verde,transitorio,48.0,20028.16,0.29,21,47,Set
+moquegua,Moquegua,Damasco,permanente,47.0,19610.906666666666,0.28,22,140,Set
+moquegua,Moquegua,Quinua,transitorio,41.0,20752.56,0.24,23,18,Oct
+moquegua,Moquegua,Melocotón,permanente,39.0,27456.0,0.23,24,71,Oct
+moquegua,Moquegua,Maíz morado,transitorio,37.0,15438.373333333331,0.22,25,76,Ago
+moquegua,Moquegua,Arveja grano verde,transitorio,36.0,15021.119999999999,0.21,26,23,Ago
+moquegua,Moquegua,Chirimoya,permanente,34.0,9361.333333333332,0.2,27,78,Ene
+moquegua,Moquegua,Pera,permanente,32.0,13352.106666666667,0.19,28,125,Feb
+moquegua,Moquegua,Higo,permanente,29.0,12100.346666666666,0.17,29,126,Ene
+moquegua,Moquegua,Sandía,transitorio,27.0,16827.120000000003,0.16,30,67,Jun
+moquegua,Moquegua,Oca,transitorio,26.0,15253.333333333332,0.15,31,44,Oct
+moquegua,Moquegua,Ciruelo,permanente,24.999999999999996,10431.333333333334,0.15,32,137,May
+moquegua,Moquegua,Pacae,permanente,24.999999999999996,10431.333333333334,0.15,33,61,Set
+moquegua,Moquegua,Membrillo,permanente,24.0,10014.08,0.14,34,128,Abr
+moquegua,Moquegua,Avena forrajera,transitorio,23.0,9596.826666666666,0.14,35,10,Dic
+moquegua,Moquegua,Limón,permanente,20.0,12593.706666666665,0.12,36,30,Mar
+moquegua,Moquegua,Mango,permanente,19.0,12652.48,0.11,37,25,Abr
+moquegua,Moquegua,Naranja,permanente,15.0,8927.2,0.09,38,27,Mar
+moquegua,Moquegua,Guayaba,permanente,12.0,5007.039999999999,0.07,39,114,Ene
+moquegua,Moquegua,Frijol,transitorio,11.0,4589.786666666667,0.07,40,15,Ago
+moquegua,Moquegua,Ajo,transitorio,11.0,5714.426666666667,0.07,41,54,Jun
+moquegua,Moquegua,Mashua,transitorio,11.0,4589.786666666667,0.07,42,60,Oct
+moquegua,Moquegua,Zanahoria,transitorio,11.0,6161.76,0.07,43,56,Ago
+moquegua,Moquegua,Lúcuma,permanente,10.0,4888.266666666667,0.06,44,105,Abr
+moquegua,Moquegua,Olluco,transitorio,10.0,3817.866666666667,0.06,45,33,Oct
+moquegua,Moquegua,Tomate,transitorio,10.0,8839.733333333334,0.06,46,66,Ago
+moquegua,Moquegua,Lechuga,transitorio,9.0,2069.76,0.05,47,65,May
+moquegua,Moquegua,Papaya,permanente,9.0,2588.88,0.05,48,42,Oct
+moquegua,Moquegua,Granada,permanente,7.0,4959.92,0.04,49,79,Dic
+moquegua,Moquegua,Arracacha,transitorio,4.0,1669.013333333333,0.02,50,92,Ene
+moquegua,Moquegua,Níspero,permanente,4.0,1669.0133333333333,0.02,51,136,Oct
+moquegua,Moquegua,Fresa,transitorio,2.0,1206.7200000000005,0.01,52,99,Abr
+moquegua,Moquegua,Maracuyá,permanente,1.9999999999999991,957.3333333333333,0.01,53,59,Abr
+moquegua,Moquegua,Ají,transitorio,1.0,799.9466666666667,0.01,54,70,Abr
+moquegua,Moquegua,Mandarina,permanente,0.9999999999999996,791.52,0.01,55,34,Dic
+moquegua,Moquegua,Plátano,permanente,0.9999999999999996,264.5333333333333,0.01,56,9,Nov
+pasco,Pasco,Brachiaria (pasto),permanente,57165.0,10561043.2,43.99,1,1,Ago
+pasco,Pasco,Café,permanente,18202.0,2962800.213333334,14.01,2,2,Feb
+pasco,Pasco,Plátano,permanente,8838.0,2337945.5999999996,6.8,3,9,Feb
+pasco,Pasco,Papa,transitorio,7901.0,4586709.589333333,6.08,4,4,Oct
+pasco,Pasco,Cacao,permanente,6813.0,1818980.16,5.24,5,7,Mar
+pasco,Pasco,Yuca,transitorio,5021.0,557264.0533333335,3.86,6,11,Set
+pasco,Pasco,Achiote,permanente,4984.0,2079590.613333333,3.84,7,43,Jun
+pasco,Pasco,Maíz amarillo duro,transitorio,4790.0,1998643.4666666666,3.69,8,5,Set
+pasco,Pasco,Granadilla,permanente,1860.5,646908.2533333334,1.43,9,64,Oct
+pasco,Pasco,Maíz amiláceo,transitorio,1485.0,619621.2,1.14,10,8,Oct
+pasco,Pasco,Arroz,transitorio,1427.0,906209.6906666667,1.1,11,3,Set
+pasco,Pasco,Rocoto,transitorio,1389.0,391883.2,1.07,12,102,Mar
+pasco,Pasco,Frijol,transitorio,1125.0,469410.0,0.87,13,15,Set
+pasco,Pasco,Ryegrass (pasto),permanente,994.45,183721.32266666665,0.77,14,17,Ago
+pasco,Pasco,Maíz choclo,transitorio,774.0,322954.07999999996,0.6,15,21,Set
+pasco,Pasco,Olluco,transitorio,723.0,276031.76,0.56,16,33,Set
+pasco,Pasco,Arveja grano verde,transitorio,689.0,287487.54666666663,0.53,17,23,Mar
+pasco,Pasco,Zapallo,transitorio,649.0,393795.8933333333,0.5,18,57,Set
+pasco,Pasco,Oca,transitorio,601.0,352586.6666666666,0.46,19,44,Set
+pasco,Pasco,Palta,permanente,579.0,505891.6,0.45,20,16,Mar
+pasco,Pasco,Haba grano seco,transitorio,491.0,204871.38666666663,0.38,21,20,Set
+pasco,Pasco,Trébol,permanente,389.219,71906.91285333331,0.3,22,45,May
+pasco,Pasco,Maca,transitorio,351.0,146455.91999999998,0.27,23,80,Oct
+pasco,Pasco,Caigua,transitorio,335.0,139779.86666666667,0.26,24,106,Set
+pasco,Pasco,Haba grano verde,transitorio,312.0,130183.04,0.24,25,47,Oct
+pasco,Pasco,Alfalfa,permanente,302.0,55793.49333333333,0.23,26,6,Ene
+pasco,Pasco,Ají,transitorio,291.0,232784.48,0.22,27,70,Abr
+pasco,Pasco,Calabaza,transitorio,238.0,99306.29333333333,0.18,28,112,Set
+pasco,Pasco,Papaya,permanente,215.0,61845.46666666668,0.17,29,42,Set
+pasco,Pasco,Pituca,transitorio,147.0,61336.24,0.11,30,85,Nov
+pasco,Pasco,Trigo,transitorio,138.0,16780.8,0.11,31,12,Ene
+pasco,Pasco,Arveja grano seco,transitorio,134.0,55911.94666666667,0.1,32,22,Oct
+pasco,Pasco,Avena forrajera,transitorio,107.0,44646.10666666667,0.08,33,10,Dic
+pasco,Pasco,Cebada grano,transitorio,105.0,12768.0,0.08,34,13,Ene
+pasco,Pasco,Zanahoria,transitorio,55.0,30808.800000000003,0.04,35,56,Oct
+pasco,Pasco,Naranja,permanente,54.0,32137.920000000006,0.04,36,27,Ago
+pasco,Pasco,Cocona,permanente,49.0,20445.413333333334,0.04,37,84,Abr
+pasco,Pasco,Arracacha,transitorio,47.0,19610.906666666666,0.04,38,92,Nov
+pasco,Pasco,Piña,permanente,47.0,19713.68,0.04,39,40,Abr
+pasco,Pasco,Chirimoya,permanente,23.0,6332.666666666666,0.02,40,78,Jul
+pasco,Pasco,Lúcuma,permanente,22.0,10754.186666666666,0.02,41,105,Abr
+pasco,Pasco,Mandarina,permanente,22.0,17413.44,0.02,42,34,Mar
+pasco,Pasco,Caña de azúcar para alcohol,permanente,18.0,7510.5599999999995,0.01,43,32,Set
+pasco,Pasco,Cebada forrajera,transitorio,11.0,4589.786666666666,0.01,44,36,Oct
+pasco,Pasco,Ajo,transitorio,10.0,5194.933333333333,0.01,45,54,Oct
+pasco,Pasco,Limón,permanente,10.0,6296.853333333334,0.01,46,30,Abr
+pasco,Pasco,Mango,permanente,6.0,3995.5199999999995,0.0,47,25,Ene
+pasco,Pasco,Tomate,transitorio,5.0,4419.866666666667,0.0,48,66,Jun
+pasco,Pasco,Toronja,permanente,5.0,2086.2666666666664,0.0,49,115,Oct
+pasco,Pasco,Tuna,permanente,4.5,959.52,0.0,50,49,Ago
+pasco,Pasco,Mashua,transitorio,4.0,1669.013333333333,0.0,51,60,Set
+pasco,Pasco,Lima,permanente,1.9999999999999991,834.5066666666667,0.0,52,101,May
+piura,Piura,Arroz,transitorio,53234.0,33806003.27466667,22.06,1,3,Feb
+piura,Piura,Mango,permanente,26292.0,17508368.64,10.89,2,25,Jun
+piura,Piura,Maíz amarillo duro,transitorio,23833.0,9944398.693333333,9.88,3,5,Set
+piura,Piura,Limón,permanente,16290.0,10257574.08,6.75,4,30,Ene
+piura,Piura,Maíz amiláceo,transitorio,14041.0,5858654.053333334,5.82,5,8,Feb
+piura,Piura,Plátano,permanente,13833.0,3659289.6000000006,5.73,6,9,Oct
+piura,Piura,Castilla,transitorio,13433.0,5604964.026666666,5.57,7,31,Abr
+piura,Piura,Trigo,transitorio,10084.0,1226214.4000000001,4.18,8,12,Mar
+piura,Piura,Caña de azúcar para etanol,permanente,9896.599999999999,4129389.3386666663,4.1,9,52,Abr
+piura,Piura,Café,permanente,8062.0,1312278.6133333337,3.34,10,2,Nov
+piura,Piura,Uva,permanente,7764.0,5729003.839999999,3.22,11,24,Jul
+piura,Piura,Frijol,transitorio,6133.0,2559014.6933333334,2.54,12,15,Abr
+piura,Piura,Arveja grano seco,transitorio,5113.0,2133416.2933333335,2.12,13,22,Mar
+piura,Piura,Caña de azúcar para alcohol,permanente,4867.0,2030771.9733333334,2.02,14,32,Dic
+piura,Piura,Pasto elefante,permanente,4354.0,1816721.0133333332,1.8,15,19,Dic
+piura,Piura,Frijol loctao,transitorio,3190.0,1331038.1333333333,1.32,16,53,Abr
+piura,Piura,Algodón,transitorio,2840.0,890926.9333333335,1.18,17,46,Mar
+piura,Piura,Papa,transitorio,2130.0,1236513.28,0.88,18,4,Mar
+piura,Piura,Maracuyá,permanente,1540.0,737146.6666666667,0.64,19,59,Abr
+piura,Piura,Cacao,permanente,1488.9999999999998,397543.1466666667,0.62,20,7,Nov
+piura,Piura,Camote,transitorio,1137.0,367993.84,0.47,21,38,Ago
+piura,Piura,Yuca,transitorio,1009.0,111985.54666666668,0.42,22,11,Mar
+piura,Piura,Pimiento piquillo,transitorio,861.0,1223446.56,0.36,23,98,May
+piura,Piura,Arveja grano verde,transitorio,813.0,339226.95999999996,0.34,24,23,Set
+piura,Piura,Palta,permanente,766.9999999999999,670153.4666666667,0.32,25,16,Dic
+piura,Piura,Haba grano seco,transitorio,702.0,292911.84,0.29,26,20,Feb
+piura,Piura,Sandía,transitorio,618.0,385154.08,0.26,27,67,Abr
+piura,Piura,Arándano,permanente,541.0,225734.05333333334,0.22,28,37,Oct
+piura,Piura,Maíz choclo,transitorio,500.0,208626.66666666666,0.21,29,21,Ago
+piura,Piura,Maní,transitorio,497.0,207374.90666666668,0.21,30,75,Feb
+piura,Piura,Oca,transitorio,487.0,285706.6666666666,0.2,31,44,Nov
+piura,Piura,Olluco,transitorio,474.0,180966.88,0.2,32,33,Nov
+piura,Piura,Naranja,permanente,463.0,275552.90666666673,0.19,33,27,Jun
+piura,Piura,Soya,transitorio,425.0,177332.66666666666,0.18,34,108,May
+piura,Piura,Pimiento,transitorio,421.0,374319.52,0.17,35,94,Feb
+piura,Piura,Cebada grano,transitorio,417.0,50707.2,0.17,36,13,Feb
+piura,Piura,Chirimoya,permanente,396.0,109032.0,0.16,37,78,Abr
+piura,Piura,Cebolla de cabeza,transitorio,318.0,250567.04,0.13,38,41,Ago
+piura,Piura,Taperibá,permanente,264.99999999999994,110572.13333333333,0.11,39,118,Feb
+piura,Piura,Alfalfa,permanente,249.99999999999994,46186.66666666666,0.1,40,6,Dic
+piura,Piura,Granadilla,permanente,239.0,83101.89333333336,0.1,41,64,May
+piura,Piura,Tamarindo,permanente,219.0,91378.48,0.09,42,133,Feb
+piura,Piura,Frijol de palo,transitorio,180.0,75105.6,0.07,43,111,Nov
+piura,Piura,Lúcuma,permanente,148.0,72346.34666666666,0.06,44,105,Nov
+piura,Piura,Zanahoria,transitorio,143.0,80102.88,0.06,45,56,Dic
+piura,Piura,Papaya,permanente,128.0,36819.62666666667,0.05,46,42,Jul
+piura,Piura,Tomate,transitorio,111.0,98121.04,0.05,47,66,Jun
+piura,Piura,Ajo,transitorio,106.0,55066.293333333335,0.04,48,54,May
+piura,Piura,Coco,permanente,106.0,44228.85333333333,0.04,49,82,Jun
+piura,Piura,Melon,transitorio,80.0,33380.26666666666,0.03,50,103,Jun
+piura,Piura,Ciruela,permanente,36.0,15021.119999999999,0.01,51,119,Dic
+piura,Piura,Páprika,transitorio,35.0,24998.4,0.01,52,68,Mar
+piura,Piura,Mamey,permanente,15.0,6258.799999999999,0.01,53,141,Feb
+piura,Piura,Guanábana,permanente,4.0,1669.0133333333333,0.0,54,100,Jul
+puno,Puno,Alfalfa,permanente,93244.0,17226518.186666664,26.62,1,6,Feb
+puno,Puno,Avena forrajera,transitorio,85732.0,35771962.77333333,24.48,2,10,Dic
+puno,Puno,Papa,transitorio,56575.0,32843069.866666663,16.15,3,4,Nov
+puno,Puno,Quinua,transitorio,27679.0,14010002.64,7.9,4,18,Oct
+puno,Puno,Cebada forrajera,transitorio,14952.0,6238771.84,4.27,5,36,Dic
+puno,Puno,Cebada grano,transitorio,14496.0,1762713.6,4.14,6,13,Oct
+puno,Puno,Café,permanente,10975.0,1786437.3333333337,3.13,7,2,Jun
+puno,Puno,Haba grano seco,transitorio,9268.0,3867103.893333333,2.65,8,20,Set
+puno,Puno,Avena grano,transitorio,5073.0,2116726.16,1.45,9,51,Oct
+puno,Puno,Cañihua,transitorio,4212.0,1757471.04,1.2,10,69,Oct
+puno,Puno,Maíz amiláceo,transitorio,3542.0,1477911.3066666666,1.01,11,8,Set
+puno,Puno,Oca,transitorio,2859.0,1677279.9999999998,0.82,12,44,Oct
+puno,Puno,Naranja,permanente,2713.9999999999995,1615228.0533333337,0.77,13,27,Nov
+puno,Puno,Maíz amarillo duro,transitorio,2473.0,1031867.4933333333,0.71,14,5,Set
+puno,Puno,Yuca,transitorio,2099.0,232961.01333333337,0.6,15,11,Set
+puno,Puno,Olluco,transitorio,1813.0,692179.2266666667,0.52,16,33,Oct
+puno,Puno,Pituca,transitorio,1778.0,741876.4266666666,0.51,17,85,Set
+puno,Puno,Plátano,permanente,1238.0000000000002,327492.2666666667,0.35,18,9,Abr
+puno,Puno,Tarwi,transitorio,1051.0,438533.25333333336,0.3,19,50,Oct
+puno,Puno,Arveja grano seco,transitorio,997.0,416001.5733333333,0.28,20,22,Set
+puno,Puno,Cacao,permanente,951.0,253904.32,0.27,21,7,May
+puno,Puno,Mandarina,permanente,903.0,714742.5599999999,0.26,22,34,Jul
+puno,Puno,Trigo,transitorio,899.0,109318.4,0.26,23,12,Oct
+puno,Puno,Mashua,transitorio,874.0,364679.41333333333,0.25,24,60,Oct
+puno,Puno,Piña,permanente,838.0,351490.72,0.24,25,40,Ene
+puno,Puno,Frijol,transitorio,522.0,217806.24,0.15,26,15,Set
+puno,Puno,Papaya,permanente,456.0,131169.92,0.13,27,42,Oct
+puno,Puno,Cebolla de cabeza,transitorio,342.0,269477.76,0.1,28,41,Oct
+puno,Puno,Palta,permanente,249.99999999999994,218433.3333333333,0.07,29,16,Nov
+puno,Puno,Camote,transitorio,249.0,80589.68000000001,0.07,30,38,Set
+puno,Puno,Haba grano verde,transitorio,157.0,65508.77333333333,0.04,31,47,Ago
+puno,Puno,Granadilla,permanente,151.0,52503.70666666668,0.04,32,64,Nov
+puno,Puno,Cocona,permanente,107.0,44646.10666666666,0.03,33,84,Abr
+puno,Puno,Zapallo,transitorio,96.0,58250.24,0.03,34,57,Set
+puno,Puno,Maca,transitorio,85.0,35466.53333333333,0.02,35,80,Set
+puno,Puno,Lima,permanente,84.0,35049.28,0.02,36,101,Ago
+puno,Puno,Toronja,permanente,70.0,29207.73333333333,0.02,37,115,May
+puno,Puno,Melocotón,permanente,59.0,41536.0,0.02,38,71,Ago
+puno,Puno,Chirimoya,permanente,50.0,13766.666666666666,0.01,39,78,Nov
+puno,Puno,Arracacha,transitorio,45.0,18776.4,0.01,40,92,Ago
+puno,Puno,Calabaza,transitorio,40.0,16690.13333333333,0.01,41,112,Set
+puno,Puno,Soya,transitorio,40.0,16690.133333333335,0.01,42,108,Set
+puno,Puno,Maní,transitorio,37.0,15438.373333333333,0.01,43,75,Set
+puno,Puno,Achiote,permanente,30.0,12517.599999999999,0.01,44,43,Nov
+puno,Puno,Ajo,transitorio,25.0,12987.333333333336,0.01,45,54,Nov
+puno,Puno,Guayaba,permanente,24.0,10014.08,0.01,46,114,Dic
+puno,Puno,Maíz choclo,transitorio,23.0,9596.826666666666,0.01,47,21,Ago
+puno,Puno,Arroz,transitorio,22.0,13970.997333333336,0.01,48,3,Set
+puno,Puno,Zanahoria,transitorio,17.0,9522.720000000001,0.0,49,56,Set
+puno,Puno,Orégano,permanente,13.0,2996.586666666667,0.0,50,81,Nov
+puno,Puno,Pijuayo,permanente,9.0,480.0,0.0,51,72,Ene
+puno,Puno,Lechuga,transitorio,8.0,1839.7866666666664,0.0,52,65,Oct
+puno,Puno,Limón,permanente,6.0,3778.112,0.0,53,30,Nov
+puno,Puno,Frijol loctao,transitorio,1.0,417.2533333333333,0.0,54,53,Mar
+sanmartin,San Martín,Arroz,transitorio,115831.0,73557936.00533333,20.99,1,3,Jun
+sanmartin,San Martín,Brachiaria (pasto),permanente,101893.04999999999,18824401.343999993,18.47,2,1,Oct
+sanmartin,San Martín,Café,permanente,80164.0,13048561.49333334,14.53,3,2,Abr
+sanmartin,San Martín,Cacao,permanente,70487.76999999999,18819294.753066666,12.78,4,7,Abr
+sanmartin,San Martín,Maíz amarillo duro,transitorio,68650.0,28644441.333333332,12.44,5,5,Set
+sanmartin,San Martín,Palma,permanente,37192.0,15518485.973333333,6.74,6,14,Set
+sanmartin,San Martín,Plátano,permanente,35150.9,9298584.746666668,6.37,7,9,Ago
+sanmartin,San Martín,Pasto elefante,permanente,12797.54,5339816.223466667,2.32,8,19,May
+sanmartin,San Martín,Yuca,transitorio,8267.0,917526.7733333334,1.5,9,11,Abr
+sanmartin,San Martín,Naranja,permanente,5122.0,3048341.226666667,0.93,10,27,Ene
+sanmartin,San Martín,Frijol,transitorio,4118.5,1718457.8533333333,0.75,11,15,Jun
+sanmartin,San Martín,Caña de azúcar para alcohol,permanente,2388.18,996476.0655999999,0.43,12,32,Feb
+sanmartin,San Martín,Papaya,permanente,1537.1,442151.9386666667,0.28,13,42,Jun
+sanmartin,San Martín,Castilla,transitorio,1500.5,626088.6266666667,0.27,14,31,Jun
+sanmartin,San Martín,Pijuayo,permanente,1497.52,79867.73333333334,0.27,15,72,Ene
+sanmartin,San Martín,Sacha inchi,permanente,748.1899999999999,312184.7714666666,0.14,16,107,Jul
+sanmartin,San Martín,Piña,permanente,744.85,312419.88399999996,0.13,17,40,Mar
+sanmartin,San Martín,Maní,transitorio,710.5,296458.49333333335,0.13,18,75,Jun
+sanmartin,San Martín,Pacae,permanente,672.4999999999999,280602.86666666664,0.12,19,61,Nov
+sanmartin,San Martín,Algodón,transitorio,586.0,183832.1066666667,0.11,20,46,Mar
+sanmartin,San Martín,Limón,permanente,436.5,274857.648,0.08,21,30,Dic
+sanmartin,San Martín,Coco,permanente,358.5,149585.32,0.06,22,82,May
+sanmartin,San Martín,Tomate,transitorio,240.75,212816.58000000002,0.04,23,66,Jul
+sanmartin,San Martín,Uva,permanente,140.0,103305.06666666667,0.03,24,24,Set
+sanmartin,San Martín,Cocona,permanente,131.0,54660.18666666667,0.02,25,84,Jun
+sanmartin,San Martín,Mango,permanente,73.5,48945.12,0.01,26,25,May
+sanmartin,San Martín,Palta,permanente,54.0,47181.600000000006,0.01,27,16,Jul
+sanmartin,San Martín,Caimito,permanente,51.5,21488.54666666667,0.01,28,116,Ene
+sanmartin,San Martín,Zapote,permanente,45.0,18776.4,0.01,29,113,Ene
+sanmartin,San Martín,Mandarina,permanente,34.0,26911.68,0.01,30,34,May
+sanmartin,San Martín,Soya,transitorio,31.0,12934.853333333333,0.01,31,108,May
+sanmartin,San Martín,Ají,transitorio,25.5,20398.64,0.0,32,70,May
+sanmartin,San Martín,Pomarosa,permanente,14.0,5841.546666666667,0.0,33,134,Set
+sanmartin,San Martín,Pepinillo,transitorio,12.0,5007.04,0.0,34,87,Set
+sanmartin,San Martín,Caigua,transitorio,10.0,4172.533333333333,0.0,35,106,Nov
+sanmartin,San Martín,Taperibá,permanente,5.5,2294.8933333333334,0.0,36,118,Oct
+sanmartin,San Martín,Zapallo,transitorio,5.5,3337.253333333333,0.0,37,57,Oct
+sanmartin,San Martín,Chirimoya,permanente,4.0,1101.333333333333,0.0,38,78,Nov
+sanmartin,San Martín,Toronja,permanente,3.4,1418.661333333333,0.0,39,115,Nov
+sanmartin,San Martín,Anona,permanente,3.0,1251.7599999999998,0.0,40,121,Oct
+sanmartin,San Martín,Limón dulce,permanente,2.4999999999999996,1043.1333333333332,0.0,41,123,Dic
+sanmartin,San Martín,Guayaba,permanente,0.9999999999999996,417.25333333333333,0.0,42,114,Dic
+tacna,Tacna,Olivo,permanente,21517.0,10684481.52,47.47,1,29,May
+tacna,Tacna,Alfalfa,permanente,11339.0,2094842.4533333331,25.02,2,6,May
+tacna,Tacna,Orégano,permanente,2085.0,480606.4000000001,4.6,3,81,Mar
+tacna,Tacna,Maíz chala,transitorio,1967.0,820737.3066666666,4.34,4,26,Ene
+tacna,Tacna,Naranja,permanente,1128.9999999999998,671920.5866666668,2.49,5,27,Jul
+tacna,Tacna,Ají,transitorio,1108.0,886340.9066666667,2.44,6,70,Set
+tacna,Tacna,Uva,permanente,598.0,441260.2133333333,1.32,7,24,Jul
+tacna,Tacna,Maíz amiláceo,transitorio,566.0,236165.3866666667,1.25,8,8,Oct
+tacna,Tacna,Sandía,transitorio,550.0,342774.6666666666,1.21,9,67,Jul
+tacna,Tacna,Camote,transitorio,524.0,169594.34666666668,1.16,10,38,Dic
+tacna,Tacna,Papa,transitorio,432.0,250785.792,0.95,11,4,Oct
+tacna,Tacna,Zapallo,transitorio,430.0,260912.53333333333,0.95,12,57,Mar
+tacna,Tacna,Cebolla de cabeza,transitorio,353.0,278145.17333333334,0.78,13,41,Nov
+tacna,Tacna,Tomate,transitorio,314.0,277567.62666666665,0.69,14,66,Oct
+tacna,Tacna,Quinua,transitorio,243.0,122996.87999999999,0.54,15,18,Dic
+tacna,Tacna,Pepinillo,transitorio,210.0,87623.2,0.46,16,87,Set
+tacna,Tacna,Pimiento,transitorio,168.0,149372.16,0.37,17,94,Set
+tacna,Tacna,Betarraga,transitorio,141.0,58832.72,0.31,18,89,Set
+tacna,Tacna,Maíz choclo,transitorio,135.0,56329.2,0.3,19,21,Set
+tacna,Tacna,Manzana,permanente,122.0,55391.25333333333,0.27,20,58,Nov
+tacna,Tacna,Apio,transitorio,121.0,50487.653333333335,0.27,21,95,Set
+tacna,Tacna,Lechuga,transitorio,108.0,24837.12,0.24,22,65,Nov
+tacna,Tacna,Tuna,permanente,108.0,23028.48,0.24,23,49,Mar
+tacna,Tacna,Vainita,transitorio,108.0,17343.36,0.24,24,90,Abr
+tacna,Tacna,Haba grano verde,transitorio,101.0,42142.58666666666,0.22,25,47,Jul
+tacna,Tacna,Pera,permanente,97.0,40473.573333333334,0.21,26,125,Dic
+tacna,Tacna,Brócoli,transitorio,81.0,41389.92,0.18,27,83,Ago
+tacna,Tacna,Melon,transitorio,80.0,33380.26666666666,0.18,28,103,Oct
+tacna,Tacna,Palta,permanente,79.0,69024.93333333333,0.17,29,16,Set
+tacna,Tacna,Col,transitorio,70.0,29207.733333333334,0.15,30,91,Oct
+tacna,Tacna,Coliflor,transitorio,62.0,25869.706666666665,0.14,31,109,Dic
+tacna,Tacna,Melocotón,permanente,58.0,40832.0,0.13,32,71,May
+tacna,Tacna,Nabo,transitorio,46.0,19193.653333333332,0.1,33,124,Set
+tacna,Tacna,Espinaca,transitorio,41.0,17107.386666666665,0.09,34,104,Set
+tacna,Tacna,Poro,transitorio,37.0,15438.373333333333,0.08,35,110,Set
+tacna,Tacna,Ciruelo,permanente,29.0,12100.346666666666,0.06,36,137,Ene
+tacna,Tacna,Higo,permanente,26.0,10848.586666666666,0.06,37,126,Nov
+tacna,Tacna,Páprika,transitorio,26.0,18570.24,0.06,38,68,Set
+tacna,Tacna,Granada,permanente,21.0,14879.76,0.05,39,79,Ago
+tacna,Tacna,Rabanito,transitorio,21.0,8762.32,0.05,40,120,Dic
+tacna,Tacna,Ajo,transitorio,19.0,9870.373333333333,0.04,41,54,Ago
+tacna,Tacna,Arveja grano verde,transitorio,17.0,7093.306666666666,0.04,42,23,Ago
+tacna,Tacna,Damasco,permanente,16.0,6676.053333333333,0.04,43,140,Dic
+tacna,Tacna,Membrillo,permanente,13.0,5424.293333333333,0.03,44,128,Jun
+tacna,Tacna,Acelga,transitorio,4.0,1669.0133333333333,0.01,45,130,Mar
+tacna,Tacna,Plátano,permanente,4.0,1058.1333333333332,0.01,46,9,Jul
+tacna,Tacna,Cebada grano,transitorio,2.0,243.2,0.0,47,13,Ene
+tumbes,Tumbes,Arroz,transitorio,16806.4,10672825.890133334,64.34,1,3,Feb
+tumbes,Tumbes,Plátano,permanente,3857.5299999999997,1020445.2693333332,14.77,2,9,Oct
+tumbes,Tumbes,Limón,permanente,2819.7,1775523.7344,10.79,3,30,Dic
+tumbes,Tumbes,Maíz amarillo duro,transitorio,623.8,260282.62933333332,2.39,4,5,Feb
+tumbes,Tumbes,Cacao,permanente,578.03,154326.30293333333,2.21,5,7,Jul
+tumbes,Tumbes,Ciruela,permanente,399.0,166484.08000000002,1.53,6,119,Abr
+tumbes,Tumbes,Maíz choclo,transitorio,360.45,150398.964,1.38,7,21,Jun
+tumbes,Tumbes,Yuca,transitorio,274.05,30415.896000000004,1.05,8,11,Feb
+tumbes,Tumbes,Pasto elefante,permanente,83.4,34798.928,0.32,9,19,Ago
+tumbes,Tumbes,Mango,permanente,61.89,41213.788799999995,0.24,10,25,Dic
+tumbes,Tumbes,Castilla,transitorio,45.3,18901.576,0.17,11,31,Feb
+tumbes,Tumbes,Papaya,permanente,39.25,11290.393333333333,0.15,12,42,Set
+tumbes,Tumbes,Tamarindo,permanente,36.55,15250.609333333332,0.14,13,133,Ago
+tumbes,Tumbes,Maracuyá,permanente,25.25,12086.333333333332,0.1,14,59,Jul
+tumbes,Tumbes,Naranja,permanente,19.200000000000003,11426.816000000003,0.07,15,27,Jun
+tumbes,Tumbes,Toronja,permanente,18.0,7510.5599999999995,0.07,16,115,Mar
+tumbes,Tumbes,Pimiento,transitorio,12.3,10936.176,0.05,17,94,Oct
+tumbes,Tumbes,Soya,transitorio,12.0,5007.04,0.05,18,108,Jun
+tumbes,Tumbes,Sandía,transitorio,10.75,6699.6866666666665,0.04,19,67,Feb
+tumbes,Tumbes,Zapallo,transitorio,6.5,3944.0266666666666,0.02,20,57,Feb
+tumbes,Tumbes,Lechuga,transitorio,5.6000000000000005,1287.8506666666667,0.02,21,65,Dic
+tumbes,Tumbes,Coco,permanente,5.4,2253.168,0.02,22,82,Abr
+tumbes,Tumbes,Cebolla china,transitorio,4.4,3466.9653333333335,0.02,23,96,Dic
+tumbes,Tumbes,Melon,transitorio,4.2,1752.4639999999997,0.02,24,103,Feb
+tumbes,Tumbes,Achiote,permanente,3.049999999999999,1272.6226666666666,0.01,25,43,Feb
+tumbes,Tumbes,Tomate,transitorio,2.95,2607.7213333333334,0.01,26,66,Jul
+tumbes,Tumbes,Tangelo,permanente,1.9999999999999991,1501.8133333333333,0.01,27,77,Dic
+tumbes,Tumbes,Ají,transitorio,1.75,1399.9066666666668,0.01,28,70,Jun
+tumbes,Tumbes,Mandarina,permanente,0.9999999999999996,791.52,0.0,29,34,Feb
+tumbes,Tumbes,Uva,permanente,0.9999999999999996,737.8933333333333,0.0,30,24,Feb
+tumbes,Tumbes,Camote,transitorio,0.8,258.9226666666667,0.0,31,38,Jun
+tumbes,Tumbes,Carambola,permanente,0.4999999999999992,208.62666666666667,0.0,32,129,Jul
+ucayali,Ucayali,Palma,permanente,46210.0,19281276.533333335,27.15,1,14,Nov
+ucayali,Ucayali,Cacao,permanente,24529.0,6548915.946666667,14.41,2,7,Ago
+ucayali,Ucayali,Plátano,permanente,20789.0,5499383.466666669,12.21,3,9,Dic
+ucayali,Ucayali,Arroz,transitorio,20465.0,12996202.746666666,12.02,4,3,Jun
+ucayali,Ucayali,Maíz amarillo duro,transitorio,12778.0,5331663.093333333,7.51,5,5,Set
+ucayali,Ucayali,Yuca,transitorio,11244.0,1247934.08,6.61,6,11,Ago
+ucayali,Ucayali,Café,permanente,11100.0,1806784.0000000005,6.52,7,2,Oct
+ucayali,Ucayali,Papaya,permanente,4929.0,1417843.28,2.9,8,42,Dic
+ucayali,Ucayali,Limón,permanente,1623.5,1022294.1386666667,0.95,9,30,Mar
+ucayali,Ucayali,Naranja,permanente,1323.9999999999998,787974.1866666668,0.78,10,27,Ene
+ucayali,Ucayali,Pacae,permanente,1128.5000000000002,470870.38666666666,0.66,11,61,Jun
+ucayali,Ucayali,Coco,permanente,1098.0,458144.16000000003,0.65,12,82,Abr
+ucayali,Ucayali,Caña de azúcar para alcohol,permanente,940.0,392218.1333333333,0.55,13,32,Ene
+ucayali,Ucayali,Castilla,transitorio,930.0,388045.6,0.55,14,31,Jun
+ucayali,Ucayali,Pijuayo,permanente,839.3800000000001,44766.933333333334,0.49,15,72,Ene
+ucayali,Ucayali,Mandarina,permanente,790.0,625300.8,0.46,16,34,Ago
+ucayali,Ucayali,Frijol,transitorio,788.0,328795.62666666665,0.46,17,15,Jun
+ucayali,Ucayali,Camu camu,permanente,721.2,300923.104,0.42,18,74,Nov
+ucayali,Ucayali,Piña,permanente,648.0,271797.12,0.38,19,40,Jul
+ucayali,Ucayali,Soya,transitorio,617.0,257445.30666666664,0.36,20,108,Nov
+ucayali,Ucayali,Cocona,permanente,557.5,232618.7333333334,0.33,21,84,Mar
+ucayali,Ucayali,Zapote,permanente,490.0,204454.13333333336,0.29,22,113,Nov
+ucayali,Ucayali,Maní,transitorio,432.0,180253.44,0.25,23,75,Jun
+ucayali,Ucayali,Anona,permanente,417.0,173994.63999999998,0.24,24,121,Feb
+ucayali,Ucayali,Mango,permanente,408.0,271695.36,0.24,25,25,Jun
+ucayali,Ucayali,Caimito,permanente,405.0,168987.59999999998,0.24,26,116,Dic
+ucayali,Ucayali,Tangelo,permanente,391.0,293604.50666666665,0.23,27,77,Jun
+ucayali,Ucayali,Guanábana,permanente,372.0,155218.24,0.22,28,100,Oct
+ucayali,Ucayali,Palta,permanente,356.22999999999996,311250.0253333334,0.21,29,16,Mar
+ucayali,Ucayali,Guayaba,permanente,345.0,143952.4,0.2,30,114,Abr
+ucayali,Ucayali,Taperibá,permanente,333.0,138945.36000000002,0.2,31,118,Nov
+ucayali,Ucayali,Marañón,permanente,327.99999999999994,136859.09333333332,0.19,32,122,May
+ucayali,Ucayali,Frijol de palo,transitorio,277.0,115579.17333333334,0.16,33,111,Jun
+ucayali,Ucayali,Algodón,transitorio,225.0,70584.00000000001,0.13,34,46,Set
+ucayali,Ucayali,Granadilla,permanente,207.0,71975.28,0.12,35,64,Nov
+ucayali,Ucayali,Sandía,transitorio,205.0,127761.46666666667,0.12,36,67,Jun
+ucayali,Ucayali,Achiote,permanente,201.0,83867.92,0.12,37,43,Jul
+ucayali,Ucayali,Pepinillo,transitorio,200.0,83450.66666666667,0.12,38,87,Jun
+ucayali,Ucayali,Frijol loctao,transitorio,114.0,47566.880000000005,0.07,39,53,Ene
+ucayali,Ucayali,Camote,transitorio,108.5,35116.38666666667,0.06,40,38,Oct
+ucayali,Ucayali,Pituca,transitorio,83.0,34632.026666666665,0.05,41,85,Set
+ucayali,Ucayali,Melon,transitorio,82.0,34214.77333333333,0.05,42,103,Jun
+ucayali,Ucayali,Tomate,transitorio,81.5,72043.82666666666,0.05,43,66,Jun
+ucayali,Ucayali,Maracuyá,permanente,81.0,38772.0,0.05,44,59,May
+ucayali,Ucayali,Ají,transitorio,9.0,7199.52,0.01,45,70,Mar
+ucayali,Ucayali,Té,permanente,8.0,3338.0266666666666,0.0,46,97,May
+ucayali,Ucayali,Zapallo,transitorio,2.0,1213.5466666666666,0.0,47,57,May
+ucayali,Ucayali,Col,transitorio,1.0,417.2533333333333,0.0,48,91,Set
+ucayali,Ucayali,Lechuga,transitorio,1.0,229.97333333333333,0.0,49,65,Nov

@@ -19,8 +19,9 @@ construye.
 | **SAM** — productores comerciales que ya compran | **US$ 512 MM** |
 | Clientes en el mercado atendible | 156,880 |
 | Empresas agrícolas formales con RUC | 21,063 |
-| Importadores de insumos agrícolas | 384 |
-| Agroexportadores con RUC verificado | 1,487 |
+| Importadores de insumos agrícolas | 491 |
+| Agroexportadores con RUC verificado | 1,529 |
+| Importación de insumos, anualizada | US$ 1,313 MM CIF |
 | Sectores estadísticos georreferenciados | 7,036 |
 
 El SAM está a distancia razonable: **74.6% a menos de dos horas** de un centro
@@ -30,6 +31,12 @@ provincial, medido por ruteo sobre la red vial. La demanda se concentra:
 ---
 
 ## Estructura
+
+El repositorio contiene dos cuerpos de trabajo. `datos/` es el mapeo
+territorial del mercado —dónde está la tierra, quién compra, cuándo y cuánto
+cuesta llegar—. `agro_insumos_pe_data/` es un proyecto autocontenido que
+extrae de los microdatos de aduanas quién importa insumos y quién exporta
+producción, con su propio pipeline y datos crudos.
 
 ```
 datos/
@@ -42,6 +49,13 @@ datos/
   geo/              geometrías: sectores y límites administrativos
 scripts/            el pipeline completo, en orden de dependencia
 docs/figuras/       mapas y gráficos generados
+
+agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
+  scripts/                     descarga y procesamiento, 4 pasos
+  raw_data/sunat/              20 archivos DBF de aduanas · 10 semanas
+  raw_data/midagri/            anuario agrícola 2022-2023, costos INEI
+  raw_data/github/             UBIGEO nacional y datasets de contexto
+  processed_data/              importadores, agroexportadores · CSV y JSON
 ```
 
 ### Archivos clave
@@ -54,7 +68,9 @@ docs/figuras/       mapas y gráficos generados
 | `datos/estacionalidad/estacionalidad_region.csv` | Demanda mes a mes, mes pico y concentración |
 | `datos/empresas/empresas_agro_activas.csv` | Empresas con RUC, razón social, clase y distrito |
 | `datos/comercio/comercio_importadores.csv` | Quién importa fertilizante y agroquímico, con valor FOB y distrito |
-| `datos/comercio/comercio_exportadores.csv` | Los 1,487 agroexportadores del país, con RUC, FOB y destinos |
+| `datos/comercio/comercio_exportadores.csv` | Los agroexportadores del país, con RUC, FOB y destinos |
+| `agro_insumos_pe_data/processed_data/importadores_insumos_agro.csv` | 446 importadores de insumos, sin el nitrato de amonio de uso minero |
+| `agro_insumos_pe_data/processed_data/agroexportadores.csv` | 1,529 agroexportadores consolidados por RUC |
 
 ---
 
@@ -141,6 +157,20 @@ con nombre neutro— y se restringe a personas jurídicas.
 oficial. Los datos territoriales sí lo son y se citan uno a uno. Como contraste
 externo: el modelo estima US$ 1,038 MM de fertilizante a precio de finca, contra
 US$ 693 MM CIF importados en 2024, que cubren el 89.5% de la oferta nacional.
+
+---
+
+## Sobre los datos crudos de aduanas
+
+`agro_insumos_pe_data/raw_data/sunat/` versiona los 20 archivos DBF originales
+(197 MB) para que el análisis sea reproducible tal cual, sin depender de que
+SUNAT siga publicando esas semanas. Conviene saber que **SUNAT mantiene una
+ventana móvil de unas diez semanas, no un histórico**: acumular series exige
+correr `02_sunat_aduanas.py` de forma periódica.
+
+Si con el tiempo se acumulan muchas corridas, lo sano es mover los archivos
+crudos a *Releases* de GitHub en vez de al historial de git, que conserva cada
+versión para siempre y encarece cada clon.
 
 ---
 

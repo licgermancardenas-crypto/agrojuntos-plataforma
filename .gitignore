@@ -1,9 +1,17 @@
-# Datos crudos: 1.6 GB, públicos y reproducibles con los scripts de descarga.
-data/
-*.zip
+# Entornos virtuales
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Datos crudos del mapeo territorial: 1.6 GB, publicos y reproducibles
+# con los scripts de descarga. (No usar patrones tipo AGRO*/ : git en
+# Windows los aplica sin distinguir mayusculas y se traga
+# agro_insumos_pe_data/, que si debe versionarse.)
+/data/
 *.pbf
 
 # Confidencial: libro de ventas y cotizaciones de AgroJuntos.
-# No va a un repositorio público.
+# No va a un repositorio publico.
 ventas_*.csv
 *cotizacion*

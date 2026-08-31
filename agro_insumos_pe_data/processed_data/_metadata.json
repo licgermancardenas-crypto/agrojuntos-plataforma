@@ -1,0 +1,25 @@
+{
+  "generado": "2026-08-31 00:49",
+  "semanas_observadas": 10,
+  "periodo": [
+    "2026-06-15",
+    "2026-08-27"
+  ],
+  "lineas_importacion_leidas": 2953512,
+  "lineas_exportacion_leidas": 387669,
+  "importadores_insumos": 491,
+  "agroexportadores": 1529,
+  "importadores_sin_uso_dual": 446,
+  "fob_insumos_periodo_usd": 252455988.403,
+  "fob_insumos_anualizado_usd": 1312771139.6956,
+  "partidas_filtro": [
+    "1209",
+    "2510",
+    "3101",
+    "3102",
+    "3103",
+    "3104",
+    "3105",
+    "3808"
+  ]
+}

@@ -24,11 +24,11 @@ SALIDA = os.path.join(RAIZ, "out", "atlas_geo.html")
 DASHBOARD = os.path.abspath(
     os.path.join(RAIZ, "..", "..", "dashboard", "mapa.html"))
 
-# Un emoji en SVG evita el 404 de favicon y no pesa nada.
-FAVICON = ('<link rel="icon" href="data:image/svg+xml,'
-           '%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32'
-           '%22%3E%3Ctext y=%2226%22 font-size=%2226%22%3E%F0%9F%8C%B1%3C/text'
-           '%3E%3C/svg%3E">')
+# El mismo icono que index.html: una pestaña con otro emoji leería como
+# otro sitio.
+FAVICON = ("<link rel=\"icon\" href=\"data:image/svg+xml,"
+           "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>"
+           "<text y='.9em' font-size='90'>🌾</text></svg>\">")
 
 plantilla = io.open(PLANTILLA, encoding="utf-8").read()
 crudo = io.open(DATOS, encoding="utf-8").read()

@@ -10,7 +10,7 @@ Así se detectó que `Infinity` en el JSON del mapa —que Python escribe sin
 protestar y `JSON.parse` rechaza— dejaba el atlas sin dibujar.
 
 Uso:
-    python -m http.server 8899 --directory .
+    python servir.py
     python verificar.py
 """
 import io
@@ -110,7 +110,7 @@ with sync_playwright() as pw:
             ok = False
 
     print("\nmapa")
-    pg.goto(BASE + "/mapa.html", wait_until="networkidle")
+    pg.goto(BASE + "/mapa", wait_until="networkidle")
     pg.wait_for_timeout(2500)
     n = pg.evaluate("() => document.querySelectorAll('.item').length")
     print(f"  {n} elementos en la lista lateral")
@@ -165,6 +165,26 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  tema oscuro aplicado")
+
+    # El mapa es un documento aparte, asi que su pertenencia al sitio depende
+    # de que la navegacion funcione en ambos sentidos: aqui se comprueba, no
+    # se supone.
+    nav = pg.eval_on_selector_all("nav a", "e => e.map(a => a.textContent.trim())")
+    activo = pg.eval_on_selector_all("nav a.on", "e => e.map(a => a.textContent.trim())")
+    print(f"  nav: {len(nav)} enlaces, activo {activo}")
+    if len(nav) != 6 or activo != ["Mapa"]:
+        print("  LA NAVEGACION DEL MAPA NO COINCIDE CON LA DEL SITIO")
+        ok = False
+    pg.click('nav a[href="/#empresas"]')
+    pg.wait_for_selector("#tEmpresas tbody tr td.name", timeout=25000)
+    print("  mapa -> empresas: ok")
+    pg.click('nav a[href="/mapa"]')
+    pg.wait_for_timeout(2500)
+    if pg.evaluate("() => document.querySelectorAll('.item').length") == 0:
+        print("  EL REGRESO AL MAPA NO DIBUJA")
+        ok = False
+    else:
+        print("  empresas -> mapa: ok")
 
     b.close()
 

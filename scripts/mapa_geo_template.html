@@ -1,5 +1,6 @@
 <meta charset="utf-8">
-<title>Atlas Comercial AgroJuntos</title>
+<title>AgroJuntos · Atlas comercial</title>
+<meta name="description" content="Atlas geoespacial del mercado peruano de insumos agrícolas: grilla hexagonal, territorios de venta, red vial y centros de distribución.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -47,12 +48,31 @@ h1,h2,h3{font-family:Archivo,system-ui,sans-serif; margin:0; text-wrap:balance}
   letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
 :focus-visible{outline:2px solid var(--brass); outline-offset:2px}
 
-.wrap{max-width:1620px; margin:0 auto; padding:0 16px 40px}
-header{display:flex; flex-wrap:wrap; align-items:flex-end; gap:14px 26px;
-  padding:20px 0 14px; border-bottom:1px solid var(--line)}
-.brand{margin-right:auto; display:flex; flex-direction:column; gap:4px}
-.brand h1{font-size:23px; font-weight:700; letter-spacing:-.018em; line-height:1.1}
-.brand p{margin:0; color:var(--muted); font-size:12px; max-width:58ch}
+.wrap{max-width:1500px; margin:0 auto; padding:0 20px 60px}
+/* El encabezado, la navegacion y el pie replican los de styles.css. El mapa
+   es un documento aparte porque su lienzo y su payload no caben en el shell
+   del dashboard, pero para quien lo usa tiene que ser una pagina mas del
+   sitio, no un anexo al que se salta. */
+header.top{display:flex; flex-wrap:wrap; align-items:center; gap:14px 26px;
+  padding:20px 0 0}
+.brand{display:flex; flex-direction:column; gap:3px; margin-right:auto}
+.brand h1{font-size:20px; font-weight:700; letter-spacing:-.015em}
+.brand > span{font-size:11.5px; color:var(--muted)}
+
+nav{display:flex; gap:2px; margin:16px 0 0; border-bottom:1px solid var(--line);
+  overflow-x:auto}
+nav a{display:block; padding:9px 15px; font-size:13px; color:var(--ink2);
+  text-decoration:none; border-bottom:2px solid transparent; white-space:nowrap}
+nav a:hover{color:var(--ink)}
+nav a.on{color:var(--forest); border-bottom-color:var(--forest); font-weight:600}
+
+.titulo{display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 26px;
+  padding:18px 0 2px}
+.titulo > div:first-child{margin-right:auto; display:flex;
+  flex-direction:column; gap:4px}
+.titulo h2{font-size:22px; font-weight:700; letter-spacing:-.018em;
+  line-height:1.1}
+.titulo p{margin:0; color:var(--muted); font-size:12px; max-width:58ch}
 .kpis{display:flex; flex-wrap:wrap}
 .kpi{padding:0 16px; border-left:1px solid var(--line)}
 .kpi:first-child{padding-left:0; border-left:0}
@@ -198,20 +218,36 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </script>
 
 <div class="wrap">
-<header>
+<header class="top">
   <div class="brand">
-    <span class="eyebrow">AgroJuntos · Análisis geoespacial</span>
-    <h1>Atlas comercial del agro peruano</h1>
+    <h1>AgroJuntos · Inteligencia de mercado</h1>
+    <span>Mercado peruano de insumos agrícolas, sobre fuentes oficiales</span>
+  </div>
+  <div class="tema" role="group" aria-label="Tema de la interfaz">
+    <button data-tema="auto" title="Seguir al sistema">Auto</button>
+    <button data-tema="light" title="Modo claro" aria-label="Modo claro">☀</button>
+    <button data-tema="dark" title="Modo oscuro" aria-label="Modo oscuro">☾</button>
+  </div>
+</header>
+
+<nav>
+  <a href="/#resumen">Resumen</a>
+  <a href="/#territorios">Territorios</a>
+  <a href="/#empresas">Empresas</a>
+  <a href="/#estacionalidad">Estacionalidad</a>
+  <a href="/#expansion">Expansión</a>
+  <a href="/mapa" class="on" aria-current="page">Mapa</a>
+</nav>
+
+<div class="titulo">
+  <div>
+    <span class="eyebrow">Análisis geoespacial</span>
+    <h2>Atlas comercial del agro peruano</h2>
     <p>Grilla hexagonal, territorios de venta, red vial y ubicación óptima de
        centros de distribución.</p>
   </div>
   <div class="kpis" id="kpis"></div>
-  <div class="tema" role="group" aria-label="Tema de la interfaz">
-    <button data-tema="auto" title="Seguir al sistema">Auto</button>
-    <button data-tema="light" aria-label="Modo claro">☀</button>
-    <button data-tema="dark" aria-label="Modo oscuro">☾</button>
-  </div>
-</header>
+</div>
 
 <div class="barra">
   <select id="fDep" aria-label="Departamento"></select>

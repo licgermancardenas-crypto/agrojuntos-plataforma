@@ -232,6 +232,12 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 Cada vista carga su propio JSON la primera vez que se abre: el directorio de
 empresas pesa 1.7 MB —460 KB comprimido— y no debe frenar la portada.
 
+Las cinco primeras vistas viven en `index.html` y se conmutan por hash. El
+mapa es un documento propio en `/mapa`: su lienzo ocupa el ancho completo y su
+payload pesa 1.1 MB, que no tiene por qué cargarse para ver el resumen. Comparte
+encabezado, navegación, tema y pie con el resto, así que se recorre como una
+página más y no como un anexo.
+
 **Tema claro y oscuro**, con tres estados: *Auto* sigue al sistema operativo,
 y *Claro* u *Oscuro* lo fijan. La elección se guarda en el navegador y se
 aplica antes de pintar, de modo que la página no aparece un instante en claro
@@ -239,11 +245,23 @@ antes de volverse oscura. El mapa se dibuja en canvas leyendo variables CSS,
 así que cambiar el tema lo obliga a repintarse: el CSS solo alcanza al DOM.
 
 `verificar.py` abre el sitio en un navegador real, recorre las cinco vistas,
-prueba la búsqueda, recorre los tres estados del tema, mide el contraste real
-de una etiqueta en modo oscuro y falla si aparece un error de consola. Un `200` del
+prueba la búsqueda, ejerce los filtros del mapa —comprueba que reduzcan el
+conteo y que *Limpiar* restaure—, navega entre el mapa y el resto en ambos
+sentidos, recorre los tres estados del tema, mide el contraste real de una
+etiqueta en modo oscuro y falla si aparece un error de consola. Un `200` del
 servidor no garantiza que la página no esté en blanco por un error de
 JavaScript: así fue como se detectó que `Infinity` en el JSON del mapa —válido
 en Python, inválido en JSON— dejaba el atlas sin dibujar.
+
+Se sirve con `servir.py`, no con `http.server` a secas, porque hace falta
+resolver `/mapa` -> `mapa.html` como la regla `cleanUrls` de `vercel.json`. Sin
+eso la comprobación local pasaría por rutas que el sitio publicado no usa,
+justo donde viven los enlaces de la navegación.
+
+```
+python servir.py      # en una terminal
+python verificar.py   # en otra
+```
 
 ---
 

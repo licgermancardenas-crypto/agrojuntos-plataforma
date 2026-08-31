@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgroJuntos · Inteligencia de mercado</title>
+<meta name="description" content="Mercado peruano de insumos agrícolas: territorios, clientes, estacionalidad y comercio exterior.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="brand">
+    <h1>AgroJuntos · Inteligencia de mercado</h1>
+    <span>Mercado peruano de insumos agrícolas, sobre fuentes oficiales</span>
+  </div>
+  <span class="upd" id="upd"></span>
+</header>
+
+<nav id="nav">
+  <a href="#resumen" class="on">Resumen</a>
+  <a href="#territorios">Territorios</a>
+  <a href="#empresas">Empresas</a>
+  <a href="#estacionalidad">Estacionalidad</a>
+  <a href="#expansion">Expansión</a>
+  <a href="/mapa">Mapa ↗</a>
+</nav>
+
+<!-- ------------------------------------------------------------ resumen -->
+<section class="view on" id="v-resumen">
+  <div class="kpis" id="kpis"><div class="load">Cargando…</div></div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="h"><h3>De productores a clientes</h3>
+        <span class="eyebrow">Embudo</span></div>
+      <div class="b">
+        <div class="funnel" id="funnel"></div>
+        <div class="note">
+          <span class="h">Por qué se estrecha tanto</span>
+          Tener tierra no hace cliente. Por debajo de cinco hectáreas la
+          agricultura es de autoconsumo, y de los que superan ese umbral solo
+          una parte declara aplicar fertilizante o pesticida. El último escalón
+          —quienes ya compran a crédito— es el punto de entrada natural: compran
+          como AgroJuntos vende.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="h"><h3>Demanda mes a mes</h3>
+        <span class="eyebrow">Nacional</span></div>
+      <div class="b">
+        <canvas id="curva" height="150"></canvas>
+        <p class="sub" id="curvaNota"></p>
+        <div class="note brass">
+          <span class="h">Lo que decide</span>
+          El inventario y el crédito a clientes deben estar dispuestos antes del
+          pico, no repartidos en doce cuotas iguales.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Las 24 regiones, ordenadas por atractivo</h3>
+      <span class="eyebrow">Modelo v3</span></div>
+    <div class="tw"><table id="tRegiones"></table></div>
+  </div>
+</section>
+
+<!-- -------------------------------------------------------- territorios -->
+<section class="view" id="v-territorios">
+  <div class="card">
+    <div class="h"><h3>Territorios de venta</h3>
+      <span class="eyebrow" id="terMeta"></span></div>
+    <div class="b">
+      <p>Núcleos donde el mercado se concentra lo bastante como para sostener
+      una ruta comercial. Detectados por densidad sobre el 80% superior del
+      mercado, con radio de 15 km.</p>
+    </div>
+    <div class="tw"><table id="tTerritorios"></table></div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------ empresas -->
+<section class="view" id="v-empresas">
+  <div class="card">
+    <div class="h"><h3>Directorio de empresas</h3>
+      <span class="eyebrow">RUC verificado</span></div>
+    <div class="filters">
+      <input type="search" id="q" placeholder="Buscar por razón social, RUC o región…"
+             autocomplete="off" spellcheck="false">
+      <select id="fReg"><option value="">Todas las regiones</option></select>
+      <span class="count" id="cCount"></span>
+    </div>
+    <div class="filters" style="border-top:0">
+      <div class="chips" id="fClase"></div>
+    </div>
+    <div class="tw"><table id="tEmpresas"></table></div>
+  </div>
+  <p class="sub">Fuente: padrón de contribuyentes de SUNAT y microdatos de
+  aduanas. El FOB anualizado extrapola diez semanas de registros y debe leerse
+  como orden de magnitud. La ubicación es el domicilio fiscal, que no siempre
+  coincide con el lugar donde la empresa cultiva.</p>
+</section>
+
+<!-- ------------------------------------------------------ estacionalidad -->
+<section class="view" id="v-estacionalidad">
+  <div class="card">
+    <div class="h"><h3>Calendario de demanda por región</h3>
+      <span class="eyebrow">% del año de cada región</span></div>
+    <div class="b" id="calWrap"></div>
+  </div>
+</section>
+
+<!-- ----------------------------------------------------------- expansion -->
+<section class="view" id="v-expansion">
+  <div class="card">
+    <div class="h"><h3>Centros de distribución</h3>
+      <span class="eyebrow">Cobertura máxima</span></div>
+    <div class="filters">
+      <div class="chips" id="fUmbral"></div>
+      <span class="count" id="hubMeta"></span>
+    </div>
+    <div class="b">
+      <p>Orden en que conviene abrir centros para dejar la mayor parte del
+      mercado dentro del radio de tiempo elegido. Cada paso agrega la ciudad que
+      suma más mercado nuevo, medido sobre la red vial.</p>
+    </div>
+    <div class="tw"><table id="tHubs"></table></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="h"><h3>Escenarios de captura</h3>
+        <span class="eyebrow">Ocho regiones foco</span></div>
+      <div class="tw"><table id="tSom"></table></div>
+    </div>
+    <div class="card">
+      <div class="h"><h3>Lo que revela el radio</h3></div>
+      <div class="b" id="radioNota"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>Fuentes.</b> MIDAGRI (sectores estadísticos 2024, anuario de producción
+  agrícola 2023) · INEI (CENAGRO 2012, costos de producción ENA 2018) ·
+  SUNAT (padrón RUC, microdatos de aduanas bajo Ley 27806) ·
+  OpenStreetMap, ODbL.<br>
+  <b>Nota.</b> El dimensionamiento de mercado es una estimación construida
+  sobre fuentes oficiales con supuestos declarados, no una cifra oficial. Los
+  datos territoriales sí lo son.
+</footer>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

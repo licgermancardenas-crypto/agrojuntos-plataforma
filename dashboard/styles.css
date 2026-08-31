@@ -1,0 +1,187 @@
+/* Sistema visual del dashboard AgroJuntos.
+   Comparte paleta y tipografía con el reporte impreso: verde bosque para lo
+   estructural, latón para lo que no se puede pasar por alto, y neutros con
+   sesgo cálido para que los datos sean lo único saturado en pantalla. */
+
+:root{
+  --bg:#EFF2ED; --surf:#FFFFFF; --surf2:#F6F9F3; --surf3:#EDF1E9;
+  --ink:#0F1A16; --ink2:#37443E; --muted:#68726B; --faint:#9AA39D;
+  --line:#D5DBD2; --line2:#E7EBE3;
+  --forest:#0F4C3F; --forest2:#16624F; --brass:#B07D2E; --brass2:#F7EDD8;
+  --sky:#2E6E8E; --danger:#A34A25; --good:#2E7D5B;
+  --shadow:0 1px 2px rgba(15,26,22,.05),0 6px 22px -14px rgba(15,26,22,.20);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0F0D; --surf:#121917; --surf2:#172020; --surf3:#1C2523;
+    --ink:#E8EEE8; --ink2:#BDC7BF; --muted:#7E8981; --faint:#5E6862;
+    --line:#25302B; --line2:#1C2521;
+    --forest:#3FA88B; --forest2:#2E8C72; --brass:#D9A94E; --brass2:#332913;
+    --sky:#5CA7C6; --danger:#D97A4E; --good:#3FA88B;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 6px 24px -14px rgba(0,0,0,.75);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0F0D; --surf:#121917; --surf2:#172020; --surf3:#1C2523;
+  --ink:#E8EEE8; --ink2:#BDC7BF; --muted:#7E8981; --faint:#5E6862;
+  --line:#25302B; --line2:#1C2521;
+  --forest:#3FA88B; --forest2:#2E8C72; --brass:#D9A94E; --brass2:#332913;
+  --sky:#5CA7C6; --danger:#D97A4E; --good:#3FA88B;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 6px 24px -14px rgba(0,0,0,.75);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Archivo,system-ui,sans-serif; margin:0; text-wrap:balance}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-variant-numeric:tabular-nums}
+a{color:var(--forest)}
+:focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:3px}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+
+/* ---------------------------------------------------------------- shell -- */
+.wrap{max-width:1500px; margin:0 auto; padding:0 20px 60px}
+header.top{display:flex; flex-wrap:wrap; align-items:center; gap:14px 26px;
+  padding:20px 0 0}
+.brand{display:flex; flex-direction:column; gap:3px; margin-right:auto}
+.brand h1{font-size:20px; font-weight:700; letter-spacing:-.015em}
+.brand span{font-size:11.5px; color:var(--muted)}
+.upd{font-size:10.5px; color:var(--faint); font-family:"IBM Plex Mono",monospace}
+
+nav{display:flex; gap:2px; margin:16px 0 0; border-bottom:1px solid var(--line);
+  overflow-x:auto}
+nav a{display:block; padding:9px 15px; font-size:13px; color:var(--ink2);
+  text-decoration:none; border-bottom:2px solid transparent; white-space:nowrap}
+nav a:hover{color:var(--ink)}
+nav a.on{color:var(--forest); border-bottom-color:var(--forest); font-weight:600}
+
+.view{display:none; padding-top:20px}
+.view.on{display:block}
+
+/* ------------------------------------------------------------------ kpi -- */
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px; background:var(--line2); border:1px solid var(--line2);
+  border-radius:10px; overflow:hidden}
+.kpis > div{background:var(--surf); padding:13px 15px}
+.kpis .v{font-family:"IBM Plex Mono",monospace; font-size:20px; font-weight:600;
+  letter-spacing:-.025em; display:block; line-height:1.15; color:var(--forest)}
+.kpis .l{display:block; font-size:10px; color:var(--muted); margin-top:4px;
+  letter-spacing:.09em; text-transform:uppercase; line-height:1.4}
+.kpis .s{display:block; font-size:10.5px; color:var(--faint); margin-top:3px}
+
+/* ---------------------------------------------------------------- cards -- */
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px}
+@media (max-width:1000px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--surf); border:1px solid var(--line); border-radius:10px;
+  box-shadow:var(--shadow); overflow:hidden}
+.card > .h{display:flex; align-items:baseline; justify-content:space-between;
+  gap:10px; padding:11px 15px; border-bottom:1px solid var(--line2);
+  background:var(--surf2)}
+.card > .h h3{font-size:13px; font-weight:600}
+.card .b{padding:14px 15px}
+.card .b p{margin:0 0 8px; font-size:12.5px; color:var(--ink2); line-height:1.55}
+.card .b p:last-child{margin:0}
+
+/* --------------------------------------------------------------- embudo -- */
+.funnel{display:flex; flex-direction:column; gap:9px}
+.fstep{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:end}
+.fstep .n{font-size:12px; color:var(--ink2)}
+.fstep .v{font-family:"IBM Plex Mono",monospace; font-size:14px;
+  font-weight:600; color:var(--forest)}
+.ftrack{grid-column:1/-1; height:8px; background:var(--line2);
+  border-radius:4px; overflow:hidden}
+.ftrack i{display:block; height:100%; background:var(--forest); border-radius:4px}
+.fpct{grid-column:1/-1; font-size:10px; color:var(--muted); margin-top:-4px}
+
+/* ---------------------------------------------------------------- table -- */
+.tw{overflow:auto; max-height:640px}
+table{border-collapse:collapse; width:100%; font-size:12.5px}
+thead th{position:sticky; top:0; z-index:1; background:var(--surf2);
+  text-align:right; font-size:10px; font-weight:600; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--muted); padding:8px 10px;
+  border-bottom:1px solid var(--line); cursor:pointer; user-select:none;
+  white-space:nowrap}
+thead th:first-child,thead th.l{text-align:left}
+thead th:hover{color:var(--ink)}
+thead th[aria-sort]::after{content:" ▾"; color:var(--brass)}
+thead th[aria-sort="asc"]::after{content:" ▴"}
+tbody td{padding:6px 10px; border-bottom:1px solid var(--line2);
+  text-align:right; white-space:nowrap}
+tbody td.l{text-align:left}
+tbody td.n{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--surf2)}
+tbody td.name{max-width:280px; overflow:hidden; text-overflow:ellipsis}
+
+.tag{display:inline-block; padding:1.5px 7px; border-radius:20px;
+  font-size:10px; font-weight:600; background:var(--surf3); color:var(--ink2)}
+.tag.P{background:#E4EFE6; color:#1F6B4C}
+.tag.A{background:#F7EDD8; color:#8E6321}
+.tag.C{background:#E2EEF4; color:#2E6E8E}
+.tag.V{background:#F2E7F4; color:#6E4A80}
+.tag.E{background:#DDEEE6; color:#0F4C3F}
+.tag.I{background:#F8E5DC; color:#A34A25}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .tag{background:#1E2926; color:#BDC7BF}
+  :root:not([data-theme="light"]) .tag.P{background:#173026; color:#7FC7A4}
+  :root:not([data-theme="light"]) .tag.A{background:#332913; color:#D9A94E}
+  :root:not([data-theme="light"]) .tag.C{background:#152A33; color:#6FB4D0}
+  :root:not([data-theme="light"]) .tag.V{background:#2A1E33; color:#B48FC7}
+  :root:not([data-theme="light"]) .tag.E{background:#12302A; color:#4FBF9C}
+  :root:not([data-theme="light"]) .tag.I{background:#33201A; color:#E09070}
+}
+
+.mini{display:inline-block; width:46px; height:5px; border-radius:3px;
+  background:var(--line2); overflow:hidden; vertical-align:middle; margin-left:7px}
+.mini i{display:block; height:100%; background:var(--forest)}
+
+/* -------------------------------------------------------------- filtros -- */
+.filters{display:flex; flex-wrap:wrap; gap:9px; align-items:center;
+  padding:13px 15px; border-bottom:1px solid var(--line2); background:var(--surf2)}
+input[type="search"],select{font:inherit; font-size:12.5px; color:var(--ink);
+  background:var(--surf); border:1px solid var(--line); border-radius:7px;
+  padding:7px 10px}
+input[type="search"]{min-width:250px; flex:1}
+input[type="search"]::placeholder{color:var(--faint)}
+.count{font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+  color:var(--muted); margin-left:auto; white-space:nowrap}
+.chips{display:flex; flex-wrap:wrap; gap:5px}
+.chip{border:1px solid var(--line); background:var(--surf); color:var(--ink2);
+  font:inherit; font-size:11px; padding:4px 10px; border-radius:20px;
+  cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--forest); border-color:var(--forest);
+  color:#fff; font-weight:500}
+
+/* ------------------------------------------------------------ calendario -*/
+.cal{width:100%; border-collapse:collapse; font-size:11.5px}
+.cal th{padding:5px 4px; font-size:10px; color:var(--muted); font-weight:500}
+.cal th.reg{text-align:left; padding-left:0}
+.cal td{padding:0; text-align:center}
+.cal td.reg{text-align:left; padding:3px 8px 3px 0; white-space:nowrap;
+  font-size:11.5px}
+.cel{height:20px; border-radius:2px; display:block; position:relative}
+.cel.pico{outline:1.5px solid var(--brass); outline-offset:-1.5px}
+
+/* ---------------------------------------------------------------- notas -- */
+.note{border-left:2px solid var(--forest); background:var(--surf2);
+  padding:10px 13px; margin-top:12px; font-size:12px; line-height:1.55;
+  color:var(--ink2)}
+.note.brass{border-color:var(--brass)}
+.note b{color:var(--ink)}
+.note .h{display:block; font-family:"IBM Plex Mono",monospace; font-size:9.5px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+  margin-bottom:4px}
+
+.sub{font-size:11px; color:var(--muted); line-height:1.5; margin-top:8px}
+.load{padding:40px; text-align:center; color:var(--muted); font-size:13px}
+
+footer{margin-top:30px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:11px; line-height:1.7}
+footer b{color:var(--ink2); font-weight:500}
+
+.mapframe{width:100%; height:78vh; min-height:560px; border:0;
+  border-radius:10px; background:var(--surf); box-shadow:var(--shadow)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}

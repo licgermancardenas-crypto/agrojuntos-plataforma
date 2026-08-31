@@ -3,6 +3,8 @@
 Mapeo del mercado peruano de insumos agrícolas: dónde está la tierra que
 produce, quién compra, cuándo compra y cuánto cuesta llegar.
 
+**Dashboard en vivo → [agrojuntos.vercel.app](https://agrojuntos.vercel.app)**
+
 Todo lo publicado aquí se genera por script a partir de fuentes oficiales, sin
 transcripción manual. Cada cifra es reproducible corriendo el script que la
 construye.
@@ -50,6 +52,7 @@ datos/
   geoespacial/      grilla H3, territorios de venta y centros de distribución
 scripts/            el pipeline completo, en orden de dependencia
 docs/figuras/       mapas y gráficos generados
+dashboard/          sitio estático desplegado en Vercel
 
 agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
   scripts/                     descarga y procesamiento, 4 pasos
@@ -193,7 +196,34 @@ agricultura está demasiado dispersa—, mientras que **a seis horas cubren el
 75%**. El radio de operación, no el número de almacenes, es lo que decide la
 cobertura.
 
-El atlas interactivo está en `docs/atlas_geo.html`.
+El atlas interactivo está en `docs/atlas_geo.html` y publicado en
+[agrojuntos.vercel.app/mapa](https://agrojuntos.vercel.app/mapa).
+
+---
+
+## Dashboard
+
+`dashboard/` es un sitio estático sin framework ni servidor: HTML, CSS y
+JavaScript plano sobre los JSON precalculados. Se despliega con
+`vercel deploy --prod` y no cuesta nada de operar.
+
+| Vista | Qué responde |
+|---|---|
+| Resumen | Tamaño del mercado, embudo de clientes, curva de demanda y las 24 regiones ordenadas |
+| Territorios | Los 57 núcleos de venta, con extensión y si se recorren en un día |
+| Empresas | Directorio buscable de 22,437 empresas con RUC, clase, ubicación y FOB de comercio exterior |
+| Estacionalidad | Calendario de demanda mes a mes por región |
+| Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
+| Mapa | Atlas geoespacial con las cinco capas |
+
+Cada vista carga su propio JSON la primera vez que se abre: el directorio de
+empresas pesa 1.7 MB —460 KB comprimido— y no debe frenar la portada.
+
+`verificar.py` abre el sitio en un navegador real, recorre las cinco vistas,
+prueba la búsqueda y falla si aparece un error de consola. Un `200` del
+servidor no garantiza que la página no esté en blanco por un error de
+JavaScript: así fue como se detectó que `Infinity` en el JSON del mapa —válido
+en Python, inválido en JSON— dejaba el atlas sin dibujar.
 
 ---
 

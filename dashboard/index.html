@@ -35,11 +35,15 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
 <nav id="nav">
   <a href="#resumen" class="on">Resumen</a>
+  <a href="#departamentos">Departamentos</a>
   <a href="#territorios">Territorios</a>
   <a href="#empresas">Empresas</a>
+  <a href="#comercio">Comercio</a>
   <a href="#estacionalidad">Estacionalidad</a>
+  <a href="#logistica">Logística</a>
   <a href="#expansion">Expansión</a>
   <a href="/mapa">Mapa</a>
+  <a href="#metodo">Método</a>
 </nav>
 
 <!-- ------------------------------------------------------------ resumen -->
@@ -157,6 +161,124 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
       <div class="h"><h3>Lo que revela el radio</h3></div>
       <div class="b" id="radioNota"></div>
     </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------ departamentos -->
+<section class="view" id="v-departamentos">
+  <div class="card">
+    <div class="h"><h3>Ficha por departamento</h3>
+      <span class="eyebrow" id="depMeta"></span></div>
+    <div class="filters">
+      <select id="fDepto"></select>
+      <div class="chips" id="fDeptoOrden"></div>
+      <span class="count" id="depPos"></span>
+    </div>
+    <div class="b" id="depFicha"><div class="load">Cargando…</div></div>
+  </div>
+</section>
+
+<!-- ----------------------------------------------------------- comercio -->
+<section class="view" id="v-comercio">
+  <div class="kpis" id="comKpis"><div class="load">Cargando…</div></div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="h"><h3>Qué insumo entra al país</h3>
+        <span class="eyebrow">CIF por familia</span></div>
+      <div class="b">
+        <div class="barras" id="comFamilias"></div>
+        <div class="note">
+          <span class="h">Para qué sirve este dato</span>
+          Es la validación externa del modelo. Si el mercado estimado no
+          guardara proporción con lo que efectivamente cruza la aduana, el
+          modelo estaría mal. El fertilizante importado cubre el 89.5% de la
+          oferta nacional, así que el contraste es directo.
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="h"><h3>De dónde viene</h3>
+        <span class="eyebrow">País de origen</span></div>
+      <div class="b"><div class="barras" id="comOrigenes"></div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="h"><h3>Adónde va la agroexportación</h3>
+        <span class="eyebrow">País de destino</span></div>
+      <div class="b"><div class="barras" id="comDestinos"></div></div>
+    </div>
+    <div class="card">
+      <div class="h"><h3>Quién trae el insumo</h3>
+        <span class="eyebrow">100 mayores importadores</span></div>
+      <div class="tw"><table id="tImportadores"></table></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Quién exporta agro</h3>
+      <span class="eyebrow">100 mayores, FOB anualizado</span></div>
+    <div class="tw"><table id="tExportadores"></table></div>
+  </div>
+
+  <p class="sub" id="comNota"></p>
+</section>
+
+<!-- ---------------------------------------------------------- logistica -->
+<section class="view" id="v-logistica">
+  <div class="card">
+    <div class="h"><h3>Lo que cuesta llegar</h3>
+      <span class="eyebrow">Ruteo sobre la red vial</span></div>
+    <div class="b">
+      <p>Horas reales de manejo desde cada sector productivo hasta su centro
+      de provincia, calculadas sobre 88,962 vías de OpenStreetMap con
+      velocidad por tipo de camino y superficie. La columna
+      <b>línea recta</b> es lo que daba el cálculo anterior, que ignoraba la
+      carretera.</p>
+    </div>
+    <div class="tw"><table id="tLogistica"></table></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="h"><h3>Puertos</h3>
+        <span class="eyebrow">Salida de la agroexportación</span></div>
+      <div class="tw"><table id="tPuertos"></table></div>
+    </div>
+    <div class="card">
+      <div class="h"><h3>Lo que corrigió el ruteo real</h3></div>
+      <div class="b" id="logNota"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------- metodo -->
+<section class="view" id="v-metodo">
+  <div class="grid2">
+    <div class="card">
+      <div class="h"><h3>Cómo se calcula el mercado</h3>
+        <span class="eyebrow">Modelo v3</span></div>
+      <div class="b" id="metModelo"></div>
+    </div>
+    <div class="card">
+      <div class="h"><h3>Contra qué se contrastó</h3>
+        <span class="eyebrow">Validaciones</span></div>
+      <div class="b" id="metValida"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Fuentes</h3>
+      <span class="eyebrow">Todas oficiales o abiertas</span></div>
+    <div class="tw"><table id="tFuentes"></table></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Límites de lo que aquí se afirma</h3>
+      <span class="eyebrow">Léase antes de decidir</span></div>
+    <div class="b" id="metLimites"></div>
   </div>
 </section>
 

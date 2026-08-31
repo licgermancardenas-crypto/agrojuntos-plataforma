@@ -31,6 +31,16 @@ def cap(s):
     return " ".join(w.capitalize() for w in str(s).split())
 
 
+def clave(s):
+    """Union entre tablas que escriben el departamento de distinta forma.
+
+    build_estacionalidad emite `lalibertad`; norm() produce `la libertad`.
+    Quitar los espacios es lo unico que hace falta para que casen, y es lo que
+    faltaba: en la vista de estacionalidad se leia `Lalibertad`.
+    """
+    return norm(s).replace(" ", "")
+
+
 def guardar(nombre, obj):
     p = os.path.join(OUT, nombre)
     with open(p, "w", encoding="utf-8") as fh:
@@ -99,7 +109,7 @@ resumen = {
 guardar("resumen.json", resumen)
 
 # --------------------------------------------------------- estacionalidad -
-est_r = est_r.merge(mod[["dep"]].assign(k=mod["dep"].map(norm)),
+est_r = est_r.merge(mod[["dep"]].assign(k=mod["dep"].map(clave)),
                     left_on="k", right_on="k", how="left")
 cal = []
 for _, r in est_r.sort_values("total", ascending=False).iterrows():
@@ -210,3 +220,176 @@ print(f"empresas en el directorio : {len(d):,}")
 print(f"  con FOB de exportacion  : {(d.x > 0).sum():,}")
 print(f"  con FOB de importacion  : {(d.i > 0).sum():,}")
 print(f"  ubicadas                : {(d.d != '').sum():,}")
+
+
+# ===================================================================== #
+#  Las tres capas que hasta ahora solo existían en el PDF.               #
+#  Un informe se lee una vez; el sitio se consulta. Todo lo que sirve     #
+#  para decidir tiene que estar en línea, no en un archivo adjunto.       #
+# ===================================================================== #
+
+per = pd.read_csv("out/perfil_departamento.csv", encoding="utf-8-sig")
+log = pd.read_csv("out/logistica_departamento.csv", encoding="utf-8-sig")
+pue = pd.read_csv("out/puertos.csv", encoding="utf-8-sig")
+imp_l = pd.read_csv("out/aduanas_importaciones.csv", encoding="utf-8-sig",
+                    dtype={"ruc": str})
+exp_l = pd.read_csv("out/aduanas_exportaciones.csv", encoding="utf-8-sig",
+                    dtype={"ruc": str, "partida4": str})
+
+# El archivo de aduanas trae la exportacion completa del pais: el mineral de
+# cobre (2603) y el oro (7108) son por si solos el 60% del FOB. Sin este filtro
+# la pagina anunciaria US$ 33,813 MM de agroexportacion en diez semanas, mas
+# que todo lo que el Peru exporta en un ano. Capitulos 07, 08, 09, 12, 18, 20
+# y 21, los mismos que usa build_aduanas.py.
+AGRO_EXP = {"07", "08", "09", "12", "18", "20", "21"}
+exp_l = exp_l[exp_l["partida4"].str.zfill(4).str[:2].isin(AGRO_EXP)]
+
+
+def num(v, dec=1):
+    """None en vez de NaN: JSON no admite NaN y el navegador sí admite null."""
+    try:
+        v = float(v)
+    except (TypeError, ValueError):
+        return None
+    return round(v, dec) if np.isfinite(v) else None
+
+
+# ---------------------------------------------------------- departamentos -
+# Una ficha por departamento con lo que hace falta antes de entrar a una
+# región: cuánto vale, quién compra, cuándo compra y cuánto cuesta llegar.
+per_k = per.set_index(per["dep"].map(norm))
+log_k = log.set_index(log["dep"].map(norm))
+rut_k = rut.set_index(rut["dep"].map(norm))
+est_k = est_r.set_index("k")
+CLAVE_EST = clave
+ter_dep = ter.assign(kk=ter["dep"].map(norm)).groupby("kk")
+
+expo_k = expo.assign(kk=expo["dep"].map(lambda v: norm(v) if pd.notna(v) else ""))
+impo_k = impo.assign(kk=impo["dep"].map(lambda v: norm(v) if pd.notna(v) else ""))
+expo_g = expo_k.groupby("kk").agg(n=("ruc", "size"), fob=("fob_anual", "sum"))
+impo_g = impo_k.groupby("kk").agg(n=("ruc", "size"), fob=("fob_anual", "sum"))
+
+deps_ficha = []
+for _, r in mod.sort_values("rank_v3").iterrows():
+    k = norm(r["dep"])
+    p = per_k.loc[k] if k in per_k.index else None
+    lg = log_k.loc[k] if k in log_k.index else None
+    ru = rut_k.loc[k] if k in rut_k.index else None
+    ke = CLAVE_EST(r["dep"])
+    e = est_k.loc[ke] if ke in est_k.index else None
+    tot = float(e["total"]) if e is not None and float(e["total"]) else 1.0
+    tt = ter_dep.get_group(k) if k in ter_dep.groups else None
+
+    deps_ficha.append({
+        "n": cap(r["dep"]), "k": k,
+        "rank": int(r["rank_v3"]), "score": num(r["score_v3"]),
+        "arq": r["arquetipo"],
+        "reg": (str(p["region_nat"]) if p is not None else ""),
+        # mercado
+        "tam": int(r["tam_usd"]), "sam": int(r["sam_usd"]),
+        "cli": int(r["clientes_sam"]), "ticket": int(round(r["ticket_anual"])),
+        "pct_sam": num(r["pct_sam_v3"], 2),
+        # tierra
+        "ha": int(r["ha_cosechada"]),
+        "ha_agri": int(p["ha_agricola"]) if p is not None else None,
+        "sectores": int(p["sectores"]) if p is not None else None,
+        "gasto": int(round(r["gasto_ha"])),
+        "cultivos": int(r["n_cultivos"]),
+        # productores
+        "prod": int(r["productores"]),
+        "sobre5": int(r["ua_objetivo_5_mas"]),
+        "compran": int(r["compradores_insumos"]),
+        "credito": int(r["compran_a_credito"]),
+        "estratos": ([int(p["ua_micro_0_5"]), int(p["ua_pequeno_5_20"]),
+                      int(p["ua_mediano_20_100"]), int(p["ua_grande_100_mas"])]
+                     if p is not None else None),
+        "t_fert": num(float(r["tasa_fert"]) * 100),
+        "t_cred": num(float(r["tasa_credito"]) * 100),
+        # logistica
+        "horas": num(ru["horas_real"]) if ru is not None else None,
+        "horas_proxy": num(ru["horas_proxy"]) if ru is not None else None,
+        "bajo2": num(r["pct_bajo_2h"]),
+        "sobre4": num(r["pct_sobre_4h"]),
+        "puerto": (str(lg["puerto"]) if lg is not None
+                   and pd.notna(lg["puerto"]) else None),
+        "h_puerto": num(ru["puerto_real"]) if ru is not None else None,
+        "sin_puerto": num(ru["pct_sin_puerto"]) if ru is not None else None,
+        "costo": num(r["costo_viaje"]),
+        # demanda
+        "mes": r["mes_pico"], "top4": num(r["pct_top4"], 0),
+        "meses": ([num(100 * float(e[m]) / tot) for m in MESES]
+                  if e is not None else None),
+        # tejido empresarial
+        "emp": int(p["prospectos"]) if p is not None else None,
+        "exp_n": int(expo_g["n"].get(k, 0)),
+        "exp_fob": int(expo_g["fob"].get(k, 0)),
+        "imp_n": int(impo_g["n"].get(k, 0)),
+        "imp_fob": int(impo_g["fob"].get(k, 0)),
+        # territorios
+        "terr": int(len(tt)) if tt is not None else 0,
+        "terr_dia": int(tt["visitable_en_dia"].sum()) if tt is not None else 0,
+    })
+guardar("departamentos.json", {"meses": MESES, "deps": deps_ficha})
+
+# -------------------------------------------------------------- logistica -
+# El ruteo real corrige al proxy en un sentido que cambia decisiones: hay
+# departamentos que la línea recta daba por perdidos y la carretera rescata.
+guardar("logistica.json", {
+    "deps": [{
+        "n": cap(r["dep"]),
+        "real": num(r["horas_real"]), "proxy": num(r["horas_proxy"]),
+        "dif": num(r["dif"]),
+        "puerto": num(r["puerto_real"]),
+        "sin_puerto": num(r["pct_sin_puerto"]),
+        "bajo2": num(r["pct_bajo_2h"]), "sobre4": num(r["pct_sobre_4h"]),
+        "costo": num(r["costo_viaje"]),
+        "sam": int(r["sam"]),
+    } for _, r in rut.sort_values("sam", ascending=False).iterrows()],
+    "puertos": [{
+        "n": str(r["puerto"]), "reg": cap(r["region"]), "tipo": str(r["tipo"]),
+        "rel": str(r["relevancia_agro"]),
+        "lat": num(r["lat"], 4), "lon": num(r["lon"], 4),
+    } for _, r in pue.iterrows()],
+})
+
+# --------------------------------------------------------------- comercio -
+# Las importaciones son la validación externa del modelo: si el mercado
+# estimado no guarda proporción con lo que entra por aduanas, el modelo está
+# mal. Las exportaciones dicen quién tiene con qué pagar.
+def agrupar(df, campo, n=None):
+    g = (df.groupby(campo).agg({"fob_usd": "sum", "peso_kg": "sum"})
+           .sort_values("fob_usd", ascending=False).reset_index())
+    if n:
+        g = g.head(n)
+    return [{"n": str(r[campo]), "fob": int(r["fob_usd"]),
+             "tn": int(round(r["peso_kg"] / 1000))} for _, r in g.iterrows()]
+
+
+guardar("comercio.json", {
+    "meta": {
+        "semanas_imp": int(imp_l["semana"].nunique()),
+        "semanas_exp": int(exp_l["semana"].nunique()),
+        "fob_imp": int(imp_l["fob_usd"].sum()),
+        "fob_exp": int(exp_l["fob_usd"].sum()),
+        "n_imp": int(imp_l["ruc"].nunique()),
+        "n_exp": int(exp_l["ruc"].nunique()),
+    },
+    "rubros": agrupar(imp_l, "rubro"),
+    "familias": agrupar(imp_l, "familia"),
+    "origenes": agrupar(imp_l, "pais_origen", 20),
+    "destinos": agrupar(exp_l, "pais_destino", 20),
+    "importadores": [{
+        "r": str(r["ruc"]), "n": str(r["razon_social"])[:60],
+        "rubro": str(r["rubro"]), "fob": int(r["fob_anual"]),
+        "tn": int(round(r["tn"])), "pct": num(r["pct"], 2),
+        "dep": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
+    } for _, r in impo.sort_values("fob_anual", ascending=False)
+        .head(100).iterrows()],
+    "exportadores": [{
+        "r": str(r["ruc"]), "n": str(r["razon_social"])[:60],
+        "fob": int(r["fob_anual"]), "tn": int(round(r["tn"])),
+        "dest": int(r["destinos"]),
+        "dep": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
+    } for _, r in expo.sort_values("fob_anual", ascending=False)
+        .head(100).iterrows()],
+})

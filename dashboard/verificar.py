@@ -2,9 +2,9 @@
 """Abre el dashboard en un navegador real y comprueba que no esté roto.
 
 Un `200` del servidor no dice nada sobre si la página se ve: un error de
-JavaScript la deja en blanco y el servidor ni se entera. Esto recorre las cinco
-vistas, ejecuta una búsqueda de verdad, prueba los tres estados del tema y
-falla ante cualquier error de consola.
+JavaScript la deja en blanco y el servidor ni se entera. Esto recorre las nueve
+vistas, recorre las 24 fichas departamentales, ejerce los filtros del mapa,
+prueba los tres estados del tema y falla ante cualquier error de consola.
 
 Así se detectó que `Infinity` en el JSON del mapa —que Python escribe sin
 protestar y `JSON.parse` rechaza— dejaba el atlas sin dibujar.
@@ -26,10 +26,14 @@ BASE = "http://127.0.0.1:8899"
 # de "Cargando…" también es un <tr> y daría por buena una vista vacía.
 VISTAS = [
     ("#resumen", "#tRegiones tbody tr", "Resumen"),
+    ("#departamentos", "#depFicha .pares dd", "Departamentos"),
     ("#territorios", "#tTerritorios tbody tr", "Territorios"),
     ("#empresas", "#tEmpresas tbody tr td.name", "Empresas"),
+    ("#comercio", "#tExportadores tbody tr", "Comercio"),
     ("#estacionalidad", ".cal tbody tr", "Estacionalidad"),
+    ("#logistica", "#tLogistica tbody tr", "Logística"),
     ("#expansion", "#tHubs tbody tr", "Expansión"),
+    ("#metodo", "#tFuentes tbody tr", "Método"),
 ]
 
 errores = []
@@ -57,6 +61,31 @@ with sync_playwright() as pw:
         except Exception:
             print(f"  {nombre:16s} SIN CONTENIDO")
             ok = False
+
+    # La ficha departamental es la vista con más uniones entre tablas, y es
+    # donde una clave que no casa pasa inadvertida: la página se dibuja igual,
+    # solo que sin calendario. Por eso se recorren las 24, no una de muestra.
+    print("\ndepartamentos")
+    pg.evaluate("() => location.hash = '#departamentos'")
+    pg.wait_for_selector("#depFicha .pares dd")
+    vals = pg.eval_on_selector_all("#fDepto option", "e => e.map(o => o.value)")
+    print(f"  {len(vals)} departamentos en el selector")
+    if len(vals) != 24:
+        print("  FALTAN DEPARTAMENTOS")
+        ok = False
+    incompletas = []
+    for v in vals:
+        pg.select_option("#fDepto", value=v)
+        pg.wait_for_timeout(80)
+        meses = pg.eval_on_selector_all("#depFicha .mc i", "e => e.length")
+        sam = (pg.text_content("#depFicha .ficha .v") or "").strip()
+        if meses != 12 or not sam.startswith("US$"):
+            incompletas.append(f"{v}(meses={meses}, sam={sam!r})")
+    if incompletas:
+        print("  FICHAS INCOMPLETAS: " + ", ".join(incompletas[:6]))
+        ok = False
+    else:
+        print("  las 24 fichas traen calendario y mercado")
 
     print("\nbusqueda")
     pg.evaluate("() => location.hash = '#empresas'")
@@ -172,7 +201,7 @@ with sync_playwright() as pw:
     nav = pg.eval_on_selector_all("nav a", "e => e.map(a => a.textContent.trim())")
     activo = pg.eval_on_selector_all("nav a.on", "e => e.map(a => a.textContent.trim())")
     print(f"  nav: {len(nav)} enlaces, activo {activo}")
-    if len(nav) != 6 or activo != ["Mapa"]:
+    if len(nav) != 10 or activo != ["Mapa"]:
         print("  LA NAVEGACION DEL MAPA NO COINCIDE CON LA DEL SITIO")
         ok = False
     pg.click('nav a[href="/#empresas"]')

@@ -419,6 +419,446 @@ function aplicarTema(t) {
   else if (mq.addListener) mq.addListener(cb);
 })();
 
+
+/* ------------------------------------------------------------- comunes -- */
+/* Lista de barras horizontales. Se usa para composiciones —familias de
+   insumo, países— donde lo que importa es la proporción entre filas y no el
+   valor exacto, que igual va al lado. */
+function barras(el, filas, opts) {
+  opts = opts || {};
+  var mx = Math.max.apply(null, filas.map(function (r) { return r.v; })) || 1;
+  var tot = filas.reduce(function (a, r) { return a + r.v; }, 0) || 1;
+  el.innerHTML = filas.map(function (r) {
+    return '<div class="bar">' +
+      '<span class="bn">' + esc(r.n) + "</span>" +
+      '<span class="bv mono">' + r.t + "</span>" +
+      '<span class="bt"><i style="width:' + (100 * r.v / mx).toFixed(1) +
+      '%"></i></span>' +
+      '<span class="bp mono">' + pct(100 * r.v / tot, 1) + "</span>" +
+      "</div>";
+  }).join("");
+}
+
+/* Códigos ISO del manifiesto de aduanas. Solo los que aparecen arriba: el
+   resto se muestra con su código, que es preferible a inventar un nombre. */
+var PAIS = {
+  US: "Estados Unidos", NL: "Países Bajos", ES: "España", GB: "Reino Unido",
+  MX: "México", CN: "China", CL: "Chile", EC: "Ecuador", CO: "Colombia",
+  BR: "Brasil", CA: "Canadá", DE: "Alemania", BE: "Bélgica", FR: "Francia",
+  IT: "Italia", RU: "Rusia", JP: "Japón", KR: "Corea del Sur", HK: "Hong Kong",
+  AR: "Argentina", BO: "Bolivia", PA: "Panamá", CR: "Costa Rica",
+  IL: "Israel", IN: "India", ID: "Indonesia", MA: "Marruecos", EG: "Egipto",
+  SA: "Arabia Saudita", QA: "Catar", OM: "Omán", AE: "Emiratos Árabes",
+  NO: "Noruega", SE: "Suecia", FI: "Finlandia", DK: "Dinamarca",
+  PL: "Polonia", TR: "Turquía", UA: "Ucrania", LT: "Lituania",
+  BY: "Bielorrusia", JO: "Jordania", TH: "Tailandia", VN: "Vietnam",
+  AU: "Australia", NZ: "Nueva Zelanda", ZA: "Sudáfrica", PT: "Portugal",
+  CH: "Suiza", TW: "Taiwán", MY: "Malasia", SG: "Singapur", GT: "Guatemala",
+  DO: "R. Dominicana", CU: "Cuba", PY: "Paraguay", UY: "Uruguay",
+  VE: "Venezuela", NI: "Nicaragua", HN: "Honduras", SV: "El Salvador"
+};
+function pais(c) { return PAIS[c] || c; }
+
+/* -------------------------------------------------------- departamentos -- */
+function vistaDepartamentos() {
+  cargar("departamentos").then(function (D) {
+    var sel = document.getElementById("fDepto");
+    var orden = "rank";
+    var actual = D.deps[0].k;
+
+    document.getElementById("depMeta").textContent =
+      D.deps.length + " departamentos";
+
+    document.getElementById("fDeptoOrden").innerHTML =
+      [["rank", "Por atractivo"], ["sam", "Por mercado"],
+       ["n", "Alfabético"]].map(function (o) {
+        return '<button class="chip" data-o="' + o[0] + '"' +
+          (o[0] === orden ? ' aria-pressed="true"' : "") + ">" + o[1] +
+          "</button>";
+      }).join("");
+
+    function llenar() {
+      var d = D.deps.slice().sort(function (a, b) {
+        if (orden === "n") return a.n.localeCompare(b.n, "es");
+        if (orden === "sam") return b.sam - a.sam;
+        return a.rank - b.rank;
+      });
+      sel.innerHTML = d.map(function (r) {
+        return '<option value="' + r.k + '"' +
+          (r.k === actual ? " selected" : "") + ">" +
+          (orden === "rank" ? String(r.rank).padStart(2, "0") + " · " : "") +
+          esc(r.n) + "</option>";
+      }).join("");
+    }
+
+    function bloque(v, l, s) {
+      return '<div><span class="v">' + v + '</span><span class="l">' + l +
+        "</span>" + (s ? '<span class="s">' + s + "</span>" : "") + "</div>";
+    }
+
+    function pintar() {
+      var r = D.deps.filter(function (x) { return x.k === actual; })[0];
+      document.getElementById("depPos").textContent =
+        "puesto " + r.rank + " de " + D.deps.length + " · " + r.arq;
+
+      var est = r.estratos || [0, 0, 0, 0];
+      var estTot = est.reduce(function (a, b) { return a + b; }, 0) || 1;
+      var ESTN = ["menos de 5 ha", "5 a 20 ha", "20 a 100 ha", "más de 100 ha"];
+
+      var mx = 0;
+      (r.meses || []).forEach(function (v) { if (v > mx) mx = v; });
+
+      document.getElementById("depFicha").innerHTML =
+        '<div class="kpis ficha">' +
+          bloque(usd(r.sam), "mercado anual", "SAM · " + pct(r.pct_sam, 1) +
+                 " del país") +
+          bloque(nf(r.cli), "clientes", "de " + nf(r.prod) + " productores") +
+          bloque("US$ " + nf(r.ticket), "ticket anual", "por cliente") +
+          bloque(nf(r.ha), "hectáreas", "cosechadas en " + nf(r.cultivos) +
+                 " cultivos") +
+          bloque("US$ " + nf(r.gasto), "gasto por ha", "insumos comprados") +
+          bloque(r.horas === null ? "—" : nf(r.horas, 1) + " h",
+                 "al centro de provincia",
+                 r.bajo2 === null ? "" : pct(r.bajo2, 0) + " bajo 2 h") +
+        "</div>" +
+
+        '<div class="grid2" style="margin-top:14px">' +
+
+          '<div class="sub-card"><div class="eyebrow">Estructura de la tierra' +
+          "</div>" +
+          '<div class="barras compact">' + est.map(function (v, i) {
+            return '<div class="bar"><span class="bn">' + ESTN[i] + "</span>" +
+              '<span class="bv mono">' + nf(v) + "</span>" +
+              '<span class="bt"><i style="width:' +
+              (100 * v / estTot).toFixed(1) + '%"></i></span>' +
+              '<span class="bp mono">' + pct(100 * v / estTot, 1) + "</span>" +
+              "</div>";
+          }).join("") + "</div>" +
+          '<p class="sub">De ' + nf(r.prod) + " productores, " + nf(r.sobre5) +
+          " superan las 5 ha. " + nf(r.compran) + " ya compran insumos y " +
+          nf(r.credito) + " lo hacen a crédito (" + pct(r.t_cred, 1) +
+          "). Aplican fertilizante " + pct(r.t_fert, 1) + ".</p></div>" +
+
+          '<div class="sub-card"><div class="eyebrow">Cuándo compra</div>' +
+          '<div class="minical">' + (r.meses || []).map(function (v, i) {
+            var alto = D.meses[i] === r.mes;
+            return '<span class="mc' + (alto ? " pico" : "") +
+              '" title="' + D.meses[i] + ": " + nf(v, 1) + '%">' +
+              '<i style="height:' + Math.max(4, 100 * v / (mx || 1)).toFixed(0) +
+              '%"></i><b>' + D.meses[i].charAt(0) + "</b></span>";
+          }).join("") + "</div>" +
+          '<p class="sub">Pico en <b>' + esc(r.mes) + "</b>; cuatro meses " +
+          "concentran " + pct(r.top4, 0) + " del año. " +
+          (r.top4 >= 65
+            ? "Por encima del 65% no sostiene oficina permanente: se atiende " +
+              "con brigada de campaña."
+            : r.top4 <= 45
+              ? "Por debajo del 45%, la demanda alcanza para operar todo el año."
+              : "Demanda de estacionalidad intermedia.") + "</p></div>" +
+
+        "</div>" +
+
+        '<div class="grid2" style="margin-top:14px">' +
+          '<div class="sub-card"><div class="eyebrow">Llegar y sacar</div>' +
+          '<dl class="pares">' +
+            par("Al centro de provincia", r.horas === null ? "—" :
+                nf(r.horas, 1) + " h") +
+            par("Antes, en línea recta", r.horas_proxy === null ? "—" :
+                nf(r.horas_proxy, 1) + " h") +
+            par("Sectores bajo 2 h", r.bajo2 === null ? "—" : pct(r.bajo2, 1)) +
+            par("Sectores sobre 4 h", r.sobre4 === null ? "—" : pct(r.sobre4, 1)) +
+            par("Puerto más cercano", r.puerto ? esc(r.puerto) +
+                (r.h_puerto === null ? "" : " · " + nf(r.h_puerto, 1) + " h") : "—") +
+            par("Sin conexión vial a puerto",
+                r.sin_puerto === null ? "—" : pct(r.sin_puerto, 1)) +
+            par("Costo de viaje", r.costo === null ? "—" :
+                "US$ " + nf(r.costo, 1)) +
+          "</dl></div>" +
+
+          '<div class="sub-card"><div class="eyebrow">Tejido empresarial</div>' +
+          '<dl class="pares">' +
+            par("Territorios de venta", nf(r.terr) +
+                (r.terr ? " · " + nf(r.terr_dia) + " en un día" : "")) +
+            par("Sectores estadísticos", r.sectores === null ? "—" :
+                nf(r.sectores)) +
+            par("Superficie agrícola", r.ha_agri === null ? "—" :
+                nf(r.ha_agri) + " ha") +
+            par("Empresas prospecto", r.emp === null ? "—" : nf(r.emp)) +
+            par("Agroexportadores", nf(r.exp_n) +
+                (r.exp_fob ? " · " + usd(r.exp_fob) : "")) +
+            par("Importadores de insumos", nf(r.imp_n) +
+                (r.imp_fob ? " · " + usd(r.imp_fob) : "")) +
+            par("Mercado total (TAM)", usd(r.tam)) +
+          "</dl></div>" +
+        "</div>";
+    }
+
+    function par(k, v) {
+      return "<dt>" + k + "</dt><dd class='mono'>" + v + "</dd>";
+    }
+
+    sel.onchange = function () { actual = sel.value; pintar(); };
+    document.getElementById("fDeptoOrden").onclick = function (ev) {
+      var b = ev.target.closest("button");
+      if (!b) return;
+      orden = b.dataset.o;
+      this.querySelectorAll("button").forEach(function (x) {
+        if (x === b) x.setAttribute("aria-pressed", "true");
+        else x.removeAttribute("aria-pressed");
+      });
+      llenar();
+    };
+
+    llenar();
+    pintar();
+  }).catch(fallo);
+}
+
+/* -------------------------------------------------------------- comercio -- */
+function vistaComercio() {
+  cargar("comercio").then(function (D) {
+    var m = D.meta;
+    var anual = 52 / m.semanas_imp;
+
+    document.getElementById("comKpis").innerHTML = [
+      ["v", usd(m.fob_imp * anual), "insumos importados",
+       "anualizado desde " + m.semanas_imp + " semanas"],
+      ["v", nf(m.n_imp), "importadores de insumos", "con RUC identificado"],
+      ["v", usd(m.fob_exp * (52 / m.semanas_exp)), "agroexportación",
+       "anualizada, capítulos 07–21"],
+      ["v", nf(m.n_exp), "agroexportadores", "empresas distintas"],
+    ].map(function (k) {
+      return "<div><span class='v'>" + k[1] + "</span><span class='l'>" +
+        k[2] + "</span><span class='s'>" + k[3] + "</span></div>";
+    }).join("");
+
+    barras(document.getElementById("comFamilias"),
+      D.familias.map(function (r) {
+        return { n: r.n, v: r.fob, t: usd(r.fob) + " · " + nf(r.tn) + " t" };
+      }));
+
+    barras(document.getElementById("comOrigenes"),
+      D.origenes.slice(0, 12).map(function (r) {
+        return { n: pais(r.n), v: r.fob, t: usd(r.fob) };
+      }));
+
+    barras(document.getElementById("comDestinos"),
+      D.destinos.slice(0, 12).map(function (r) {
+        return { n: pais(r.n), v: r.fob, t: usd(r.fob) };
+      }));
+
+    tabla(document.getElementById("tImportadores"), [
+      { k: "n", t: "Empresa", l: 1, f: function (r) {
+          return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
+            (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
+      { k: "rubro", t: "Rubro", l: 1, f: function (r) {
+          return "<span class='tag'>" + esc(r.rubro) + "</span>"; } },
+      { k: "fob", t: "CIF anual", f: function (r) { return usd(r.fob); } },
+      { k: "tn", t: "Toneladas", f: function (r) { return nf(r.tn); } },
+      { k: "pct", t: "% del total", f: function (r) { return pct(r.pct, 2); } },
+    ], D.importadores, { sort: "fob" });
+
+    tabla(document.getElementById("tExportadores"), [
+      { k: "n", t: "Empresa", l: 1, f: function (r) {
+          return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
+            (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
+      { k: "fob", t: "FOB anual", f: function (r) { return usd(r.fob); } },
+      { k: "tn", t: "Toneladas", f: function (r) { return nf(r.tn); } },
+      { k: "dest", t: "Destinos", f: function (r) { return nf(r.dest); } },
+    ], D.exportadores, { sort: "fob" });
+
+    document.getElementById("comNota").innerHTML =
+      "Fuente: microdatos de manifiestos de SUNAT, publicados bajo la Ley " +
+      "27806 de transparencia. Las cifras anualizan " + m.semanas_imp +
+      " semanas de registros y deben leerse como orden de magnitud, no como " +
+      "el cierre del año. La agroexportación se restringe a los capítulos " +
+      "arancelarios 07, 08, 09, 12, 18, 20 y 21: el archivo de aduanas trae " +
+      "la exportación completa del país, donde el mineral de cobre y el oro " +
+      "por sí solos son el 60% del FOB.";
+  }).catch(fallo);
+}
+
+/* ------------------------------------------------------------- logistica -- */
+function vistaLogistica() {
+  cargar("logistica").then(function (D) {
+    tabla(document.getElementById("tLogistica"), [
+      { k: "n", t: "Departamento", l: 1, f: function (r) {
+          return "<b>" + esc(r.n) + "</b>"; } },
+      { k: "sam", t: "Mercado", f: function (r) { return usd(r.sam); } },
+      { k: "real", t: "Horas reales", f: function (r) {
+          return r.real === null ? "—" : nf(r.real, 1) + " h"; } },
+      { k: "proxy", t: "Línea recta", cls: "faint", f: function (r) {
+          return r.proxy === null ? "—" : nf(r.proxy, 1) + " h"; } },
+      { k: "dif", t: "Diferencia", f: function (r) {
+          if (r.dif === null) return "—";
+          var c = r.dif > 0 ? "peor" : "mejor";
+          return "<span class='delta " + c + "'>" +
+            (r.dif > 0 ? "+" : "") + nf(r.dif, 1) + " h</span>"; } },
+      { k: "bajo2", t: "Bajo 2 h", f: function (r) {
+          return r.bajo2 === null ? "—" : pct(r.bajo2, 1); } },
+      { k: "sobre4", t: "Sobre 4 h", f: function (r) {
+          return r.sobre4 === null ? "—" : pct(r.sobre4, 1); } },
+      { k: "puerto", t: "Al puerto", f: function (r) {
+          return r.puerto === null ? "—" : nf(r.puerto, 1) + " h"; } },
+      { k: "sin_puerto", t: "Sin salida", f: function (r) {
+          if (!r.sin_puerto) return "—";
+          return "<span class='delta peor'>" + pct(r.sin_puerto, 1) + "</span>"; } },
+      { k: "costo", t: "Costo viaje", f: function (r) {
+          return r.costo === null ? "—" : "US$ " + nf(r.costo, 1); } },
+    ], D.deps, { sort: "sam" });
+
+    tabla(document.getElementById("tPuertos"), [
+      { k: "n", t: "Puerto", l: 1, f: function (r) {
+          return "<b>" + esc(r.n) + "</b>"; } },
+      { k: "reg", t: "Región", l: 1, f: function (r) { return esc(r.reg); } },
+      { k: "tipo", t: "Tipo", l: 1, f: function (r) {
+          return "<span class='tag'>" + esc(r.tipo) + "</span>"; } },
+      { k: "rel", t: "Relevancia agro", l: 1, f: function (r) {
+          return esc(r.rel); } },
+    ], D.puertos, { sort: "n", asc: true });
+
+    /* Se nombran los casos concretos porque son los que cambian una decisión:
+       el promedio nacional no dice a qué departamento se puede entrar. */
+    var rescata = D.deps.filter(function (r) { return r.dif !== null && r.dif < -0.3; })
+      .sort(function (a, b) { return a.dif - b.dif; }).slice(0, 4);
+    var sin = D.deps.filter(function (r) { return r.sin_puerto > 20; })
+      .sort(function (a, b) { return b.sin_puerto - a.sin_puerto; });
+
+    document.getElementById("logNota").innerHTML =
+      "<p>Medir la distancia en línea recta parecía inofensivo y no lo era. " +
+      "Al rutear sobre la carretera real, " +
+      (rescata.length
+        ? "<b>" + rescata.map(function (r) { return esc(r.n); }).join(", ") +
+          "</b> resultaron más accesibles de lo que el cálculo anterior " +
+          "suponía —hasta " + nf(Math.abs(rescata[0].dif), 1) +
+          " horas menos—, y dejaron de estar descartados."
+        : "las diferencias resultaron menores.") + "</p>" +
+      (sin.length
+        ? "<div class='note brass'><span class='h'>El caso que no tiene " +
+          "arreglo logístico</span>" +
+          sin.map(function (r) {
+            return "<b>" + esc(r.n) + "</b>: " + pct(r.sin_puerto, 1) +
+              " de sus sectores no tiene ninguna ruta por carretera hasta un " +
+              "puerto marítimo.";
+          }).join("<br>") +
+          " No es un problema de tiempo sino de red: no existe el camino. " +
+          "Cualquier operación allí depende de vía fluvial o aérea.</div>"
+        : "");
+  }).catch(fallo);
+}
+
+/* ---------------------------------------------------------------- metodo -- */
+/* El método vive en el sitio y no solo en el PDF a propósito: quien discuta
+   una cifra tiene que poder llegar al supuesto que la produce sin pedir un
+   archivo adjunto. */
+function vistaMetodo() {
+  cargar("resumen").then(function (D) {
+    var k = D.kpi;
+
+    document.getElementById("metModelo").innerHTML =
+      "<p>El mercado no se estima por encuesta de intención sino por lo que " +
+      "la tierra obliga a gastar. El punto de partida es la <b>superficie " +
+      "efectivamente cosechada</b> —no la sembrada ni la disponible— cruzada " +
+      "con el <b>costo real de insumos por hectárea de cada cultivo</b>, que " +
+      "difiere en un orden de magnitud entre una papa y un pasto.</p>" +
+      "<dl class='pares'>" +
+      "<dt>1 · Superficie</dt><dd class='mono'>" + nf(k.ha_cosechada) +
+      " ha cosechadas</dd>" +
+      "<dt>2 · Gasto por hectárea</dt><dd class='mono'>US$ " + nf(k.gasto_ha) +
+      " promedio ponderado</dd>" +
+      "<dt>3 · Mercado total (TAM)</dt><dd class='mono'>" + usd(k.tam) + "</dd>" +
+      "<dt>4 · Mercado alcanzable (SAM)</dt><dd class='mono'>" + usd(k.sam) +
+      "</dd>" +
+      "<dt>5 · Clientes</dt><dd class='mono'>" + nf(k.clientes) + "</dd>" +
+      "<dt>6 · Ticket anual</dt><dd class='mono'>US$ " + nf(k.ticket) +
+      "</dd></dl>" +
+      "<p>El paso del TAM al SAM es el que más recorta y el que más se " +
+      "discute: de " + nf(k.productores) + " productores agropecuarios, solo " +
+      nf(k.sobre5) + " superan las cinco hectáreas —debajo de ese umbral la " +
+      "agricultura es de autoconsumo— y " + nf(k.credito) + " compran a " +
+      "crédito, que es la forma en que AgroJuntos vende.</p>" +
+      "<p>El ordenamiento de las regiones (v3) suma al tamaño dos factores " +
+      "que el tamaño solo no captura: <b>logística</b>, con peso de 15%, " +
+      "porque un mercado al que no se llega no es mercado; y " +
+      "<b>estacionalidad</b>, con 10%, porque una demanda concentrada en " +
+      "cuatro meses no sostiene una operación permanente.</p>";
+
+    document.getElementById("metValida").innerHTML =
+      "<p>Un modelo que solo se explica a sí mismo no vale nada. Estos son " +
+      "los dos contrastes contra datos que el modelo no usó:</p>" +
+      "<div class='note'><span class='h'>Contra ventas reales</span>" +
+      "El modelo estima un gasto de <b>US$ " + nf(k.ticket) + " por cliente " +
+      "al año</b>. El libro de ventas de AgroJuntos da <b>US$ 3,264</b>. La " +
+      "coincidencia es mejor de lo que cabía esperar y no se forzó: el " +
+      "modelo se construyó sin mirar esa cifra.</div>" +
+      "<div class='note'><span class='h'>Contra la aduana</span>" +
+      "El modelo estima <b>US$ 1,038 MM</b> de fertilizante a precio de " +
+      "chacra. La importación registrada suma <b>US$ 693 MM</b> CIF, y el " +
+      "producto importado cubre el <b>89.5%</b> de la oferta nacional. La " +
+      "diferencia es la cadena de distribución, que es exactamente el margen " +
+      "donde opera el negocio.</div>" +
+      "<p class='sub'>Ninguna de las dos es una demostración. Son " +
+      "comprobaciones de que las cifras están en el orden de magnitud " +
+      "correcto, que es lo máximo que un dimensionamiento puede ofrecer.</p>";
+
+    tabla(document.getElementById("tFuentes"), [
+      { k: "f", t: "Fuente", l: 1, f: function (r) {
+          return "<b>" + esc(r.f) + "</b><span class='sub2'>" + esc(r.d) +
+            "</span>"; } },
+      { k: "a", t: "Qué aporta", l: 1, f: function (r) { return esc(r.a); } },
+      { k: "y", t: "Año", f: function (r) { return r.y; } },
+    ], [
+      { f: "MIDAGRI", d: "Padrón Nacional de Sectores Estadísticos · RM N.º 0026-2025",
+        a: "7,043 sectores con UBIGEO, hectáreas y centroide", y: 2024 },
+      { f: "MIDAGRI", d: "Anuario de Producción Agrícola",
+        a: "Superficie cosechada y rendimiento por cultivo y mes", y: 2023 },
+      { f: "INEI", d: "Censo Nacional Agropecuario (CENAGRO)",
+        a: "Productores por estrato de tamaño y uso de insumos", y: 2012 },
+      { f: "INEI", d: "Encuesta Nacional Agropecuaria · costos de producción",
+        a: "Costo de insumos por hectárea y por cultivo", y: 2018 },
+      { f: "SUNAT", d: "Padrón Reducido de Contribuyentes",
+        a: "22,437 empresas con RUC, actividad y domicilio fiscal", y: 2025 },
+      { f: "SUNAT", d: "Microdatos de aduanas · Ley 27806",
+        a: "Importación de insumos y agroexportación por empresa", y: 2025 },
+      { f: "OpenStreetMap", d: "Extracto de Perú · licencia ODbL",
+        a: "88,962 vías para el ruteo y 194 capitales de provincia", y: 2025 },
+      { f: "APN", d: "Autoridad Portuaria Nacional",
+        a: "Ubicación y tipo de los 17 puertos", y: 2025 },
+    ], { sort: "f", asc: true });
+
+    document.getElementById("metLimites").innerHTML =
+      "<div class='note brass'><span class='h'>El CENAGRO tiene doce años" +
+      "</span>Es el último censo agropecuario disponible. Las tasas de uso " +
+      "de insumos y la estructura de tamaño de las unidades se toman de él, " +
+      "de modo que cualquier cambio estructural posterior a 2012 no está " +
+      "recogido. La superficie y la producción sí son de 2023–2024.</div>" +
+      "<div class='note brass'><span class='h'>Las cifras de aduanas " +
+      "anualizan diez semanas</span>Los microdatos publicados cubren un " +
+      "tramo, no el año. Anualizar supone que el resto del año se comporta " +
+      "igual, lo que en un sector estacional es una simplificación fuerte. " +
+      "Sirven para ordenar empresas por tamaño, no para declarar el FOB " +
+      "anual de ninguna.</div>" +
+      "<div class='note brass'><span class='h'>El domicilio fiscal no es el " +
+      "fundo</span>La ubicación de cada empresa es la que declara ante " +
+      "SUNAT. Las agroindustriales grandes suelen declarar en Lima y cultivar " +
+      "en otra región, así que la distribución territorial del directorio " +
+      "subestima las regiones productoras.</div>" +
+      "<div class='note brass'><span class='h'>Discrepancia pendiente en " +
+      "ventas propias</span>El dossier de AgroJuntos declara más de " +
+      "US$ 200,000 en ventas; el libro de ventas analizado suma US$ 24,787. " +
+      "La validación del ticket usa el libro, que es lo que se pudo " +
+      "verificar. La diferencia sigue sin explicarse y debe resolverse antes " +
+      "de usar la cifra mayor ante un tercero.</div>" +
+      "<div class='note'><span class='h'>Corrección de una afirmación " +
+      "anterior</span>En una versión previa se afirmó que el detalle " +
+      "aduanero por empresa no era descargable públicamente en el Perú. Es " +
+      "falso: SUNAT lo publica en " +
+      "<span class='mono'>aduanet.gob.pe/aduanas/informae/</span> bajo la " +
+      "Ley 27806. Todo el análisis de comercio exterior de este sitio se " +
+      "construye sobre esa fuente.</div>";
+  }).catch(fallo);
+}
+
 /* ------------------------------------------------------------ navegación -*/
 function fallo(e) {
   console.error(e);
@@ -441,6 +881,10 @@ function ir(hash) {
     if (id === "territorios") vistaTerritorios();
     if (id === "empresas") vistaEmpresas();
     if (id === "estacionalidad") vistaEstacionalidad();
+    if (id === "departamentos") vistaDepartamentos();
+    if (id === "comercio") vistaComercio();
+    if (id === "logistica") vistaLogistica();
+    if (id === "metodo") vistaMetodo();
   }
 }
 window.addEventListener("hashchange", function () { ir(location.hash); });

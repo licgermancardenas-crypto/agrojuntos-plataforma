@@ -111,7 +111,9 @@ grafo_vial.py             grafo vial contraído: de 5.2 M de nodos a 95 mil
 build_h3.py               agrega todas las capas a grilla hexagonal H3
 build_clusters.py         territorios de venta por densidad (DBSCAN)
 build_hubs.py             ubicación de centros por cobertura máxima
+build_vial_mapa.py        simplifica la red vial principal para dibujarla
 build_mapa_geo.py         empaqueta las capas para el atlas web
+build_atlas_html.py       compone plantilla + datos en un HTML autónomo
 build_mapas_pdf.py        figuras del reporte
 reporte.py                reporte PDF
 ```
@@ -197,7 +199,18 @@ agricultura está demasiado dispersa—, mientras que **a seis horas cubren el
 cobertura.
 
 El atlas interactivo está en `docs/atlas_geo.html` y publicado en
-[agrojuntos.vercel.app/mapa](https://agrojuntos.vercel.app/mapa).
+[agrojuntos.vercel.app/mapa](https://agrojuntos.vercel.app/mapa). Filtra por
+departamento, región natural y búsqueda de provincia o ciudad —los totales
+del encabezado se recalculan sobre lo filtrado—, y superpone la red vial en
+tres niveles sobre 194 capitales de provincia y los puertos agroexportadores.
+Es la capa que explica el mapa: se ve por qué un valle con mercado alto queda
+lejos en tiempo, que es lo que el color por sí solo no dice.
+
+La red dibujada sale de `build_vial_mapa.py`, que une los tramos de OSM antes
+de simplificarlos —OSM corta cada vía en los cruces, así que la Panamericana
+llega como miles de segmentos de dos puntos— y baja de 47,729 vías a 10,656
+trazos. Es geometría para leer, no para rutear: el ruteo usa el grafo completo
+de `grafo_vial.py`.
 
 ---
 

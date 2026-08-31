@@ -46,6 +46,7 @@ hubs = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
 asig = pd.read_csv("out/hubs_asignacion.csv", encoding="utf-8-sig")
 puertos = pd.read_csv("out/puertos.csv", encoding="utf-8-sig")
 mod = pd.read_csv("out/modelo_v3_departamento.csv", encoding="utf-8-sig")
+sec_ruteo = pd.read_csv("out/ruteo_sector.csv", encoding="utf-8-sig")
 
 # ------------------------------------------------------- contorno del pais -
 dep_g = gpd.read_file("data/peru_departamental_simple.geojson").to_crs(4326)
@@ -63,12 +64,29 @@ def anillos(geom):
     return out
 
 
-contorno = [a for _, r in dep_g.iterrows() for a in anillos(r.geometry)]
+# El contorno va por departamento y no aplanado: filtrar, resaltar y encuadrar
+# la vista exigen saber a quién pertenece cada anillo.
+deps_geo = []
+for _, r in dep_g.sort_values("NOMBDEP").iterrows():
+    a = anillos(r.geometry)
+    if not a:
+        continue
+    xs = [p[0] for anillo in a for p in anillo]
+    ys = [p[1] for anillo in a for p in anillo]
+    deps_geo.append({
+        "n": cap(r["NOMBDEP"]), "k": key(r["NOMBDEP"]), "r": a,
+        "bb": [round(min(xs), DEC), round(min(ys), DEC),
+               round(max(xs), DEC), round(max(ys), DEC)],
+    })
+contorno = [a for d in deps_geo for a in d["r"]]
 
 # ------------------------------------------------------------ hexagonos ---
 # El hexágono se dibuja desde su índice H3; enviar los seis vértices de cada
 # celda pesaría cuatro veces más que enviar el centro y el radio.
 h5 = h5.sort_values("sam_usd", ascending=False)
+i_dep = {d["k"]: i for i, d in enumerate(deps_geo)}
+REG = ["COSTA", "SIERRA", "SELVA ALTA", "SELVA BAJA"]
+i_reg = {r: i for i, r in enumerate(REG)}
 hex_cells = []
 for _, r in h5.iterrows():
     vs = h3.cell_to_boundary(r["h3"])
@@ -80,6 +98,8 @@ for _, r in h5.iterrows():
         round(float(r["horas_capital"]), 1),
         int(r["empresas"]), int(r["exportadores"]), int(r["prospectos"]),
         cap(r["dep"]), cap(r["prov"]),
+        i_dep.get(key(r["dep"]), -1),
+        i_reg.get(str(r.get("region_nat", "")).upper(), 1),
     ])
 
 # ------------------------------------------------------------ territorios -
@@ -116,15 +136,42 @@ for u in sorted(hubs["umbral_h"].unique()):
         "marg": round(float(x["marginal"]), 1),
     } for _, x in sub.iterrows()]
 
-# celdas cubiertas / no cubiertas en el escenario de 6 centros a 2 h
+# Celdas cubiertas / no cubiertas en el escenario de 6 centros a 2 h.
+# Una celda sin camino a ningún centro sale con distancia infinita, e
+# `Infinity` no es JSON válido: JSON.parse lo rechaza y la página queda en
+# blanco. Se traduce a null, que el mapa dibuja como "sin conexión".
+def horas(v):
+    v = float(v)
+    return round(v, 1) if np.isfinite(v) else None
+
+
 cob = [[round(r["centro_lon"], DEC), round(r["centro_lat"], DEC),
-        1 if r["cubierto_2h"] else 0, round(float(r["horas_al_hub"]), 1)]
+        1 if r["cubierto_2h"] else 0, horas(r["horas_al_hub"])]
        for _, r in asig.iterrows()]
 
 # --------------------------------------------------------------- puertos ---
 pu = [{"n": r["puerto"], "lat": round(float(r["lat"]), DEC),
        "lon": round(float(r["lon"]), DEC), "tipo": r["tipo"],
        "rel": r["relevancia_agro"]} for _, r in puertos.iterrows()]
+
+# -------------------------------------------------------------- ciudades ---
+cap_g = gpd.read_file("data/peru_capital_provincia.geojson").to_crs(4326)
+sam_prov = sec_ruteo.groupby(sec_ruteo["prov"].map(slug))["s_sam_usd"].sum()
+cap_g["sam"] = cap_g["PROVINCIA"].map(slug).map(sam_prov).fillna(0)
+cap_g = cap_g.sort_values("sam", ascending=False)
+ciudades = [{
+    "n": cap(r["CAPITAL"]), "d": cap(r["DEPARTAM"]),
+    "lat": round(float(r.geometry.y), DEC),
+    "lon": round(float(r.geometry.x), DEC),
+    "sam": int(r["sam"]),
+    "k": i_dep.get(key(r["DEPARTAM"]), -1),
+} for _, r in cap_g.iterrows()]
+
+# ------------------------------------------------------------ carreteras ---
+try:
+    vial = json.load(open("out/vial_mapa.json", encoding="utf-8"))
+except FileNotFoundError:
+    vial = {"niveles": {}, "refs": []}
 
 # ------------------------------------------------------------------ salida -
 payload = {
@@ -137,7 +184,10 @@ payload = {
         "territorios_dia": int(terr["visitable_en_dia"].sum()),
         "pct_sam_territorios": round(float(terr["pct_sam"].sum())),
     },
-    "contorno": contorno,
+    "deps": deps_geo,
+    "regiones": REG,
+    "ciudades": ciudades,
+    "vial": vial,
     "hex": hex_cells,
     "territorios": territorios,
     "hubs": hubs_out,
@@ -145,8 +195,11 @@ payload = {
     "puertos": pu,
 }
 
+# allow_nan=False obliga a que cualquier infinito o NaN que se escape falle
+# aquí y no en el navegador del usuario.
 with open("out/mapa_geo.json", "w", encoding="utf-8") as fh:
-    json.dump(payload, fh, separators=(",", ":"), ensure_ascii=False)
+    json.dump(payload, fh, separators=(",", ":"), ensure_ascii=False,
+              allow_nan=False)
 
 print(f"mapa_geo.json : {os.path.getsize('out/mapa_geo.json')/1e6:.2f} MB")
 print(f"  hexagonos   : {len(hex_cells):,} de ~{payload['meta']['km2_celda']} km2")
@@ -154,3 +207,7 @@ print(f"  territorios : {len(territorios)}")
 print(f"  hubs        : {sum(len(v) for v in hubs_out.values())} escenarios")
 print(f"  puertos     : {len(pu)}")
 print(f"  celdas cob. : {len(cob):,}")
+print(f"  departamentos: {len(deps_geo)}")
+print(f"  ciudades    : {len(ciudades)}")
+print(f"  trazos viales: "
+      f"{sum(len(v) for v in vial['niveles'].values()):,}")

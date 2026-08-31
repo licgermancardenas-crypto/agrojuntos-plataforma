@@ -116,6 +116,48 @@ with sync_playwright() as pw:
     print(f"  {n} elementos en la lista lateral")
     if n == 0:
         ok = False
+    # Los filtros son la razón de ser del mapa: se prueban de verdad, no solo
+    # comprobando que el control exista en el DOM.
+    base = pg.text_content("#cuenta").strip()
+    pg.select_option("#fDep", label="Lambayeque")
+    pg.wait_for_timeout(900)
+    filtrado = pg.text_content("#cuenta").strip()
+    print(f"  sin filtro : {base}")
+    print(f"  Lambayeque : {filtrado}")
+    if not filtrado or filtrado == base:
+        print("  EL FILTRO DE DEPARTAMENTO NO REDUCE")
+        ok = False
+
+    pg.click('#fReg button[data-reg="0"]')
+    pg.wait_for_timeout(600)
+    if pg.text_content("#cuenta").strip() == filtrado:
+        print("  EL FILTRO DE REGION NATURAL NO ACTUA")
+        ok = False
+
+    pg.click("#reset")
+    pg.wait_for_timeout(600)
+    if pg.text_content("#cuenta").strip() != base:
+        print("  LIMPIAR NO RESTAURA EL ESTADO INICIAL")
+        ok = False
+    else:
+        print("  region natural y limpiar: ok")
+
+    pg.fill("#q", "chiclayo")
+    pg.wait_for_timeout(800)
+    busq = pg.text_content("#cuenta").strip()
+    if busq == base:
+        print("  LA BUSQUEDA DEL MAPA NO FILTRA")
+        ok = False
+    else:
+        print(f"  buscar     : {busq}")
+    pg.click("#reset")
+    pg.wait_for_timeout(500)
+
+    for nivel in ("0", "2", "3", "1"):
+        pg.click(f'#fVial button[data-vial="{nivel}"]')
+        pg.wait_for_timeout(300)
+    print("  niveles de red vial: ok")
+
     pg.click('.tema button[data-tema="dark"]')
     pg.wait_for_timeout(400)
     if pg.evaluate("() => document.documentElement.dataset.theme") != "dark":

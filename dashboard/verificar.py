@@ -141,6 +141,43 @@ with sync_playwright() as pw:
         else:
             print("  limpiar y restaurar: ok")
 
+    # El perfil es el unico modulo con una direccion por registro: 23,300
+    # empresas comparten una sola vista y el RUC viaja en el hash. Se comprueba
+    # el camino entero —directorio, clic, perfil— y no solo que la pagina abra.
+    print("\nperfil de empresa")
+    pg.evaluate("() => location.hash = '#empresas'")
+    pg.wait_for_selector("#tEmpresas tbody tr td.name a")
+    ruc = pg.eval_on_selector(
+        "#tEmpresas tbody tr td.name a",
+        "a => a.getAttribute('href').split('=')[1]")
+    pg.click("#tEmpresas tbody tr td.name a")
+    pg.wait_for_selector("#empPerfil h3", timeout=25000)
+    pg.wait_for_timeout(900)
+    titulo = (pg.text_content("#empPerfil h3") or "").strip()
+    print(f"  el directorio lleva al perfil de {titulo[:34]}")
+    if not titulo or "No hay perfil" in (pg.text_content("#empPerfil") or ""):
+        print("  EL PERFIL NO CARGA DESDE EL DIRECTORIO")
+        ok = False
+    if pg.evaluate("location.hash") != "#empresa=" + ruc:
+        print("  EL PERFIL NO DEJA SU PROPIA DIRECCION")
+        ok = False
+    kpis = len(pg.query_selector_all("#empPerfil .kpis > div"))
+    mapa = pg.eval_on_selector("#empMapa", "c => c.width > 0 && c.height > 0")
+    pares = len(pg.query_selector_all("#empPerfil .pares dt"))
+    print(f"  {kpis} indicadores · {pares} campos de ficha · lienzo {mapa}")
+    if kpis < 2 or not mapa:
+        print("  EL PERFIL LLEGA INCOMPLETO")
+        ok = False
+
+    # Un RUC inexistente tiene que decirlo, no dejar la pagina cargando.
+    pg.evaluate("() => location.hash = '#empresa=00000000000'")
+    pg.wait_for_timeout(1500)
+    if "No hay perfil" not in (pg.text_content("#empPerfil") or ""):
+        print("  UN RUC INEXISTENTE NO AVISA")
+        ok = False
+    else:
+        print("  un RUC inexistente lo dice: ok")
+
     # La vista de importacion vive de la fila desplegable: si el detalle no
     # cambia al pulsar otra categoria, la tabla es un adorno. Y las dos
     # categorias sin mercancia tienen que seguir visibles: son parte de la

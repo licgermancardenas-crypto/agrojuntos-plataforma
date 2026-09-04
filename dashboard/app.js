@@ -299,7 +299,9 @@ function pintarEmpresas() {
 
   tabla(document.getElementById("tEmpresas"), [
     { k: "n", t: "Razón social", l: true, cls: "name",
-      f: function (r) { return esc(r.n); } },
+      f: function (r) {
+        return '<a class="vermapa" href="#empresa=' + r.ruc + '">' +
+               esc(r.n) + "</a>"; } },
     { k: "ruc", t: "RUC", l: true, f: function (r) {
         return '<span class="mono">' + r.ruc + "</span>"; } },
     { k: "c", t: "Clase", l: true, f: function (r) {
@@ -415,6 +417,260 @@ function vistaImportacion() {
       " de la tabla de exclusiones no son gasto agrícola no contado: son el " +
       "tamaño de la zona ambigua, donde el arancel no permite saber si el uso " +
       "es agrícola o industrial.";
+  }).catch(fallo);
+}
+
+/* --------------------------------------------------------------- perfil -- */
+/* Una empresa por página. El directorio dice quién existe; el perfil dice qué
+   compra afuera, a quién, cuándo y desde dónde, que es lo que hace falta para
+   preparar una visita. Los perfiles viajan en cien archivos partidos por los
+   dos últimos dígitos del RUC: uno por empresa serían 23 mil archivos, y uno
+   solo obligaría a bajar 9.8 MB para ver una. */
+var PERFIL = null;
+
+function dibujarLocalizador(cv, p, GEO) {
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var W = cv.clientWidth, H = cv.clientHeight;
+  if (!W || !H) return;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  var g = cv.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, W, H);
+  var css = getComputedStyle(document.documentElement);
+  var tk = function (n) { return css.getPropertyValue(n).trim(); };
+
+  /* El país entero de fondo y el departamento resaltado: sin el país, un
+     contorno suelto no dice dónde queda; sin el departamento, el punto flota. */
+  var bb = [1e9, 1e9, -1e9, -1e9];
+  GEO.forEach(function (d) {
+    d.r.forEach(function (a) {
+      a.forEach(function (q) {
+        if (q[0] < bb[0]) bb[0] = q[0]; if (q[1] < bb[1]) bb[1] = q[1];
+        if (q[0] > bb[2]) bb[2] = q[0]; if (q[1] > bb[3]) bb[3] = q[1];
+      });
+    });
+  });
+  var pad = 8;
+  var kx = Math.cos((bb[1] + bb[3]) / 2 * Math.PI / 180) || 1;
+  var k = Math.min((W - 2 * pad) / ((bb[2] - bb[0]) * kx),
+                   (H - 2 * pad) / (bb[3] - bb[1]));
+  var ox = (W - (bb[2] - bb[0]) * kx * k) / 2;
+  var oy = (H - (bb[3] - bb[1]) * k) / 2;
+  var X = function (lo) { return ox + (lo - bb[0]) * kx * k; };
+  var Y = function (la) { return H - oy - (la - bb[1]) * k; };
+
+  var mio = (p.dep || "").normalize("NFD").replace(/[̀-ͯ]/g, "")
+              .toUpperCase();
+  GEO.forEach(function (d) {
+    var suyo = d.k === mio;
+    g.beginPath();
+    d.r.forEach(function (a) {
+      a.forEach(function (q, i) {
+        var x = X(q[0]), y = Y(q[1]);
+        if (i) g.lineTo(x, y); else g.moveTo(x, y);
+      });
+      g.closePath();
+    });
+    g.fillStyle = suyo ? tk("--forest2") || "#2C6B54" : tk("--surf2") || "#EEF1EA";
+    g.globalAlpha = suyo ? .30 : 1;
+    g.fill();
+    g.globalAlpha = 1;
+    g.strokeStyle = tk("--line") || "#D5DBD2";
+    g.lineWidth = suyo ? 1.1 : .5;
+    g.stroke();
+  });
+
+  if (p.lat === undefined) return;
+  var x = X(p.lon), y = Y(p.lat);
+  g.beginPath(); g.arc(x, y, 9, 0, 6.284);
+  g.fillStyle = tk("--forest") || "#0F4C3F"; g.globalAlpha = .18; g.fill();
+  g.globalAlpha = 1;
+  g.beginPath(); g.arc(x, y, 3.4, 0, 6.284);
+  g.fillStyle = tk("--forest") || "#0F4C3F"; g.fill();
+  g.strokeStyle = "#fff"; g.lineWidth = 1.2; g.stroke();
+}
+
+/* Un despacho de 263 kg no es «0 t». Por debajo de la tonelada la unidad
+   sigue siendo el kilo, y redondear a cero borra el dato. */
+function peso(kg) {
+  if (kg >= 1e6) return nf(Math.round(kg / 1000)) + " t";
+  if (kg >= 1000) return nf(kg / 1000, 1) + " t";
+  return nf(Math.round(kg)) + " kg";
+}
+
+function serieSemanal(el, serie, sems) {
+  var mx = Math.max.apply(null, serie) || 1;
+  el.innerHTML = serie.map(function (v, i) {
+    var h = Math.max(2, Math.round(100 * v / mx));
+    return '<div class="sb" title="' + esc(sems[i] || "") + " · " + usd(v) +
+      '"><i style="height:' + h + '%"></i><b>' +
+      (sems[i] || "").slice(8) + "/" + (sems[i] || "").slice(5, 7) +
+      "</b></div>";
+  }).join("");
+}
+
+function vistaEmpresa(ruc) {
+  var caja = document.getElementById("empPerfil");
+  caja.innerHTML = '<div class="load">Cargando el perfil…</div>';
+  var grupo = ruc.slice(-2);
+  Promise.all([cargar("perfil/" + grupo), cargar("perfil_idx"),
+               cargar("geo_min")]).then(function (r) {
+    var P = r[0][ruc], IDX = r[1], GEO = r[2];
+    if (!P) {
+      caja.innerHTML = '<div class="card"><div class="b"><p>No hay perfil ' +
+        'para el RUC <span class="mono">' + esc(ruc) + '</span>. El directorio ' +
+        'cubre el padrón agrícola y a quien registra comercio exterior.</p>' +
+        '<p><a class="vermapa" href="#empresas">Volver al directorio</a></p>' +
+        "</div></div>";
+      return;
+    }
+    PERFIL = P;
+    var anual = 52 / IDX.semanas;
+    var I = P.imp, E = P.exp;
+
+    var kpis = [];
+    if (I) {
+      kpis.push([usd(I.fob * anual), "importación anualizada",
+                 usd(I.fob) + " en " + IDX.semanas + " semanas"]);
+      kpis.push([peso(I.kg), "peso importado",
+                 I.partidas + " partidas · " + I.lineas + " despachos"]);
+      kpis.push([I.semanas + " de " + IDX.semanas, "semanas con despacho",
+                 I.semanas >= IDX.semanas - 1 ? "flujo continuo"
+                   : (I.semanas <= 2 ? "compra puntual" : "flujo intermitente")]);
+    }
+    if (E) {
+      kpis.push([usd((E.fob_anual !== undefined ? E.fob_anual : E.fob * anual)),
+                 "agroexportación anualizada",
+                 E.destinos + (E.destinos === 1 ? " destino" : " destinos")]);
+    }
+    if (!kpis.length) {
+      kpis.push([esc(P.clase || "—"), "clase declarada",
+                 "sin comercio exterior registrado"]);
+      kpis.push([esc(P.estado || "—"), "estado en el padrón",
+                 esc(P.condicion || "")]);
+    }
+
+    var loc = [P.dist, P.prov, P.dep].filter(Boolean).join(" · ");
+    var pares = [];
+    if (P.dir) pares.push(["Domicilio fiscal", esc(P.dir)]);
+    if (loc) pares.push(["Ubicación", esc(loc)]);
+    if (P.estado) pares.push(["Estado", esc(P.estado) +
+      (P.condicion ? " · " + esc(P.condicion) : "")]);
+    if (P.ter && P.ter !== "Fuera de territorio")
+      pares.push(["Territorio de venta",
+        enlaceMapa(esc(P.ter), "ter=" + P.rank)]);
+    else if (P.lat !== undefined)
+      pares.push(["Territorio de venta", "fuera de todo territorio"]);
+    if (P.hub) pares.push(["Centro que la sirve", esc(P.hub) +
+      (P.h_hub !== null && P.h_hub !== undefined
+        ? " · " + nf(P.h_hub, 1) + " h" : "")]);
+    if (P.rubro) pares.push(["Rubro de importación", esc(P.rubro)]);
+
+    caja.innerHTML =
+      '<div class="card"><div class="h">' +
+        "<h3>" + esc(P.n || ruc) + "</h3>" +
+        '<span class="eyebrow"><span class="mono">' + esc(ruc) + "</span>" +
+        (P.clase ? " · " + esc(P.clase) : "") + "</span></div>" +
+        '<div class="b"><p class="sub"><a class="vermapa" href="#empresas">' +
+        "← Volver al directorio</a></p></div>" +
+      "</div>" +
+      '<div class="kpis" style="margin-top:14px">' +
+        kpis.map(function (k) {
+          return "<div><span class='v'>" + k[0] + "</span><span class='l'>" +
+            k[1] + "</span><span class='s'>" + k[2] + "</span></div>";
+        }).join("") +
+      "</div>" +
+
+      '<div class="grid2" style="margin-top:16px">' +
+        '<div class="card"><div class="h"><h3>Dónde está</h3>' +
+          '<span class="eyebrow">Domicilio fiscal</span></div>' +
+          '<div class="b"><canvas id="empMapa" class="locmap"></canvas>' +
+          '<dl class="pares">' + pares.map(function (x) {
+            return "<dt>" + x[0] + "</dt><dd>" + x[1] + "</dd>"; }).join("") +
+          "</dl>" +
+          '<p class="sub">El domicilio fiscal no es el lugar de cultivo: un ' +
+          'agroexportador con fundo en La Libertad suele estar inscrito en ' +
+          'Lima. Sirve para saber a quién visitar cuando se está en la zona.</p>' +
+          "</div></div>" +
+        '<div class="card"><div class="h"><h3>Qué importa</h3>' +
+          '<span class="eyebrow">FOB anualizado</span></div>' +
+          '<div class="b">' + (I
+            ? '<div class="barras compact" id="empCats"></div>' +
+              '<div class="eyebrow" style="margin-top:12px">Continuidad · FOB por semana</div>' +
+              '<div class="serie" id="empSerie"></div>'
+            : "<p>Sin importación registrada en la ventana de aduanas.</p>") +
+          "</div></div>" +
+      "</div>" +
+
+      (I ? '<div class="grid2" style="margin-top:16px">' +
+        '<div class="card"><div class="h"><h3>De dónde viene</h3>' +
+          '<span class="eyebrow">País de origen</span></div>' +
+          '<div class="b"><div class="barras compact" id="empPaises"></div></div></div>' +
+        '<div class="card"><div class="h"><h3>Qué producto</h3>' +
+          '<span class="eyebrow">Glosa de la partida</span></div>' +
+          '<div class="b"><div class="barras compact" id="empGlosas"></div></div></div>' +
+      "</div>" +
+      '<div class="card" style="margin-top:16px"><div class="h">' +
+        "<h3>Los mayores despachos, uno por uno</h3>" +
+        '<span class="eyebrow">Descripción comercial del declarante</span></div>' +
+        '<div class="tw"><table id="tEmpDesc"></table></div>' +
+        '<div class="b"><p class="sub">La descripción la escribe el propio ' +
+        'declarante en el manifiesto: es el detalle más fino que existe de qué ' +
+        'compró esta empresa, marca y modelo incluidos cuando los declara.</p>' +
+        "</div></div>" : "") +
+
+      (E && E.partidas_top && E.partidas_top.length
+        ? '<div class="grid2" style="margin-top:16px">' +
+          '<div class="card"><div class="h"><h3>Qué exporta</h3>' +
+            '<span class="eyebrow">Partida arancelaria</span></div>' +
+            '<div class="b"><div class="barras compact" id="empExpP"></div></div></div>' +
+          '<div class="card"><div class="h"><h3>Hacia dónde</h3>' +
+            '<span class="eyebrow">País de destino</span></div>' +
+            '<div class="b"><div class="barras compact" id="empExpD"></div></div></div>' +
+          "</div>" : "") +
+
+      '<p class="sub" style="margin-top:14px">Microdatos de manifiestos de ' +
+      'SUNAT bajo la Ley 27806, ' + IDX.semanas + ' semanas de junio a agosto ' +
+      'de 2026; el anualizado extrapola esa ventana sin corregir ' +
+      'estacionalidad. Identidad y domicilio, del padrón reducido del RUC.</p>';
+
+    function barrasDe(id, filas) {
+      var el = document.getElementById(id);
+      if (el) barras(el, filas.map(function (x) {
+        return { n: x.n, v: x.fob, t: usd(x.fob * anual) }; }));
+    }
+    if (I) {
+      barrasDe("empCats", I.cats);
+      barrasDe("empPaises", I.paises);
+      barrasDe("empGlosas", I.glosas);
+      serieSemanal(document.getElementById("empSerie"), I.serie, IDX.sems);
+      tabla(document.getElementById("tEmpDesc"), [
+        { k: "d", t: "Descripción declarada", l: 1, f: function (r) {
+            return esc(r.d); } },
+        { k: "p", t: "Partida", l: 1, f: function (r) {
+            return '<span class="mono">' + esc(r.p) + "</span>"; } },
+        { k: "o", t: "Origen", l: 1, f: function (r) { return esc(r.o); } },
+        { k: "kg", t: "Kilos", f: function (r) { return nf(Math.round(r.kg)); } },
+        { k: "fob", t: "FOB del despacho", f: function (r) {
+            return usd(r.fob); } }
+      ], I.desc, { sort: "fob" });
+    }
+    if (E && E.partidas_top && E.partidas_top.length) {
+      barrasDe("empExpP", E.partidas_top);
+      barrasDe("empExpD", E.paises);
+    }
+    var cv = document.getElementById("empMapa");
+    if (cv) {
+      dibujarLocalizador(cv, P, GEO);
+      if (!window.__locObs) {
+        window.__locObs = true;
+        window.addEventListener("resize", function () {
+          var c = document.getElementById("empMapa");
+          if (c && PERFIL) cargar("geo_min").then(function (G) {
+            dibujarLocalizador(c, PERFIL, G); });
+        });
+      }
+    }
   }).catch(fallo);
 }
 
@@ -1184,6 +1440,17 @@ function fallo(e) {
 var CARGADO = {};
 function ir(hash) {
   var id = (hash || "#resumen").replace("#", "");
+  /* El perfil no es una vista mas: lleva el RUC en el propio hash, de modo
+     que cada empresa tiene su direccion y se comparte como cualquier pagina. */
+  var mE = /^empresa=(\d+)$/.exec(id);
+  if (mE) {
+    document.querySelectorAll(".view").forEach(function (v) {
+      v.classList.toggle("on", v.id === "v-empresa"); });
+    document.querySelectorAll("nav a").forEach(function (a) {
+      a.classList.toggle("on", a.getAttribute("href") === "#empresas"); });
+    vistaEmpresa(mE[1]);
+    return;
+  }
   if (!document.getElementById("v-" + id)) id = "resumen";
   document.querySelectorAll(".view").forEach(function (v) {
     v.classList.toggle("on", v.id === "v-" + id); });

@@ -274,3 +274,20 @@ td.faint{color:var(--muted)}
 .vermapa{color:var(--forest2); text-decoration:none; border-bottom:1px solid transparent;
   white-space:nowrap}
 .vermapa:hover{border-bottom-color:currentColor}
+
+/* Perfil de empresa. El localizador es un lienzo y no una imagen porque tiene
+   que repintarse al cambiar el tema: el CSS solo alcanza al DOM. */
+.locmap{width:100%; height:210px; display:block; border:1px solid var(--line);
+  border-radius:3px; background:var(--surf); margin-bottom:12px}
+.pares{display:grid; grid-template-columns:auto 1fr; gap:5px 14px;
+  font-size:12.5px; margin:0}
+.pares dt{color:var(--muted)}
+.pares dd{margin:0; color:var(--ink)}
+/* Serie semanal: diez barras y su fecha. Con diez valores un gráfico de línea
+   sugiere una tendencia que una ventana móvil de diez semanas no sostiene. */
+.serie{display:flex; align-items:flex-end; gap:4px; height:74px; margin-top:6px}
+.serie .sb{flex:1; display:flex; flex-direction:column; justify-content:flex-end;
+  height:100%}
+.serie .sb i{display:block; width:100%; background:var(--forest2); border-radius:1px}
+.serie .sb b{font-family:"IBM Plex Mono",monospace; font-size:8.5px;
+  font-weight:400; color:var(--muted); text-align:center; margin-top:4px}

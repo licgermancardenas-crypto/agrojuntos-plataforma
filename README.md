@@ -111,6 +111,7 @@ listar_aduanas.py         lista los archivos de aduanas publicados
 bajar_aduanas.py          los descarga con verificación de integridad
 build_aduanas.py          lee los DBF y filtra partidas de insumos agrícolas
 build_import_categorias.py  reparte toda la importación en categorías del agro
+build_perfiles.py         un perfil por empresa, con su comercio exterior línea a línea
 build_comercio.py         cruza aduanas con el padrón para ubicar cada empresa
 build_modelo_v3.py        modelo final con logística y estacionalidad
 grafo_vial.py             grafo vial contraído: de 5.2 M de nodos a 95 mil
@@ -288,11 +289,32 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Estacionalidad | Calendario de demanda mes a mes por región |
 | Logística | Horas al centro provincial y al puerto, y el costo de servir cada región |
 | Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
+| Perfil de empresa | Una página por RUC: qué importa, de qué origen, con qué continuidad, qué exporta y dónde está |
 | Método | Cadena de cálculo, fuentes y limitaciones declaradas |
 | Mapa | Atlas geoespacial con las cinco capas, y un mapa propio por departamento, territorio y provincia |
 
 Cada vista carga su propio JSON la primera vez que se abre: el directorio de
-empresas pesa 1.7 MB —460 KB comprimido— y no debe frenar la portada.
+empresas pesa 1.8 MB —460 KB comprimido— y no debe frenar la portada.
+
+**Cada empresa tiene su perfil y su dirección**: `#empresa=20461642706`. Es el
+único módulo con una página por registro —23,300— y por eso los perfiles no
+viajan como un archivo cada uno ni como uno solo. Van repartidos en cien
+archivos por los dos últimos dígitos del RUC: uno por empresa serían 23 mil
+archivos en el repositorio para servir 2 KB cada vez, y uno solo obligaría a
+bajar 9.9 MB para ver una. La partición deja cada consulta en unos 88 KB.
+
+El perfil responde qué compra afuera esa empresa, de qué origen, en qué
+cantidad y **con qué continuidad**: la ventana de diez semanas distingue al
+importador de flujo —presente en casi todas— del que hizo un despacho aislado,
+y eso a un canal de ventas le cambia la conversación. Incluye la descripción
+comercial que escribió el propio declarante en el manifiesto, que es el detalle
+más fino que existe de qué compró, con marca y modelo cuando los declara. El
+mapa localizador lo dibuja un lienzo y no una imagen, porque tiene que
+repintarse al cambiar de tema.
+
+El perfil no tiene equivalente impreso: 23,300 fichas no son un anexo, son un
+padrón. El informe conserva las tablas de mayores importadores y
+agroexportadores, que es lo que un documento de lectura lineal puede sostener.
 
 Las once primeras vistas viven en `index.html` y se conmutan por hash. El
 mapa es un documento propio en `/mapa`: su lienzo ocupa el ancho completo y su

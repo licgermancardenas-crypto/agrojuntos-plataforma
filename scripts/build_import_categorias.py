@@ -42,7 +42,7 @@ import sys
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from build_aduanas import abrir, leer_dbf
+from build_aduanas import abrir, leer_dbf, semana_de
 
 CRUDOS = "../../_repo/agro_insumos_pe_data/raw_data/sunat"
 SEMANAS = 10                     # la ventana móvil que publica SUNAT
@@ -156,6 +156,7 @@ archivos = sorted(glob.glob(os.path.join(CRUDOS, "ma*.zip")))
 if not archivos:
     sys.exit(f"no hay archivos de importacion en {CRUDOS}")
 for z in archivos:
+    sem = semana_de(os.path.basename(z))
     fh, _ = abrir(z)
     with fh:
         for r in leer_dbf(fh, CAMPOS):
@@ -182,7 +183,7 @@ for z in archivos:
                 "partida6": p[:6], "partida4": p[:4],
                 "ruc": (r.get("LIBR_TRIBU") or "").strip(),
                 "razon_social": (r.get("DNOMBRE") or "").strip(),
-                "fob_usd": fob, "peso_kg": peso,
+                "fob_usd": fob, "peso_kg": peso, "semana": sem,
                 "pais_origen": (r.get("PAIS_ORIGE") or "").strip(),
                 "descripcion": (r.get("DESC_COMER") or "").strip()[:70],
             })

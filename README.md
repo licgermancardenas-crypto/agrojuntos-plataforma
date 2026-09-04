@@ -233,6 +233,23 @@ agricultura está demasiado dispersa—, mientras que **a seis horas cubren el
 75%**. El radio de operación, no el número de almacenes, es lo que decide la
 cobertura.
 
+**Cada unidad tiene su propio mapa y su propia dirección.** Los 24
+departamentos, los 57 territorios de venta y las 197 provincias se enfocan
+desde tres selectores que se excluyen entre sí, y el recorte queda en el enlace:
+`/mapa#dep=junin`, `/mapa#ter=9`, `/mapa#prov=ica-pisco`. La ficha de cada
+departamento y cada fila de la tabla de territorios llevan a su mapa. Se dibujan
+en vivo sobre el mismo lienzo, sin generar una imagen por unidad: 254 láminas
+estáticas serían 51 MB y no se podrían recorrer con el zoom.
+
+La pertenencia a territorio se resuelve una sola vez, sobre la celda H3 de
+resolución 6 que es donde se detectaron los núcleos, y la heredan las tres capas
+—sectores, hexágonos y provincias—. Si cada una la dedujera por su cuenta darían
+tres respuestas distintas a la misma pregunta.
+
+El informe impreso conserva su lámina a página completa por departamento; los
+otros dos niveles existen solo en el sitio, porque una lámina por provincia no
+se lee en papel y una por territorio tampoco.
+
 El atlas interactivo está en `docs/atlas_geo.html` y publicado en
 [agrojuntos.vercel.app/mapa](https://agrojuntos.vercel.app/mapa). Filtra por
 departamento, región natural y búsqueda de provincia o ciudad —los totales
@@ -268,7 +285,7 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Logística | Horas al centro provincial y al puerto, y el costo de servir cada región |
 | Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
 | Método | Cadena de cálculo, fuentes y limitaciones declaradas |
-| Mapa | Atlas geoespacial con las cinco capas |
+| Mapa | Atlas geoespacial con las cinco capas, y un mapa propio por departamento, territorio y provincia |
 
 Cada vista carga su propio JSON la primera vez que se abre: el directorio de
 empresas pesa 1.7 MB —460 KB comprimido— y no debe frenar la portada.

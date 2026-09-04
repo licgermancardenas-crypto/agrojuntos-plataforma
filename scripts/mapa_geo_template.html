@@ -266,6 +266,8 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
 <div class="barra">
   <select id="fDep" aria-label="Departamento"></select>
+  <select id="fTer" aria-label="Territorio de venta"></select>
+  <select id="fProv" aria-label="Provincia"></select>
   <div class="grupo" id="fReg" role="group" aria-label="Región natural"></div>
   <div class="sep"></div>
   <div class="grupo" id="fVial" role="group" aria-label="Carreteras">
@@ -370,7 +372,10 @@ function conCapas(cb){
     return r.json();
   }).then(function(c){
     SECT=c.sect; SPROV=c.sect_prov; PROVS=c.provs;
-    cargandoCapas=false; marcarCargando(false); cb(true);
+    cargandoCapas=false; marcarCargando(false);
+    // El selector de provincia nace vacio porque su capa es diferida.
+    try{ poblarUnidades(); }catch(e){}
+    cb(true);
   }).catch(function(e){
     cargandoCapas=false; marcarCargando(false);
     console.error("capas del mapa:", e);
@@ -380,10 +385,10 @@ function conCapas(cb){
 
 /* posiciones en la tupla del hexágono */
 var VS=0, SAM=1, CLI=2, HA=3, HRS=4, EMP=5, EXP=6, PRO=7, DEP=8, PROV=9,
-    IDEP=10, IREG=11;
+    IDEP=10, IREG=11, ITER=12;
 
 /* posiciones en la tupla del sector: lon, lat, SAM en miles, clientes, horas */
-var IS_SAM=2, IS_CLI=3, IS_HRS=4, IS_DEP=5, IS_REG=6, IS_PROV=7;
+var IS_SAM=2, IS_CLI=3, IS_HRS=4, IS_DEP=5, IS_REG=6, IS_PROV=7, IS_TER=8;
 
 var css=getComputedStyle(document.documentElement);
 function tok(n){ return css.getPropertyValue(n).trim(); }
@@ -399,7 +404,8 @@ function norm(s){ return String(s).normalize("NFD")
   .replace(/[̀-ͯ]/g,"").toLowerCase(); }
 
 /* ---------------- estado ---------------- */
-var st = { capa:"sam", vista:"hex", umbral:"2", vial:1, dep:-1, reg:-1, q:"",
+var st = { capa:"sam", vista:"hex", umbral:"2", vial:1, dep:-1, reg:-1,
+           ter:-1, prov:-1, q:"",
            hovP:-1,
            sel:-1, hov:-1, ciudades:true, puertos:true };
 
@@ -478,6 +484,8 @@ function resize(){
 /* ---------------- filtros ---------------- */
 function visible(h){
   if(st.dep>=0 && h[IDEP]!==st.dep) return false;
+  if(st.ter>=0 && h[ITER]!==st.ter) return false;
+  if(st.prov>=0 && PROVS && h[PROV]!==PROVS[st.prov].n) return false;
   if(st.reg>=0 && h[IREG]!==st.reg) return false;
   if(st.q && norm(h[PROV]+" "+h[DEP]).indexOf(st.q)<0) return false;
   return true;
@@ -496,6 +504,8 @@ function aplicarFiltros(){
   } else if(PROVS && st.vista==="prov"){
     var fp=PROVS.filter(function(p){
       if(st.dep>=0 && p.i!==st.dep) return false;
+      if(st.ter>=0 && p.t!==st.ter) return false;
+      if(st.prov>=0 && p!==PROVS[st.prov]) return false;
       if(st.q && norm(p.n+" "+p.d).indexOf(st.q)<0) return false;
       return true;
     });
@@ -513,17 +523,131 @@ function aplicarFiltros(){
   renderList(); renderDet(); draw();
 }
 
+/* ---------------- unidades: departamento, territorio, provincia ----------
+   Tres maneras de recortar el mismo mapa, y una sola regla: elegir una unidad
+   descarta las otras dos. Componerlas —una provincia dentro de un territorio
+   dentro de un departamento— produce recortes vacios que el usuario lee como
+   un error del mapa y no como una interseccion sin celdas.
+
+   Cada unidad deja su enlace en la barra de direcciones, de modo que el mapa
+   de Ica, el del territorio 04 o el de la provincia de Pisco se comparten como
+   se comparte cualquier pagina. */
+function slugU(s){ return norm(s).replace(/[^a-z0-9]+/g,""); }
+
+var UNID = {
+  dep:  {sel:"fDep",  vacio:"Todo el Perú"},
+  ter:  {sel:"fTer",  vacio:"Todos los territorios"},
+  prov: {sel:"fProv", vacio:"Todas las provincias"}
+};
+
+function poblarUnidades(){
+  var t=document.getElementById("fTer");
+  t.innerHTML='<option value="-1">'+UNID.ter.vacio+'</option>'+
+    TER.slice().sort(function(a,b){ return a.rank-b.rank; })
+      .map(function(x){
+        return '<option value="'+x.rank+'">'+
+               (x.rank<10?"0":"")+x.rank+" · "+x.dep+" · "+x.prov+'</option>';
+      }).join("");
+  var p=document.getElementById("fProv");
+  if(!PROVS){
+    /* La capa de provincias es diferida y pesa 441 KB: no se descarga al
+       abrir el mapa. Pero el selector no puede quedar muerto, asi que la
+       pide al primer contacto y se rellena solo. */
+    p.innerHTML='<option value="-1">Provincias · pulsa para cargar</option>';
+    p.disabled=false;
+    if(!p.dataset.lazy){
+      p.dataset.lazy="1";
+      p.addEventListener("mousedown", function pedir(){
+        if(PROVS) return;
+        p.innerHTML='<option value="-1">Cargando provincias…</option>';
+        conCapas(function(ok){ if(ok) poblarUnidades(); });
+      });
+    }
+    return;
+  }
+  p.disabled=false;
+  p.innerHTML='<option value="-1">'+UNID.prov.vacio+'</option>'+
+    PROVS.map(function(x,i){ return {x:x,i:i}; })
+      .filter(function(o){ return o.x.sam>0; })
+      .sort(function(a,b){ return (a.x.d+a.x.n).localeCompare(b.x.d+b.x.n,"es"); })
+      .map(function(o){
+        return '<option value="'+o.i+'">'+o.x.d+" · "+o.x.n+'</option>';
+      }).join("");
+  p.value=String(st.prov);
+}
+
+/* La provincia solo existe cuando la capa diferida ya bajo. Si el usuario
+   llega por enlace directo a una provincia, se pide la capa y se reintenta. */
+function enfocar(tipo, valor, escribirHash){
+  st.dep=-1; st.ter=-1; st.prov=-1; st.sel=-1;
+  document.getElementById("fDep").value="-1";
+  document.getElementById("fTer").value="-1";
+  if(!document.getElementById("fProv").disabled)
+    document.getElementById("fProv").value="-1";
+
+  var bb=null;
+  if(tipo==="dep" && valor>=0){
+    st.dep=valor; bb=DEPS[valor].bb;
+    document.getElementById("fDep").value=String(valor);
+  } else if(tipo==="ter" && valor>=0){
+    var t=TER.filter(function(x){ return x.rank===valor; })[0];
+    if(t){ st.ter=valor; bb=t.bb;
+           document.getElementById("fTer").value=String(valor); }
+  } else if(tipo==="prov" && valor>=0){
+    if(!PROVS){
+      conCapas(function(ok){ if(ok){ poblarUnidades();
+                                     enfocar("prov", valor, escribirHash); } });
+      return;
+    }
+    var p=PROVS[valor];
+    if(p){ st.prov=valor; bb=p.bb;
+           document.getElementById("fProv").value=String(valor); }
+  }
+  if(bb) encuadrar(bb); else view={k:1,tx:0,ty:0};
+  if(escribirHash!==false) escribirUnidad(tipo, valor);
+  aplicarFiltros();
+}
+
+function escribirUnidad(tipo, valor){
+  var h="";
+  if(tipo==="dep" && valor>=0) h="#dep="+slugU(DEPS[valor].n);
+  else if(tipo==="ter" && valor>=0) h="#ter="+valor;
+  else if(tipo==="prov" && valor>=0 && PROVS)
+    h="#prov="+slugU(PROVS[valor].d)+"-"+slugU(PROVS[valor].n);
+  try{ history.replaceState(null,"",h||location.pathname); }catch(e){}
+}
+
+function leerUnidad(){
+  var m=/^#(dep|ter|prov)=(.+)$/.exec(location.hash||"");
+  if(!m) return false;
+  var tipo=m[1], v=decodeURIComponent(m[2]);
+  if(tipo==="ter"){ enfocar("ter", parseInt(v,10), false); return true; }
+  if(tipo==="dep"){
+    for(var i=0;i<DEPS.length;i++)
+      if(slugU(DEPS[i].n)===slugU(v)){ enfocar("dep", i, false); return true; }
+    return false;
+  }
+  if(!PROVS){
+    conCapas(function(ok){ if(ok){ poblarUnidades(); leerUnidad(); } });
+    return true;
+  }
+  for(var j=0;j<PROVS.length;j++)
+    if(slugU(PROVS[j].d+PROVS[j].n)===slugU(v))
+      { enfocar("prov", j, false); return true; }
+  return false;
+}
+
 /* poblar selector de departamentos y chips de región */
 (function(){
   var sel=document.getElementById("fDep");
   sel.innerHTML='<option value="-1">Todo el Perú</option>'+
     DEPS.map(function(d,i){ return '<option value="'+i+'">'+d.n+'</option>'; }).join("");
-  sel.onchange=function(){
-    st.dep=+sel.value; st.sel=-1;
-    if(st.dep>=0) encuadrar(DEPS[st.dep].bb);
-    else { view={k:1,tx:0,ty:0}; }
-    aplicarFiltros();
-  };
+  sel.onchange=function(){ enfocar("dep", +sel.value); };
+  poblarUnidades();
+  document.getElementById("fTer").onchange=function(){
+    enfocar("ter", +this.value); };
+  document.getElementById("fProv").onchange=function(){
+    enfocar("prov", +this.value); };
   var g=document.getElementById("fReg");
   g.innerHTML='<button data-reg="-1" aria-pressed="true">Todas</button>'+
     REG.map(function(r,i){
@@ -545,8 +669,11 @@ document.getElementById("q").oninput=function(e){
   tq=setTimeout(function(){ st.q=norm(v).trim(); aplicarFiltros(); },140);
 };
 document.getElementById("reset").onclick=function(){
-  st.dep=-1; st.reg=-1; st.q=""; st.sel=-1;
+  st.dep=-1; st.ter=-1; st.prov=-1; st.reg=-1; st.q=""; st.sel=-1;
   document.getElementById("fDep").value="-1";
+  document.getElementById("fTer").value="-1";
+  document.getElementById("fProv").value="-1";
+  try{ history.replaceState(null,"",location.pathname); }catch(e){}
   document.getElementById("q").value="";
   document.querySelectorAll('#fReg button').forEach(function(o){
     o.setAttribute("aria-pressed", String(o.dataset.reg==="-1")); });
@@ -684,6 +811,9 @@ function dibujarVias(){
 
 function visibleSect(s){
   if(st.dep>=0 && s[IS_DEP]!==st.dep) return false;
+  if(st.ter>=0 && s[IS_TER]!==st.ter) return false;
+  if(st.prov>=0 && PROVS && SPROV &&
+     SPROV[s[IS_PROV]]!==PROVS[st.prov].n) return false;
   if(st.reg>=0 && s[IS_REG]!==st.reg) return false;
   if(st.q){
     var pv = s[IS_PROV]>=0 ? SPROV[s[IS_PROV]] : "";
@@ -1328,6 +1458,11 @@ var mq=window.matchMedia("(prefers-color-scheme: dark)");
   function(){ refresh(); renderLegend(); draw(); });
 new ResizeObserver(resize).observe(wrap);
 bbVias();
-renderLegend(); renderDet(); resize(); aplicarFiltros();
+renderLegend(); renderDet(); resize();
+if(!leerUnidad()) aplicarFiltros();
+window.addEventListener("hashchange", function(){
+  if(!location.hash) document.getElementById("reset").click();
+  else leerUnidad();
+});
 })();
 </script>

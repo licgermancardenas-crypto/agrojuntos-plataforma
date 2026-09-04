@@ -311,6 +311,37 @@ with sync_playwright() as pw:
     else:
         print("  tema oscuro aplicado")
 
+    # Cada unidad tiene su propio mapa y su propia direccion. Se comprueba que
+    # el enlace recorte de verdad —no que abra el mapa nacional— y que elegir
+    # una unidad descarte la anterior: componerlas da recortes vacios que el
+    # usuario lee como un mapa roto.
+    print("\nun mapa por unidad")
+    nacional = pg.text_content("#cuenta").strip()
+    for hash_, sel, nombre in (("#dep=ica", "#fDep", "departamento"),
+                               ("#ter=9", "#fTer", "territorio"),
+                               ("#prov=ica-pisco", "#fProv", "provincia")):
+        pg.goto(BASE + "/mapa" + hash_, wait_until="networkidle")
+        pg.wait_for_timeout(2600 if "prov" in hash_ else 1200)
+        c = pg.text_content("#cuenta").strip()
+        elegido = pg.eval_on_selector(
+            sel, "e => e.selectedOptions.length ? e.selectedOptions[0].text : ''")
+        print(f"  {nombre:<13} {hash_:<16} {c}")
+        if c == nacional:
+            print(f"  EL ENLACE {hash_} NO RECORTA EL MAPA")
+            ok = False
+        if not elegido or elegido.startswith("Tod"):
+            print(f"  EL ENLACE {hash_} NO DEJA SELECCIONADA LA UNIDAD")
+            ok = False
+    otros = pg.eval_on_selector_all(
+        "#fDep, #fTer", "e => e.map(x => x.value)")
+    if any(v != "-1" for v in otros):
+        print("  ELEGIR UNA UNIDAD NO DESCARTA LAS OTRAS")
+        ok = False
+    else:
+        print("  las unidades se excluyen entre si: ok")
+    pg.goto(BASE + "/mapa", wait_until="networkidle")
+    pg.wait_for_timeout(900)
+
     # El mapa es un documento aparte, asi que su pertenencia al sitio depende
     # de que la navegacion funcione en ambos sentidos: aqui se comprueba, no
     # se supone.

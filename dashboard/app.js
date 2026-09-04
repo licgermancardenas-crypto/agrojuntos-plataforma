@@ -166,6 +166,17 @@ function dibujarCurva(curva) {
   });
 }
 
+/* Cada unidad del mapa tiene su propia direccion: el mapa de un departamento,
+   de un territorio o de una provincia se comparte como cualquier pagina. El
+   slug se calcula igual que en el mapa, que es quien lo lee. */
+function slugU(s) {
+  return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+function enlaceMapa(txt, hash) {
+  return '<a class="vermapa" href="/mapa#' + hash + '">' + txt + "</a>";
+}
+
 /* --------------------------------------------------------- territorios -- */
 function vistaTerritorios() {
   cargar("territorios").then(function (T) {
@@ -190,7 +201,9 @@ function vistaTerritorios() {
       { k: "ext", t: "Extensión km", f: function (r) { return nf(r.ext); } },
       { k: "dia", t: "Ruta", l: true, f: function (r) {
           return r.dia ? '<span class="tag P">un día</span>'
-                       : '<span class="tag">pernocte</span>'; } }
+                       : '<span class="tag">pernocte</span>'; } },
+      { k: "mapa", t: "Mapa", l: true, f: function (r) {
+          return enlaceMapa("ver", "ter=" + r.rank); } }
     ], T, { sort: "rank", asc: true });
   }).catch(fallo);
 }
@@ -627,8 +640,9 @@ function vistaDepartamentos() {
 
     function pintar() {
       var r = D.deps.filter(function (x) { return x.k === actual; })[0];
-      document.getElementById("depPos").textContent =
-        "puesto " + r.rank + " de " + D.deps.length + " · " + r.arq;
+      document.getElementById("depPos").innerHTML =
+        "puesto " + r.rank + " de " + D.deps.length + " · " + esc(r.arq) +
+        " · " + enlaceMapa("ver su mapa", "dep=" + (r.k || slugU(r.n)));
 
       var est = r.estratos || [0, 0, 0, 0];
       var estTot = est.reduce(function (a, b) { return a + b; }, 0) || 1;

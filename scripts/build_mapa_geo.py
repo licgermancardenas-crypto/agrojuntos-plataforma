@@ -42,6 +42,26 @@ h5 = pd.read_csv("out/h3_r5.csv", encoding="utf-8-sig")
 h5 = h5[h5["sam_usd"] > 0].copy()
 terr = pd.read_csv("out/clusters_territorio.csv", encoding="utf-8-sig")
 celda = pd.read_csv("out/clusters_celda.csv", encoding="utf-8-sig")
+
+# La pertenencia a territorio se resuelve una sola vez, sobre la celda r6 que
+# es donde se detectaron los nucleos, y la heredan las tres capas del mapa:
+# sectores, hexagonos y provincias. Si cada una la dedujera por su cuenta
+# darian tres respuestas distintas para la misma pregunta.
+celda_cl = celda[celda["cluster"] >= 0]
+mapa_rank = dict(zip(terr["cluster"], terr["rank"]))
+R6_RANK = {r["h3"]: int(mapa_rank[r["cluster"]])
+           for _, r in celda_cl.iterrows() if r["cluster"] in mapa_rank}
+
+
+def rank_de(lat, lon):
+    return R6_RANK.get(h3.latlng_to_cell(float(lat), float(lon), 6), -1)
+
+
+def rank_modal(ranks):
+    """El territorio de una forma es el de la mayoria de sus celdas."""
+    v = [r for r in ranks if r >= 0]
+    return max(set(v), key=v.count) if v else -1
+
 hubs = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
 asig = pd.read_csv("out/hubs_asignacion.csv", encoding="utf-8-sig")
 puertos = pd.read_csv("out/puertos.csv", encoding="utf-8-sig")
@@ -100,11 +120,16 @@ for _, r in h5.iterrows():
         cap(r["dep"]), cap(r["prov"]),
         i_dep.get(key(r["dep"]), -1),
         i_reg.get(str(r.get("region_nat", "")).upper(), 1),
+        rank_modal([R6_RANK.get(c, -1)
+                    for c in h3.cell_to_children(r["h3"], 6)]),
     ])
 
 # ------------------------------------------------------------ territorios -
-celda_cl = celda[celda["cluster"] >= 0]
-mapa_rank = dict(zip(terr["cluster"], terr["rank"]))
+# Cada capa del mapa tiene que saber a que territorio pertenece, porque el
+# usuario elige un territorio y espera que se filtre lo que este mirando, sea
+# sectores, hexagonos o provincias. La pertenencia se resuelve una vez, sobre
+# la celda r6 que es donde se detectaron los nucleos, y las tres capas la
+# heredan: si cada una la dedujera por su cuenta darian tres respuestas.
 terr_pts = {}
 for _, r in celda_cl.iterrows():
     rk = mapa_rank.get(r["cluster"])
@@ -112,6 +137,18 @@ for _, r in celda_cl.iterrows():
         continue
     terr_pts.setdefault(int(rk), []).append(
         [round(r["centro_lon"], DEC), round(r["centro_lat"], DEC)])
+
+def bb_de(pts, lon, lat):
+    """Encuadre del territorio. Con una sola celda no hay caja: se abre un
+    grado alrededor del centro para que el zoom no salte al infinito."""
+    if not pts:
+        return [lon - .5, lat - .5, lon + .5, lat + .5]
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    m = .12
+    return [round(min(xs) - m, DEC), round(min(ys) - m, DEC),
+            round(max(xs) + m, DEC), round(max(ys) + m, DEC)]
+
 
 territorios = []
 for _, r in terr.iterrows():
@@ -123,6 +160,8 @@ for _, r in terr.iterrows():
         "dia": bool(r["visitable_en_dia"]),
         "lat": round(float(r["lat"]), DEC), "lon": round(float(r["lon"]), DEC),
         "pts": terr_pts.get(int(r["rank"]), []),
+        "bb": bb_de(terr_pts.get(int(r["rank"]), []),
+                    float(r["lon"]), float(r["lat"])),
     })
 
 # ------------------------------------------------------------------ hubs ---
@@ -222,6 +261,7 @@ for _, r in sec_pt.sort_values("s_sam_usd", ascending=False).iterrows():
         i_dep_sec.get(key(r["dep"]), -1),
         i_reg_sec.get(str(r["region_nat"]).upper(), -1),
         i_prov_sec.get(cap(r["prov"]), -1),
+        rank_de(r["lat"], r["lon"]),
     ])
 
 # --------------------------------------------------------- coropleta real -
@@ -237,6 +277,13 @@ agg_pv = sec_pv.groupby(["kd", "kp"]).agg(
     sam=("s_sam_usd", "sum"), cli=("s_clientes_sam", "sum"),
     ha=("s_ha_cosechada", "sum"), n=("cod_se", "size")).reset_index()
 agg_pv = agg_pv.set_index(["kd", "kp"])
+
+# El territorio de una provincia es el de la mayoria de sus sectores: una
+# provincia puede quedar repartida entre dos nucleos de venta.
+ter_pv = {}
+for (kd, kp), g in sec_pv.groupby(["kd", "kp"]):
+    ter_pv[(kd, kp)] = rank_modal([rank_de(la, lo)
+                                   for la, lo in zip(g["lat"], g["lon"])])
 
 provs_geo = []
 for _, r in prov_g.iterrows():
@@ -254,6 +301,7 @@ for _, r in prov_g.iterrows():
         "cli": int(round(a["cli"])) if a is not None else 0,
         "ha": int(a["ha"]) if a is not None else 0,
         "r": anl,
+        "t": ter_pv.get((kd, kp), -1),
         "bb": [min(xs), min(ys), max(xs), max(ys)],
     })
 

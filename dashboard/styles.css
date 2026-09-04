@@ -268,3 +268,9 @@ td.faint{color:var(--muted)}
 .delta{font-variant-numeric:tabular-nums; font-weight:600}
 .delta.mejor{color:var(--forest)}
 .delta.peor{color:var(--danger)}
+
+/* Enlace a la unidad en el mapa. Va en el color de acento y no como boton:
+   aparece dentro de tablas y fichas, donde un boton por fila seria ruido. */
+.vermapa{color:var(--forest2); text-decoration:none; border-bottom:1px solid transparent;
+  white-space:nowrap}
+.vermapa:hover{border-bottom-color:currentColor}

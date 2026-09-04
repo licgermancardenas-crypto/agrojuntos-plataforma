@@ -7,6 +7,7 @@ images embed as data URIs because Chrome will not read local files from a page
 it prints.
 """
 import base64
+import glob
 import os
 import re
 import shutil
@@ -204,8 +205,8 @@ page(f"""
         propio de cada territorio.</span></li>
     <li><span class="n">VII</span><span class="t">Atlas regional</span>
         <span class="d"></span><span class="p">@@PGVII@@</span>
-        <span class="desc">Ficha por región: mapa de sectores, métricas de mercado,
-        mezcla de cultivos y lectura comercial.</span></li>
+        <span class="desc">Ficha y lámina por región, y series de mapas pequeños
+        con los 57 territorios de venta y las 197 provincias.</span></li>
     <li><span class="n">VIII</span><span class="t">Metodología y fuentes</span>
         <span class="d"></span><span class="p">@@PGVIII@@</span>
         <span class="desc">Cadena de cálculo, contraste con aduanas y limitaciones
@@ -1567,8 +1568,9 @@ divider("VII", "Atlas <em>regional</em>",
         "Un pliego de dos hojas por cada una de las 24 regiones agrícolas: la "
         "ficha con estructura productiva, comportamiento de compra, costo de "
         "servir y mayores sectores, y frente a ella la lámina cartográfica de la "
-        "región a página completa.",
-        ["24 regiones", "Ficha y lámina", "Lectura comercial"])
+        "región a página completa. Cierran dos series de mapas pequeños: uno "
+        "por cada territorio de venta y uno por cada provincia.",
+        ["24 regiones", "Ficha y lámina", "57 territorios", "197 provincias"])
 
 
 def barras(items, total_ref):
@@ -1897,6 +1899,24 @@ def lamina_pagina(k):
     PAGES.append(f'<section class="plate">{_lamina(k)}</section>')
 
 
+def serie(nombre):
+    """Una plana de la serie de mapas pequeños.
+
+    El sitio le da a cada territorio y a cada provincia su propio mapa a
+    pantalla completa. En papel eso serían 254 páginas, de modo que aquí van
+    como series: misma simbología y mismo encuadre relativo para todas, que es
+    lo que permite compararlas de un vistazo y sin dar vuelta la página.
+    """
+    raw = open(f"out/multiples/{nombre}.svg", encoding="utf-8").read()
+    raw = raw[raw.index("<svg "):]
+    raw = re.sub(r'(<svg[^>]*?)\s+width="[^"]*"\s+height="[^"]*"', r"\1",
+                 raw, count=1)
+    _pg["n"] += 1
+    PAGES.append('<section class="plate">'
+                 + raw.replace("<svg ", '<svg class="lamina" ', 1)
+                 + "</section>")
+
+
 # ---- the ranking that opens the atlas ------------------------------------
 page(f"""
   <div class="rank">
@@ -1933,6 +1953,14 @@ page(f"""
 for _, _r in perfil.iterrows():
     page(hoja_datos(_r), "Parte VII · Atlas regional")
     lamina_pagina(_r["k"])
+
+# Las dos series cierran el atlas: el departamento tiene su lámina entera, y
+# los otros dos niveles del análisis —territorio de venta y provincia— quedan
+# en series de mapas pequeños. Se generan con build_multiples.py.
+for _n in sorted(glob.glob("out/multiples/ter_*.svg")):
+    serie(os.path.splitext(os.path.basename(_n))[0])
+for _n in sorted(glob.glob("out/multiples/prov_*.svg")):
+    serie(os.path.splitext(os.path.basename(_n))[0])
 
 
 

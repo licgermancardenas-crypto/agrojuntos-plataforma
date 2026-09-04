@@ -129,6 +129,7 @@ build_relieve.py          sombreado de relieve por departamento
 build_cultivo.py          huella cultivada desde el landuse de OSM
 build_territorios.py      da forma a los territorios de venta para dibujarlos
 build_laminas_dep.py      una lámina a página completa por departamento
+build_multiples.py        series de mapas pequeños: 57 territorios, 197 provincias
 reporte.py                reporte PDF
 medir_paginas.py          mide cada página del reporte contra el marco A4
 ```
@@ -246,9 +247,12 @@ resolución 6 que es donde se detectaron los núcleos, y la heredan las tres cap
 —sectores, hexágonos y provincias—. Si cada una la dedujera por su cuenta darían
 tres respuestas distintas a la misma pregunta.
 
-El informe impreso conserva su lámina a página completa por departamento; los
-otros dos niveles existen solo en el sitio, porque una lámina por provincia no
-se lee en papel y una por territorio tampoco.
+En el informe, el departamento conserva su lámina a página completa y los
+otros dos niveles van como **series de mapas pequeños**: tres planas con los 57
+territorios y siete con las 197 provincias, todas con la misma simbología y el
+mismo encuadre relativo. Copiar el sitio habría costado 254 páginas y 51 MB; la
+serie ocupa diez y pesa 4 MB, y además se compara de un vistazo, que es lo que
+la lámina grande no permite.
 
 El atlas interactivo está en `docs/atlas_geo.html` y publicado en
 [agrojuntos.vercel.app/mapa](https://agrojuntos.vercel.app/mapa). Filtra por
@@ -328,7 +332,7 @@ python verificar.py   # en otra
 **El informe está publicado aquí →
 [`docs/Reporte de mercado - AgroJuntos.pdf`](docs/Reporte%20de%20mercado%20-%20AgroJuntos.pdf)**
 
-`reporte.py` compone el informe impreso —**84 páginas A4**— y lo imprime con
+`reporte.py` compone el informe impreso —**94 páginas A4**— y lo imprime con
 Chrome headless, y deja la copia publicada en `docs/`. La estructura es de ocho
 partes más el atlas regional:
 
@@ -340,7 +344,7 @@ partes más el atlas regional:
 | IV · Dónde empezar | Priorización de las 24 regiones, escenarios de captura, prospección con nombre propio y el mercado vecino de importación |
 | V · Qué se cultiva y por dónde sale | Los 144 cultivos y el mercado que implican, las 66 partidas agroexportadas y las 15 aduanas de salida |
 | VI · La geometría del mercado | La grilla hexagonal, los 57 territorios, el orden de apertura de centros y la cartera con nombre propio de cada territorio |
-| VII · Atlas regional | Ficha y lámina a página completa por cada una de las 24 regiones |
+| VII · Atlas regional | Ficha y lámina por cada una de las 24 regiones, más las series de mapas pequeños con los 57 territorios y las 197 provincias |
 | VIII · Metodología y fuentes | Cadena de cálculo, contraste con aduanas y limitaciones declaradas |
 
 El impreso no perdona lo que la pantalla sí: nada refluye y nada se desplaza,

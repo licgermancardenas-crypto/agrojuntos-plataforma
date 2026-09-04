@@ -177,6 +177,53 @@ function enlaceMapa(txt, hash) {
   return '<a class="vermapa" href="/mapa#' + hash + '">' + txt + "</a>";
 }
 
+/* --------------------------------------------------------------- periodo -- */
+/* Los manifiestos de aduanas son una ventana móvil de diez semanas. Todo el
+   comercio exterior del sitio viaja MEDIDO sobre esa ventana y aquí se lleva
+   al periodo que el lector elija, en un solo lugar: si cada vista anualizara
+   por su cuenta, la misma empresa mostraría dos cifras distintas según por
+   dónde se llegara a ella.
+
+   «Medido» es el único dato duro. Mensual y anual son extrapolaciones de diez
+   semanas sin corregir estacionalidad, y por eso el rótulo lo dice en cada
+   columna en vez de esconderlo en una nota al pie. */
+var PERIODO = "anual";
+try { PERIODO = localStorage.getItem("periodo") || "anual"; } catch (e) {}
+
+function pFactor(sem) {
+  sem = sem || 10;
+  if (PERIODO === "medido") return 1;
+  if (PERIODO === "mensual") return (52 / sem) / 12;
+  return 52 / sem;
+}
+function pSuf(sem) {
+  if (PERIODO === "medido") return (sem || 10) + " sem";
+  return PERIODO === "mensual" ? "al mes" : "anual";
+}
+function pFob(v, sem) { return usd((v || 0) * pFactor(sem)); }
+function pNum(v, sem, d) { return nf((v || 0) * pFactor(sem), d); }
+
+/* Cambiar de periodo repinta la vista abierta. No se recargan los datos: son
+   los mismos, medidos, y lo único que cambia es por cuánto se multiplican. */
+var REPINTAR = {};
+function aplicarPeriodo(p) {
+  PERIODO = p;
+  try { localStorage.setItem("periodo", p); } catch (e) {}
+  document.querySelectorAll("#fPeriodo button").forEach(function (b) {
+    b.setAttribute("aria-pressed", String(b.dataset.p === p)); });
+  var id = (location.hash || "#resumen").replace("#", "");
+  var mE = /^empresa=(\d+)$/.exec(id);
+  if (mE) { vistaEmpresa(mE[1]); return; }
+  if (REPINTAR[id]) REPINTAR[id]();
+}
+
+(function initPeriodo() {
+  document.querySelectorAll("#fPeriodo button").forEach(function (b) {
+    b.setAttribute("aria-pressed", String(b.dataset.p === PERIODO));
+    b.onclick = function () { aplicarPeriodo(b.dataset.p); };
+  });
+})();
+
 /* --------------------------------------------------------- territorios -- */
 function vistaTerritorios() {
   cargar("territorios").then(function (T) {
@@ -232,7 +279,8 @@ function vistaEmpresas() {
              .normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
       };
     });
-    EMP = { d: D, filas: filas, clase: -1, reg: "", ter: "", q: "" };
+    EMP = { d: D, filas: filas, clase: -1, reg: "", ter: "", q: "",
+            sem: D.semanas || 10 };
 
     var sel = document.getElementById("fReg");
     sel.innerHTML = '<option value="">Todas las regiones</option>' +
@@ -313,28 +361,35 @@ function pintarEmpresas() {
         return r.z && r.z !== "Fuera de territorio" ? esc(r.z) : "—"; } },
     { k: "h", t: "Centro", l: true, f: function (r) {
         return r.h ? esc(r.h) : "—"; } },
-    { k: "x", t: "Exporta US$/año", f: function (r) {
-        return r.x ? usd(r.x) : "—"; } },
-    { k: "i", t: "Importa US$/año", f: function (r) {
-        return r.i ? usd(r.i) : "—"; } }
+    { k: "x", t: "Exporta · " + pSuf(EMP.sem), f: function (r) {
+        return r.x ? pFob(r.x, EMP.sem) : "—"; } },
+    { k: "i", t: "Importa · " + pSuf(EMP.sem), f: function (r) {
+        return r.i ? pFob(r.i, EMP.sem) : "—"; } }
   ], f, { sort: "x", limite: 400 });
 }
+REPINTAR.empresas = function () { if (EMP) pintarEmpresas(); };
 
 /* ------------------------------------------------------------ importacion */
 function vistaImportacion() {
   cargar("importacion").then(function (D) {
-    var m = D.meta, anual = 52 / m.semanas;
+    REPINTAR.importacion = function () { pintarImportacion(D); };
+    pintarImportacion(D);
+  }).catch(fallo);
+}
+
+function pintarImportacion(D) {
+    var m = D.meta, SEM = m.semanas;
     var conM = D.cats.filter(function (c) { return c.lineas > 0; });
     var mayor = conM.slice().sort(function (a, b) { return b.fob - a.fob; })[0];
 
     document.getElementById("impKpis").innerHTML = [
-      [usd(m.fob * anual), "importación agrícola anualizada",
+      [pFob(m.fob, SEM), "importación agrícola " + pSuf(SEM),
        conM.length + " categorías con mercancía"],
       [nf(m.empresas), "empresas importadoras",
        "con RUC, en " + m.semanas + " semanas"],
       [mayor.n.split(" y ")[0], "la categoría mayor",
        pct(100 * mayor.fob / m.fob, 0) + " del total"],
-      [usd(m.fob_insumos * anual), "fertilizante y fitosanitario",
+      [pFob(m.fob_insumos, SEM), "fertilizante y fitosanitario",
        "lo que la plataforma ya medía"],
     ].map(function (k) {
       return "<div><span class='v'>" + esc(k[0]) + "</span><span class='l'>" +
@@ -351,12 +406,12 @@ function vistaImportacion() {
               " partidas · pulsa para ver el detalle</span>"
             : "<b>" + esc(r.n) + "</b><span class='sub2'>no es mercancía: " +
               "no cruza una aduana</span>"; } },
-      { k: "fob", t: "FOB anual", f: function (r) {
-          return r.lineas ? usd(r.fob * anual) : "—"; } },
-      { k: "fob10", t: "FOB " + m.semanas + " sem", f: function (r) {
+      { k: "fob", t: "FOB " + pSuf(SEM), f: function (r) {
+          return r.lineas ? pFob(r.fob, SEM) : "—"; } },
+      { k: "fob10", t: "FOB medido · " + SEM + " sem", f: function (r) {
           return r.lineas ? usd(r.fob) : "—"; } },
-      { k: "tn", t: "Toneladas", f: function (r) {
-          return r.lineas ? nf(Math.round(r.tn * anual)) : "—"; } },
+      { k: "tn", t: "Toneladas " + pSuf(SEM), f: function (r) {
+          return r.lineas ? pNum(r.tn, SEM) : "—"; } },
       { k: "emp", t: "Empresas", f: function (r) {
           return r.lineas ? nf(r.emp) : "—"; } },
       { k: "peso", t: "% del total", f: function (r) {
@@ -378,9 +433,9 @@ function vistaImportacion() {
         "<div class='sub-card'><div class='eyebrow'>Mayores importadores</div>" +
           "<div class='barras compact' id='impTop'></div></div></div>";
       barras(document.getElementById("impGlosa"), c.glosas.map(function (g) {
-        return { n: g.g, v: g.fob, t: usd(g.fob * anual) }; }));
+        return { n: g.g, v: g.fob, t: pFob(g.fob, SEM) }; }));
       barras(document.getElementById("impTop"), c.top.map(function (t) {
-        return { n: t.n, v: t.fob, t: usd(t.fob * anual) }; }));
+        return { n: t.n, v: t.fob, t: pFob(t.fob, SEM) }; }));
     }
 
     var tC = document.getElementById("tImpCat");
@@ -393,13 +448,14 @@ function vistaImportacion() {
     detalle(mayor);
 
     barras(document.getElementById("impRef"), D.ref.map(function (r) {
-      return { n: r.g, v: r.fob, t: usd(r.fob * anual) }; }));
+      return { n: r.g, v: r.fob, t: pFob(r.fob, SEM) }; }));
 
     tabla(document.getElementById("tImpFuera"), [
       { k: "p", t: "Partida", l: 1, f: function (r) {
           return "<span class='mono'>" + esc(r.p) + "</span>"; } },
       { k: "n", t: "Qué es", l: 1, f: function (r) { return esc(r.n); } },
-      { k: "fob", t: "FOB anual", f: function (r) { return usd(r.fob * anual); } },
+      { k: "fob", t: "FOB " + pSuf(SEM), f: function (r) {
+          return pFob(r.fob, SEM); } },
       { k: "m", t: "Por qué no entra", l: 1, f: function (r) {
           return "<span class='sub2'>" + esc(r.m) + "</span>"; } },
     ], D.fuera, { sort: "fob" });
@@ -417,7 +473,6 @@ function vistaImportacion() {
       " de la tabla de exclusiones no son gasto agrícola no contado: son el " +
       "tamaño de la zona ambigua, donde el arancel no permite saber si el uso " +
       "es agrícola o industrial.";
-  }).catch(fallo);
 }
 
 /* --------------------------------------------------------------- perfil -- */
@@ -525,13 +580,13 @@ function vistaEmpresa(ruc) {
       return;
     }
     PERFIL = P;
-    var anual = 52 / IDX.semanas;
+    var SEM = IDX.semanas;
     var I = P.imp, E = P.exp;
 
     var kpis = [];
     if (I) {
-      kpis.push([usd(I.fob * anual), "importación anualizada",
-                 usd(I.fob) + " en " + IDX.semanas + " semanas"]);
+      kpis.push([pFob(I.fob, SEM), "importación " + pSuf(SEM),
+                 usd(I.fob) + " medidos en " + SEM + " semanas"]);
       kpis.push([peso(I.kg), "peso importado",
                  I.partidas + " partidas · " + I.lineas + " despachos"]);
       kpis.push([I.semanas + " de " + IDX.semanas, "semanas con despacho",
@@ -539,8 +594,7 @@ function vistaEmpresa(ruc) {
                    : (I.semanas <= 2 ? "compra puntual" : "flujo intermitente")]);
     }
     if (E) {
-      kpis.push([usd((E.fob_anual !== undefined ? E.fob_anual : E.fob * anual)),
-                 "agroexportación anualizada",
+      kpis.push([pFob(E.fob, SEM), "agroexportación " + pSuf(SEM),
                  E.destinos + (E.destinos === 1 ? " destino" : " destinos")]);
     }
     if (!kpis.length) {
@@ -593,7 +647,7 @@ function vistaEmpresa(ruc) {
           'Lima. Sirve para saber a quién visitar cuando se está en la zona.</p>' +
           "</div></div>" +
         '<div class="card"><div class="h"><h3>Qué importa</h3>' +
-          '<span class="eyebrow">FOB anualizado</span></div>' +
+          '<span class="eyebrow">FOB ' + pSuf(SEM) + "</span></div>" +
           '<div class="b">' + (I
             ? '<div class="barras compact" id="empCats"></div>' +
               '<div class="eyebrow" style="margin-top:12px">Continuidad · FOB por semana</div>' +
@@ -631,13 +685,14 @@ function vistaEmpresa(ruc) {
 
       '<p class="sub" style="margin-top:14px">Microdatos de manifiestos de ' +
       'SUNAT bajo la Ley 27806, ' + IDX.semanas + ' semanas de junio a agosto ' +
-      'de 2026; el anualizado extrapola esa ventana sin corregir ' +
-      'estacionalidad. Identidad y domicilio, del padrón reducido del RUC.</p>';
+      'de 2026. El mensual y el anual extrapolan esa ventana sin corregir ' +
+      'estacionalidad; «medido» es la única cifra dura. Identidad y ' +
+      'domicilio, del padrón reducido del RUC.</p>';
 
     function barrasDe(id, filas) {
       var el = document.getElementById(id);
       if (el) barras(el, filas.map(function (x) {
-        return { n: x.n, v: x.fob, t: usd(x.fob * anual) }; }));
+        return { n: x.n, v: x.fob, t: pFob(x.fob, SEM) }; }));
     }
     if (I) {
       barrasDe("empCats", I.cats);
@@ -860,6 +915,7 @@ function pais(c) { return PAIS[c] || c; }
 /* -------------------------------------------------------- departamentos -- */
 function vistaDepartamentos() {
   cargar("departamentos").then(function (D) {
+    var SEM_DEP = D.semanas || 10;
     var sel = document.getElementById("fDepto");
     var orden = "rank";
     var actual = D.deps[0].k;
@@ -984,9 +1040,9 @@ function vistaDepartamentos() {
                 nf(r.ha_agri) + " ha") +
             par("Empresas prospecto", r.emp === null ? "—" : nf(r.emp)) +
             par("Agroexportadores", nf(r.exp_n) +
-                (r.exp_fob ? " · " + usd(r.exp_fob) : "")) +
+                (r.exp_fob ? " · " + pFob(r.exp_fob, SEM_DEP) : "")) +
             par("Importadores de insumos", nf(r.imp_n) +
-                (r.imp_fob ? " · " + usd(r.imp_fob) : "")) +
+                (r.imp_fob ? " · " + pFob(r.imp_fob, SEM_DEP) : "")) +
             par("Mercado total (TAM)", usd(r.tam)) +
           "</dl></div>" +
         "</div>";
@@ -1010,6 +1066,7 @@ function vistaDepartamentos() {
 
     llenar();
     pintar();
+    REPINTAR.departamentos = pintar;
   }).catch(fallo);
 }
 
@@ -1017,14 +1074,19 @@ function vistaDepartamentos() {
 function vistaComercio() {
   cargar("comercio").then(function (D) {
     var m = D.meta;
-    var anual = 52 / m.semanas_imp;
+    REPINTAR.comercio = function () { pintarComercio(D); };
+    pintarComercio(D);
+  }).catch(fallo);
+}
 
+function pintarComercio(D) {
+  var m = D.meta, si = m.semanas_imp, se = m.semanas_exp;
     document.getElementById("comKpis").innerHTML = [
-      ["v", usd(m.fob_imp * anual), "insumos importados",
-       "anualizado desde " + m.semanas_imp + " semanas"],
+      ["v", pFob(m.fob_imp, si), "insumos importados",
+       pSuf(si) + ", desde " + si + " semanas medidas"],
       ["v", nf(m.n_imp), "importadores de insumos", "con RUC identificado"],
-      ["v", usd(m.fob_exp * (52 / m.semanas_exp)), "agroexportación",
-       "anualizada, capítulos 07–21"],
+      ["v", pFob(m.fob_exp, se), "agroexportación",
+       pSuf(se) + ", capítulos 07–21"],
       ["v", nf(m.n_exp), "agroexportadores", "empresas distintas"],
     ].map(function (k) {
       return "<div><span class='v'>" + k[1] + "</span><span class='l'>" +
@@ -1033,17 +1095,18 @@ function vistaComercio() {
 
     barras(document.getElementById("comFamilias"),
       D.familias.map(function (r) {
-        return { n: r.n, v: r.fob, t: usd(r.fob) + " · " + nf(r.tn) + " t" };
+        return { n: r.n, v: r.fob,
+                 t: pFob(r.fob, si) + " · " + pNum(r.tn, si) + " t" };
       }));
 
     barras(document.getElementById("comOrigenes"),
       D.origenes.slice(0, 12).map(function (r) {
-        return { n: pais(r.n), v: r.fob, t: usd(r.fob) };
+        return { n: pais(r.n), v: r.fob, t: pFob(r.fob, si) };
       }));
 
     barras(document.getElementById("comDestinos"),
       D.destinos.slice(0, 12).map(function (r) {
-        return { n: pais(r.n), v: r.fob, t: usd(r.fob) };
+        return { n: pais(r.n), v: r.fob, t: pFob(r.fob, se) };
       }));
 
     tabla(document.getElementById("tImportadores"), [
@@ -1052,8 +1115,9 @@ function vistaComercio() {
             (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
       { k: "rubro", t: "Rubro", l: 1, f: function (r) {
           return "<span class='tag'>" + esc(r.rubro) + "</span>"; } },
-      { k: "fob", t: "CIF anual", f: function (r) { return usd(r.fob); } },
-      { k: "tn", t: "Toneladas", f: function (r) { return nf(r.tn); } },
+      { k: "fob", t: "CIF " + pSuf(si), f: function (r) {
+          return pFob(r.fob, si); } },
+      { k: "tn", t: "Toneladas", f: function (r) { return pNum(r.tn, si); } },
       { k: "pct", t: "% del total", f: function (r) { return pct(r.pct, 2); } },
     ], D.importadores, { sort: "fob" });
 
@@ -1061,20 +1125,21 @@ function vistaComercio() {
       { k: "n", t: "Empresa", l: 1, f: function (r) {
           return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
             (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
-      { k: "fob", t: "FOB anual", f: function (r) { return usd(r.fob); } },
-      { k: "tn", t: "Toneladas", f: function (r) { return nf(r.tn); } },
+      { k: "fob", t: "FOB " + pSuf(se), f: function (r) {
+          return pFob(r.fob, se); } },
+      { k: "tn", t: "Toneladas", f: function (r) { return pNum(r.tn, se); } },
       { k: "dest", t: "Destinos", f: function (r) { return nf(r.dest); } },
     ], D.exportadores, { sort: "fob" });
 
     document.getElementById("comNota").innerHTML =
       "Fuente: microdatos de manifiestos de SUNAT, publicados bajo la Ley " +
-      "27806 de transparencia. Las cifras anualizan " + m.semanas_imp +
-      " semanas de registros y deben leerse como orden de magnitud, no como " +
-      "el cierre del año. La agroexportación se restringe a los capítulos " +
+      "27806 de transparencia. Lo medido son " + m.semanas_imp +
+      " semanas; el mensual y el anual extrapolan esa ventana sin corregir " +
+      "estacionalidad y deben leerse como orden de magnitud, no como el " +
+      "cierre del año. La agroexportación se restringe a los capítulos " +
       "arancelarios 07, 08, 09, 12, 18, 20 y 21: el archivo de aduanas trae " +
       "la exportación completa del país, donde el mineral de cobre y el oro " +
       "por sí solos son el 60% del FOB.";
-  }).catch(fallo);
 }
 
 /* ------------------------------------------------------------- logistica -- */
@@ -1266,14 +1331,20 @@ function vistaMetodo() {
    embarque— y no se suman entre sí: una mide hectáreas, la otra dólares FOB. */
 function vistaProductos() {
   cargar("productos").then(function (D) {
-    var m = D.meta, anual = 52 / m.semanas;
+    REPINTAR.productos = function () { pintarProductos(D); };
+    pintarProductos(D);
+  }).catch(fallo);
+}
+
+function pintarProductos(D) {
+    var m = D.meta, SEM = m.semanas, anual = pFactor(SEM);
     var dep = "";                       // "" = todo el país
 
     document.getElementById("proKpis").innerHTML = [
       [nf(m.ha), "hectáreas cosechadas", "en " + nf(m.cultivos) + " cultivos"],
       [D.cultivos[0].n, "mayor superficie", nf(D.cultivos[0].ha) + " ha"],
-      [usd(m.fob_exp), "agroexportación embarcada",
-       m.semanas + " semanas · " + usd(m.fob_exp * anual) + " anualizado"],
+      [pFob(m.fob_exp, SEM), "agroexportación " + pSuf(SEM),
+       usd(m.fob_exp) + " medidos en " + SEM + " semanas"],
       [D.aduanas[0].n, "principal salida", pct(100 * D.aduanas[0].fob /
        m.fob_exp, 0) + " del FOB"],
     ].map(function (k) {
@@ -1374,10 +1445,10 @@ function vistaProductos() {
       { k: "n", t: "Producto", l: 1, f: function (r) {
           return "<b>" + esc(r.n) + "</b><span class='sub2'>partida " +
             r.p + "</span>"; } },
-      { k: "fob", t: "FOB anual", f: function (r) {
-          return usd(r.fob * anual); } },
-      { k: "tn", t: "Toneladas", f: function (r) {
-          return nf(Math.round(r.tn * anual)); } },
+      { k: "fob", t: "FOB " + pSuf(SEM), f: function (r) {
+          return pFob(r.fob, SEM); } },
+      { k: "tn", t: "Toneladas " + pSuf(SEM), f: function (r) {
+          return pNum(r.tn, SEM); } },
       { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
       { k: "dest", t: "Destinos", f: function (r) { return nf(r.dest); } },
     ], D.productos, { sort: "fob" });
@@ -1389,10 +1460,10 @@ function vistaProductos() {
             r.c + "</span>"; } },
       { k: "via", t: "Vía", l: 1, f: function (r) {
           return "<span class='tag'>" + esc(r.via) + "</span>"; } },
-      { k: "fob", t: "FOB anual", f: function (r) {
-          return usd(r.fob * anual); } },
-      { k: "tn", t: "Toneladas", f: function (r) {
-          return nf(Math.round(r.tn * anual)); } },
+      { k: "fob", t: "FOB " + pSuf(SEM), f: function (r) {
+          return pFob(r.fob, SEM); } },
+      { k: "tn", t: "Toneladas " + pSuf(SEM), f: function (r) {
+          return pNum(r.tn, SEM); } },
       { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
       { k: "lider", t: "Producto principal", l: 1, f: function (r) {
           return esc(r.lider) + "<span class='sub2'>" + pct(r.pct, 1) +
@@ -1426,7 +1497,6 @@ function vistaProductos() {
       "ausente de ese anexo. El reparto por departamento usa el domicilio " +
       "fiscal del exportador, porque el ubigeo del propio manifiesto viene " +
       "vacío en el 97% del FOB.";
-  }).catch(fallo);
 }
 
 /* ------------------------------------------------------------ navegación -*/

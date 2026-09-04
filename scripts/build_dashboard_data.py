@@ -162,8 +162,11 @@ car = pd.read_csv("out/cartera_empresa.csv", encoding="utf-8-sig",
 ter_ruc = dict(zip(car["ruc"], car["territorio"]))
 hub_ruc = dict(zip(car["ruc"], car["hub"].fillna("")))
 
-fob_exp = dict(zip(expo["ruc"], expo["fob_anual"]))
-fob_imp = dict(zip(impo["ruc"], impo["fob_anual"]))
+# Medido, no anualizado: el directorio comparte el selector de periodo con el
+# resto del sitio y no puede traer su propia unidad.
+SEM_COMEX = int(expo["semanas"].max())      # la ventana movil de SUNAT
+fob_exp = dict(zip(expo["ruc"], expo["fob"]))
+fob_imp = dict(zip(impo["ruc"], impo["fob"]))
 rubro_imp = dict(zip(impo["ruc"], impo["rubro"]))
 
 CLASE = {"productor": "P", "agroindustria": "A", "canal": "C",
@@ -199,8 +202,8 @@ for df, campo, clase in ((expo, "x", "E"), (impo, "i", "I")):
             "d": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
             "p": cap(r["provincia"]) if pd.notna(r.get("provincia")) else "",
             "t": cap(r["distrito"]) if pd.notna(r.get("distrito")) else "",
-            "x": int(r["fob_anual"]) if campo == "x" else 0,
-            "i": int(r["fob_anual"]) if campo == "i" else 0,
+            "x": int(r["fob"]) if campo == "x" else 0,
+            "i": int(r["fob"]) if campo == "i" else 0,
             "z": ter_ruc.get(r["ruc"], ""),
             "h": hub_ruc.get(r["ruc"], ""),
         })
@@ -239,6 +242,9 @@ guardar("empresas.json", {
                "Otro agro", "Agroexportador", "Importador de insumos"],
     "deps": deps, "provs": provs, "dists": dists,
     "ters": ters, "hubs": hubs,
+    # El FOB de las filas va medido: sin las semanas, el sitio no sabria
+    # a que periodo llevarlo.
+    "semanas": SEM_COMEX,
     "filas": filas_t,
 })
 
@@ -299,8 +305,12 @@ ter_dep = ter.assign(kk=ter["dep"].map(norm)).groupby("kk")
 
 expo_k = expo.assign(kk=expo["dep"].map(lambda v: norm(v) if pd.notna(v) else ""))
 impo_k = impo.assign(kk=impo["dep"].map(lambda v: norm(v) if pd.notna(v) else ""))
-expo_g = expo_k.groupby("kk").agg(n=("ruc", "size"), fob=("fob_anual", "sum"))
-impo_g = impo_k.groupby("kk").agg(n=("ruc", "size"), fob=("fob_anual", "sum"))
+# Todo el comercio exterior viaja MEDIDO —las diez semanas tal cual— y es el
+# sitio el que anualiza o mensualiza segun lo que el lector elija. Antes el
+# FOB salia anualizado y el tonelaje medido en la misma fila, de modo que una
+# tabla mezclaba dos periodos sin decirlo.
+expo_g = expo_k.groupby("kk").agg(n=("ruc", "size"), fob=("fob", "sum"))
+impo_g = impo_k.groupby("kk").agg(n=("ruc", "size"), fob=("fob", "sum"))
 
 deps_ficha = []
 for _, r in mod.sort_values("rank_v3").iterrows():
@@ -362,7 +372,8 @@ for _, r in mod.sort_values("rank_v3").iterrows():
         "terr": int(len(tt)) if tt is not None else 0,
         "terr_dia": int(tt["visitable_en_dia"].sum()) if tt is not None else 0,
     })
-guardar("departamentos.json", {"meses": MESES, "deps": deps_ficha})
+guardar("departamentos.json", {"meses": MESES, "semanas": SEM_COMEX,
+                                "deps": deps_ficha})
 
 # -------------------------------------------------------------- logistica -
 # El ruteo real corrige al proxy en un sentido que cambia decisiones: hay
@@ -413,17 +424,17 @@ guardar("comercio.json", {
     "destinos": agrupar(exp_l, "pais_destino", 20),
     "importadores": [{
         "r": str(r["ruc"]), "n": str(r["razon_social"])[:60],
-        "rubro": str(r["rubro"]), "fob": int(r["fob_anual"]),
-        "tn": int(round(r["tn"])), "pct": num(r["pct"], 2),
+        "rubro": str(r["rubro"]), "fob": int(r["fob"]),
+        "tn": num(r["tn"], 1), "pct": num(r["pct"], 2),
         "dep": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
-    } for _, r in impo.sort_values("fob_anual", ascending=False)
+    } for _, r in impo.sort_values("fob", ascending=False)
         .head(100).iterrows()],
     "exportadores": [{
         "r": str(r["ruc"]), "n": str(r["razon_social"])[:60],
-        "fob": int(r["fob_anual"]), "tn": int(round(r["tn"])),
+        "fob": int(r["fob"]), "tn": num(r["tn"], 1),
         "dest": int(r["destinos"]),
         "dep": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
-    } for _, r in expo.sort_values("fob_anual", ascending=False)
+    } for _, r in expo.sort_values("fob", ascending=False)
         .head(100).iterrows()],
 })
 

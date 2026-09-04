@@ -38,6 +38,22 @@ VISTAS = [
     ("#metodo", "#tFuentes tbody tr", "Método"),
 ]
 
+def usd_a_num(t):
+    """«US$ 3.19 mil MM» -> 3.19e9. La pagina abrevia y el chequeo tiene que
+    leer lo mismo que el lector, no una cifra cruda que nadie ve."""
+    t = t.replace("US$", "").replace(",", "").strip()
+    mult = 1.0
+    for suf, m in (("mil MM", 1e9), ("MM", 1e6), ("mil", 1e3)):
+        if t.endswith(suf):
+            mult = m
+            t = t[: -len(suf)].strip()
+            break
+    try:
+        return float(t) * mult
+    except ValueError:
+        return 0.0
+
+
 errores = []
 ok = True
 
@@ -140,6 +156,45 @@ with sync_playwright() as pw:
             ok = False
         else:
             print("  limpiar y restaurar: ok")
+
+    # Las cifras de comercio exterior viajan medidas y el sitio las lleva al
+    # periodo elegido. Se comprueba la aritmetica, no solo que el boton pinte:
+    # anual tiene que ser doce veces el mensual, y medido la base de ambos.
+    print("\nperiodo de las cifras")
+    pg.evaluate("() => location.hash = '#importacion'")
+    pg.wait_for_selector("#tImpCat tbody tr")
+    val = {}
+    for modo in ("medido", "mensual", "anual"):
+        pg.click(f'#fPeriodo button[data-p="{modo}"]')
+        pg.wait_for_timeout(450)
+        txt = pg.eval_on_selector_all("#impKpis .v", "e => e[0].textContent")
+        cab = pg.eval_on_selector_all("#tImpCat thead th",
+                                      "e => e[1].textContent")
+        # Se lee la cifra que el usuario ve y no una funcion interna: lo que
+        # hay que garantizar es que la pantalla diga la verdad.
+        val[modo] = usd_a_num(txt)
+        print(f"  {modo:<8} {txt:<18} columna «{cab}»")
+        if modo != "medido" and modo not in cab.lower().replace("al mes", "mensual"):
+            print(f"  LA COLUMNA NO DECLARA EL PERIODO {modo}")
+            ok = False
+    r_anual = val["anual"] / val["medido"] if val["medido"] else 0
+    r_mes = val["anual"] / val["mensual"] if val["mensual"] else 0
+    print(f"  anual/medido {r_anual:.2f} (esperado 5.20) · "
+          f"anual/mensual {r_mes:.2f} (esperado 12.00)")
+    if abs(r_anual - 5.2) > .02 or abs(r_mes - 12) > .05:
+        print("  LA ARITMETICA DEL PERIODO NO CUADRA")
+        ok = False
+    # El periodo es global: elegirlo en una vista tiene que valer en todas.
+    pg.evaluate("() => location.hash = '#comercio'")
+    pg.wait_for_selector("#tImportadores tbody tr")
+    pg.wait_for_timeout(600)
+    cab = pg.eval_on_selector_all("#tImportadores thead th",
+                                  "e => e[2].textContent")
+    if "anual" not in cab.lower():
+        print(f"  EL PERIODO NO CRUZA DE UNA VISTA A OTRA: «{cab}»")
+        ok = False
+    else:
+        print("  el periodo vale en todas las vistas: ok")
 
     # El perfil es el unico modulo con una direccion por registro: 23,300
     # empresas comparten una sola vista y el RUC viaja en el hash. Se comprueba

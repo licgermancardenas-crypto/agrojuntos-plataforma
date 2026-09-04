@@ -26,6 +26,13 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <span>Mercado peruano de insumos agrícolas, sobre fuentes oficiales</span>
   </div>
   <span class="upd" id="upd"></span>
+  <div class="periodo" id="fPeriodo" role="group"
+       aria-label="Periodo de las cifras de comercio exterior">
+    <span class="pl">Cifras</span>
+    <button data-p="medido" title="Lo medido en la ventana de aduanas">Medido</button>
+    <button data-p="mensual" title="Promedio mensual">Mensual</button>
+    <button data-p="anual" aria-pressed="true" title="Anualizado">Anual</button>
+  </div>
   <div class="tema" role="group" aria-label="Tema de la interfaz">
     <button data-tema="auto" title="Seguir al sistema">Auto</button>
     <button data-tema="light" title="Modo claro" aria-label="Modo claro">☀</button>

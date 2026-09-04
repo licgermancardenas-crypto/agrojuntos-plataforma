@@ -291,3 +291,16 @@ td.faint{color:var(--muted)}
 .serie .sb i{display:block; width:100%; background:var(--forest2); border-radius:1px}
 .serie .sb b{font-family:"IBM Plex Mono",monospace; font-size:8.5px;
   font-weight:400; color:var(--muted); text-align:center; margin-top:4px}
+
+/* Selector de periodo. Vive en el encabezado y no dentro de cada vista porque
+   manda sobre todas: importación, comercio, productos, perfil y directorio
+   tienen que hablar del mismo periodo o las cifras no se comparan. */
+.periodo{display:flex; align-items:center; gap:6px; margin-right:10px}
+.periodo .pl{font-family:"IBM Plex Mono",monospace; font-size:9.5px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+.periodo button{border:1px solid var(--line); background:var(--surf);
+  color:var(--muted); font:inherit; font-size:11.5px; padding:3px 9px;
+  border-radius:3px; cursor:pointer}
+.periodo button:hover{color:var(--ink)}
+.periodo button[aria-pressed="true"]{background:var(--forest); color:#fff;
+  border-color:var(--forest)}

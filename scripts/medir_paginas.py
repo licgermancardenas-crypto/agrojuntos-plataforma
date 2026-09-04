@@ -13,15 +13,18 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="repla
 
 from playwright.sync_api import sync_playwright
 
-# A4 is 297mm tall; @page reserves 16mm top and 14mm bottom.
+# A4 is 210x297mm; @page reserves 18mm top, 16mm on each side and 15mm bottom.
+# The width matters as much as the height: measuring 2mm wider than the sheet
+# rewraps every paragraph and hides the page that overflows by one line.
 MM_PX = 96 / 25.4
 FRAME = round((297 - 18 - 15) * MM_PX)
+ANCHO = round((210 - 16 - 16) * MM_PX)
 
 src = "file:///" + os.path.abspath("out/reporte_agrojuntos.html").replace("\\", "/")
 
 with sync_playwright() as pw:
     browser = pw.chromium.launch(channel="chrome")
-    page = browser.new_page(viewport={"width": round(180 * MM_PX), "height": 900})
+    page = browser.new_page(viewport={"width": ANCHO, "height": 900})
     page.goto(src, wait_until="networkidle")
     page.emulate_media(media="print")
     rows = page.evaluate("""() => [...document.querySelectorAll('.page')].map(p => {

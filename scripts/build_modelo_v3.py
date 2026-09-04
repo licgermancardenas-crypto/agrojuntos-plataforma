@@ -38,14 +38,16 @@ def key(s):
 
 
 mod = pd.read_csv("out/modelo_v2_departamento.csv", encoding="utf-8-sig")
-log = pd.read_csv("out/logistica_departamento.csv", encoding="utf-8-sig")
+log = pd.read_csv("out/ruteo_departamento.csv", encoding="utf-8-sig")
 est = pd.read_csv("out/estacionalidad_region.csv", encoding="utf-8-sig")
 for d in (mod, log):
     d["k"] = d["dep"].map(key)
 est = est.rename(columns={"k": "k"})
 
-m = (mod.merge(log[["k", "horas_capital", "horas_puerto", "km_puerto",
-                    "pct_bajo_2h", "pct_sobre_4h", "costo_viaje", "puerto"]],
+log = log.rename(columns={"horas_real": "horas_capital",
+                          "puerto_real": "horas_puerto"})
+m = (mod.merge(log[["k", "horas_capital", "horas_puerto", "pct_bajo_2h",
+                    "pct_sobre_4h", "costo_viaje", "pct_sin_puerto"]],
                on="k", how="left")
         .merge(est[["k", "mes_pico", "pct_pico", "pct_top4", "total"]]
                .rename(columns={"total": "demanda_anual"}), on="k", how="left"))
@@ -83,8 +85,8 @@ def arquetipo(r):
     if r["clientes_sam"] >= 10000 and r["ticket_anual"] < 3500:
         return "Red de canal"
     if r["pct_top4"] >= 65:
-        return "Campana estacional"
-    return "Operacion mixta"
+        return "Campaña estacional"
+    return "Operación mixta"
 
 
 m["arquetipo"] = m.apply(arquetipo, axis=1)

@@ -30,7 +30,7 @@ CSS = """
 /* Full-bleed sheets need their own named page: a 297 mm block inside the
    default margin box spills onto a second sheet. */
 @page bleed { size:A4; margin:0; }
-.cover, .divider { page:bleed; }
+.cover, .divider, .plate { page:bleed; }
 
 *{box-sizing:border-box; margin:0; padding:0}
 :root{
@@ -274,6 +274,104 @@ b.hl{box-shadow:inset 0 -.42em 0 #F3E4C4; font-weight:600}
 .fread{font-size:7.2pt; color:var(--ink2); line-height:1.5;
   border-left:1.6pt solid var(--brass); padding-left:8px}
 .fread b{color:var(--ink)}
+
+/* --------------------------------------------------- ficha de región -- */
+.dephd{display:flex; align-items:baseline; gap:11px; margin:0 0 2px}
+.dephd .rk{font-family:"IBM Plex Mono",monospace; font-size:9pt; font-weight:600;
+  color:#fff; background:var(--forest); padding:2px 7px}
+.dephd h2{font-family:Newsreader,serif; font-size:25pt; font-weight:500;
+  line-height:1; letter-spacing:-.015em; margin:0}
+.dephd .tag{font-family:"IBM Plex Mono",monospace; font-size:6.4pt;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+  margin-left:auto; text-align:right}
+.kpis.dep{margin:10px 0 2px}
+.kpis.dep .v{font-size:13pt}
+
+.mini{display:grid; grid-template-columns:repeat(3,1fr);
+  border-top:.6pt solid var(--line); border-bottom:.6pt solid var(--line);
+  margin:6px 0 9px}
+.mini div{padding:4.5px 8px 4.5px 0}
+.mini .v{font-family:"IBM Plex Mono",monospace; font-size:10.5pt;
+  font-weight:600; color:var(--forest); display:block; line-height:1.1;
+  letter-spacing:-.02em}
+.mini .l{font-size:6.2pt; color:var(--muted); display:block; margin-top:2px;
+  line-height:1.3}
+
+/* twelve months of demand, tall enough to read the shape of the campaign */
+.cal{display:flex; align-items:flex-end; gap:2.6px; height:20mm; margin:7px 0 3px}
+.cal .cb{flex:1; height:100%; display:flex; flex-direction:column;
+  justify-content:flex-end}
+.cal .cb i{display:block; width:100%; background:#BFCCC1}
+.cal .cb.pico i{background:var(--forest)}
+.cal .cb b{font-family:"IBM Plex Mono",monospace; font-size:5.6pt;
+  font-weight:400; color:var(--muted); text-align:center; margin-top:2.5px}
+
+.stack{display:flex; height:8px; margin:7px 0 4px}
+.stack i{display:block; height:100%}
+.stackleg{display:flex; flex-wrap:wrap; gap:4px 10px; font-size:6.3pt;
+  color:var(--muted); line-height:1.3}
+.stackleg b{display:inline-block; width:6px; height:6px; margin-right:3.5px;
+  vertical-align:middle}
+
+.dl{font-size:7.6pt; margin:5px 0 0}
+.dl div{display:flex; justify-content:space-between; gap:9px; padding:2.7px 0;
+  border-bottom:.6pt solid var(--line2)}
+.dl div:last-child{border-bottom:0}
+.dl .n{color:var(--muted)}
+.dl .v{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--ink);
+  white-space:nowrap}
+
+/* ------------------------------------------ ficha de region: ajuste al marco -- */
+/* The regional sheet stacks more blocks than any other page of the report and
+   ran a fifth of a page long. These rules squeeze the air out of it -- margins,
+   row padding, the height of the calendar -- so the whole fiche lands on one
+   sheet without taking the type below the floor used elsewhere. Scoped by
+   :has(.dephd) so no other page is touched. */
+.page:has(.dephd) h3{margin:11px 0 4px}
+.page:has(.dephd) h3.rule{padding-top:4px}
+.page:has(.dephd) .dephd h2{font-size:22pt}
+.page:has(.dephd) .kpis.dep{margin:7px 0 0}
+.page:has(.dephd) .kpis.dep > div{padding:7px 13px}
+.page:has(.dephd) .dl{margin-top:3px; font-size:7.4pt}
+.page:has(.dephd) .dl div{padding:1.9px 0}
+.page:has(.dephd) .mini{margin:5px 0 6px}
+.page:has(.dephd) .mini div{padding:3.4px 8px 3.4px 0}
+.page:has(.dephd) .cal{height:14mm; margin:5px 0 2px}
+.page:has(.dephd) .sub{margin-top:3px; line-height:1.4}
+.page:has(.dephd) .fbar{margin-bottom:1.2px}
+.page:has(.dephd) .stack{margin:5px 0 3px}
+.page:has(.dephd) table.tight th,.page:has(.dephd) table.tight td{padding:1.4px 6px}
+.page:has(.dephd) table{margin-top:7px}
+.page:has(.dephd) h3{margin:9px 0 4px}
+.page:has(.dephd) .dephd h2{font-size:21pt}
+.page:has(.dephd) .kicker{margin-bottom:7px}
+
+/* The ranking that opens the atlas carries all 24 regions in one table; it
+   needs the same squeeze as the fiches that follow it. */
+.rank table.tight th,.rank table.tight td{padding:1.9px 6px}
+.rank .deck{margin-bottom:2px}
+/* Across the full sheet this closing paragraph ran near 120 characters a line,
+   too wide to track; two columns halve its depth and its measure at once. */
+/* Two columns across the full sheet: the paragraph keeps the 66-character
+   measure it had at half width but takes half the depth. max-width has to go
+   or each column lands near 35 characters; column-fill defaults to auto in
+   paged media, which would leave the first column running full depth. */
+.page:has(.dephd) .fread{font-size:7pt; line-height:1.45; max-width:none;
+  column-count:2; column-gap:9mm; column-fill:balance; orphans:1; widows:1;
+  padding-left:7px; margin-bottom:0}
+.page:has(.dephd) .sub{font-size:7.1pt}
+.page:has(.dephd) .kpis.dep > div{padding:5px 13px}
+.page:has(.dephd) .dl div{padding:1.5px 0}
+.page:has(.dephd) .rh{margin-bottom:12px}
+
+/* ---------------------------------------------------------------- plate -- */
+.plate{width:210mm; height:297mm; overflow:hidden; page-break-after:always}
+svg.lamina{width:210mm; height:297mm; display:block}
+/* The halo that keeps map labels legible is painted here, not by matplotlib:
+   a path effect there would push every label out to outlines and triple the
+   weight of the file. */
+svg.lamina text{paint-order:stroke; stroke:#fff; stroke-width:1.9px;
+  stroke-linejoin:round; stroke-linecap:round}
 
 /* --------------------------------------------------------------- source -- */
 .srcs{list-style:none; margin:6px 0 0}

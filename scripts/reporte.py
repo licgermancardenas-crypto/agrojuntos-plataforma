@@ -33,6 +33,15 @@ perfil = pd.read_pickle("out/perfil_dep.pkl").sort_values("rank")
 est_n = pd.read_csv("out/estacionalidad_nacional.csv", encoding="utf-8-sig")
 est_r = pd.read_csv("out/estacionalidad_region.csv", encoding="utf-8-sig")
 v3 = pd.read_csv("out/modelo_v3_departamento.csv", encoding="utf-8-sig")
+_cul = pd.read_csv("out/cultivos_nacional.csv", encoding="utf-8-sig")
+_apr = pd.read_csv("out/agroexport_producto.csv", encoding="utf-8-sig",
+                   dtype={"partida4": str})
+_adu = pd.read_csv("out/agroexport_aduana.csv", encoding="utf-8-sig",
+                   dtype={"codigo": str})
+_adep = pd.read_csv("out/agroexport_departamento.csv", encoding="utf-8-sig")
+_h3 = pd.read_csv("out/h3_r5.csv", encoding="utf-8-sig")
+_clu2 = pd.read_csv("out/clusters_territorio.csv", encoding="utf-8-sig")
+_hub2 = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
 try:
     pros = pd.read_csv("out/osm_prospectos.csv", encoding="utf-8-sig")
 except FileNotFoundError:
@@ -154,9 +163,10 @@ _pg["n"] = 1
 page(f"""
   <span class="kicker">Contenido</span>
   <h2 class="title">Qué contiene <em>este documento</em></h2>
-  <p class="deck">El informe responde tres preguntas en orden: cuánto vale el mercado,
-     quién es cliente y dónde empezar. La última parte es un atlas con una ficha por
-     cada una de las 24 regiones agrícolas del país.</p>
+  <p class="deck">El informe responde cuatro preguntas en orden: cuánto vale el
+     mercado, quién es cliente, dónde empezar y qué se le vende. Después vienen la
+     geometría del territorio comercial y un atlas con una ficha por cada una de
+     las 24 regiones agrícolas del país.</p>
 
   <ul class="toc">
     <li><span class="n">I</span><span class="t">El tamaño del mercado</span>
@@ -175,12 +185,21 @@ page(f"""
         <span class="d"></span><span class="p">@@PGIV@@</span>
         <span class="desc">Priorización de las 24 regiones, escenarios de captura y
         la capa de prospección con nombre propio.</span></li>
-    <li><span class="n">V</span><span class="t">Atlas regional</span>
+    <li><span class="n">V</span><span class="t">Qué se cultiva y por dónde sale</span>
         <span class="d"></span><span class="p">@@PGV@@</span>
+        <span class="desc">Los {len(_cul)} cultivos y el mercado de insumos que
+        implican, las {len(_apr)} partidas agroexportadas y las {len(_adu)} aduanas de
+        salida.</span></li>
+    <li><span class="n">VI</span><span class="t">La geometría del mercado</span>
+        <span class="d"></span><span class="p">@@PGVI@@</span>
+        <span class="desc">La grilla hexagonal, los territorios de venta que emergen
+        de la densidad y el orden de apertura de centros.</span></li>
+    <li><span class="n">VII</span><span class="t">Atlas regional</span>
+        <span class="d"></span><span class="p">@@PGVII@@</span>
         <span class="desc">Ficha por región: mapa de sectores, métricas de mercado,
         mezcla de cultivos y lectura comercial.</span></li>
-    <li><span class="n">VI</span><span class="t">Metodología y fuentes</span>
-        <span class="d"></span><span class="p">@@PGVI@@</span>
+    <li><span class="n">VIII</span><span class="t">Metodología y fuentes</span>
+        <span class="d"></span><span class="p">@@PGVIII@@</span>
         <span class="desc">Cadena de cálculo, contraste con aduanas y limitaciones
         declaradas.</span></li>
   </ul>
@@ -189,7 +208,7 @@ page(f"""
     <span class="h">Nota sobre el estatus de las cifras</span>
     <p>Ninguna de las cifras de mercado de este informe es una estadística oficial.
     Son estimaciones construidas sobre fuentes oficiales, con supuestos declarados en
-    la sección V y contrastadas contra datos de importación de aduanas. Los datos
+    la parte VIII y contrastadas contra datos de importación de aduanas. Los datos
     territoriales —superficie, sectores, cultivos, productores— sí son oficiales y se
     citan uno a uno.</p>
   </div>
@@ -973,54 +992,382 @@ page(f"""
   extrapola ese período sin corregir estacionalidad, de modo que debe leerse como
   orden de magnitud.</p>
 """, "Parte IV · El mercado desde aduanas")
-# ======================================================== PARTE IV =========
-divider("V", "Atlas <em>regional</em>",
-        "Una ficha por cada una de las 24 regiones agrícolas del país: mapa de "
-        "sectores, métricas de mercado, mezcla de cultivos que sostiene el gasto y "
-        "una lectura comercial de una línea.",
-        ["24 regiones", "Mapa de sectores", "Lectura comercial"])
+# ========================================================= PARTE V =========
+# Que se cultiva y por donde sale. El modelo regional dice cuanto vale cada
+# region; no dice que se siembra en ella. Para vender insumos eso es la mitad
+# de la conversacion: no se le ofrece lo mismo a un valle de arroz que a uno
+# de palta, y el mes de compra sale del cultivo, no del departamento.
+_cul = _cul.sort_values("usd_nac", ascending=False).reset_index(drop=True)
+_cul["ac"] = 100 * _cul.usd_nac.cumsum() / _cul.usd_nac.sum()
+CUL_USD, CUL_HA = _cul.usd_nac.sum(), _cul.ha_nac.sum()
+# La mediana del panel del INEI es el valor que reciben los cultivos sin costeo
+# propio. Se identifica por la moda porque es, por construccion, el unico valor
+# que se repite entre cultivos distintos.
+_MED = _cul.usd_ha.mode().iat[0]
+_sinc = _cul[_cul.usd_ha == _MED]
+_arroz, _cafe = _cul.iloc[0], _cul[_cul.cultivo.str.startswith("Caf")].iloc[0]
+_palta = _cul[_cul.cultivo == "Palta"].iloc[0]
+
+_apr = _apr.sort_values("fob_usd", ascending=False).reset_index(drop=True)
+_apr["ac"] = 100 * _apr.fob_usd.cumsum() / _apr.fob_usd.sum()
+_apr["fob_kg"] = _apr.fob_usd / _apr.kg
+EXP_FOB = _apr.fob_usd.sum()
+_ber = _apr[_apr.partida4 == "0810"].iloc[0]
+_cit = _apr[_apr.partida4 == "0805"].iloc[0]
+
+_adu = _adu.sort_values("fob_usd", ascending=False).reset_index(drop=True)
+_adu["ac"] = 100 * _adu.fob_usd.cumsum() / _adu.fob_usd.sum()
+_chancay = _adu[_adu.codigo == "370"].iloc[0]
+_aereo = _adu[_adu.codigo == "235"].iloc[0]
+
+divider("V", "Qué se cultiva <em>y por dónde sale</em>",
+        "El modelo dice cuánto vale cada región. Esta parte dice qué se siembra "
+        "en ella, qué se exporta y por qué puerto sale: el cultivo decide el "
+        "producto que se ofrece y el mes en que hay que tenerlo en almacén.",
+        ["Los cultivos", "La agroexportación", "Los puntos de salida"])
+
+CUL_ROWS = [[r["cultivo"], nf(r["ha_nac"]), f'US$ {nf(r["usd_ha"])}',
+             f'{r["usd_nac"]/1e6:,.0f}', int(r["deps"]), cap(r["dep_lider"]),
+             f'{r["pct_lider"]:.0f}%', f'{r["ac"]:.0f}%']
+            for _, r in _cul.head(10).iterrows()]
+CUL_FOOT = [f"Perú · {nf(len(_cul))} cultivos", nf(CUL_HA),
+            f"US$ {nf(CUL_USD/CUL_HA)}", f"{CUL_USD/1e6:,.0f}", "24", "", "",
+            "100%"]
+page(f"""
+  <span class="kicker">Parte V · Los cultivos</span>
+  <h2 class="title">El mercado no compra hectáreas, <em>compra cultivos</em></h2>
+  <p class="deck">Una hectárea de pimiento piquillo demanda US$ {nf(_cul.usd_ha.max())}
+     de insumo al año; una de pijuayo, US$ {nf(_cul.usd_ha.min())}. Son
+     {_cul.usd_ha.max()/_cul.usd_ha.min():.0f} veces de diferencia sobre la misma
+     unidad de superficie. Un mapa de hectáreas, sin la mezcla de cultivos, no
+     dice qué se le puede vender a cada una.</p>
+
+  <div class="kpis">
+    <div><span class="v">{nf(len(_cul))}</span><span class="l">cultivos con superficie<br>declarada en el anuario</span></div>
+    <div><span class="v">{nf(CUL_HA/1e6,2)} M ha</span><span class="l">superficie que sostiene<br>la demanda modelada</span></div>
+    <div><span class="v">{usd(CUL_USD)}</span><span class="l">mercado de insumos<br>que esa mezcla implica</span></div>
+    <div><span class="v">{_cul.ac.iat[9]:.0f}%</span><span class="l">lo explican<br>diez cultivos</span></div>
+  </div>
+
+  <h3 class="rule">Los diez cultivos que explican el
+     {_cul.ac.iat[9]:.0f}% del mercado</h3>
+  {table(CUL_ROWS,
+         ["Cultivo", "Hectáreas", "Gasto/ha", "Mercado MM", "Regiones",
+          "Región líder", "% del cultivo", "% acum."],
+         ["l","r","r","r","r","l","r","r"], foot=CUL_FOOT)}
+  <p class="sub"><b>Gasto/ha:</b> desembolso anual en fertilizante y fitosanitario
+  por hectárea del cultivo, del costeo del INEI. <b>Regiones:</b> en cuántas de las
+  24 aparece con superficie. <b>% del cultivo:</b> qué parte de su superficie
+  nacional está en la región líder — un cultivo concentrado se atiende desde un
+  almacén; uno disperso, no.</p>
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <div class="note">
+        <span class="h">Dos lecturas opuestas del mismo cuadro</span>
+        <p>El arroz encabeza por mercado —US$ {nf(_arroz.usd_nac/1e6)} MM— con
+        {_arroz.ha_nac/1e3:.0f} mil hectáreas. El café tiene prácticamente la misma
+        superficie y vale la cuarta parte, porque gasta US$ {nf(_cafe.usd_ha)} por
+        hectárea contra {nf(_arroz.usd_ha)}. La palta, con {_palta.ha_nac/1e3:.0f}
+        mil hectáreas —seis veces menos que el arroz— ya vale
+        US$ {nf(_palta.usd_nac/1e6)} MM y crece. Ordenar por superficie y ordenar
+        por mercado dan dos listas distintas.</p>
+      </div>
+    </div>
+    <div>
+      <div class="note warn">
+        <span class="h">Qué tan firme es el gasto por cultivo</span>
+        <p>El costeo del INEI cubre 73 cultivos. Los otros <b>{len(_sinc)} de
+        {len(_cul)}</b> reciben la mediana del panel, US$ {nf(_MED)} por hectárea:
+        son el {100*_sinc.ha_nac.sum()/CUL_HA:.0f}% de la superficie y el
+        {100*_sinc.usd_nac.sum()/CUL_USD:.0f}% del valor. Los del cuadro que
+        muestran exactamente US$ {nf(_MED)} son de ese grupo: sirve para el
+        agregado, no para cotizar ese cultivo.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte V · Los cultivos")
+
+APR_ROWS = [[r["partida4"], r["producto"], f'{r["fob_usd"]/1e6:,.1f}',
+             nf(r["kg"]/1e6, 1), int(r["empresas"]), int(r["destinos"]),
+             f'{r["fob_kg"]:,.2f}', f'{r["ac"]:.0f}%']
+            for _, r in _apr.head(12).iterrows()]
+APR_FOOT = ["", f"{nf(len(_apr))} partidas", f"{EXP_FOB/1e6:,.1f}",
+            nf(_apr.kg.sum()/1e6, 1), "", "",
+            f"{EXP_FOB/_apr.kg.sum():,.2f}", "100%"]
+page(f"""
+  <span class="kicker">Parte V · La agroexportación</span>
+  <h2 class="title">Seis partidas explican <em>tres cuartas partes</em>
+     de lo que sale</h2>
+  <p class="deck">Los mismos manifiestos que identifican al importador de insumo
+     identifican, del otro lado, qué producto agrícola sale del país, en qué
+     volumen y hacia cuántos destinos. Es la demanda final que arrastra al
+     insumo.</p>
+
+  <div class="kpis">
+    <div><span class="v">{usd(EXP_FOB)}</span><span class="l">agroexportado en diez<br>semanas · FOB medido</span></div>
+    <div><span class="v">{nf(len(_apr))}</span><span class="l">partidas arancelarias<br>a cuatro dígitos</span></div>
+    <div><span class="v">{nf(len(_expo))}</span><span class="l">empresas exportadoras<br>con RUC verificado</span></div>
+    <div><span class="v">{_apr.ac.iat[5]:.0f}%</span><span class="l">lo explican<br>seis partidas</span></div>
+  </div>
+
+  <h3 class="rule">Las doce partidas mayores</h3>
+  {table(APR_ROWS,
+         ["Partida", "Producto", "FOB MM", "Miles t", "Empresas", "Destinos",
+          "US$/kg", "% acum."],
+         ["l","l","r","r","r","r","r","r"], foot=APR_FOOT)}
+  <p class="sub">Diez semanas de manifiestos, junio a agosto de 2026. «Empresas» y
+  «destinos» no se suman entre partidas: una misma empresa exporta varias, y un
+  mismo país recibe varias.</p>
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <div class="note">
+        <span class="h">El valor está en el kilo, no en el tonelaje</span>
+        <p>El arándano sale a US$ {_ber.fob_kg:,.2f} por kilo y los cítricos a
+        US$ {_cit.fob_kg:,.2f}. Con {100*_ber.kg/_cit.kg:.0f}% del tonelaje
+        cítrico, el arándano factura {_ber.fob_usd/_cit.fob_usd:.1f} veces más.
+        Ese margen es el que paga programas de nutrición y sanidad caros: es donde
+        el insumo premium tiene demanda real, y no donde hay más hectáreas.</p>
+      </div>
+    </div>
+    <div>
+      <div class="note">
+        <span class="h">Por qué la partida y no el nombre comercial</span>
+        <p>El manifiesto trae una descripción libre escrita por el declarante
+        —«PALTAS FRESCAS EN CAJAS VARIEDAD: HASS»—, útil para leer pero inservible
+        para agregar. La partida NANDINA a cuatro dígitos sí agrupa, al costo de
+        juntar lo que el arancel junta: la 0804 es palta, mango, dátil y piña en
+        una sola línea.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte V · La agroexportación")
+
+ADU_ROWS = [[r["codigo"], r["aduana"], f'{r["fob_usd"]/1e6:,.1f}',
+             nf(r["kg"]/1e6, 1), int(r["empresas"]), r["producto_lider"],
+             f'{r["pct_lider"]:.0f}%', r["via_principal"], f'{r["ac"]:.1f}%']
+            for _, r in _adu.head(12).iterrows()]
+ADU_FOOT = ["", f"{len(_adu)} aduanas", f"{_adu.fob_usd.sum()/1e6:,.1f}",
+            nf(_adu.kg.sum()/1e6, 1), "", "", "", "", "100%"]
+page(f"""
+  <span class="kicker">Parte V · Los puntos de salida</span>
+  <h2 class="title">Cuatro puertos mueven <em>el {_adu.ac.iat[3]:.0f}%</em>
+     de la agroexportación</h2>
+  <p class="deck">La aduana de embarque dice qué corredor logístico usa cada
+     región productora. Es el mismo por el que sube el insumo.</p>
+
+  {table(ADU_ROWS,
+         ["Cód.", "Aduana de embarque", "FOB MM", "Miles t", "Empresas",
+          "Producto líder", "% de la aduana", "Vía", "% acum."],
+         ["l","l","r","r","r","l","r","l","r"], foot=ADU_FOOT)}
+  <p class="sub">Las doce aduanas listadas son el {_adu.ac.iat[11]:.2f}% del FOB;
+  las tres restantes no llegan a US$ 1 MM entre las tres. Los nombres salen de la
+  Tabla 4 del Anexo 01 de SUNAT (RS 040-2022), no de deducirlos: un código mal
+  atribuido convierte un puerto en otro.</p>
+
+  <div class="two" style="margin-top:6px">
+    <div>
+      <h3 class="rule">Chancay ya es el sexto punto de salida</h3>
+      <p>El código 370 no figura en el anexo de 2022 porque entonces no existía. Es
+      Chancay, habilitada el <b>21 de octubre de 2024</b> por la RS 000192-2024, y
+      en las diez semanas observadas movió
+      <b>US$ {_chancay.fob_usd/1e6:,.1f} MM</b> con
+      <b>{int(_chancay.empresas)} empresas</b>: más exportadores distintos que
+      Salaverry, Chiclayo y Chimbote juntos. Para un canal de insumos un puerto
+      nuevo es un corredor nuevo, y cambia dónde conviene tener inventario.</p>
+
+      <p>Lo aéreo tampoco es marginal: la Aérea del Callao mueve
+      US$ {_aereo.fob_usd/1e6:,.0f} MM con {int(_aereo.empresas)} empresas y apenas
+      {_aereo.kg/1e6:,.1f} mil toneladas, que es el canal del perecible de altísimo
+      valor. Tumbes, Tacna y Desaguadero salen por carretera hacia Ecuador, Chile y
+      Bolivia.</p>
+    </div>
+    <div>
+      <div class="note warn">
+        <span class="h">Lima aparece grande porque ahí está la oficina</span>
+        <p>Lima concentra el {100*_adep.fob_usd.iat[0]/_adep.fob_usd.sum():.0f}%
+        del FOB y {int(_adep.empresas.iat[0])} empresas, pero no cultiva esa
+        proporción: el UBIGEO del manifiesto resultó inservible —solo el 3% del FOB
+        lo trae— y la región sale del domicilio fiscal del padrón. <b>Domicilio
+        fiscal no es lugar de cultivo.</b> Para ubicar producción sirve la aduana
+        de embarque; para ubicar al comprador, el padrón.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte V · Los puntos de salida")
 
 
-def lectura(r):
-    """One line telling a salesperson what they are walking into."""
-    dep = cap(r["dep"])
-    tk, gh, cl = r["ticket_anual"], r["gasto_ha"], r["clientes_sam"]
-    cred, fert = 100 * r["tasa_credito"], 100 * r["tasa_fert"]
-    partes = []
+# ======================================================== PARTE VI =========
+# La geometria del mercado. El sector estadistico mide entre 200 y 30,000 ha,
+# de modo que comparar dos zonas mirando sectores mezcla densidad con tamano
+# de la unidad de medida. La grilla hexagonal tiene area constante y separa
+# una cosa de la otra.
+AREA_PE = 1_285_216  # km2, superficie continental del Peru
 
-    if tk >= 5000:
-        partes.append(f"Ticket alto: <b>US$ {nf(tk)}</b> por cliente al año. "
-                      "Perfil de venta consultiva y contrato anual")
-    elif cl >= 10000:
-        partes.append(f"<b>{nf(cl)}</b> clientes dispersos con ticket de "
-                      f"US$ {nf(tk)}. Se atiende con red de canal, no con "
-                      "fuerza de venta propia")
-    else:
-        partes.append(f"<b>{nf(cl)}</b> clientes a US$ {nf(tk)} al año. "
-                      "Mercado de tamaño medio")
+_h3 = _h3.sort_values("sam_usd", ascending=False).reset_index(drop=True)
+_h3["ac"] = _h3.sam_usd.cumsum() / _h3.sam_usd.sum()
+_h3con = _h3[_h3.sam_usd > 0]
+KM2 = _h3.km2.mean()
 
-    if cred >= 12:
-        partes.append(f"el <b>{cred:.0f}%</b> ya compra a crédito, la tasa más "
-                      "alta del país: entrada natural para la propuesta")
-    elif cred <= 3:
-        partes.append(f"solo el <b>{cred:.0f}%</b> usa crédito, lo que exige "
-                      "vender al contado primero")
 
-    if fert <= 25:
-        partes.append(f"apenas <b>{fert:.0f}%</b> fertiliza, de modo que buena "
-                      "parte del potencial exige conversión")
-    elif fert >= 65:
-        partes.append(f"<b>{fert:.0f}%</b> fertiliza: demanda ya instalada")
+def celdas_para(p):
+    """Cuantas celdas, de mayor a menor, acumulan la fraccion p del SAM."""
+    return int((_h3.ac < p).sum()) + 1
 
-    if r["prospectos"] >= 150:
-        partes.append(f"<b>{nf(r['prospectos'])}</b> prospectos ya localizados "
-                      "con nombre y coordenada")
-    return f"<b>{dep}.</b> " + "; ".join(partes) + "."
+
+C25, C50, C80 = celdas_para(.25), celdas_para(.5), celdas_para(.8)
+
+# Las capas geoespaciales guardan el departamento en mayusculas y sin tildes.
+# El resto del informe lo escribe acentuado, asi que se recupera del modelo.
+def _sinac(x):
+    return unicodedata.normalize("NFKD", str(x)).encode(
+        "ascii", "ignore").decode().upper()
+
+
+DEP_OK = {_sinac(d): d for d in v3.dep}
+_clu2["dep_ok"] = _clu2.dep.map(lambda d: DEP_OK.get(_sinac(d), cap(d)))
+UMB = sorted(_hub2.umbral_h.unique())
+
+
+def hubk(u, k):
+    g = _hub2[(_hub2.umbral_h == u) & (_hub2.k == k)]
+    return g.iloc[0] if len(g) else None
+
+
+divider("VI", "La geometría <em>del mercado</em>",
+        "Sobre las capas anteriores se construyen tres análisis geométricos: una "
+        "grilla de área constante que permite comparar zonas, los territorios de "
+        "venta que emergen de la densidad, y el orden de apertura de centros de "
+        "distribución que maximiza la cobertura.",
+        ["La grilla hexagonal", "Territorios de venta", "Centros de distribución"])
+
+CLU_ROWS = [[int(r["rank"]), r["dep_ok"], cap(r["provincias"]),
+             f'{r["sam_usd"]/1e6:,.1f}', nf(r["clientes"]),
+             f'US$ {nf(r["sam_por_cliente"])}', f'{r["extension_km"]:.0f} km',
+             f'{r["horas_capital"]:.1f} h', f'{r["pct_acum"]:.0f}%']
+            for _, r in _clu2.head(10).iterrows()]
+CLU_FOOT = ["", f"{len(_clu2)} territorios", "",
+            f'{_clu2.sam_usd.sum()/1e6:,.1f}', nf(_clu2.clientes.sum()), "",
+            "", "", f'{_clu2.pct_sam.sum():.0f}%']
+page(f"""
+  <span class="kicker">Parte VI · La grilla hexagonal</span>
+  <h2 class="title"><em>{nf(C50)} celdas</em> concentran la mitad del mercado
+     atendible</h2>
+  <p class="deck">Los sectores estadísticos miden entre 200 y 30,000 hectáreas, de
+     modo que comparar dos zonas mirando sectores mezcla la densidad del mercado
+     con el tamaño de la unidad de medida. La grilla hexagonal H3 corrige eso:
+     todas las celdas miden lo mismo, {nf(KM2)} km², y lo único que varía entre
+     ellas es el mercado.</p>
+
+  <div class="kpis">
+    <div><span class="v">{nf(len(_h3con))}</span><span class="l">celdas con mercado atendible<br>de {nf(KM2)} km² cada una</span></div>
+    <div><span class="v">{nf(C25)}</span><span class="l">celdas reúnen el primer<br>cuarto del SAM</span></div>
+    <div><span class="v">{nf(C50)}</span><span class="l">celdas reúnen<br>la mitad</span></div>
+    <div><span class="v">{100*C50/len(_h3con):.0f}%</span><span class="l">del territorio con mercado<br>vale esa mitad</span></div>
+  </div>
+
+  <p>El primer cuarto del mercado cabe en <b>{nf(C25)} celdas</b> —unos
+  {nf(C25*KM2/1e3,1)} mil km², el {100*C25*KM2/AREA_PE:.1f}% del país—. La mitad
+  cabe en <b>{nf(C50)}</b> y el 80% en <b>{nf(C80)}</b>. La curva se aplana rápido:
+  pasar de la mitad del mercado a los cuatro quintos exige multiplicar por
+  <b>{C80/C50:.1f}</b> el territorio a cubrir, y cada celda añadida vale menos que
+  la anterior.</p>
+
+  <h3 class="rule">Los diez mayores territorios de venta</h3>
+  {table(CLU_ROWS,
+         ["#", "Región", "Provincias núcleo", "SAM MM", "Clientes",
+          "SAM/cliente", "Extensión", "A capital", "% acum."],
+         ["r","l","l","r","r","r","r","r","r"], foot=CLU_FOOT)}
+  <p class="sub">DBSCAN con radio de 15 km sobre el 80% superior del mercado.
+  <b>Extensión:</b> distancia de punta a punta del territorio. <b>A capital:</b>
+  horas medias de sus celdas al centro provincial, ruteadas sobre la red vial.</p>
+
+  <div class="note" style="margin-top:6px">
+    <span class="h">Por qué agrupar sobre el 80% superior y no sobre el total</span>
+    <p>Agrupando sobre todas las celdas, el algoritmo encadenaba el país entero en
+    un solo núcleo de 2,000 km: la agricultura peruana es continua a lo largo de
+    los valles y no deja huecos que corten la cadena. Restringido al 80% superior
+    del mercado, el mismo radio da <b>{len(_clu2)} territorios</b>, de los cuales
+    <b>{int(_clu2.visitable_en_dia.sum())} miden menos de 120 km</b> de punta a
+    punta y se recorren en una sola salida. Los {len(_clu2)} juntos son el
+    {_clu2.pct_sam.sum():.0f}% del mercado atendible del país.</p>
+  </div>
+""", "Parte VI · La grilla hexagonal")
+
+HUB_ROWS = []
+for _k in range(1, 7):
+    _fila = [str(_k)]
+    for _u in UMB:
+        _h = hubk(_u, _k)
+        _fila += [cap(_h["hub"]) if _h is not None else "—",
+                  f'{_h["pct_sam"]:.1f}%' if _h is not None else "—"]
+    HUB_ROWS.append(_fila)
+H2, H4, H6 = [hubk(u, 6) for u in UMB]
+KMAX2 = _hub2[_hub2.umbral_h == 2.0]
+page(f"""
+  <span class="kicker">Parte VI · Centros de distribución</span>
+  <h2 class="title">El radio de operación decide la cobertura,
+     <em>no el número de almacenes</em></h2>
+  <p class="deck">Cobertura máxima por algoritmo voraz sobre las 129 ciudades
+     capitales de provincia, evaluada contra tiempos ruteados sobre la red vial.
+     La pregunta que responde no es cuántos centros abrir, sino qué tan lejos se
+     acepta ir a entregar.</p>
+
+  <div class="kpis">
+    <div><span class="v">{H2["pct_sam"]:.0f}%</span><span class="l">del SAM cubren seis<br>centros, a dos horas</span></div>
+    <div><span class="v">{H4["pct_sam"]:.0f}%</span><span class="l">los mismos seis,<br>a cuatro horas</span></div>
+    <div><span class="v">{H6["pct_sam"]:.0f}%</span><span class="l">los mismos seis,<br>a seis horas</span></div>
+    <div><span class="v">{H6["pct_sam"]/H2["pct_sam"]:.1f}×</span><span class="l">gana triplicar el radio,<br>sin abrir un almacén más</span></div>
+  </div>
+
+  <h3 class="rule">Orden óptimo de apertura y cobertura acumulada</h3>
+  {table(HUB_ROWS,
+         ["Centro #", "A 2 horas", "% SAM", "A 4 horas", "% SAM",
+          "A 6 horas", "% SAM"],
+         ["r","l","r","l","r","l","r"])}
+  <p class="sub">Cada fila añade un centro al conjunto de la fila anterior y el
+  porcentaje es acumulado. El orden se recalcula para cada umbral, así que no es
+  la misma lista desplazada: con radio de dos horas conviene abrir primero en
+  Chiclayo; con radio de cuatro, en San Pedro de Lloc.</p>
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <div class="note">
+        <span class="h">La intuición que el dato corrige</span>
+        <p>Parece razonable suponer que abrir más almacenes cubre más mercado. Con
+        radio de dos horas no ocurre: seis centros cubren
+        <b>{H2["pct_sam"]:.0f}%</b> y hacen falta {int(KMAX2.k.max())} para llegar
+        apenas al {KMAX2.pct_sam.max():.0f}%. La agricultura peruana está demasiado
+        estirada a lo largo de los valles como para que un radio corto la
+        alcance.</p>
+      </div>
+    </div>
+    <div>
+      <div class="note brass">
+        <span class="h">Qué decisión se sigue de esto</span>
+        <p>Con seis centros y radio de seis horas se llega al
+        <b>{H6["pct_sam"]:.0f}%</b> del mercado atendible. La palanca no es el
+        capital inmovilizado en almacenes, sino la capacidad de entrega a
+        distancia: flota, ruta programada y tiempo de promesa. Un séptimo almacén
+        aporta menos que extender el radio de los seis que ya existen.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte VI · Centros de distribución")
+
+# ======================================================= PARTE VII ========
+divider("VII", "Atlas <em>regional</em>",
+        "Un pliego de dos hojas por cada una de las 24 regiones agrícolas: la "
+        "ficha con estructura productiva, comportamiento de compra, costo de "
+        "servir y mayores sectores, y frente a ella la lámina cartográfica de la "
+        "región a página completa.",
+        ["24 regiones", "Ficha y lámina", "Lectura comercial"])
 
 
 def barras(items, total_ref):
     out = []
-    for nombre, val, _ in items[:4]:
+    for nombre, val, _ in items[:5]:
         w = 100 * val / total_ref if total_ref else 0
         out.append(f'<div class="fbar"><span class="nm">{cap(nombre)}</span>'
                    f'<span class="tr"><i style="width:{min(w,100):.0f}%"></i></span>'
@@ -1028,59 +1375,369 @@ def barras(items, total_ref):
     return '<div class="fbars">' + "".join(out) + "</div>"
 
 
-def ficha(r):
-    mapa = f"out/dep/{r['k']}.png"
-    tot = r["top_gasto"][0][1] if len(r["top_gasto"]) else 1
+# ---------------------------------------------------- datos del atlas -----
+def _slug(s):
+    s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]", "", s.lower())
+
+
+_FIX = {"ncash": "ancash", "apurmac": "apurimac", "hunuco": "huanuco",
+        "junn": "junin", "sanmartn": "sanmartin", "limametropolitana": "lima",
+        "provconstdelcallao": "callao"}
+
+
+def _key(s):
+    return _FIX.get(_slug(s), _slug(s))
+
+
+sec_d = pd.read_csv("out/modelo_v2_sector.csv", encoding="utf-8-sig",
+                    usecols=["cod_se", "dep", "prov", "sector", "region_nat",
+                             "ha_agricola", "s_ha_cosechada", "s_sam_usd",
+                             "s_clientes_sam"])
+_rut = pd.read_csv("out/ruteo_sector.csv", encoding="utf-8-sig",
+                   usecols=["cod_se", "horas_capital_real", "horas_puerto_real",
+                            "puerto_maritimo"])
+sec_d = sec_d.merge(_rut, on="cod_se", how="left")
+sec_d["k"] = sec_d["dep"].map(_key)
+
+_clu = pd.read_csv("out/clusters_territorio.csv", encoding="utf-8-sig")
+_clu["k"] = _clu["dep"].map(_key)
+_hub = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
+_hub = _hub[_hub.umbral_h == _hub.umbral_h.min()]
+_hub["k"] = _hub["region"].map(_key)
+_emp = pd.read_csv("out/empresas_agro_activas.csv", encoding="utf-8-sig",
+                   usecols=["dep", "exporta", "importa"])
+_emp["k"] = _emp["dep"].map(_key)
+EMPD = _emp.groupby("k").agg(empresas=("dep", "size"),
+                             exporta=("exporta", "sum"),
+                             importa=("importa", "sum")).to_dict("index")
+V3 = v3.set_index("k")
+ESTR = est_r.set_index("k")
+M12 = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct",
+       "Nov", "Dic"]
+if len(pros):
+    pros["k"] = pros["dep"].map(_key)
+
+
+def calendario(k):
+    """Twelve bars: when the region actually buys."""
+    if k not in ESTR.index:
+        return ""
+    fila = ESTR.loc[k]
+    vals = [float(fila[m]) for m in M12]
+    mx = max(vals) or 1
+    top4 = sorted(range(12), key=lambda i: -vals[i])[:4]
+    barras = "".join(
+        f'<span class="cb{" pico" if i in top4 else ""}">'
+        f'<i style="height:{100 * v / mx:.0f}%"></i><b>{m[0]}</b></span>'
+        for i, (m, v) in enumerate(zip(M12, vals)))
+    return f'<div class="cal">{barras}</div>'
+
+
+def estructura(r):
+    """How the land is split between farm sizes, and therefore who to sell to."""
+    tramos = [("0–5 ha", r.get("ua_micro_0_5"), "#CBD4C6"),
+              ("5–20 ha", r.get("ua_pequeno_5_20"), "#8FAE9B"),
+              ("20–100 ha", r.get("ua_mediano_20_100"), "#3B7A63"),
+              ("100+ ha", r.get("ua_grande_100_mas"), "#0F4C3F")]
+    tramos = [(n, float(v), c) for n, v, c in tramos
+              if v is not None and pd.notna(v) and float(v) > 0]
+    tot = sum(v for _, v, _ in tramos) or 1
+    seg = "".join(f'<i style="width:{100 * v / tot:.2f}%;background:{c}"></i>'
+                  for _, v, c in tramos)
+    leg = "".join(f'<span><b style="background:{c}"></b>{n} · '
+                  f'{100 * v / tot:.0f}%</span>' for n, v, c in tramos)
+    return f'<div class="stack">{seg}</div><div class="stackleg">{leg}</div>'
+
+
+def dl(filas):
+    return '<div class="dl">' + "".join(
+        f'<div><span class="n">{n}</span><span class="v">{v}</span></div>'
+        for n, v in filas) + "</div>"
+
+
+def sectores_tabla(k, n=9):
+    """Where inside the region the money is, and how far it is from the capital."""
+    s = sec_d[sec_d.k == k]
+    top = s.nlargest(n, "s_sam_usd")
+    filas = []
+    for _, t in top.iterrows():
+        h = t["horas_capital_real"]
+        filas.append([cap(t["sector"])[:24], cap(t["prov"])[:15],
+                      nf(t["ha_agricola"]), f"{t['s_sam_usd'] / 1e6:,.2f}",
+                      nf(t["s_clientes_sam"]),
+                      "s/d" if pd.isna(h) else f"{h:,.1f}"])
+    pie = [f"Toda la región · {len(s)} sectores", f"{s.prov.nunique()} prov.",
+           nf(s.ha_agricola.sum()), f"{s.s_sam_usd.sum() / 1e6:,.1f}",
+           nf(s.s_clientes_sam.sum()), ""]
+    return table(filas, ["Sector estadístico", "Provincia", "Ha agrícolas",
+                         "Mercado US$ MM", "Clientes", "h a capital"],
+                 ["l", "l", "r", "r", "r", "r"], pie, cls="tight")
+
+
+ARQ = {
+    "Venta directa consultiva":
+        "pocos compradores grandes y accesibles: se atiende con vendedor propio "
+        "y contrato de campaña, no con red de terceros",
+    "Red de canal":
+        "demasiados compradores y demasiado dispersos para una fuerza de venta "
+        "propia: el margen se defiende apoyándose en distribuidores locales",
+    "Campaña estacional":
+        "la demanda se juega en pocas semanas: el stock y el crédito tienen que "
+        "estar colocados antes del pico, no durante",
+    "Operación mixta":
+        "cabeceras de valle con volumen y una periferia dispersa: vendedor propio "
+        "en las primeras, canal en la segunda",
+    "Inviable por ahora":
+        "el costo de servir se come el margen a los precios actuales; entra "
+        "cuando haya un cliente ancla que pague el viaje",
+}
+
+
+def lectura_larga(r, v):
+    """Four sentences a salesperson can act on, built from this region's numbers."""
+    dep = cap(r["dep"])
+    tk, cl = r["ticket_anual"], r["clientes_sam"]
+    cred, fert = 100 * r["tasa_credito"], 100 * r["tasa_fert"]
+    p = []
+    p.append(f"<b>{dep}</b> vale <b>{usd(r['sam_usd'])}</b> al año en "
+             f"fertilizante y fitosanitario sobre <b>{nf(cl)}</b> compradores "
+             f"de más de cinco hectáreas, un ticket de <b>US$ {nf(tk)}</b> por "
+             f"cliente y año.")
+
+    if fert >= 60:
+        p.append(f"El <b>{fert:.0f}%</b> de las unidades ya fertiliza: la "
+                 "demanda está instalada y lo que se disputa es el proveedor.")
+    elif fert <= 28:
+        p.append(f"Solo el <b>{fert:.0f}%</b> fertiliza, de modo que una parte "
+                 "grande del potencial no es venta sino conversión, y llega con "
+                 "el ciclo de adopción que eso implica.")
+    else:
+        p.append(f"Fertiliza el <b>{fert:.0f}%</b> y aplica fitosanitario el "
+                 f"<b>{100 * r['tasa_pest']:.0f}%</b>: mercado a medio formar, "
+                 "con espacio tanto para captura como para conversión.")
+
+    if cred >= 10:
+        p.append(f"El <b>{cred:.0f}%</b> ya compra a crédito —"
+                 f"<b>{nf(r['compran_a_credito'])}</b> unidades—, la puerta de "
+                 "entrada natural para el financiamiento embebido.")
+    elif cred <= 3:
+        p.append(f"Apenas el <b>{cred:.0f}%</b> compra a crédito, así que la "
+                 "primera venta es al contado y el crédito se ofrece después, "
+                 "sobre historial propio.")
+    else:
+        p.append(f"El <b>{cred:.0f}%</b> compra a crédito, por debajo del "
+                 "promedio útil: el financiamiento abre conversación pero no "
+                 "cierra la venta por sí solo.")
+
+    if v is not None:
+        p.append(f"Logísticamente, el <b>{v['pct_bajo_2h']:.0f}%</b> de sus "
+                 f"sectores está a menos de dos horas de la capital regional y "
+                 f"el <b>{v['pct_sobre_4h']:.0f}%</b> a más de cuatro, con un "
+                 f"costo de viaje de <b>US$ {nf(v['costo_viaje'])}</b> por "
+                 f"visita; el pico de compra cae en <b>{v['mes_pico']}</b> y "
+                 f"cuatro meses concentran el <b>{v['pct_top4']:.0f}%</b> del "
+                 "año.")
+        p.append(f"Arquetipo: <b>{v['arquetipo'].lower()}</b> — "
+                 f"{ARQ.get(v['arquetipo'], 'sin lectura asignada')}.")
+    return " ".join(p)
+
+
+def hoja_datos(r):
+    """The data sheet; the plate that follows it carries the map."""
+    k = r["k"]
+    v = V3.loc[k] if k in V3.index else None
+    e = EMPD.get(k, {"empresas": 0, "exporta": 0, "importa": 0})
+    cl = _clu[_clu.k == k].sort_values("rank")
+    hb = _hub[_hub.k == k]
+    pr = pros[pros.k == k] if len(pros) else pros
+    tot_gasto = r["top_gasto"][0][1] if len(r["top_gasto"]) else 1
+
+    tag = cap(r["region_nat"])
+    if v is not None:
+        tag += f" · {v['arquetipo']}"
+    tag += f" · Puesto {int(r['rank']):02d} de 24"
+
+    log = [("Horas medias a la capital regional",
+            "s/d" if v is None else f"{v['horas_capital']:.1f} h"),
+           ("Sectores a menos de 2 h",
+            "s/d" if v is None else f"{v['pct_bajo_2h']:.0f}%"),
+           ("Sectores a más de 4 h",
+            "s/d" if v is None else f"{v['pct_sobre_4h']:.0f}%"),
+           ("Costo de una visita comercial",
+            "s/d" if v is None else f"US$ {nf(v['costo_viaje'])}"),
+           ("Horas al puerto marítimo",
+            "s/d" if v is None else f"{v['horas_puerto']:.1f} h")]
+    if len(hb):
+        log.append(("Hub de distribución sugerido",
+                    f"{hb.iloc[0]['hub']} ({hb.iloc[0]['pct_sam']:.1f}% país)"))
+
+    prod = [("Superficie agrícola declarada", f"{nf(r['ha_agricola'])} ha"),
+            ("Superficie cosechada 2023", f"{nf(r['ha_cosechada'])} ha"),
+            ("Intensidad de uso del suelo", f"{100 * r['uso_ha']:.0f}%"),
+            ("Sectores estadísticos", nf(r["sectores"])),
+            ("Cultivos con superficie registrada", nf(r["n_cultivos"])),
+            ("Productores censados 2012", nf(r["productores_x"])),
+            ("Gasto en insumos por hectárea", f"US$ {nf(r['gasto_ha'])}")]
+
+    pros_txt = (f"{nf(r['prospectos'])} entidades con nombre y coordenada, de "
+                f"ellas {nf(r['fundos'])} identificables como fundo o "
+                f"agroindustria")
+    if len(pr):
+        nombres = [str(x).strip() for x in
+                   pr.sort_values("ha", ascending=False)["nombre"].head(6)
+                   if str(x).strip() and str(x) != "nan"]
+        if nombres:
+            pros_txt += ". Entre las mayores: " + ", ".join(
+                f"<b>{n[:38]}</b>" for n in nombres)
+
+    if len(cl):
+        c = cl.iloc[0]
+        clu_txt = (f"El modelo de territorios agrupa la región en "
+                   f"<b>{len(cl)}</b> {'zona' if len(cl) == 1 else 'zonas'} "
+                   f"operables. La principal concentra "
+                   f"<b>{usd(c['sam_usd'])}</b> sobre "
+                   f"<b>{nf(c['clientes'])}</b> clientes en "
+                   f"{cap(str(c['provincias']))[:60]}, con "
+                   f"<b>{c['extension_km']:.0f} km</b> de extensión y "
+                   f"{'visitable' if c['visitable_en_dia'] else 'no visitable'} "
+                   f"en un día de ruta.")
+    else:
+        clu_txt = ("Ningún territorio de la región alcanza el umbral de tamaño "
+                   "del modelo de zonas operables: se atiende como cola, no "
+                   "como ruta propia.")
+
     return f"""
-<div class="fiche">
-  <div class="mp">{img(mapa, "")}</div>
-  <div>
-    <div class="hd">
-      <span class="rk">{int(r['rank']):02d}</span>
-      <h3>{cap(r['dep'])}</h3>
-      <span class="tag">{cap(r['region_nat'])} · {int(r['n_cultivos'])} cultivos</span>
-    </div>
-    <div class="fgrid">
-      <div><span class="v">{usd(r['sam_usd'])}</span><span class="l">Mercado anual</span></div>
-      <div><span class="v">{nf(r['clientes_sam'])}</span><span class="l">Clientes</span></div>
-      <div><span class="v">US$ {nf(r['gasto_ha'])}</span><span class="l">Gasto por ha</span></div>
-      <div><span class="v">US$ {nf(r['ticket_anual'])}</span><span class="l">Por cliente/año</span></div>
-    </div>
-    <div class="fgrid" style="border-top:0">
-      <div><span class="v">{nf(r['ha_cosechada']/1000)}k</span><span class="l">Ha cosechadas</span></div>
-      <div><span class="v">{100*r['tasa_fert']:.0f}%</span><span class="l">Fertiliza</span></div>
-      <div><span class="v">{100*r['tasa_credito']:.0f}%</span><span class="l">Usa crédito</span></div>
-      <div><span class="v">{nf(r['prospectos'])}</span><span class="l">Prospectos OSM</span></div>
-    </div>
-    <h4 class="lab">Cultivos que concentran el gasto en insumos</h4>
-    {barras(r['top_gasto'], tot)}
-    <p class="fread">{lectura(r)}</p>
+  <span class="kicker">Atlas regional · Ficha {int(r['rank']):02d} de 24</span>
+  <div class="dephd">
+    <span class="rk">{int(r['rank']):02d}</span>
+    <h2>{cap(r['dep'])}</h2>
+    <span class="tag">{tag}</span>
   </div>
-</div>"""
+
+  <div class="kpis dep">
+    <div><span class="v">{usd(r['sam_usd'])}</span>
+      <span class="l">Mercado anual alcanzable<br>{r['pct_sam']:.1f}% del país</span></div>
+    <div><span class="v">{nf(r['clientes_sam'])}</span>
+      <span class="l">Compradores de<br>más de 5 hectáreas</span></div>
+    <div><span class="v">US$ {nf(r['ticket_anual'])}</span>
+      <span class="l">Facturación esperada<br>por cliente y año</span></div>
+    <div><span class="v">US$ {nf(r['gasto_ha'])}</span>
+      <span class="l">Gasto en insumos<br>por hectárea cosechada</span></div>
+  </div>
+
+  <div class="two" style="margin-top:9px">
+    <div>
+      <h3 class="rule">Qué produce</h3>
+      {dl(prod)}
+      <h4 class="lab" style="margin-top:8px">Cultivos que concentran el gasto</h4>
+      {barras(r['top_gasto'], tot_gasto)}
+      <h4 class="lab" style="margin-top:7px">Tamaño de las unidades agropecuarias</h4>
+      {estructura(r)}
+      <p class="sub">Censo 2012. El modelo sólo considera vendible la superficie
+      en manos de unidades de más de cinco hectáreas que ya aplican insumos.</p>
+    </div>
+    <div>
+      <h3 class="rule">Cómo compra</h3>
+      <div class="mini">
+        <div><span class="v">{100 * r['tasa_fert']:.0f}%</span>
+          <span class="l">aplica fertilizante</span></div>
+        <div><span class="v">{100 * r['tasa_pest']:.0f}%</span>
+          <span class="l">aplica fitosanitario</span></div>
+        <div><span class="v">{100 * r['tasa_credito']:.0f}%</span>
+          <span class="l">compra a crédito</span></div>
+      </div>
+      <h4 class="lab">Cuándo compra · demanda mensual estimada</h4>
+      {calendario(k)}
+      <p class="sub">En verde oscuro, los cuatro meses que concentran
+      {"s/d" if v is None else f"{v['pct_top4']:.0f}%"} de la demanda del año.</p>
+
+      <h3 class="rule" style="margin-top:10px">Cuánto cuesta llegar</h3>
+      {dl(log)}
+    </div>
+  </div>
+
+  <h3 class="rule" style="margin-top:8px">Dónde está el mercado dentro de la región</h3>
+  {sectores_tabla(k)}
+
+  <div class="two" style="margin-top:7px">
+    <div>
+      <h4 class="lab">Territorio operable</h4>
+      <p class="sub" style="font-size:7.6pt">{clu_txt}</p>
+    </div>
+    <div>
+      <h4 class="lab">Tejido empresarial y prospección</h4>
+      <p class="sub" style="font-size:7.6pt"><b>{nf(e['empresas'])}</b> empresas
+      agropecuarias activas en el padrón SUNAT, de ellas <b>{nf(e['exporta'])}</b>
+      con actividad de exportación. {pros_txt}.</p>
+    </div>
+  </div>
+
+  <p class="fread" style="margin-top:6px">{lectura_larga(r, v)}</p>
+"""
 
 
-filas = list(perfil.iterrows())
-POR_HOJA = 3
-for i in range(0, len(filas), POR_HOJA):
-    grupo = filas[i:i + POR_HOJA]
-    par = [ficha(r) for _, r in grupo]
-    desde = int(grupo[0][1]["rank"])
-    hasta = int(grupo[-1][1]["rank"])
-    page(f"""
-  <span class="kicker">Atlas regional · posiciones {desde:02d} a {hasta:02d}</span>
-  {''.join(par)}
-""", "Parte V · Atlas regional")
+def _lamina(k):
+    """Inline the plate: as an <img> it would lose the report's webfont."""
+    raw = open(f"out/lamina/{k}.svg", encoding="utf-8").read()
+    raw = raw[raw.index("<svg "):]
+    raw = re.sub(r'(<svg[^>]*?)\s+width="[^"]*"\s+height="[^"]*"', r"\1",
+                 raw, count=1)
+    return raw.replace("<svg ", '<svg class="lamina" ', 1)
+
+
+def lamina_pagina(k):
+    _pg["n"] += 1
+    PAGES.append(f'<section class="plate">{_lamina(k)}</section>')
+
+
+# ---- the ranking that opens the atlas ------------------------------------
+page(f"""
+  <div class="rank">
+  <span class="kicker">Parte VII · Atlas regional</span>
+  <h2 class="title">Las 24 regiones, <em>de mayor a menor</em></h2>
+  <p class="deck">Cada región recibe a continuación un pliego de dos hojas: una
+     ficha con su estructura productiva, su comportamiento de compra, su costo de
+     servir y sus mayores sectores, y una lámina cartográfica a página completa
+     donde esa misma región aparece con sus distritos, su red vial, sus
+     {nf(len(sec_d))} sectores dimensionados por superficie y los prospectos ya
+     localizados. El orden es el del modelo de priorización.</p>
+
+  {table([[f"{int(r['rank']):02d}", cap(r['dep']), cap(r['region_nat']),
+           f"{r['sam_usd'] / 1e6:,.1f}", f"{r['pct_sam']:.1f}%",
+           nf(r['clientes_sam']), nf(r['ticket_anual']),
+           f"{100 * r['tasa_credito']:.0f}%",
+           "s/d" if r['k'] not in V3.index else f"{V3.loc[r['k'], 'horas_capital']:.1f}",
+           "s/d" if r['k'] not in V3.index else V3.loc[r['k'], 'arquetipo']]
+          for _, r in perfil.iterrows()],
+         ["#", "Región", "Región natural", "Mercado US$ MM", "% país",
+          "Clientes", "Ticket US$", "Crédito", "h capital", "Arquetipo"],
+         ["r", "l", "l", "r", "r", "r", "r", "r", "r", "l"],
+         ["", "Total país", "", f"{perfil.sam_usd.sum() / 1e6:,.1f}", "100.0%",
+          nf(perfil.clientes_sam.sum()), "", "", "", ""],
+         cls="tight")}
+
+  <p class="sub">El arquetipo resume cómo se atiende la región: venta directa
+  consultiva donde hay pocos compradores grandes y accesibles, red de canal donde
+  son muchos y dispersos, campaña estacional donde la demanda se concentra en
+  pocas semanas, operación mixta donde conviven ambas cosas.</p>
+  </div>
+""", "Parte VII · Atlas regional")
+
+for _, _r in perfil.iterrows():
+    page(hoja_datos(_r), "Parte VII · Atlas regional")
+    lamina_pagina(_r["k"])
 
 
 
-# ========================================================= PARTE V =========
-divider("VI", "Metodología <em>y fuentes</em>",
+# ====================================================== PARTE VIII ========
+divider("VIII", "Metodología <em>y fuentes</em>",
         "La cadena completa de cálculo, el contraste con datos de aduanas y las "
         "tres limitaciones que el lector debe tener presentes al usar estas cifras.",
         ["Cadena de cálculo", "Limitaciones", "Fuentes"])
 
 page(f"""
-  <span class="kicker">Parte VI · Metodología</span>
+  <span class="kicker">Parte VIII · Metodología</span>
   <h2 class="title">Cómo se construyó <em>cada cifra</em></h2>
 
   <div class="two" style="margin-top:14px">
@@ -1154,10 +1811,10 @@ page(f"""
       como un catastro.</p>
     </div>
   </div>
-""", "Parte VI · Metodología")
+""", "Parte VIII · Metodología")
 
 page(f"""
-  <span class="kicker">Parte VI · Fuentes</span>
+  <span class="kicker">Parte VIII · Fuentes</span>
   <h2 class="title">Origen de <em>los datos</em></h2>
 
   <div class="two" style="margin-top:14px">
@@ -1233,7 +1890,7 @@ page(f"""
     prospectos— se entrega en formato CSV junto con este documento, de modo que
     cualquier supuesto pueda modificarse y el modelo recalcularse íntegramente.</p>
   </div>
-""", "Parte VI · Fuentes")
+""", "Parte VIII · Fuentes")
 
 
 # ============================================================== BUILD ======
@@ -1258,9 +1915,10 @@ print(f"HTML  {os.path.getsize(OUT_HTML)/1e6:.2f} MB  ({len(PAGES)} paginas)")
 src = os.path.abspath(OUT_HTML).replace("\\", "/")
 dst = os.path.abspath(OUT_PDF).replace("\\", "/")
 cmd = [CHROME, "--headless", "--disable-gpu", "--no-pdf-header-footer",
-       "--run-all-compositor-stages-before-draw", "--virtual-time-budget=40000",
+       "--run-all-compositor-stages-before-draw", "--virtual-time-budget=90000",
        f"--print-to-pdf={dst}", f"file:///{src}"]
-r = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+# 74 sheets, 24 of them full-page vector plates: Chrome needs the room.
+r = subprocess.run(cmd, capture_output=True, text=True, timeout=2400)
 if os.path.exists(OUT_PDF):
     print(f"PDF   {os.path.getsize(OUT_PDF)/1e6:.2f} MB  ->  {OUT_PDF}")
 else:

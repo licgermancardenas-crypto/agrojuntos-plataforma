@@ -114,8 +114,16 @@ build_hubs.py             ubicación de centros por cobertura máxima
 build_vial_mapa.py        simplifica la red vial principal para dibujarla
 build_mapa_geo.py         empaqueta las capas para el atlas web
 build_atlas_html.py       compone plantilla + datos en un HTML autónomo
+build_cultivos.py         qué se siembra en cada región, y qué mercado implica
+build_agroexport.py       qué se exporta y por qué aduana sale, desde el manifiesto
+build_dashboard_data.py   arma los JSON que consume el sitio
 build_mapas_pdf.py        figuras del reporte
+build_relieve.py          sombreado de relieve por departamento
+build_cultivo.py          huella cultivada desde el landuse de OSM
+build_territorios.py      da forma a los territorios de venta para dibujarlos
+build_laminas_dep.py      una lámina a página completa por departamento
 reporte.py                reporte PDF
+medir_paginas.py          mide cada página del reporte contra el marco A4
 ```
 
 ---
@@ -223,16 +231,21 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Vista | Qué responde |
 |---|---|
 | Resumen | Tamaño del mercado, embudo de clientes, curva de demanda y las 24 regiones ordenadas |
+| Departamentos | Ficha por región: mercado, clientes, cultivos, logística y estacionalidad |
 | Territorios | Los 57 núcleos de venta, con extensión y si se recorren en un día |
 | Empresas | Directorio buscable de 22,437 empresas con RUC, clase, ubicación y FOB de comercio exterior |
+| Productos | Qué se cultiva, qué se exporta y por qué aduana sale, filtrable por región |
+| Comercio | Importadores de insumos y agroexportadores, desde el manifiesto de aduanas |
 | Estacionalidad | Calendario de demanda mes a mes por región |
+| Logística | Horas al centro provincial y al puerto, y el costo de servir cada región |
 | Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
+| Método | Cadena de cálculo, fuentes y limitaciones declaradas |
 | Mapa | Atlas geoespacial con las cinco capas |
 
 Cada vista carga su propio JSON la primera vez que se abre: el directorio de
 empresas pesa 1.7 MB —460 KB comprimido— y no debe frenar la portada.
 
-Las cinco primeras vistas viven en `index.html` y se conmutan por hash. El
+Las diez primeras vistas viven en `index.html` y se conmutan por hash. El
 mapa es un documento propio en `/mapa`: su lienzo ocupa el ancho completo y su
 payload pesa 1.1 MB, que no tiene por qué cargarse para ver el resumen. Comparte
 encabezado, navegación, tema y pie con el resto, así que se recorre como una
@@ -244,7 +257,7 @@ aplica antes de pintar, de modo que la página no aparece un instante en claro
 antes de volverse oscura. El mapa se dibuja en canvas leyendo variables CSS,
 así que cambiar el tema lo obliga a repintarse: el CSS solo alcanza al DOM.
 
-`verificar.py` abre el sitio en un navegador real, recorre las cinco vistas,
+`verificar.py` abre el sitio en un navegador real, recorre las diez vistas,
 prueba la búsqueda, ejerce los filtros del mapa —comprueba que reduzcan el
 conteo y que *Limpiar* restaure—, navega entre el mapa y el resto en ambos
 sentidos, recorre los tres estados del tema, mide el contraste real de una
@@ -262,6 +275,43 @@ justo donde viven los enlaces de la navegación.
 python servir.py      # en una terminal
 python verificar.py   # en otra
 ```
+
+---
+
+## El reporte
+
+`reporte.py` compone el informe impreso —**81 páginas A4**— y lo imprime con
+Chrome headless. La estructura es de ocho partes más el atlas regional:
+
+| Parte | Qué responde |
+|---|---|
+| I · El tamaño del mercado | La base territorial, el gasto real por hectárea y por qué la superficie agrícola no es el mercado |
+| II · Quién es cliente | El embudo de 2.26 M de productores a 156,880 compradores, y la economía unitaria observada |
+| III · Cuándo y cómo llegar | Calendario de compra, costo de servir y puerto de salida de cada región |
+| IV · Dónde empezar | Priorización de las 24 regiones, escenarios de captura y prospección con nombre propio |
+| V · Qué se cultiva y por dónde sale | Los 144 cultivos y el mercado que implican, las 66 partidas agroexportadas y las 15 aduanas de salida |
+| VI · La geometría del mercado | La grilla hexagonal, los 57 territorios de venta y el orden de apertura de centros |
+| VII · Atlas regional | Ficha y lámina a página completa por cada una de las 24 regiones |
+| VIII · Metodología y fuentes | Cadena de cálculo, contraste con aduanas y limitaciones declaradas |
+
+El impreso no perdona lo que la pantalla sí: nada refluye y nada se desplaza,
+de modo que las páginas son bloques A4 explícitos y las imágenes van
+incrustadas como data URI —Chrome no lee archivos locales desde una página que
+imprime—.
+
+`medir_paginas.py` carga el mismo HTML en el mismo motor y reporta, página por
+página, cuánto se pasa del marco imprimible. **El ancho importa tanto como el
+alto**: la hoja deja 178 mm útiles y medir sobre 180 mm reacomoda cada párrafo,
+lo que esconde justamente la página que se desborda por una línea.
+
+```
+python scripts/reporte.py         # HTML + PDF
+python scripts/medir_paginas.py   # falla si alguna página desborda
+```
+
+La parte II se apoya en el libro de ventas de AgroJuntos (`ventas_*.csv`), que
+no se versiona aquí por confidencial. El resto del informe se reconstruye
+íntegramente con lo que está en este repositorio.
 
 ---
 

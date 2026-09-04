@@ -56,16 +56,27 @@ emp = pd.read_csv("out/empresas_agro_activas.csv", encoding="utf-8-sig",
 expo = pd.read_csv("out/comercio_exportadores.csv", encoding="utf-8-sig",
                    dtype={"ruc": str})
 
-# Las empresas traen distrito, no coordenada: se les asigna el centroide del
-# sector agrícola más cercano dentro de su propio distrito, y si el distrito no
-# tiene sector agrícola, el centroide del distrito.
-dist_xy = (sec.groupby(sec["dist"].map(slug))
+# Las empresas traen distrito, no coordenada: se les asigna el punto medio de
+# los sectores agrícolas de su distrito, que es donde está la tierra de ese
+# distrito y no su centro geométrico. El distrito sin sector agrícola queda
+# sin ubicar, y así se declara en el conteo.
+#
+# La clave es departamento + provincia + distrito, no el nombre del distrito
+# solo: 95 nombres se repiten entre departamentos —hay cuatro «San Juan»,
+# separados por 800 km— y agrupar por nombre los promediaba en un punto que no
+# está en ninguno de ellos. Afectaba al 13% del padrón. Exigir la clave
+# completa deja 60 empresas sin ubicar, que antes se ubicaban mal.
+def clave(df, dep, prov, dist):
+    return (df[dep].map(key) + "|" + df[prov].map(slug) + "|"
+            + df[dist].map(slug))
+
+
+dist_xy = (sec.groupby(clave(sec, "dep", "prov", "dist"))
            .agg(lat=("lat", "mean"), lon=("lon", "mean")))
 
 
-def ubicar(df, col_dist="distrito"):
-    k = df[col_dist].map(slug)
-    j = dist_xy.reindex(k)
+def ubicar(df, cols=("dep", "provincia", "distrito")):
+    j = dist_xy.reindex(clave(df, *cols))
     out = df.copy()
     out["lat"] = j["lat"].values
     out["lon"] = j["lon"].values

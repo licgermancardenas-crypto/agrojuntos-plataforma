@@ -101,6 +101,51 @@ with sync_playwright() as pw:
     pg.fill("#q", "")
     pg.wait_for_timeout(400)
 
+    # El filtro por territorio es el puente entre el mapa y la cartera: si no
+    # reduce, la vista muestra un desplegable que no hace nada.
+    print("\ncartera por territorio")
+    total = pg.text_content("#cCount").strip()
+    opciones = pg.eval_on_selector_all(
+        "#fTer option", "o => o.map(x => x.value).filter(Boolean)")
+    print(f"  {len(opciones)} territorios en el desplegable")
+    if len(opciones) < 40:
+        print("  EL DESPLEGABLE DE TERRITORIOS LLEGA VACIO O CORTO")
+        ok = False
+    else:
+        elegido = opciones[0]
+        pg.select_option("#fTer", elegido)
+        pg.wait_for_timeout(500)
+        filtrado = pg.text_content("#cCount").strip()
+        cel = pg.eval_on_selector_all(
+            "#tEmpresas tbody tr td",
+            "t => t.map(x => x.textContent.trim())")
+        print(f"  {elegido[:34]:<34} -> {filtrado}")
+        if filtrado == total:
+            print("  EL FILTRO DE TERRITORIO NO REDUCE")
+            ok = False
+        if elegido not in cel:
+            print(f"  NINGUNA FILA DECLARA EL TERRITORIO {elegido}")
+            ok = False
+        pg.select_option("#fTer", "")
+        pg.wait_for_timeout(400)
+        if pg.text_content("#cCount").strip() != total:
+            print("  LIMPIAR EL TERRITORIO NO RESTAURA EL CONTEO")
+            ok = False
+        else:
+            print("  limpiar y restaurar: ok")
+
+    # Territorio y centro son dos capas distintas y la tabla las une: si la
+    # columna de centro llega vacia, la union se perdio en el JSON.
+    pg.evaluate("() => location.hash = '#territorios'")
+    pg.wait_for_selector("#tTerritorios tbody tr")
+    centros = pg.eval_on_selector_all(
+        "#tTerritorios tbody tr", "f => f.map(r => r.children[9].textContent.trim())")
+    con = [c for c in centros if c and c != "\u2014"]
+    print(f"  {len(con)} de {len(centros)} territorios declaran su centro")
+    if len(con) < len(centros) * 0.7:
+        print("  LA COLUMNA DE CENTRO LLEGA MAYORMENTE VACIA")
+        ok = False
+
     # El tema se prueba contra el sistema opuesto: es donde se rompen los
     # colores que se declararon solo dentro de prefers-color-scheme.
     print("\ntema")

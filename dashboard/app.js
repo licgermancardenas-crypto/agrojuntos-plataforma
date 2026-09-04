@@ -181,7 +181,12 @@ function vistaTerritorios() {
       { k: "ha", t: "Hectáreas", f: function (r) { return nf(r.ha); } },
       { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
       { k: "exp", t: "Agroexport.", f: function (r) { return nf(r.exp); } },
-      { k: "horas", t: "Horas centro", f: function (r) { return nf(r.horas, 1); } },
+      { k: "hub", t: "Centro", l: true, f: function (r) {
+          return r.hub ? esc(r.hub) : "—"; } },
+      { k: "d2h", t: "Cartera a <2 h", f: function (r) {
+          return r.emp ? nf(r.d2h) + " · " +
+                 Math.round(100 * r.d2h / r.emp) + "%" : "—"; } },
+      { k: "horas", t: "Horas capital", f: function (r) { return nf(r.horas, 1); } },
       { k: "ext", t: "Extensión km", f: function (r) { return nf(r.ext); } },
       { k: "dia", t: "Ruta", l: true, f: function (r) {
           return r.dia ? '<span class="tag P">un día</span>'
@@ -208,16 +213,31 @@ function vistaEmpresas() {
         ruc: f[0], n: f[1], c: f[2], dep: dep, prov: prov,
         dist: f[5] >= 0 ? D.dists[f[5]] : "",
         x: f[6] * 1000, i: f[7] * 1000,
+        z: f[8] >= 0 ? D.ters[f[8]] : "",
+        h: f[9] >= 0 ? D.hubs[f[9]] : "",
         s: (f[1] + " " + f[0] + " " + dep + " " + prov)
              .normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
       };
     });
-    EMP = { d: D, filas: filas, clase: -1, reg: "", q: "" };
+    EMP = { d: D, filas: filas, clase: -1, reg: "", ter: "", q: "" };
 
     var sel = document.getElementById("fReg");
     sel.innerHTML = '<option value="">Todas las regiones</option>' +
       D.deps.map(function (r) {
         return '<option value="' + esc(r) + '">' + esc(r) + "</option>"; }).join("");
+
+    /* "Fuera de territorio" va al final y no en orden alfabético: es la
+       respuesta que más empresas tiene y encabezando la lista tapa a los
+       territorios, que es lo que se viene a buscar aquí. */
+    var FUERA = "Fuera de territorio";
+    var selT = document.getElementById("fTer");
+    selT.innerHTML = '<option value="">Todos los territorios</option>' +
+      D.ters.filter(function (t) { return t !== FUERA; })
+        .map(function (t) {
+          return '<option value="' + esc(t) + '">' + esc(t) + "</option>"; }).join("") +
+      (D.ters.indexOf(FUERA) >= 0
+        ? '<option value="' + esc(FUERA) + '">' + esc(FUERA) + "</option>" : "");
+    selT.onchange = function (e) { EMP.ter = e.target.value; pintarEmpresas(); };
 
     var CL = ["P", "A", "C", "V", "O", "E", "I"];
     document.getElementById("fClase").innerHTML =
@@ -256,6 +276,7 @@ function pintarEmpresas() {
   var f = EMP.filas.filter(function (r) {
     if (EMP.clase >= 0 && r.c !== EMP.clase) return false;
     if (EMP.reg && r.dep !== EMP.reg) return false;
+    if (EMP.ter && r.z !== EMP.ter) return false;
     if (EMP.q && r.s.indexOf(EMP.q) < 0) return false;
     return true;
   });
@@ -273,6 +294,10 @@ function pintarEmpresas() {
                esc(EMP.d.clases[r.c]) + "</span>"; } },
     { k: "dep", t: "Región", l: true, f: function (r) { return esc(r.dep); } },
     { k: "prov", t: "Provincia", l: true, f: function (r) { return esc(r.prov); } },
+    { k: "z", t: "Territorio de venta", l: true, f: function (r) {
+        return r.z && r.z !== "Fuera de territorio" ? esc(r.z) : "—"; } },
+    { k: "h", t: "Centro", l: true, f: function (r) {
+        return r.h ? esc(r.h) : "—"; } },
     { k: "x", t: "Exporta US$/año", f: function (r) {
         return r.x ? usd(r.x) : "—"; } },
     { k: "i", t: "Importa US$/año", f: function (r) {

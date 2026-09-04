@@ -98,7 +98,9 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="b">
       <p>Núcleos donde el mercado se concentra lo bastante como para sostener
       una ruta comercial. Detectados por densidad sobre el 80% superior del
-      mercado, con radio de 15 km.</p>
+      mercado, con radio de 15 km. <b>Centro</b> es el almacén que sirve a la
+      mayor parte de su cartera, y <b>&lt;2 h</b> cuántas de esas empresas
+      quedan a menos de dos horas de él.</p>
     </div>
     <div class="tw"><table id="tTerritorios"></table></div>
   </div>
@@ -113,6 +115,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
       <input type="search" id="q" placeholder="Buscar por razón social, RUC o región…"
              autocomplete="off" spellcheck="false">
       <select id="fReg"><option value="">Todas las regiones</option></select>
+      <select id="fTer"><option value="">Todos los territorios</option></select>
       <span class="count" id="cCount"></span>
     </div>
     <div class="filters" style="border-top:0">

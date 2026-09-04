@@ -76,6 +76,8 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/geoespacial/h3_r5.csv` | 1,992 celdas hexagonales de ~292 km² con mercado, clientes y accesibilidad |
 | `datos/geoespacial/clusters_territorio.csv` | 57 territorios de venta detectados por densidad |
 | `datos/geoespacial/hubs_cobertura.csv` | Orden óptimo de apertura de centros, a 2, 4 y 6 horas |
+| `datos/empresas/cartera_empresa.csv` | Cada empresa con su territorio de venta y el centro que la sirve |
+| `datos/empresas/cartera_territorio.csv` | Cartera de los 57 territorios: empresas, agroindustria, agroexportadores y cobertura a dos horas |
 | `agro_insumos_pe_data/processed_data/importadores_insumos_agro.csv` | 446 importadores de insumos, sin el nitrato de amonio de uso minero |
 | `agro_insumos_pe_data/processed_data/agroexportadores.csv` | 1,529 agroexportadores consolidados por RUC |
 
@@ -111,6 +113,7 @@ grafo_vial.py             grafo vial contraído: de 5.2 M de nodos a 95 mil
 build_h3.py               agrega todas las capas a grilla hexagonal H3
 build_clusters.py         territorios de venta por densidad (DBSCAN)
 build_hubs.py             ubicación de centros por cobertura máxima
+build_cartera.py          cruza el padrón con territorios y centros
 build_vial_mapa.py        simplifica la red vial principal para dibujarla
 build_mapa_geo.py         empaqueta las capas para el atlas web
 build_atlas_html.py       compone plantilla + datos en un HTML autónomo
@@ -170,6 +173,12 @@ uso y no por el agro; el campo `uso_dual` las marca.
 **El domicilio de una empresa no es donde cultiva.** La ubicación viene del
 domicilio fiscal del padrón, y los agroexportadores suelen estar registrados en
 Lima aunque su fundo esté en La Libertad o Ica.
+
+**La empresa se sitúa por su distrito**, en el punto medio de los sectores
+agrícolas que ese distrito tiene, cruzando por departamento + provincia +
+distrito. Cruzar solo por el nombre del distrito no sirve: 95 nombres se repiten
+entre departamentos —hay cuatro «San Juan», separados por 800 km— y promediarlos
+ponía al 13% del padrón en un punto que no está en ninguno de ellos.
 
 **Las empresas se clasifican por razón social**, no por código CIIU: el padrón
 reducido de SUNAT no lo incluye. La clasificación subestima —no ve a la empresa
@@ -232,8 +241,8 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 |---|---|
 | Resumen | Tamaño del mercado, embudo de clientes, curva de demanda y las 24 regiones ordenadas |
 | Departamentos | Ficha por región: mercado, clientes, cultivos, logística y estacionalidad |
-| Territorios | Los 57 núcleos de venta, con extensión y si se recorren en un día |
-| Empresas | Directorio buscable de 22,437 empresas con RUC, clase, ubicación y FOB de comercio exterior |
+| Territorios | Los 57 núcleos de venta, con extensión, cartera, centro que los sirve y si se recorren en un día |
+| Empresas | Directorio buscable de 22,437 empresas con RUC, clase, ubicación, territorio de venta, centro y FOB |
 | Productos | Qué se cultiva, qué se exporta y por qué aduana sale, filtrable por región |
 | Comercio | Importadores de insumos y agroexportadores, desde el manifiesto de aduanas |
 | Estacionalidad | Calendario de demanda mes a mes por región |
@@ -280,7 +289,7 @@ python verificar.py   # en otra
 
 ## El reporte
 
-`reporte.py` compone el informe impreso —**81 páginas A4**— y lo imprime con
+`reporte.py` compone el informe impreso —**83 páginas A4**— y lo imprime con
 Chrome headless. La estructura es de ocho partes más el atlas regional:
 
 | Parte | Qué responde |
@@ -290,7 +299,7 @@ Chrome headless. La estructura es de ocho partes más el atlas regional:
 | III · Cuándo y cómo llegar | Calendario de compra, costo de servir y puerto de salida de cada región |
 | IV · Dónde empezar | Priorización de las 24 regiones, escenarios de captura y prospección con nombre propio |
 | V · Qué se cultiva y por dónde sale | Los 144 cultivos y el mercado que implican, las 66 partidas agroexportadas y las 15 aduanas de salida |
-| VI · La geometría del mercado | La grilla hexagonal, los 57 territorios de venta y el orden de apertura de centros |
+| VI · La geometría del mercado | La grilla hexagonal, los 57 territorios, el orden de apertura de centros y la cartera con nombre propio de cada territorio |
 | VII · Atlas regional | Ficha y lámina a página completa por cada una de las 24 regiones |
 | VIII · Metodología y fuentes | Cadena de cálculo, contraste con aduanas y limitaciones declaradas |
 

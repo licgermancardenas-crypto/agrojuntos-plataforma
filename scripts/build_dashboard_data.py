@@ -18,7 +18,12 @@ import unicodedata
 import numpy as np
 import pandas as pd
 
-OUT = "out/dashboard"
+# Se escribe directo en el sitio y no en out/, que obligaba a copiar a mano
+# antes de desplegar. build_atlas_html.py ya escribia aqui, asi que la mitad
+# de los datos se renovaba y la otra mitad no: el paso manual era el que
+# dejaba el sitio con JSON de dos fechas distintas.
+RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT = os.path.abspath(os.path.join(RAIZ, "..", "..", "dashboard", "data"))
 os.makedirs(OUT, exist_ok=True)
 
 
@@ -123,6 +128,10 @@ for _, r in est_r.sort_values("total", ascending=False).iterrows():
 guardar("estacionalidad.json", {"meses": MESES, "regiones": cal})
 
 # ------------------------------------------------------------ territorios -
+# El territorio dice dónde vender; el centro, desde dónde entregar. Sin las dos
+# cosas juntas la tabla obliga a cruzar a mano con la vista de expansión.
+car_ter = pd.read_csv("out/cartera_territorio.csv", encoding="utf-8-sig")
+CT = car_ter.set_index("cluster")[["hub", "dentro_2h"]].to_dict("index")
 guardar("territorios.json", [{
     "rank": int(r["rank"]), "dep": cap(r["dep"]), "prov": r["provincias"],
     "sam": int(r["sam_usd"]), "cli": int(r["clientes"]),
@@ -131,6 +140,8 @@ guardar("territorios.json", [{
     "emp": int(r["empresas"]), "exp": int(r["exportadores"]),
     "lat": round(float(r["lat"]), 4), "lon": round(float(r["lon"]), 4),
     "horas": round(float(r["horas_capital"]), 1),
+    "hub": CT.get(r["cluster"], {}).get("hub", "") or "",
+    "d2h": int(CT.get(r["cluster"], {}).get("dentro_2h", 0) or 0),
 } for _, r in ter.iterrows()])
 
 # --------------------------------------------------------------- empresas -
@@ -143,6 +154,14 @@ impo = pd.read_csv("out/comercio_importadores.csv", encoding="utf-8-sig",
 
 # El FOB de comercio exterior es el dato que distingue a un cliente grande de
 # uno cualquiera, así que se une al directorio en lugar de vivir aparte.
+# El directorio decía dónde está inscrita cada empresa, no en qué territorio
+# de venta cae ni desde qué centro se la sirve. Sin eso, pasar del mapa a la
+# ruta obligaba a cruzar dos vistas a mano.
+car = pd.read_csv("out/cartera_empresa.csv", encoding="utf-8-sig",
+                  dtype={"ruc": str})
+ter_ruc = dict(zip(car["ruc"], car["territorio"]))
+hub_ruc = dict(zip(car["ruc"], car["hub"].fillna("")))
+
 fob_exp = dict(zip(expo["ruc"], expo["fob_anual"]))
 fob_imp = dict(zip(impo["ruc"], impo["fob_anual"]))
 rubro_imp = dict(zip(impo["ruc"], impo["rubro"]))
@@ -163,6 +182,8 @@ for _, r in emp.iterrows():
         "t": cap(r["distrito"]) if pd.notna(r.get("distrito")) else "",
         "x": int(fob_exp.get(ruc, 0)),
         "i": int(fob_imp.get(ruc, 0)),
+        "z": ter_ruc.get(ruc, ""),
+        "h": hub_ruc.get(ruc, ""),
     })
 
 # Exportadores e importadores que no figuran en el directorio agro: no llevan
@@ -180,6 +201,8 @@ for df, campo, clase in ((expo, "x", "E"), (impo, "i", "I")):
             "t": cap(r["distrito"]) if pd.notna(r.get("distrito")) else "",
             "x": int(r["fob_anual"]) if campo == "x" else 0,
             "i": int(r["fob_anual"]) if campo == "i" else 0,
+            "z": ter_ruc.get(r["ruc"], ""),
+            "h": hub_ruc.get(r["ruc"], ""),
         })
 
 d = pd.DataFrame(filas)
@@ -197,6 +220,8 @@ def catalogo(col):
 deps, i_dep = catalogo("d")
 provs, i_prov = catalogo("p")
 dists, i_dist = catalogo("t")
+ters, i_ter = catalogo("z")
+hubs, i_hub = catalogo("h")
 CL = ["P", "A", "C", "V", "O", "E", "I"]
 i_cl = {c: i for i, c in enumerate(CL)}
 
@@ -204,14 +229,16 @@ filas_t = [[
     r["r"], r["n"], i_cl.get(r["c"], 4),
     i_dep.get(r["d"], -1), i_prov.get(r["p"], -1), i_dist.get(r["t"], -1),
     int(round(r["x"] / 1000)), int(round(r["i"] / 1000)),   # FOB en miles
+    i_ter.get(r["z"], -1), i_hub.get(r["h"], -1),
 ] for _, r in d.iterrows()]
 
 guardar("empresas.json", {
     "campos": ["ruc", "nombre", "clase", "dep", "prov", "dist",
-               "fob_exp_mil", "fob_imp_mil"],
+               "fob_exp_mil", "fob_imp_mil", "territorio", "centro"],
     "clases": ["Productor", "Agroindustria", "Canal", "Proveedor",
                "Otro agro", "Agroexportador", "Importador de insumos"],
     "deps": deps, "provs": provs, "dists": dists,
+    "ters": ters, "hubs": hubs,
     "filas": filas_t,
 })
 
@@ -220,6 +247,12 @@ print(f"empresas en el directorio : {len(d):,}")
 print(f"  con FOB de exportacion  : {(d.x > 0).sum():,}")
 print(f"  con FOB de importacion  : {(d.i > 0).sum():,}")
 print(f"  ubicadas                : {(d.d != '').sum():,}")
+# "Fuera de territorio" es una etiqueta y no un vacio: la empresa esta ubicada,
+# solo que su distrito no cae en ninguno de los nucleos de venta. Se conserva
+# como categoria para poder filtrarla, y por eso no se cuenta aqui.
+FUERA = "Fuera de territorio"
+print(f"  dentro de un territorio : {((d.z != '') & (d.z != FUERA)).sum():,}")
+print(f"  con centro asignado     : {(d.h != '').sum():,}")
 
 
 # ===================================================================== #

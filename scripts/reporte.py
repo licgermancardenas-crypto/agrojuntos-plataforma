@@ -42,6 +42,11 @@ _adep = pd.read_csv("out/agroexport_departamento.csv", encoding="utf-8-sig")
 _h3 = pd.read_csv("out/h3_r5.csv", encoding="utf-8-sig")
 _clu2 = pd.read_csv("out/clusters_territorio.csv", encoding="utf-8-sig")
 _hub2 = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
+_car = pd.read_csv("out/cartera_territorio.csv", encoding="utf-8-sig")
+_carh = pd.read_csv("out/cartera_hub.csv", encoding="utf-8-sig")
+CAR_UBI = int(pd.read_csv("out/cartera_empresa.csv", encoding="utf-8-sig",
+                          usecols=["ruc"]).shape[0])
+CAR_EMP = int(_car.empresas.sum())
 try:
     pros = pd.read_csv("out/osm_prospectos.csv", encoding="utf-8-sig")
 except FileNotFoundError:
@@ -193,7 +198,8 @@ page(f"""
     <li><span class="n">VI</span><span class="t">La geometría del mercado</span>
         <span class="d"></span><span class="p">@@PGVI@@</span>
         <span class="desc">La grilla hexagonal, los territorios de venta que emergen
-        de la densidad y el orden de apertura de centros.</span></li>
+        de la densidad, el orden de apertura de centros y la cartera con nombre
+        propio de cada territorio.</span></li>
     <li><span class="n">VII</span><span class="t">Atlas regional</span>
         <span class="d"></span><span class="p">@@PGVII@@</span>
         <span class="desc">Ficha por región: mapa de sectores, métricas de mercado,
@@ -1238,9 +1244,10 @@ def hubk(u, k):
 divider("VI", "La geometría <em>del mercado</em>",
         "Sobre las capas anteriores se construyen tres análisis geométricos: una "
         "grilla de área constante que permite comparar zonas, los territorios de "
-        "venta que emergen de la densidad, y el orden de apertura de centros de "
-        "distribución que maximiza la cobertura.",
-        ["La grilla hexagonal", "Territorios de venta", "Centros de distribución"])
+        "venta que emergen de la densidad, el orden de apertura de centros de "
+        "distribución que maximiza la cobertura, y la cartera con nombre propio "
+        "que cae dentro de cada territorio.",
+        ["La grilla hexagonal", "Centros de distribución", "La cartera del territorio"])
 
 CLU_ROWS = [[int(r["rank"]), r["dep_ok"], cap(r["provincias"]),
              f'{r["sam_usd"]/1e6:,.1f}', nf(r["clientes"]),
@@ -1355,6 +1362,81 @@ page(f"""
     </div>
   </div>
 """, "Parte VI · Centros de distribución")
+
+CAR_ROWS = [[int(r["rank"]), r["territorio"], nf(r["empresas"]),
+             nf(r["agroindustria"]), int(r["exportadores"]),
+             f'{r["sam_usd"]/1e6:,.1f}', f'{r["empresas_por_mm"]:.0f}',
+             r["hub"] if isinstance(r["hub"], str) else "—",
+             f'{100*r["dentro_2h"]/r["empresas"]:.0f}%']
+            for _, r in _car.head(10).iterrows()]
+CAR_FOOT = ["", f"{len(_car)} territorios con cartera", nf(CAR_EMP),
+            nf(_car.agroindustria.sum()), int(_car.exportadores.sum()),
+            f'{_car.sam_usd.sum()/1e6:,.1f}',
+            f'{CAR_EMP/(_car.sam_usd.sum()/1e6):.0f}', "",
+            f'{100*_car.dentro_2h.sum()/CAR_EMP:.0f}%']
+# El contraste se busca dentro de los diez que la tabla muestra: comparar el
+# primero contra un territorio marginal de una fila que el lector no tiene
+# delante convierte un hallazgo en un truco.
+_diez = _car.head(10)
+_ralo = _diez.nsmallest(1, "empresas_por_mm").iloc[0]
+_denso = _diez.nlargest(1, "empresas_por_mm").iloc[0]
+page(f"""
+  <span class="kicker">Parte VI · La cartera del territorio</span>
+  <h2 class="title">El territorio ya tiene <em>nombres propios</em></h2>
+  <p class="deck">Hasta aquí el territorio era una mancha con un número. Cruzado
+     el padrón contra la grilla, cada núcleo de venta trae su lista de empresas
+     con RUC y el centro desde el que se lo sirve: del dónde vender al a quién
+     visitar, sin una hoja de cálculo intermedia.</p>
+
+  <div class="kpis">
+    <div><span class="v">{nf(CAR_UBI)}</span><span class="l">empresas del padrón<br>ubicadas sobre la grilla</span></div>
+    <div><span class="v">{nf(CAR_EMP)}</span><span class="l">caen dentro de alguno<br>de los territorios</span></div>
+    <div><span class="v">{len(_car)} de {len(_clu2)}</span><span class="l">territorios tienen<br>al menos una empresa</span></div>
+    <div><span class="v">{100*_car.dentro_2h.sum()/CAR_EMP:.0f}%</span><span class="l">de esa cartera está a menos<br>de dos horas de su centro</span></div>
+  </div>
+
+  <h3 class="rule">Los diez territorios de mayor mercado, con su cartera</h3>
+  {table(CAR_ROWS,
+         ["#", "Territorio", "Empresas", "Agroind.", "Agroexp.", "SAM MM",
+          "Emp./MM", "Centro", "A &lt;2 h"],
+         ["r","l","r","r","r","r","r","l","r"], foot=CAR_FOOT)}
+  <p class="sub"><b>Emp./MM:</b> empresas formales por millón de dólares de
+  mercado atendible. <b>Centro:</b> el almacén que sirve a la mayor parte de esa
+  cartera. <b>A &lt;2 h:</b> qué parte de ella queda a menos de dos horas de él.</p>
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <div class="note warn">
+        <span class="h">El registro formal y el mercado no se superponen</span>
+        <p>Los dos extremos están en la misma región. {_ralo.territorio} es el
+        territorio <b>número {int(_ralo["rank"])}</b> del país por mercado
+        —US$ {_ralo.sam_usd/1e6:,.1f} MM— y tiene {int(_ralo.empresas)} empresas
+        inscritas: {_ralo.empresas_por_mm:.0f} por millón. {_denso.territorio}
+        vale {_ralo.sam_usd/_denso.sam_usd:.0f} veces menos, tiene
+        {int(_denso.empresas)} y es <b>{_denso.empresas_por_mm/_ralo.empresas_por_mm:.0f}
+        veces más denso</b>. Donde el mercado es grande y el padrón está vacío el
+        comprador es informal: ahí no sirve un directorio, sirve campo.</p>
+      </div>
+    </div>
+    <div>
+      <div class="note">
+        <span class="h">Tener la cartera no es alcanzarla</span>
+        <p>{_car.iloc[1].territorio} tiene {int(_car.iloc[1].empresas)} empresas y
+        el {100*_car.iloc[1].dentro_2h/_car.iloc[1].empresas:.0f}% a menos de dos
+        horas de su centro: es una ruta que se hace en el día.
+        {_car.iloc[2].territorio} tiene {int(_car.iloc[2].empresas)} y
+        <b>ninguna</b> dentro de ese radio —su centro más cercano es
+        {_car.iloc[2].hub}, al otro lado de la sierra—. Son dos operaciones
+        distintas con el mismo número de clientes en la tabla.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="sub" style="margin-top:2px">La empresa se ubica por el distrito de su
+  domicilio fiscal: sirve para saber a quién visitar estando en el territorio, no
+  para ubicar el fundo.</p>
+""", "Parte VI · La cartera del territorio")
+
 
 # ======================================================= PARTE VII ========
 divider("VII", "Atlas <em>regional</em>",
@@ -1786,6 +1868,30 @@ page(f"""
         medición: es válida para priorizar territorio y construir rutas, pero no para
         cotizar a un productor determinado.</p>
       </div>
+    </div>
+  </div>
+""", "Parte VIII · Metodología")
+
+page(f"""
+  <span class="kicker">Parte VIII · Limitaciones</span>
+  <h2 class="title">Los supuestos que <em>pueden mover el resultado</em></h2>
+  <p class="deck">Ninguno de estos puntos invalida el dimensionamiento, y todos
+     acotan hasta dónde puede estirarse. Se declaran aquí para que el lector
+     ajuste el supuesto que le parezca discutible y vuelva a correr el modelo.</p>
+
+  <div class="two" style="margin-top:10px">
+    <div>
+      <div class="note warn">
+        <span class="h">Ubicación de la empresa</span>
+        <p>El padrón entrega distrito, no coordenada. La empresa se sitúa en el
+        punto medio de los sectores agrícolas de su distrito, con la clave
+        departamento + provincia + distrito. <b>Una versión anterior cruzaba solo
+        por el nombre del distrito</b>, y 95 nombres se repiten entre departamentos
+        —hay cuatro «San Juan», separados por 800 km—: el 13% del padrón quedaba
+        promediado en un punto que no está en ninguno de ellos. Corregido, quedan
+        60 empresas sin ubicar que antes se ubicaban mal. Aun así, el domicilio
+        fiscal no es el lugar de cultivo.</p>
+      </div>
       <div class="note warn">
         <span class="h">Alcance del ruteo</span>
         <p>Los tiempos se rutean sobre la red vial de OpenStreetMap con velocidad
@@ -1795,6 +1901,8 @@ page(f"""
         congestión, estacionalidad de caminos ni cierres. <b>143 de 7,036
         sectores</b> quedan fuera del grafo por no tener vía mapeada cerca.</p>
       </div>
+    </div>
+    <div>
       <div class="note warn">
         <span class="h">Cifra pendiente de conciliación</span>
         <p>El dossier de inversionistas declara ventas acumuladas superiores a
@@ -1811,7 +1919,8 @@ page(f"""
       como un catastro.</p>
     </div>
   </div>
-""", "Parte VIII · Metodología")
+""", "Parte VIII · Limitaciones")
+
 
 page(f"""
   <span class="kicker">Parte VIII · Fuentes</span>

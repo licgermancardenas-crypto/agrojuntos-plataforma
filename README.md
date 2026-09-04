@@ -48,6 +48,7 @@ datos/
   estacionalidad/   calendario mensual de demanda por región y cultivo
   empresas/         21,063 empresas agrícolas con RUC; prospectos OSM
   comercio/         importadores de insumos y agroexportadores, desde aduanas
+  importacion/      la importación agrícola repartida en categorías
   geo/              geometrías: sectores y límites administrativos
   geoespacial/      grilla H3, territorios de venta y centros de distribución
 scripts/            el pipeline completo, en orden de dependencia
@@ -72,6 +73,8 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/estacionalidad/estacionalidad_region.csv` | Demanda mes a mes, mes pico y concentración |
 | `datos/empresas/empresas_agro_activas.csv` | Empresas con RUC, razón social, clase y distrito |
 | `datos/comercio/comercio_importadores.csv` | Quién importa fertilizante y agroquímico, con valor FOB y distrito |
+| `datos/importacion/import_agro_categoria.csv` | La importación agrícola en ocho categorías comerciales, con FOB, tonelaje y empresas |
+| `datos/importacion/import_agro_lineas.csv` | Línea a línea con RUC, partida y país de origen, para prospectar cada rubro |
 | `datos/comercio/comercio_exportadores.csv` | Los agroexportadores del país, con RUC, FOB y destinos |
 | `datos/geoespacial/h3_r5.csv` | 1,992 celdas hexagonales de ~292 km² con mercado, clientes y accesibilidad |
 | `datos/geoespacial/clusters_territorio.csv` | 57 territorios de venta detectados por densidad |
@@ -107,6 +110,7 @@ build_empresas.py         SUNAT · padrón RUC -> empresas agrícolas
 listar_aduanas.py         lista los archivos de aduanas publicados
 bajar_aduanas.py          los descarga con verificación de integridad
 build_aduanas.py          lee los DBF y filtra partidas de insumos agrícolas
+build_import_categorias.py  reparte toda la importación en categorías del agro
 build_comercio.py         cruza aduanas con el padrón para ubicar cada empresa
 build_modelo_v3.py        modelo final con logística y estacionalidad
 grafo_vial.py             grafo vial contraído: de 5.2 M de nodos a 95 mil
@@ -169,6 +173,20 @@ extrapolan ese período sin corregir estacionalidad y deben leerse como orden de
 magnitud. La partida 3102 incluye nitrato de amonio, que es fertilizante y a la
 vez base de explosivos de minería: empresas como Orica o Famesa aparecen por ese
 uso y no por el agro; el campo `uso_dual` las marca.
+
+**La partida arancelaria no siempre distingue el uso.** El reparto de la
+importación en categorías comerciales se escribe a cuatro, seis u ocho dígitos
+según el caso, porque a cuatro varias partidas mezclan usos incompatibles: 8701
+junta el tractor agrícola con el tractocamión de carretera y 3002 la vacuna
+humana con la veterinaria. Donde no hay corte posible —bombas, válvulas,
+manguera plástica, rodamientos, tornillería— la partida queda fuera y se declara
+en `import_agro_excluidas.csv`: son US$ 366 MM en diez semanas de zona ambigua,
+no de gasto agrícola sin contar.
+
+**Servicios agrícolas y venta de campos no aparecen en aduanas.** No son
+mercancía y no cruzan una frontera. Se conservan en la tabla con valor cero
+para que la ausencia se vea; dimensionarlos exige el padrón de SUNAT por CIIU y
+registros públicos.
 
 **El domicilio de una empresa no es donde cultiva.** La ubicación viene del
 domicilio fiscal del padrón, y los agroexportadores suelen estar registrados en
@@ -245,6 +263,7 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Empresas | Directorio buscable de 22,437 empresas con RUC, clase, ubicación, territorio de venta, centro y FOB |
 | Productos | Qué se cultiva, qué se exporta y por qué aduana sale, filtrable por región |
 | Comercio | Importadores de insumos y agroexportadores, desde el manifiesto de aduanas |
+| Importación | Qué importa el agro en ocho categorías, con detalle por partida y mayores importadores |
 | Estacionalidad | Calendario de demanda mes a mes por región |
 | Logística | Horas al centro provincial y al puerto, y el costo de servir cada región |
 | Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
@@ -254,7 +273,7 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 Cada vista carga su propio JSON la primera vez que se abre: el directorio de
 empresas pesa 1.7 MB —460 KB comprimido— y no debe frenar la portada.
 
-Las diez primeras vistas viven en `index.html` y se conmutan por hash. El
+Las once primeras vistas viven en `index.html` y se conmutan por hash. El
 mapa es un documento propio en `/mapa`: su lienzo ocupa el ancho completo y su
 payload pesa 1.1 MB, que no tiene por qué cargarse para ver el resumen. Comparte
 encabezado, navegación, tema y pie con el resto, así que se recorre como una
@@ -266,7 +285,7 @@ aplica antes de pintar, de modo que la página no aparece un instante en claro
 antes de volverse oscura. El mapa se dibuja en canvas leyendo variables CSS,
 así que cambiar el tema lo obliga a repintarse: el CSS solo alcanza al DOM.
 
-`verificar.py` abre el sitio en un navegador real, recorre las diez vistas,
+`verificar.py` abre el sitio en un navegador real, recorre las once vistas,
 prueba la búsqueda, ejerce los filtros del mapa —comprueba que reduzcan el
 conteo y que *Limpiar* restaure—, navega entre el mapa y el resto en ambos
 sentidos, recorre los tres estados del tema, mide el contraste real de una
@@ -289,7 +308,7 @@ python verificar.py   # en otra
 
 ## El reporte
 
-`reporte.py` compone el informe impreso —**83 páginas A4**— y lo imprime con
+`reporte.py` compone el informe impreso —**84 páginas A4**— y lo imprime con
 Chrome headless. La estructura es de ocho partes más el atlas regional:
 
 | Parte | Qué responde |
@@ -297,7 +316,7 @@ Chrome headless. La estructura es de ocho partes más el atlas regional:
 | I · El tamaño del mercado | La base territorial, el gasto real por hectárea y por qué la superficie agrícola no es el mercado |
 | II · Quién es cliente | El embudo de 2.26 M de productores a 156,880 compradores, y la economía unitaria observada |
 | III · Cuándo y cómo llegar | Calendario de compra, costo de servir y puerto de salida de cada región |
-| IV · Dónde empezar | Priorización de las 24 regiones, escenarios de captura y prospección con nombre propio |
+| IV · Dónde empezar | Priorización de las 24 regiones, escenarios de captura, prospección con nombre propio y el mercado vecino de importación |
 | V · Qué se cultiva y por dónde sale | Los 144 cultivos y el mercado que implican, las 66 partidas agroexportadas y las 15 aduanas de salida |
 | VI · La geometría del mercado | La grilla hexagonal, los 57 territorios, el orden de apertura de centros y la cartera con nombre propio de cada territorio |
 | VII · Atlas regional | Ficha y lámina a página completa por cada una de las 24 regiones |

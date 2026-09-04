@@ -507,3 +507,57 @@ guardar("productos.json", {
     "exp_por_dep": exp_por_dep,
     "exp_por_adu": exp_por_adu,
 })
+
+
+# ------------------------------------------------------------ importacion -
+# Que importa el agro peruano, mas alla del fertilizante y el fitosanitario
+# que la plataforma ya media. Lo arma build_import_categorias.py leyendo los
+# manifiestos crudos; aqui solo se empaqueta.
+imp_c = pd.read_csv("out/import_agro_categoria.csv", encoding="utf-8-sig")
+imp_g = pd.read_csv("out/import_agro_glosa.csv", encoding="utf-8-sig")
+imp_x = pd.read_csv("out/import_agro_excluidas.csv", encoding="utf-8-sig",
+                    dtype={"partida": str})
+imp_r = pd.read_csv("out/import_agro_referencia.csv", encoding="utf-8-sig")
+imp_l = pd.read_csv("out/import_agro_lineas.csv", encoding="utf-8-sig",
+                    dtype={"ruc": str})
+imp_l = imp_l[imp_l.categoria != "referencia"]
+
+# Los mayores importadores de cada categoria: es la lista de con quien compite
+# o a quien le compra un canal que quiera entrar en ese rubro.
+top_cat = {}
+for k, g in imp_l.groupby("categoria"):
+    t = g.groupby("razon_social").fob_usd.sum().nlargest(6)
+    top_cat[k] = [{"n": n[:44], "fob": int(v)} for n, v in t.items()]
+
+glosas = {}
+for k, g in imp_g.groupby("categoria"):
+    glosas[k] = [{"g": r["glosa"], "fob": int(r["fob_usd"]),
+                  "tn": int(round(r["toneladas"])), "emp": int(r["empresas"])}
+                 for _, r in g.sort_values("fob_usd", ascending=False).iterrows()]
+
+con_mercancia = imp_c[imp_c.lineas > 0]
+guardar("importacion.json", {
+    "meta": {
+        "semanas": 10,
+        "lineas_pais": 2953512,
+        "fob_pais": int(13748e6),
+        "fob": int(con_mercancia.fob_usd.sum()),
+        "tn": int(round(con_mercancia.toneladas.sum())),
+        "empresas": int(imp_l.ruc.nunique()),
+        "fob_insumos": int(imp_r.fob_usd.sum()),
+        "fob_fuera": int(imp_x.fob_usd.sum()),
+    },
+    "cats": [{
+        "k": r["categoria"], "n": r["nombre"], "fob": int(r["fob_usd"]),
+        "tn": int(round(r["toneladas"])), "emp": int(r["empresas"]),
+        "part": int(r["partidas"]), "lineas": int(r["lineas"]),
+        "glosas": glosas.get(r["categoria"], []),
+        "top": top_cat.get(r["categoria"], []),
+    } for _, r in imp_c.iterrows()],
+    "ref": [{"g": r["glosa"], "fob": int(r["fob_usd"])}
+            for _, r in imp_r.iterrows()],
+    "fuera": [{"p": r["partida"], "n": r["nombre"], "m": r["motivo"],
+               "fob": int(r["fob_usd"])} for _, r in imp_x.iterrows()],
+})
+print(f"\nimportacion agricola     : US$ {con_mercancia.fob_usd.sum()/1e6:,.1f} MM"
+      f" en 10 semanas, {imp_l.ruc.nunique():,} empresas")

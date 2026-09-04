@@ -188,8 +188,9 @@ page(f"""
         servirla y el puerto por el que sale su producción.</span></li>
     <li><span class="n">IV</span><span class="t">Dónde empezar</span>
         <span class="d"></span><span class="p">@@PGIV@@</span>
-        <span class="desc">Priorización de las 24 regiones, escenarios de captura y
-        la capa de prospección con nombre propio.</span></li>
+        <span class="desc">Priorización de las 24 regiones, escenarios de captura,
+        la capa de prospección con nombre propio y el mercado vecino de
+        importación.</span></li>
     <li><span class="n">V</span><span class="t">Qué se cultiva y por dónde sale</span>
         <span class="d"></span><span class="p">@@PGV@@</span>
         <span class="desc">Los {len(_cul)} cultivos y el mercado de insumos que
@@ -683,9 +684,11 @@ page(f"""
 # ======================================================== PARTE IV ==========
 divider("IV", "Dónde <em>empezar</em>",
         "Ocho regiones concentran el 58% del mercado atendible. Esta parte las "
-        "ordena, dimensiona la captura posible y baja del territorio al nombre "
-        "propio del prospecto.",
-        ["Priorización", "Escenarios de captura", "Prospección"])
+        "ordena, dimensiona la captura posible, baja del territorio al nombre "
+        "propio del prospecto y mide el mercado vecino que el mismo cliente "
+        "ya compra afuera.",
+        ["Priorización", "Escenarios de captura", "Prospección",
+         "El mercado vecino"])
 
 page(f"""
   <span class="kicker">Parte IV · Priorización</span>
@@ -998,6 +1001,126 @@ page(f"""
   extrapola ese período sin corregir estacionalidad, de modo que debe leerse como
   orden de magnitud.</p>
 """, "Parte IV · El mercado desde aduanas")
+# --------------------------------------------- lo que el agro importa ------
+# El mercado vecino al que AgroJuntos ya vende: equipo, semilla, riego,
+# poscosecha y alimento balanceado, del mismo manifiesto de aduanas.
+_imc = pd.read_csv("out/import_agro_categoria.csv", encoding="utf-8-sig")
+_img = pd.read_csv("out/import_agro_glosa.csv", encoding="utf-8-sig")
+_imx = pd.read_csv("out/import_agro_excluidas.csv", encoding="utf-8-sig",
+                   dtype={"partida": str})
+_imr = pd.read_csv("out/import_agro_referencia.csv", encoding="utf-8-sig")
+_iml = pd.read_csv("out/import_agro_lineas.csv", encoding="utf-8-sig",
+                   dtype={"ruc": str})
+_iml = _iml[_iml.categoria != "referencia"]
+
+_imcon = _imc[_imc.lineas > 0]
+IMP_A = _imcon.fob_anual.sum()
+INS_A = _imr.fob_anual.sum()
+# Las dos materias primas a granel son otro negocio: no las compra un
+# agricultor sino cuatro comercializadoras internacionales, y dejarlas dentro
+# tapa el mercado que si se parece al de AgroJuntos.
+_gran = _img[_img.glosa.isin(["Maíz amarillo duro en grano", "Torta de soya"])]
+GRAN_A = _gran.fob_anual.sum()
+SIN_GRAN = IMP_A - GRAN_A
+# La razon social no se recorta a un numero de caracteres: cortar
+# «CARGILL AMERICAS PERU S.R.L.» en «Cargill Americas P» deja basura en la
+# pagina. Se quitan la forma societaria y el pais, que no informan nada.
+_SUF = ("S.R.L.", "S.A.C.", "S.A.A.", "S.A.", "E.I.R.L.", "SRL", "SAC", "SA",
+        "SOCIEDAD ANONIMA CERRADA", "SOCIEDAD ANONIMA", "DEL PERU", "PERU")
+
+
+def marca(nombre):
+    n = " ".join(str(nombre).upper().split())
+    cambio = True
+    while cambio:
+        cambio = False
+        for suf in _SUF:
+            if n.endswith(" " + suf):
+                n, cambio = n[: -len(suf) - 1].rstrip(" ,."), True
+    # Las siglas cortas se quedan en mayuscula: «Adm Andina» no es nadie.
+    return " ".join(t if len(t) <= 3 else cap(t) for t in n.split())
+
+
+_gtop = (_iml[_iml.categoria == "ganaderia"].groupby("razon_social")
+         .fob_usd.sum().nlargest(4))
+_gpais = (_iml[_iml.categoria == "ganaderia"].groupby("pais_origen")
+          .fob_usd.sum().nlargest(3))
+_PAIS = {"AR": "Argentina", "BO": "Bolivia", "PY": "Paraguay",
+         "US": "Estados Unidos", "BR": "Brasil"}
+
+IMP_ROWS = []
+for _, r in _imcon.sort_values("fob_usd", ascending=False).iterrows():
+    _g = _img[_img.categoria == r["categoria"]].nlargest(1, "fob_usd")
+    IMP_ROWS.append([r["nombre"], f'{r["fob_anual"]/1e6:,.0f}',
+                     f'{r["fob_usd"]/1e6:,.1f}', nf(r["toneladas"]),
+                     int(r["empresas"]), int(r["partidas"]),
+                     _g.glosa.iat[0] if len(_g) else "—",
+                     f'{100*r["fob_usd"]/_imcon.fob_usd.sum():.1f}%'])
+for _, r in _imc[_imc.lineas == 0].iterrows():
+    IMP_ROWS.append([r["nombre"], "—", "—", "—", "—", "—",
+                     "no cruza una aduana", "—"])
+IMP_FOOT = ["Seis categorías con mercancía", f"{IMP_A/1e6:,.0f}",
+            f'{_imcon.fob_usd.sum()/1e6:,.1f}', nf(_imcon.toneladas.sum()),
+            nf(_iml.ruc.nunique()), nf(_imcon.partidas.sum()), "", "100%"]
+page(f"""
+  <span class="kicker">Parte IV · El mercado vecino</span>
+  <h2 class="title">Lo que el agro importa <em>además del insumo</em></h2>
+  <p class="deck">El mismo manifiesto que identifica al importador de
+     fertilizante dice qué más compra el agro afuera. Es la respuesta a hasta
+     dónde estira un catálogo sin cambiar de cliente.</p>
+
+  <div class="kpis">
+    <div><span class="v">{usd(IMP_A)}</span><span class="l">importación agrícola<br>anualizada · seis categorías</span></div>
+    <div><span class="v">{usd(SIN_GRAN)}</span><span class="l">sin el granel de<br>alimento balanceado</span></div>
+    <div><span class="v">{usd(INS_A)}</span><span class="l">fertilizante y fitosanitario<br>lo que ya se mide</span></div>
+    <div><span class="v">{nf(_iml.ruc.nunique())}</span><span class="l">empresas importadoras<br>con RUC</span></div>
+  </div>
+
+  {table(IMP_ROWS,
+         ["Categoría", "FOB anual MM", "FOB 10 sem", "Toneladas", "Empresas",
+          "Partidas", "Mayor componente", "% del total"],
+         ["l","r","r","r","r","r","l","r"], foot=IMP_FOOT)}
+  <p class="sub">Diez semanas de manifiestos, junio a agosto de 2026. Se
+  clasifica a la longitud de partida que cada caso pide: a cuatro dígitos
+  <b>8701</b> junta el tractor agrícola con el tractocamión —21 contra 137 MM—
+  y <b>3002</b> la vacuna humana con la veterinaria.</p>
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <div class="note brass">
+        <span class="h">El mercado vecino pesa lo mismo que el propio</span>
+        <p>Descontado el granel, las seis categorías suman
+        <b>{usd(SIN_GRAN)}</b> al año contra los <b>{usd(INS_A)}</b> de
+        fertilizante y fitosanitario. Es un mercado del mismo tamaño, comprado
+        por el mismo cliente y por el mismo corredor logístico. La pregunta
+        que abre no es si hay demanda, sino cuánto catálogo aguanta la
+        operación.</p>
+      </div>
+    </div>
+    <div>
+      <div class="note warn">
+        <span class="h">Ganadería es granel, y el granel es de cuatro</span>
+        <p>De los US$ {_imc[_imc.categoria=="ganaderia"].fob_usd.iat[0]/1e6:,.0f} MM
+        de la categoría mayor, <b>{100*_gran.fob_usd.sum()/_imc[_imc.categoria=="ganaderia"].fob_usd.iat[0]:.0f}%</b>
+        son maíz amarillo y torta de soya, que traen
+        {", ".join(marca(x) for x in _gtop.index[:4])} —el
+        {100*_gtop.sum()/_imc[_imc.categoria=="ganaderia"].fob_usd.iat[0]:.0f}% de
+        la categoría— desde {", ".join(_PAIS.get(p, p) for p in _gpais.index)}.
+        Es comercio de commodities, no venta de canal: lo que sí lo es
+        —sanidad animal, avicultura, ordeño— son US$
+        {(_imc[_imc.categoria=="ganaderia"].fob_usd.iat[0]-_gran.fob_usd.sum())/1e6:,.0f} MM.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="sub" style="margin-top:2px"><b>Servicios agrícolas y venta de
+  campos van en cero a propósito:</b> no son mercancía y no dejan rastro en un
+  registro aduanero. Se quedan en la tabla para que la ausencia se vea.
+  Dimensionarlos exige otra fuente —padrón de SUNAT por CIIU y registros
+  públicos— y no se estiman aquí.</p>
+""", "Parte IV · El mercado vecino")
+
+
 # ========================================================= PARTE V =========
 # Que se cultiva y por donde sale. El modelo regional dice cuanto vale cada
 # region; no dice que se siembra en ella. Para vender insumos eso es la mitad
@@ -1891,6 +2014,16 @@ page(f"""
         promediado en un punto que no está en ninguno de ellos. Corregido, quedan
         60 empresas sin ubicar que antes se ubicaban mal. Aun así, el domicilio
         fiscal no es el lugar de cultivo.</p>
+      </div>
+      <div class="note warn">
+        <span class="h">Frontera de la clasificación arancelaria</span>
+        <p>El reparto de la importación en categorías comerciales se corta donde
+        el arancel deja de distinguir el uso. Quedan fuera
+        <b>US$ {_imx.fob_usd.sum()/1e6:,.0f} MM</b> en diez semanas de partidas
+        que mezclan agro con industria: bombas, válvulas, manguera plástica,
+        rodamientos, tornillería y útiles de perforación. No es gasto agrícola
+        sin contar, es el tamaño de la zona ambigua. Riego sale bajo por esta
+        razón: la cinta de goteo no se separa del resto de la manguera.</p>
       </div>
       <div class="note warn">
         <span class="h">Alcance del ruteo</span>

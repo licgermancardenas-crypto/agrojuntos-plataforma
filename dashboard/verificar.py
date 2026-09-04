@@ -31,6 +31,7 @@ VISTAS = [
     ("#empresas", "#tEmpresas tbody tr td.name", "Empresas"),
     ("#productos", "#tProductos tbody tr", "Productos"),
     ("#comercio", "#tExportadores tbody tr", "Comercio"),
+    ("#importacion", "#tImpCat tbody tr", "Importación"),
     ("#estacionalidad", ".cal tbody tr", "Estacionalidad"),
     ("#logistica", "#tLogistica tbody tr", "Logística"),
     ("#expansion", "#tHubs tbody tr", "Expansión"),
@@ -49,6 +50,12 @@ with sync_playwright() as pw:
           if r.status >= 400 else None)
 
     pg.goto(BASE + "/", wait_until="networkidle")
+
+    # La navegacion del sitio se guarda para contrastarla despues contra la
+    # del mapa. Antes esto era el numero 11 escrito a mano, que quedaba viejo
+    # cada vez que se agregaba una vista y hacia fallar una prueba correcta.
+    NAV_SITIO = pg.eval_on_selector_all(
+        "nav a", "e => e.map(a => a.textContent.trim())")
 
     print("vistas")
     for hash_, sel, nombre in VISTAS:
@@ -133,6 +140,37 @@ with sync_playwright() as pw:
             ok = False
         else:
             print("  limpiar y restaurar: ok")
+
+    # La vista de importacion vive de la fila desplegable: si el detalle no
+    # cambia al pulsar otra categoria, la tabla es un adorno. Y las dos
+    # categorias sin mercancia tienen que seguir visibles: son parte de la
+    # respuesta, no filas vacias que convenga esconder.
+    print("\nimportacion por categoria")
+    pg.evaluate("() => location.hash = '#importacion'")
+    pg.wait_for_selector("#tImpCat tbody tr td.l b")
+    cats = pg.eval_on_selector_all("#tImpCat tbody tr td.l b",
+                                   "f => f.map(x => x.textContent)")
+    print(f"  {len(cats)} categorias en la tabla")
+    for cero in ("Servicios agrícolas", "Venta de campos"):
+        if cero not in cats:
+            print(f"  FALTA LA CATEGORIA SIN MERCANCIA {cero}")
+            ok = False
+    def glosas():
+        return pg.eval_on_selector_all("#impDet .bar .bn",
+                                       "e => e.map(x => x.textContent)")
+    uno = glosas()
+    pg.click("#tImpCat tbody tr:nth-child(2)")
+    pg.wait_for_timeout(400)
+    dos = glosas()
+    print(f"  detalle: {len(uno)} barras -> {len(dos)} al pulsar otra fila")
+    if not uno or uno == dos:
+        print("  LA FILA DESPLEGABLE NO CAMBIA EL DETALLE")
+        ok = False
+    fuera = len(pg.query_selector_all("#tImpFuera tbody tr"))
+    print(f"  {fuera} partidas declaradas fuera de la medicion")
+    if fuera < 5:
+        print("  LA TABLA DE EXCLUSIONES LLEGA VACIA")
+        ok = False
 
     # Territorio y centro son dos capas distintas y la tabla las une: si la
     # columna de centro llega vacia, la union se perdio en el JSON.
@@ -279,8 +317,10 @@ with sync_playwright() as pw:
     nav = pg.eval_on_selector_all("nav a", "e => e.map(a => a.textContent.trim())")
     activo = pg.eval_on_selector_all("nav a.on", "e => e.map(a => a.textContent.trim())")
     print(f"  nav: {len(nav)} enlaces, activo {activo}")
-    if len(nav) != 11 or activo != ["Mapa"]:
-        print("  LA NAVEGACION DEL MAPA NO COINCIDE CON LA DEL SITIO")
+    if nav != NAV_SITIO or activo != ["Mapa"]:
+        print(f"  LA NAVEGACION DEL MAPA NO COINCIDE CON LA DEL SITIO")
+        print(f"    sitio: {NAV_SITIO}")
+        print(f"    mapa : {nav}")
         ok = False
     pg.click('nav a[href="/#empresas"]')
     pg.wait_for_selector("#tEmpresas tbody tr td.name", timeout=25000)

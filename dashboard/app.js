@@ -305,6 +305,106 @@ function pintarEmpresas() {
   ], f, { sort: "x", limite: 400 });
 }
 
+/* ------------------------------------------------------------ importacion */
+function vistaImportacion() {
+  cargar("importacion").then(function (D) {
+    var m = D.meta, anual = 52 / m.semanas;
+    var conM = D.cats.filter(function (c) { return c.lineas > 0; });
+    var mayor = conM.slice().sort(function (a, b) { return b.fob - a.fob; })[0];
+
+    document.getElementById("impKpis").innerHTML = [
+      [usd(m.fob * anual), "importación agrícola anualizada",
+       conM.length + " categorías con mercancía"],
+      [nf(m.empresas), "empresas importadoras",
+       "con RUC, en " + m.semanas + " semanas"],
+      [mayor.n.split(" y ")[0], "la categoría mayor",
+       pct(100 * mayor.fob / m.fob, 0) + " del total"],
+      [usd(m.fob_insumos * anual), "fertilizante y fitosanitario",
+       "lo que la plataforma ya medía"],
+    ].map(function (k) {
+      return "<div><span class='v'>" + esc(k[0]) + "</span><span class='l'>" +
+        k[1] + "</span><span class='s'>" + esc(k[2]) + "</span></div>";
+    }).join("");
+
+    /* La fila en cero no se oculta: que servicios y tierra no aparezcan en un
+       registro aduanero es parte de la respuesta, y borrarlas de la tabla
+       dejaria al lector creyendo que nadie las miro. */
+    tabla(document.getElementById("tImpCat"), [
+      { k: "n", t: "Categoría", l: 1, f: function (r) {
+          return r.lineas
+            ? "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.part +
+              " partidas · pulsa para ver el detalle</span>"
+            : "<b>" + esc(r.n) + "</b><span class='sub2'>no es mercancía: " +
+              "no cruza una aduana</span>"; } },
+      { k: "fob", t: "FOB anual", f: function (r) {
+          return r.lineas ? usd(r.fob * anual) : "—"; } },
+      { k: "fob10", t: "FOB " + m.semanas + " sem", f: function (r) {
+          return r.lineas ? usd(r.fob) : "—"; } },
+      { k: "tn", t: "Toneladas", f: function (r) {
+          return r.lineas ? nf(Math.round(r.tn * anual)) : "—"; } },
+      { k: "emp", t: "Empresas", f: function (r) {
+          return r.lineas ? nf(r.emp) : "—"; } },
+      { k: "peso", t: "% del total", f: function (r) {
+          return r.lineas ? pct(100 * r.fob / m.fob, 1) : "—"; } },
+    ], D.cats, { sort: "fob" });
+
+    function detalle(c) {
+      if (!c || !c.lineas) {
+        document.getElementById("impDet").innerHTML =
+          "<p class='sub'>" + esc(c ? c.n : "") + " no deja rastro en aduanas: " +
+          "para dimensionarla hay que ir al padrón de SUNAT por CIIU, en el " +
+          "caso de los servicios, o a registros públicos en el de la tierra.</p>";
+        return;
+      }
+      document.getElementById("impDet").innerHTML =
+        "<div class='grid2'>" +
+        "<div class='sub-card'><div class='eyebrow'>Composición · " +
+          esc(c.n) + "</div><div class='barras compact' id='impGlosa'></div></div>" +
+        "<div class='sub-card'><div class='eyebrow'>Mayores importadores</div>" +
+          "<div class='barras compact' id='impTop'></div></div></div>";
+      barras(document.getElementById("impGlosa"), c.glosas.map(function (g) {
+        return { n: g.g, v: g.fob, t: usd(g.fob * anual) }; }));
+      barras(document.getElementById("impTop"), c.top.map(function (t) {
+        return { n: t.n, v: t.fob, t: usd(t.fob * anual) }; }));
+    }
+
+    var tC = document.getElementById("tImpCat");
+    tC.onclick = function (ev) {
+      var tr = ev.target.closest("tbody tr");
+      if (!tr) return;
+      var nombre = (tr.querySelector("td.l b") || {}).textContent;
+      detalle(D.cats.filter(function (x) { return x.n === nombre; })[0]);
+    };
+    detalle(mayor);
+
+    barras(document.getElementById("impRef"), D.ref.map(function (r) {
+      return { n: r.g, v: r.fob, t: usd(r.fob * anual) }; }));
+
+    tabla(document.getElementById("tImpFuera"), [
+      { k: "p", t: "Partida", l: 1, f: function (r) {
+          return "<span class='mono'>" + esc(r.p) + "</span>"; } },
+      { k: "n", t: "Qué es", l: 1, f: function (r) { return esc(r.n); } },
+      { k: "fob", t: "FOB anual", f: function (r) { return usd(r.fob * anual); } },
+      { k: "m", t: "Por qué no entra", l: 1, f: function (r) {
+          return "<span class='sub2'>" + esc(r.m) + "</span>"; } },
+    ], D.fuera, { sort: "fob" });
+
+    document.getElementById("impNota").innerHTML =
+      "Microdatos de manifiestos de importación de SUNAT bajo la Ley 27806, " +
+      m.semanas + " semanas de junio a agosto de 2026: " + nf(m.lineas_pais) +
+      " líneas por " + usd(m.fob_pais) + ", que es toda la importación del " +
+      "país. La clasificación se escribe a la longitud de partida que cada " +
+      "caso necesita, porque a cuatro dígitos varias mezclan usos " +
+      "incompatibles: <span class='mono'>8701</span> junta el tractor agrícola " +
+      "con el tractocamión de carretera, y <span class='mono'>3002</span> la " +
+      "vacuna humana con la veterinaria. El anualizado extrapola las " +
+      m.semanas + " semanas sin corregir estacionalidad. Las " + usd(m.fob_fuera) +
+      " de la tabla de exclusiones no son gasto agrícola no contado: son el " +
+      "tamaño de la zona ambigua, donde el arancel no permite saber si el uso " +
+      "es agrícola o industrial.";
+  }).catch(fallo);
+}
+
 /* -------------------------------------------------------- estacionalidad -*/
 function vistaEstacionalidad() {
   cargar("estacionalidad").then(function (D) {
@@ -1084,6 +1184,7 @@ function ir(hash) {
     if (id === "departamentos") vistaDepartamentos();
     if (id === "comercio") vistaComercio();
     if (id === "productos") vistaProductos();
+    if (id === "importacion") vistaImportacion();
     if (id === "logistica") vistaLogistica();
     if (id === "metodo") vistaMetodo();
   }

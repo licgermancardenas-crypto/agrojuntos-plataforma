@@ -40,6 +40,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   <a href="#empresas">Empresas</a>
   <a href="#productos">Productos</a>
   <a href="#comercio">Comercio</a>
+  <a href="#importacion">Importación</a>
   <a href="#estacionalidad">Estacionalidad</a>
   <a href="#logistica">Logística</a>
   <a href="#expansion">Expansión</a>
@@ -127,6 +128,44 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   aduanas. El FOB anualizado extrapola diez semanas de registros y debe leerse
   como orden de magnitud. La ubicación es el domicilio fiscal, que no siempre
   coincide con el lugar donde la empresa cultiva.</p>
+</section>
+
+<!-- -------------------------------------------------------- importacion -->
+<section class="view" id="v-importacion">
+  <div class="kpis" id="impKpis"><div class="load">Cargando…</div></div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Qué importa el agro peruano</h3>
+      <span class="eyebrow">FOB anualizado por categoría</span></div>
+    <div class="b">
+      <p>Ocho categorías del negocio agrícola, medidas sobre los manifiestos de
+      aduanas. <b>Pulsa una fila</b> para ver su composición por partida y los
+      mayores importadores. Dos categorías van en cero a propósito: los
+      servicios y la tierra no cruzan una aduana y no existen en este
+      registro.</p>
+    </div>
+    <div class="tw"><table id="tImpCat"></table></div>
+    <div class="b" id="impDet"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Contra lo que ya medíamos</h3>
+      <span class="eyebrow">Fertilizante y fitosanitario</span></div>
+    <div class="b">
+      <div class="grid2">
+        <div class="sub-card">
+          <div class="eyebrow">Insumos de cultivo · lo que AgroJuntos vende hoy</div>
+          <div class="barras compact" id="impRef"></div>
+        </div>
+        <div class="sub-card">
+          <div class="eyebrow">Fuera de la medición · el arancel no separa el uso</div>
+          <div class="tw"><table id="tImpFuera"></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sub" id="impNota"></p>
 </section>
 
 <!-- ------------------------------------------------------ estacionalidad -->

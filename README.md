@@ -308,8 +308,12 @@ python verificar.py   # en otra
 
 ## El reporte
 
+**El informe está publicado aquí →
+[`docs/Reporte de mercado - AgroJuntos.pdf`](docs/Reporte%20de%20mercado%20-%20AgroJuntos.pdf)**
+
 `reporte.py` compone el informe impreso —**84 páginas A4**— y lo imprime con
-Chrome headless. La estructura es de ocho partes más el atlas regional:
+Chrome headless, y deja la copia publicada en `docs/`. La estructura es de ocho
+partes más el atlas regional:
 
 | Parte | Qué responde |
 |---|---|
@@ -338,8 +342,15 @@ python scripts/medir_paginas.py   # falla si alguna página desborda
 ```
 
 La parte II se apoya en el libro de ventas de AgroJuntos (`ventas_*.csv`), que
-no se versiona aquí por confidencial. El resto del informe se reconstruye
-íntegramente con lo que está en este repositorio.
+no se versiona aquí por confidencial: el PDF publicado sí muestra sus
+resultados —facturación del período, ticket, recompra, margen y los principales
+clientes por nombre—, pero los datos de origen no están, de modo que esa parte
+no se reconstruye desde un clon. El resto del informe sí.
+
+`docs/` guarda dos entregables generados: el PDF del informe y el atlas
+interactivo autocontenido. Los dos se regeneran por script y se sobreescriben,
+así que el historial de git acumula una versión por cada corrida que se
+commitee. Si con el tiempo pesan, van a *Releases*.
 
 ---
 

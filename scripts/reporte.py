@@ -9,6 +9,7 @@ it prints.
 import base64
 import os
 import re
+import shutil
 import subprocess
 import unicodedata
 from datetime import date
@@ -2163,5 +2164,14 @@ cmd = [CHROME, "--headless", "--disable-gpu", "--no-pdf-header-footer",
 r = subprocess.run(cmd, capture_output=True, text=True, timeout=2400)
 if os.path.exists(OUT_PDF):
     print(f"PDF   {os.path.getsize(OUT_PDF)/1e6:.2f} MB  ->  {OUT_PDF}")
+    # El PDF publicado se copia aqui y no a mano: un informe que se actualiza
+    # en out/ y se olvida en el repositorio es la misma averia que dejaba al
+    # sitio con JSON de dos fechas distintas.
+    pub = os.path.abspath(os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "..", "..",
+        "_repo", "docs", os.path.basename(OUT_PDF)))
+    if os.path.isdir(os.path.dirname(pub)):
+        shutil.copyfile(OUT_PDF, pub)
+        print(f"      publicado en {pub}")
 else:
     print("FALLO:", (r.stderr or "")[-900:])

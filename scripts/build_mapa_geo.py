@@ -69,9 +69,13 @@ mod = pd.read_csv("out/modelo_v3_departamento.csv", encoding="utf-8-sig")
 sec_ruteo = pd.read_csv("out/ruteo_sector.csv", encoding="utf-8-sig")
 
 # ------------------------------------------------------- contorno del pais -
+# El archivo de origen ya viene generalizado por su editor —de ahi el «simple»
+# del nombre—, con 3,374 vertices para los 25 departamentos. Encima de eso se
+# aplicaba una tolerancia de 0.02 grados, que son 2.2 km: los limites salian
+# poligonales y la costa, recta. Quitarla devuelve los 3,374 vertices y cuesta
+# 7 KB comprimidos. Mas detalle que este no lo tiene la fuente.
 dep_g = gpd.read_file("data/peru_departamental_simple.geojson").to_crs(4326)
-dep_g["geometry"] = dep_g.geometry.buffer(0).simplify(0.02,
-                                                      preserve_topology=True)
+dep_g["geometry"] = dep_g.geometry.buffer(0)
 
 
 def anillos(geom):
@@ -268,8 +272,11 @@ for _, r in sec_pt.sort_values("s_sam_usd", ascending=False).iterrows():
 # Provincias y no distritos: 196 formas se reconocen a escala nacional y
 # 1,874 se leen como ruido, además de pesar tres veces más.
 prov_g = gpd.read_file("data/peru_provincial_simple.geojson").to_crs(4326)
+# 0.01 grados son 1.1 km: dejaba cada provincia en 29 vertices y una costa
+# recortada se leia como un pentagono. A 111 m son 12,491 vertices y 39 KB
+# comprimidos mas, que es lo que cuesta que el mapa parezca un mapa.
 prov_g["geometry"] = prov_g.geometry.buffer(0).simplify(
-    0.01, preserve_topology=True)
+    0.001, preserve_topology=True)
 
 sec_pv = sec_ruteo.assign(
     kd=sec_ruteo["dep"].map(key), kp=sec_ruteo["prov"].map(key))
@@ -338,7 +345,69 @@ with open("out/mapa_geo.json", "w", encoding="utf-8") as fh:
 # Los puntos y las provincias viajan aparte: son el 28% del peso y solo hacen
 # falta si el usuario elige esa representacion. Quien entra a ver el mapa
 # nacional no deberia descargarlas nunca.
-capas = {"sect": sectores_pt, "sect_prov": cat_prov, "provs": provs_geo}
+# ------------------------------------------------- sectores como poligono -
+# La unidad del analisis son los 7,043 sectores estadisticos del MIDAGRI, y
+# hasta ahora el mapa los dibujaba como circulos sobre su centroide. Un
+# circulo dice «hay algo por aca»; el poligono dice donde empieza y donde
+# termina, que es lo que se le pide a un mapa.
+#
+# El peso no esta en cuantos vertices hay —simplificar apenas los reduce,
+# porque las formas ya vienen minimas— sino en como se escriben. Cuantizados a
+# 1e-4 grados (11 m) y guardados como diferencias respecto del vertice
+# anterior, los numeros pasan de «-80.1234» a «-3», y el archivo de 2.6 MB
+# queda en 1.2, que son 0.46 comprimidos: lo mismo que hoy pesan los circulos.
+Q = 10000
+
+sec_poly = gpd.read_file("out/sectores.geojson").to_crs(4326)
+sec_poly["geometry"] = sec_poly.geometry.buffer(0).simplify(
+    0.001, preserve_topology=True)
+sec_poly["k"] = sec_poly["dep"].map(key)
+# El geojson guarda cod_se como texto de ocho digitos con cero a la izquierda
+# y el modelo lo leyo como entero, que se lo come: «05040402» contra «5040402».
+# Sin rellenar, se pierden los nueve departamentos con codigo bajo la mitad de
+# los sectores, y el mapa queda con un agujero que nadie sabe explicar.
+sec_poly["cod_se"] = sec_poly["cod_se"].astype(str).str.strip().str.zfill(8)
+sec_poly = sec_poly.merge(
+    sec_pt[["cod_se", "s_sam_usd", "s_clientes_sam", "horas_capital_real"]]
+    .assign(cod_se=lambda d: d["cod_se"].astype(str).str.strip().str.zfill(8)),
+    on="cod_se", how="inner")
+
+
+def delta(coords):
+    """Anillo como enteros: el primer vertice absoluto, el resto diferencias."""
+    pl = [(round(x * Q), round(y * Q)) for x, y in coords]
+    out = [pl[0][0], pl[0][1]]
+    px, py = pl[0]
+    for x, y in pl[1:]:
+        out.append(x - px)
+        out.append(y - py)
+        px, py = x, y
+    return out
+
+
+poligonos, atrib = [], []
+for _, r in sec_poly.sort_values("s_sam_usd", ascending=False).iterrows():
+    g = r.geometry
+    if g.is_empty:
+        continue
+    partes = g.geoms if g.geom_type == "MultiPolygon" else [g]
+    anl = [delta(p.exterior.coords) for p in partes
+           if len(p.exterior.coords) > 3]
+    if not anl:
+        continue
+    poligonos.append(anl)
+    atrib.append([
+        int(round(float(r["s_sam_usd"]) / 1000)),
+        int(round(float(r["s_clientes_sam"]))),
+        finito(r["horas_capital_real"]),
+        i_dep_sec.get(key(r["dep"]), -1),
+        i_reg_sec.get(str(r["region_nat"]).upper(), -1),
+        i_prov_sec.get(cap(r["prov"]), -1),
+        rank_de(r["lat"], r["lon"]),
+    ])
+
+capas = {"sect": sectores_pt, "sect_prov": cat_prov, "provs": provs_geo,
+         "sect_poly": poligonos, "sect_poly_at": atrib, "q": Q}
 with open("out/mapa_capas.json", "w", encoding="utf-8") as fh:
     json.dump(capas, fh, separators=(",", ":"), ensure_ascii=False,
               allow_nan=False)

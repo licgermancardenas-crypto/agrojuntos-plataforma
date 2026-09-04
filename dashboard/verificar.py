@@ -365,20 +365,26 @@ with sync_playwright() as pw:
         pg.wait_for_timeout(300)
     print("  niveles de red vial: ok")
 
-    # Las capas pesadas se piden solo al elegirlas. Que la página cargue no
-    # prueba nada: hay que ver que la petición NO salga al abrir y sí al elegir
-    # Puntos, o la carga diferida estaría rota sin que nadie se entere.
-    if any("mapa_capas.json" in u for u in pedidos):
-        print("  LAS CAPAS SE DESCARGAN SIN QUE NADIE LAS PIDA")
+    # La vista por defecto pasó a ser el sector real, cuya geometría vive en la
+    # capa diferida: ahora sí se pide al abrir, y eso es deliberado. Lo que hay
+    # que garantizar es lo que el usuario nota —que el mapa quede utilizable— y
+    # que la capa se pida UNA vez y no en cada repintado.
+    n_capas = sum(1 for u in pedidos if "mapa_capas.json" in u)
+    if n_capas != 1:
+        print(f"  LA CAPA DE SECTORES SE PIDIO {n_capas} VECES, DEBERIA SER UNA")
         ok = False
     else:
-        print("  capas diferidas: no se piden al abrir")
+        print("  capa de sectores: una sola petición al abrir")
+    if "sector" not in (pg.text_content("#cuenta") or ""):
+        print("  EL MAPA NO ABRE EN LA VISTA DE SECTORES")
+        ok = False
 
     # Cada representación dibuja geometría distinta y cuenta una unidad
     # distinta. Se comprueba que el contador cambie de unidad: si siguiera
     # diciendo "celdas" con los sectores en pantalla, la cifra no
     # correspondería a nada visible.
-    for vista, unidad in (("pts", "sectores"), ("prov", "provincias"),
+    for vista, unidad in (("area", "sectores"), ("pts", "sectores"),
+                          ("prov", "provincias"),
                           ("calor", "sectores"), ("hex", "celdas")):
         pg.click(f'#vistaCtl button[data-vista="{vista}"]')
         pg.wait_for_timeout(1100)
@@ -412,8 +418,13 @@ with sync_playwright() as pw:
     for hash_, sel, nombre in (("#dep=ica", "#fDep", "departamento"),
                                ("#ter=9", "#fTer", "territorio"),
                                ("#prov=ica-pisco", "#fProv", "provincia")):
+        # reload() y no solo goto(): navegar a la misma URL cambiando el
+        # fragmento es una navegacion dentro del mismo documento, y el mapa
+        # conservaria el estado del chequeo anterior en vez de abrirse en
+        # frio, que es lo que el enlace compartido tiene que hacer.
         pg.goto(BASE + "/mapa" + hash_, wait_until="networkidle")
-        pg.wait_for_timeout(2600 if "prov" in hash_ else 1200)
+        pg.reload(wait_until="networkidle")
+        pg.wait_for_timeout(2600 if "prov" in hash_ else 1500)
         c = pg.text_content("#cuenta").strip()
         elegido = pg.eval_on_selector(
             sel, "e => e.selectedOptions.length ? e.selectedOptions[0].text : ''")

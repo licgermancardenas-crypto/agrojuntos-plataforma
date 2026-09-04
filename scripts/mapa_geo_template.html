@@ -306,7 +306,8 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
         <button data-um="6">6 h</button>
       </div>
       <div class="seg" id="vistaCtl" role="group" aria-label="Representación">
-        <button data-vista="hex" aria-pressed="true">Hexágonos</button>
+        <button data-vista="area" aria-pressed="true">Sectores</button>
+        <button data-vista="hex">Hexágonos</button>
         <button data-vista="pts">Puntos</button>
         <button data-vista="prov">Provincias</button>
         <button data-vista="calor">Calor</button>
@@ -363,23 +364,32 @@ function marcarCargando(on){
   c.querySelectorAll("[data-vista]").forEach(function(b){ b.disabled=!!on; });
 }
 
+var esperandoCapas=[];
 function conCapas(cb){
   if(SECT) return cb(true);
-  if(!CAPAS_URL || cargandoCapas) return cb(false);
+  if(!CAPAS_URL) return cb(false);
+  /* Quien pida la capa mientras ya viaja se encola. Antes se le respondia que
+     no, de modo que un enlace directo a una provincia se rendia justo cuando
+     la descarga que necesitaba estaba en curso. */
+  esperandoCapas.push(cb);
+  if(cargandoCapas) return;
   cargandoCapas=true; marcarCargando(true);
   fetch(CAPAS_URL).then(function(r){
     if(!r.ok) throw new Error("HTTP "+r.status);
     return r.json();
   }).then(function(c){
     SECT=c.sect; SPROV=c.sect_prov; PROVS=c.provs;
+    SPOLY=decodificarSectores(c);
     cargandoCapas=false; marcarCargando(false);
     // El selector de provincia nace vacio porque su capa es diferida.
     try{ poblarUnidades(); }catch(e){}
-    cb(true);
+    var cs=esperandoCapas; esperandoCapas=[];
+    cs.forEach(function(f){ f(true); });
   }).catch(function(e){
     cargandoCapas=false; marcarCargando(false);
     console.error("capas del mapa:", e);
-    cb(false);
+    var cs=esperandoCapas; esperandoCapas=[];
+    cs.forEach(function(f){ f(false); });
   });
 }
 
@@ -404,7 +414,7 @@ function norm(s){ return String(s).normalize("NFD")
   .replace(/[̀-ͯ]/g,"").toLowerCase(); }
 
 /* ---------------- estado ---------------- */
-var st = { capa:"sam", vista:"hex", umbral:"2", vial:1, dep:-1, reg:-1,
+var st = { capa:"sam", vista:"area", umbral:"2", vial:1, dep:-1, reg:-1,
            ter:-1, prov:-1, q:"",
            hovP:-1,
            sel:-1, hov:-1, ciudades:true, puertos:true };
@@ -418,7 +428,7 @@ var st = { capa:"sam", vista:"hex", umbral:"2", vial:1, dep:-1, reg:-1,
 function renderKpis(){
   var k;
   var porCelda = st.capa==="territorios" || st.capa==="hubs" || !SECT;
-  if(!porCelda && (st.vista==="pts"||st.vista==="calor")){
+  if(!porCelda && (st.vista==="pts"||st.vista==="calor"||st.vista==="area")){
     k=[{v:nf(SECT.length), l:"sectores"},
        {v:usd(SECT.reduce(function(a,x){ return a+x[IS_SAM]; },0)*1000),
         l:"mercado"},
@@ -496,7 +506,7 @@ function aplicarFiltros(){
   /* El contador cuenta lo que se está dibujando. Decir "1,992 celdas" con los
      sectores en pantalla es una cifra que no corresponde a nada visible. */
   var n, sam, cli, unidad;
-  if(SECT && (st.vista==="pts"||st.vista==="calor")){
+  if(SECT && (st.vista==="pts"||st.vista==="calor"||st.vista==="area")){
     var fs=SECT.filter(visibleSect);
     n=fs.length; unidad=n===1?" sector":" sectores";
     sam=fs.reduce(function(s,x){ return s+x[IS_SAM]; },0)*1000;
@@ -573,7 +583,20 @@ function poblarUnidades(){
       .map(function(o){
         return '<option value="'+o.i+'">'+o.x.d+" · "+o.x.n+'</option>';
       }).join("");
-  p.value=String(st.prov);
+  reflejarUnidad();
+}
+
+/* Repoblar un desplegable le borra el valor elegido. Como la capa de
+   provincias llega despues de la primera pintada, un enlace directo quedaba
+   filtrando bien pero con los tres selectores en blanco: el mapa decia una
+   cosa y los controles otra. */
+function reflejarUnidad(){
+  var d=document.getElementById("fDep"),
+      t=document.getElementById("fTer"),
+      p=document.getElementById("fProv");
+  if(d) d.value=String(st.dep);
+  if(t) t.value=String(st.ter);
+  if(p && !p.disabled && PROVS) p.value=String(st.prov);
 }
 
 /* La provincia solo existe cuando la capa diferida ya bajo. Si el usuario
@@ -847,6 +870,93 @@ function dibujarPuntos(filtrando){
   ctx.globalAlpha=1;
 }
 
+/* -------------------- sectores como área ---------------------------------
+   Los 7,036 sectores estadísticos del MIDAGRI son la unidad de todo el
+   análisis, y hasta ahora el mapa los dibujaba como un círculo sobre su
+   centroide. Un círculo dice «hay algo por acá»; el polígono dice dónde
+   empieza y dónde termina, que es lo que se le pide a un mapa.
+
+   Llegan cuantizados a 1e-4 grados —11 metros, la mitad del ancho de una
+   chacra— y como diferencias respecto del vértice anterior, de modo que los
+   números que viajan son «-3» y no «-80.1234». Se decodifican una sola vez al
+   recibirlos, no en cada cuadro. */
+var SPOLY = null;
+var PA_SAM = 0, PA_CLI = 1, PA_HRS = 2, PA_DEP = 3, PA_REG = 4, PA_PROV = 5,
+    PA_TER = 6;
+
+function decodificarSectores(capas){
+  if(!capas.sect_poly) return null;
+  var Q = capas.q || 10000, out = [];
+  for(var i=0;i<capas.sect_poly.length;i++){
+    var anillos = capas.sect_poly[i], formas = [];
+    var x0=1e9, y0=1e9, x1=-1e9, y1=-1e9;
+    for(var a=0;a<anillos.length;a++){
+      var d = anillos[a], n = (d.length-2)/2 + 1;
+      var pts = new Float64Array(n*2);
+      var cx = d[0], cy = d[1];
+      pts[0]=cx/Q; pts[1]=cy/Q;
+      for(var j=0, k=2; k<d.length; k+=2){
+        cx += d[k]; cy += d[k+1]; j++;
+        pts[j*2]=cx/Q; pts[j*2+1]=cy/Q;
+      }
+      for(var m=0;m<n;m++){
+        var px=pts[m*2], py=pts[m*2+1];
+        if(px<x0)x0=px; if(px>x1)x1=px;
+        if(py<y0)y0=py; if(py>y1)y1=py;
+      }
+      formas.push(pts);
+    }
+    out.push({r:formas, at:capas.sect_poly_at[i], bb:[x0,y0,x1,y1]});
+  }
+  return out;
+}
+
+function visibleSectPoly(s){
+  var a=s.at;
+  if(st.dep>=0 && a[PA_DEP]!==st.dep) return false;
+  if(st.ter>=0 && a[PA_TER]!==st.ter) return false;
+  if(st.prov>=0 && PROVS && SPROV &&
+     SPROV[a[PA_PROV]]!==PROVS[st.prov].n) return false;
+  if(st.reg>=0 && a[PA_REG]!==st.reg) return false;
+  if(st.q){
+    var pv = a[PA_PROV]>=0 ? SPROV[a[PA_PROV]] : "";
+    var dp = a[PA_DEP]>=0 ? DEPS[a[PA_DEP]].n : "";
+    if(norm(pv+" "+dp).indexOf(st.q)<0) return false;
+  }
+  return true;
+}
+
+function dibujarSectores(){
+  if(!SPOLY) return;
+  var mx=1;
+  SPOLY.forEach(function(s){ if(s.at[PA_SAM]>mx) mx=s.at[PA_SAM]; });
+  var ll=tok("--land-line"), vacio=tok("--land");
+  /* El borde solo se dibuja con zoom: a escala nacional 6,873 contornos de
+     medio punto tapan el relleno y el mapa se vuelve una malla gris. */
+  var conBorde = view.k > 3;
+  SPOLY.forEach(function(s){
+    var X0=sx(s.bb[0]), X1=sx(s.bb[2]), Y0=sy(s.bb[3]), Y1=sy(s.bb[1]);
+    if(X1<-30||X0>W+30||Y1<-30||Y0>H+30) return;
+    var dentro=visibleSectPoly(s);
+    var v=s.at[PA_SAM];
+    var t=v?Math.pow(v/mx,0.25):0;
+    var c=v?RAMPA[Math.min(RAMPA.length-1,Math.floor(t*RAMPA.length))]:vacio;
+    for(var a=0;a<s.r.length;a++){
+      var p=s.r[a];
+      ctx.beginPath();
+      ctx.moveTo(sx(p[0]),sy(p[1]));
+      for(var i=2;i<p.length;i+=2) ctx.lineTo(sx(p[i]),sy(p[i+1]));
+      ctx.closePath();
+      ctx.fillStyle=c; ctx.globalAlpha=dentro?.92:.10; ctx.fill();
+      if(conBorde){
+        ctx.strokeStyle=ll; ctx.lineWidth=.4;
+        ctx.globalAlpha=dentro?.5:.08; ctx.stroke();
+      }
+    }
+  });
+  ctx.globalAlpha=1;
+}
+
 function dibujarProv(filtrando){
   var mx=1;
   PROVS.forEach(function(p){ if(p.sam>mx) mx=p.sam; });
@@ -987,6 +1097,8 @@ function draw(){
       }
     });
     ctx.globalAlpha=1;
+  } else if(SPOLY && st.vista==="area"){
+    dibujarSectores();
   } else if(SECT && st.vista==="pts"){
     dibujarPuntos(filtrando);
   } else if(PROVS && st.vista==="prov"){
@@ -1089,7 +1201,7 @@ document.getElementById("zreset").onclick=function(){
 cv.addEventListener("click",function(e){
   if(drag&&drag.moved) return;
   if(st.capa==="territorios"||st.capa==="hubs") return;
-  if(st.vista==="pts"||st.vista==="calor") return;
+  if(st.vista==="pts"||st.vista==="calor"||st.vista==="area") return;
   if(st.vista==="prov"){
     if(st.hovP<0) return;
     var d=PROVS[st.hovP].i;
@@ -1136,7 +1248,7 @@ function pick(mx,my,cx,cy){
 
   /* Sin esta salida, mover el ratón sobre puntos o calor mostraría la ficha
      de un hexágono que no está dibujado. */
-  if(st.vista==="pts"||st.vista==="calor"){
+  if(st.vista==="pts"||st.vista==="calor"||st.vista==="area"){
     if(st.hov>=0){ st.hov=-1; draw(); }
     hideTip(); return;
   }
@@ -1458,6 +1570,10 @@ var mq=window.matchMedia("(prefers-color-scheme: dark)");
   function(){ refresh(); renderLegend(); draw(); });
 new ResizeObserver(resize).observe(wrap);
 bbVias();
+/* La vista por defecto es la del sector real y su capa es diferida, asi que
+   se pide al abrir: son 1.8 MB que el navegador resuelve en decenas de
+   milisegundos y es la diferencia entre un mapa de burbujas y un mapa. */
+conCapas(function(){ aplicarFiltros(); });
 renderLegend(); renderDet(); resize();
 if(!leerUnidad()) aplicarFiltros();
 window.addEventListener("hashchange", function(){

@@ -263,6 +263,27 @@ tres niveles sobre 194 capitales de provincia y los puertos agroexportadores.
 Es la capa que explica el mapa: se ve por qué un valle con mercado alto queda
 lejos en tiempo, que es lo que el color por sí solo no dice.
 
+**El mapa dibuja el sector, no un círculo sobre el sector.** La unidad de todo
+el análisis son los 7,036 sectores estadísticos del MIDAGRI, y el atlas los
+mostraba como puntos proporcionales sobre su centroide. Un círculo dice «hay
+algo por acá»; el polígono dice dónde empieza y dónde termina. La
+representación **Sectores** es ahora la que abre.
+
+El peso no estaba en cuántos vértices hay —simplificar apenas los reduce,
+porque las formas ya vienen mínimas— sino en cómo se escriben. Cuantizados a
+1e-4 grados (11 m, la mitad del ancho de una chacra) y guardados como
+diferencias respecto del vértice anterior, los números pasan de `-80.1234` a
+`-3`: 2.6 MB quedan en 1.2, que son **0.46 MB comprimidos**, lo mismo que
+pesaban los círculos. La capa se decodifica una vez al recibirla, no en cada
+cuadro.
+
+Los límites administrativos también estaban degradados de más. Se les aplicaba
+una tolerancia de 0.02 grados —**2.2 km**—, de modo que la costa salía recta y
+una provincia recortada se leía como un pentágono. Los departamentos ya no se
+simplifican (3,374 vértices, +7 KB comprimidos) y las provincias bajan a 111 m
+(12,491 vértices, +39 KB). Más detalle que ese no lo tiene la fuente: los
+geojson publicados ya vienen generalizados, y de ahí el «simple» de su nombre.
+
 La red dibujada sale de `build_vial_mapa.py`, que une los tramos de OSM antes
 de simplificarlos —OSM corta cada vía en los cruces, así que la Panamericana
 llega como miles de segmentos de dos puntos— y baja de 47,729 vías a 10,656
@@ -291,7 +312,7 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
 | Perfil de empresa | Una página por RUC: qué importa, de qué origen, con qué continuidad, qué exporta y dónde está |
 | Método | Cadena de cálculo, fuentes y limitaciones declaradas |
-| Mapa | Atlas geoespacial con las cinco capas, y un mapa propio por departamento, territorio y provincia |
+| Mapa | Atlas geoespacial con seis representaciones, y un mapa propio por departamento, territorio y provincia |
 
 Cada vista carga su propio JSON la primera vez que se abre: el directorio de
 empresas pesa 1.8 MB —460 KB comprimido— y no debe frenar la portada.

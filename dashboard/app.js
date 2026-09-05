@@ -592,7 +592,11 @@ function pintarImpResumen(M) {
   var anios = M.anios_pedidos;
   var conDato = M.anios_con_dato;
   var actual = M.anio_en_curso;
-  var completos = conDato.filter(function (a) { return a !== actual; });
+  /* «Completo» es un año con casi todas sus semanas archivadas, no cualquier
+     año que tenga una operación suelta: con cuatro semanas bajadas la cifra
+     anual sería un recorte presentado como año. */
+  var completos = conDato.filter(function (a) {
+    return a !== actual && (M.cobertura_semanas[a] || 0) >= 45; });
   var ultimoCompleto = completos.length ? completos[completos.length - 1] : null;
 
   var kpis = [
@@ -646,7 +650,8 @@ function bloqueImportaciones(ruc, M, IMP) {
   }
   var actual = M.anio_en_curso;
   var aniosConDato = Object.keys(e.por_anio).sort();
-  var completos = aniosConDato.filter(function (a) { return a !== actual; });
+  var completos = aniosConDato.filter(function (a) {
+    return a !== actual && (M.cobertura_semanas[a] || 0) >= 45; });
   var ult = completos.length ? completos[completos.length - 1] : null;
 
   return '<div class="card" style="margin-top:16px"><div class="h">' +
@@ -659,7 +664,8 @@ function bloqueImportaciones(ruc, M, IMP) {
           "<span class='s'>hasta " + esc(e.ultima) + "</span></div>" +
         "<div><span class='v'>" + (ult ? usd(e.por_anio[ult].fob) : "sin datos") +
           "</span><span class='l'>" + (ult ? "importado " + ult : "último año completo") +
-          "</span><span class='s'>" + (ult ? "" : "sin año completo descargado") +
+          "</span><span class='s'>" + (ult ? M.cobertura_semanas[ult] +
+            " de 52 semanas archivadas" : "sin año completo descargado") +
           "</span></div>" +
         "<div><span class='v'>" + usd(e.total.fob) + "</span><span class='l'>" +
           "acumulado registrado</span><span class='s'>" + nf(e.total.ops) +
@@ -669,10 +675,13 @@ function bloqueImportaciones(ruc, M, IMP) {
           esc(e.primera) + " a " + esc(e.ultima) + "</span></div>" +
       "</div>" +
 
-      '<div class="eyebrow">Importaciones mensuales · FOB</div>' +
-      '<div class="chips" id="impAnioSel" style="margin:6px 0 4px"></div>' +
-      '<div class="serie" id="impMes"></div>' +
-      '<p class="sub" id="impMesNota"></p>' +
+      '<div class="eyebrow">Corte por año</div>' +
+      '<div class="chips" id="impAnioSel" style="margin:6px 0 10px"></div>' +
+      '<div id="impMesBloque">' +
+        '<div class="eyebrow">Importaciones mensuales · FOB</div>' +
+        '<div class="serie" id="impMes"></div>' +
+        '<p class="sub" id="impMesNota"></p>' +
+      "</div>" +
 
       '<div class="eyebrow" style="margin-top:14px">Importaciones anuales</div>' +
       '<div class="serie" id="impAnual"></div>' +
@@ -686,6 +695,7 @@ function bloqueImportaciones(ruc, M, IMP) {
       "</div>" +
       "<div class='eyebrow' style='margin-top:12px'>Partidas arancelarias</div>" +
       "<div class='barras compact' id='impPart'></div>" +
+      '<p class="sub" id="impCorteNota"></p>' +
       '<p class="sub">Valor <b>FOB importado</b>, no facturación de la empresa. ' +
       'Fuente: microdatos de manifiestos de SUNAT bajo la Ley 27806.</p>' +
     "</div></div>";
@@ -697,46 +707,85 @@ function pintarImportaciones(ruc, M, IMP) {
   var actual = M.anio_en_curso;
   var conDato = Object.keys(e.por_anio).sort();
 
-  /* Selector de año: solo se puede elegir un año que tenga semanas detrás. Los
-     demás se muestran igual, apagados, para que se vea que existen y que lo
-     que falta es la descarga y no la empresa. */
+  /* Selector de año. Manda sobre toda la ficha: el mensual, los productos, los
+     países y las partidas. Un año se puede elegir si tiene semanas detrás
+     —eso lo dice el mercado, no la empresa—; los que no las tienen se muestran
+     igual, apagados, para que se vea que el hueco es de la descarga y no de la
+     empresa. «Todos» agrega lo medido hasta hoy. */
   var sel = document.getElementById("impAnioSel");
-  var elegido = conDato.indexOf(actual) >= 0 ? actual : conDato[conDato.length - 1];
-  sel.innerHTML = M.anios_pedidos.map(function (a) {
-    var hay = conDato.indexOf(a) >= 0;
+  var medibles = M.anios_pedidos.filter(function (a) {
+    return (M.cobertura_semanas[a] || 0) > 0; });
+  var elegido = conDato.indexOf(actual) >= 0
+    ? actual : (conDato[conDato.length - 1] || medibles[medibles.length - 1]);
+  sel.innerHTML = '<button class="chip" data-a="" aria-pressed="false">' +
+    "Todos</button>" + M.anios_pedidos.map(function (a) {
+    var hay = medibles.indexOf(a) >= 0;
     return '<button class="chip" data-a="' + a + '"' +
       (hay ? "" : " disabled title=\"sin semanas descargadas para " + a + "\"") +
       ' aria-pressed="' + (a === elegido) + '">' + a +
       (a === actual ? " YTD" : "") + "</button>";
   }).join("");
 
-  function mensual(anio) {
-    var val = [], hay = [];
-    for (var m = 1; m <= 12; m++) {
-      var k = anio + "-" + (m < 10 ? "0" + m : m);
-      var cob = M.cobertura_mes[k];
-      hay.push(!!cob);
-      val.push(e.por_mes[k] || 0);
+  function barrasDeAnio(anio) {
+    var c = anio ? ((e.cubo[anio] || {}).cat || []) : e.categorias;
+    var p = anio ? ((e.cubo[anio] || {}).pais || []) : e.paises;
+    var t = anio ? ((e.cubo[anio] || {}).part || []) : e.partidas;
+    barras(document.getElementById("impCat"), c.slice(0, 8).map(
+      function (x) { return { n: x.n, v: x.fob, t: usd(x.fob) }; }));
+    barras(document.getElementById("impPais"), p.slice(0, 8).map(
+      function (x) { return { n: pais(x.n), v: x.fob, t: usd(x.fob) }; }));
+    barras(document.getElementById("impPart"), t.slice(0, 8).map(
+      function (x) { return { n: x.n, v: x.fob, t: usd(x.fob) }; }));
+    var nota = document.getElementById("impCorteNota");
+    if (!nota) return;
+    if (!anio) {
+      nota.textContent = "Todo lo medido: " + M.total.semanas +
+        " semanas archivadas entre " + e.primera + " y " + e.ultima + ".";
+    } else if (!c.length) {
+      nota.textContent = anio + " sí se midió —" + M.cobertura_semanas[anio] +
+        " semanas archivadas— y esta empresa no registra importaciones de " +
+        "insumos en ese año.";
+    } else {
+      nota.textContent = "Corte de " + anio + ", sobre " +
+        M.cobertura_semanas[anio] + " semanas archivadas.";
     }
-    var mx = Math.max.apply(null, val.filter(function (v, i) { return hay[i]; }));
-    if (!isFinite(mx) || mx <= 0) mx = 1;
-    document.getElementById("impMes").innerHTML = val.map(function (v, i) {
-      if (!hay[i]) {
-        return '<div class="sb vacio" title="' + MESES_IMP[i] + " " + anio +
-          ' · sin semanas descargadas"><i></i><b>' + MESES_IMP[i] + "</b></div>";
+  }
+
+  function mensual(anio) {
+    var caja = document.getElementById("impMesBloque");
+    if (caja) caja.hidden = !anio;
+    if (anio) {
+      var val = [], hay = [];
+      for (var m = 1; m <= 12; m++) {
+        var k = anio + "-" + (m < 10 ? "0" + m : m);
+        hay.push(!!M.cobertura_mes[k]);
+        val.push(e.por_mes[k] || 0);
       }
-      var h = Math.max(2, Math.round(100 * v / mx));
-      return '<div class="sb" title="' + MESES_IMP[i] + " " + anio + " · " +
-        usd(v) + '"><i style="height:' + h + '%"></i><b>' +
-        MESES_IMP[i] + "</b></div>";
-    }).join("");
-    var conSem = hay.filter(Boolean).length;
-    document.getElementById("impMesNota").textContent =
-      conSem + " de 12 meses de " + anio + " tienen semanas descargadas. " +
-      "Los meses sin barra no son cero: son meses cuyos manifiestos todavía " +
-      "no se archivaron.";
+      var mx = Math.max.apply(null, val.filter(function (v, i) {
+        return hay[i]; }));
+      if (!isFinite(mx) || mx <= 0) mx = 1;
+      document.getElementById("impMes").innerHTML = val.map(function (v, i) {
+        if (!hay[i]) {
+          return '<div class="sb vacio" title="' + MESES_IMP[i] + " " + anio +
+            ' · sin semanas descargadas"><i></i><b>' + MESES_IMP[i] +
+            "</b></div>";
+        }
+        var h = Math.max(2, Math.round(100 * v / mx));
+        return '<div class="sb' + (v > 0 ? '' : ' cero') + '" title="' +
+          MESES_IMP[i] + " " + anio + " · " +
+          (v > 0 ? usd(v) : "sin importaciones registradas") +
+          '"><i style="height:' + (v > 0 ? h : 2) + '%"></i><b>' +
+          MESES_IMP[i] + "</b></div>";
+      }).join("");
+      var conSem = hay.filter(Boolean).length;
+      document.getElementById("impMesNota").textContent =
+        conSem + " de 12 meses de " + anio + " tienen semanas descargadas. " +
+        "Los meses sin barra no son cero: son meses cuyos manifiestos todavía " +
+        "no se archivaron.";
+    }
+    barrasDeAnio(anio);
     sel.querySelectorAll(".chip").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(b.dataset.a === anio)); });
+      b.setAttribute("aria-pressed", String(b.dataset.a === (anio || ""))); });
   }
   sel.onclick = function (ev) {
     var b = ev.target.closest("button");
@@ -753,6 +802,12 @@ function pintarImportaciones(ruc, M, IMP) {
     return e.por_anio[a] ? e.por_anio[a].fob : 0; });
   var medido = M.anios_pedidos.map(function (a) {
     return (M.cobertura_semanas[a] || 0) > 0; });
+  /* Un año con cuatro semanas archivadas no es un año: es una muestra. Dibujar
+     su barra al lado de uno completo invita a leer una caída donde solo hay
+     archivo faltante, así que se marca y se dice cuántas semanas tiene. */
+  var COMPLETO = 45;
+  var parcial = M.anios_pedidos.map(function (a) {
+    return (M.cobertura_semanas[a] || 0) < COMPLETO; });
   var mxa = Math.max.apply(null, va.filter(function (v, i) {
     return medido[i]; }));
   if (!isFinite(mxa) || mxa <= 0) mxa = 1;
@@ -770,29 +825,30 @@ function pintarImportaciones(ruc, M, IMP) {
           a + "</b></div>";
       }
       var h = Math.max(2, Math.round(100 * va[i] / mxa));
-      return '<div class="sb" title="' + a + " · " + usd(va[i]) + " · " +
-        M.cobertura_semanas[a] + " semanas medidas" +
-        (a === M.anio_en_curso ? " (año en curso)" : "") +
+      return '<div class="sb' + (parcial[i] ? " parcial" : "") + '" title="' +
+        a + " · " + usd(va[i]) + " · " + M.cobertura_semanas[a] +
+        " de 52 semanas archivadas" +
+        (parcial[i] ? " · año incompleto, no comparable" : "") +
         '"><i style="height:' + h + '%"></i><b>' + a +
-        (a === M.anio_en_curso ? "*" : "") + "</b></div>";
+        (parcial[i] ? "*" : "") + "</b></div>";
     }).join("");
   var sinSemanas = M.anios_pedidos.filter(function (a, i) {
     return !medido[i]; });
+  var incompletos = M.anios_pedidos.filter(function (a, i) {
+    return medido[i] && parcial[i]; });
   document.getElementById("impAnualNota").textContent =
-    "* " + M.anio_en_curso + " es año en curso, con información hasta " +
-    M.ultimo_registro + ". No es comparable contra un año entero." +
+    (incompletos.length
+      ? "* " + incompletos.map(function (a) {
+          return a + " (" + M.cobertura_semanas[a] + " de 52 semanas" +
+            (a === M.anio_en_curso ? ", año en curso" : "") + ")"; }).join(", ") +
+        ": barras sobre años incompletos, no comparables contra un año entero. "
+      : "") +
     (sinSemanas.length
-      ? " " + sinSemanas.join(" y ") + " aparecen en hueco porque sus " +
-        "manifiestos todavía no se descargan: no son años sin importaciones, " +
-        "son años sin medir."
+      ? sinSemanas.join(" y ") + " aparecen en hueco porque sus manifiestos " +
+        "todavía no se descargan: no son años sin importaciones, son años sin " +
+        "medir."
       : "");
 
-  barras(document.getElementById("impCat"), e.categorias.slice(0, 8).map(
-    function (c) { return { n: c.n, v: c.fob, t: usd(c.fob) }; }));
-  barras(document.getElementById("impPais"), e.paises.slice(0, 8).map(
-    function (c) { return { n: pais(c.n), v: c.fob, t: usd(c.fob) }; }));
-  barras(document.getElementById("impPart"), e.partidas.slice(0, 8).map(
-    function (c) { return { n: c.n, v: c.fob, t: usd(c.fob) }; }));
 }
 
 /* --------------------------------------------------------------- perfil -- */

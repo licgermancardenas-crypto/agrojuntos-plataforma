@@ -466,6 +466,57 @@ with sync_playwright() as pw:
     else:
         print("  llama FOB importado a lo importado: ok")
 
+    # El corte por ano manda sobre toda la ficha, no solo sobre el mensual: si
+    # los productos y los paises no cambian al cambiar de ano, el filtro es
+    # decorativo.
+    def primer_barra():
+        el = pg.query_selector("#impCat .n, #impCat > div")
+        return (el.text_content() if el else "") or ""
+
+    anios_emp = pg.evaluate(
+        "async (r) => { const j = await (await fetch("
+        "'/data/importaciones/importadores.json')).json();"
+        " return Object.keys(j[r].cubo).sort(); }", ruc_i)
+    if len(anios_emp) >= 2:
+        pg.click("#impAnioSel .chip[data-a='" + anios_emp[0] + "']")
+        pg.wait_for_timeout(250)
+        a1 = pg.text_content("#impCorteNota") or ""
+        pg.click("#impAnioSel .chip[data-a='" + anios_emp[-1] + "']")
+        pg.wait_for_timeout(250)
+        a2 = pg.text_content("#impCorteNota") or ""
+        if anios_emp[0] not in a1 or anios_emp[-1] not in a2:
+            print("  EL CORTE POR ANO NO SE DECLARA EN LA FICHA")
+            ok = False
+        else:
+            print(f"  el corte por ano cambia el detalle: "
+                  f"{anios_emp[0]} -> {anios_emp[-1]} ok")
+
+    pg.click("#impAnioSel .chip[data-a='']")
+    pg.wait_for_timeout(250)
+    if not pg.eval_on_selector("#impMesBloque", "e => e.hidden"):
+        print("  «TODOS» DEJA UN MENSUAL QUE NO CORRESPONDE A NINGUN ANO")
+        ok = False
+    elif "Todo lo medido" not in (pg.text_content("#impCorteNota") or ""):
+        print("  «TODOS» NO DICE SOBRE QUE PERIODO AGREGA")
+        ok = False
+    else:
+        print("  «todos» agrega y esconde el mensual: ok")
+
+    # Un ano medido a medias no puede dibujarse como un ano entero.
+    cob = pg.evaluate(
+        "async () => { const m = await (await fetch("
+        "'/data/importaciones/mercado.json')).json();"
+        " return [m.anios_pedidos, m.cobertura_semanas]; }")
+    incompletos = [a for a in cob[0]
+                   if 0 < (cob[1].get(a) or 0) < 45]
+    marcadas = len(pg.query_selector_all("#impAnual .sb.parcial"))
+    if marcadas != len(incompletos):
+        print(f"  {len(incompletos)} anos incompletos y {marcadas} barras "
+              "marcadas: UN ANO A MEDIAS SE DIBUJA COMO UNO ENTERO")
+        ok = False
+    else:
+        print(f"  los {len(incompletos)} anos incompletos van marcados: ok")
+
     # La vista de importacion vive de la fila desplegable: si el detalle no
     # cambia al pulsar otra categoria, la tabla es un adorno. Y las dos
     # categorias sin mercancia tienen que seguir visibles: son parte de la

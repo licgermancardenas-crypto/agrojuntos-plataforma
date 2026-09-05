@@ -124,11 +124,23 @@ def main():
     }
 
     # ------------------------------------------------------------- empresas --
+    def top(sub, col, n=8):
+        return [{"n": k, "fob": round(float(v), 2)} for k, v in
+                sub.groupby(col).fob_usd.sum().nlargest(n).items()]
+
     emp = {}
     for ruc, g in d.groupby("ruc"):
         meses = {f"{a}-{m}": round(float(v), 2) for (a, m), v in
                  g.groupby(["anio", "mes"]).fob_usd.sum().items()}
+        # El mismo corte por producto, pais y partida repetido ano por ano, que
+        # es lo que permite filtrar la ficha sin volver a pedir nada. Se guardan
+        # los ocho primeros de cada eje: mas no cabe en un grafico de barras y
+        # el archivo lo leen todas las fichas.
+        cubo = {a: {"cat": top(x, "categoria"), "pais": top(x, "pais_origen"),
+                    "part": top(x, "partida")}
+                for a, x in g.groupby("anio")}
         emp[ruc] = {
+            "cubo": cubo,
             "ruc": ruc,
             "n": g.razon_social.mode().iat[0],
             "total": bloque(g),

@@ -326,6 +326,14 @@ td.faint{color:var(--muted)}
   border-bottom:1px dashed var(--line); opacity:.9}
 .serie .sb.vacio b{opacity:.45}
 
+/* Ano incompleto. La barra existe porque hay medicion, pero cubre una parte
+   del ano y no se puede comparar con uno entero: se raya para que no se lea
+   como una caida. */
+.serie .sb.parcial i{background:repeating-linear-gradient(-45deg,
+  var(--forest2) 0 3px, transparent 3px 6px); outline:1px solid var(--forest2);
+  outline-offset:-1px}
+.serie .sb.parcial b{opacity:.8}
+
 /* Cero medido. El periodo si se miro y la respuesta fue que no hubo
    operacion: eso es un cero de verdad y se dibuja como una linea llena al
    ras, distinta de la base punteada del hueco. */

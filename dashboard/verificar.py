@@ -196,6 +196,60 @@ with sync_playwright() as pw:
     else:
         print("  el periodo vale en todas las vistas: ok")
 
+    # El atlas vive incrustado en los once modulos. Se comprueba que el hueco
+    # exista en todos, que montar uno traiga el mapa de verdad —no un cuadro
+    # vacio— y que el modulo mande sobre el: cambiar de region en la ficha
+    # tiene que mover el mapa sin recargarlo.
+    print("\nmapa incrustado")
+    pg.evaluate("() => location.hash = '#resumen'")
+    pg.wait_for_timeout(600)
+    huecos = pg.eval_on_selector_all(".mapaslot", "e => e.map(x => x.id)")
+    print(f"  {len(huecos)} modulos con hueco de mapa")
+    if len(huecos) < 10:
+        print("  FALTAN MODULOS SIN MAPA")
+        ok = False
+
+    pg.evaluate("() => location.hash = '#departamentos'")
+    pg.wait_for_selector("#mapDep .mapabtn")
+    pg.click("#mapDep .mapabtn")
+    pg.wait_for_selector("#mapDep iframe")
+    marco = pg.frame_locator("#mapDep iframe")
+    marco.locator("#cuenta").wait_for(timeout=40000)
+    for _ in range(40):
+        uno = marco.locator("#cuenta").inner_text().strip()
+        if "sector" in uno or "celda" in uno:
+            break
+        pg.wait_for_timeout(500)
+    print(f"  montado: {uno}")
+
+    chrome = pg.evaluate("""() => {
+        const d = document.querySelector('#mapDep iframe').contentDocument;
+        return ['nav', 'header.top', '.titulo'].map(
+            s => { const el = d.querySelector(s);
+                   return el ? getComputedStyle(el).display : 'ausente'; });
+    }""")
+    if any(c not in ("none", "ausente") for c in chrome):
+        print(f"  EL MAPA INCRUSTADO MUESTRA EL CROMO DEL SITIO: {chrome}")
+        ok = False
+    else:
+        print("  sin encabezado ni navegacion duplicados: ok")
+
+    opciones = pg.eval_on_selector_all("#fDepto option", "o => o.map(x => x.value)")
+    pg.select_option("#fDepto", opciones[3])
+    pg.wait_for_timeout(2500)
+    dos = marco.locator("#cuenta").inner_text().strip()
+    print(f"  al cambiar de region: {dos}")
+    if dos == uno:
+        print("  EL MAPA NO SIGUE AL MODULO")
+        ok = False
+
+    # El mapa a pantalla completa no debe quedar en modo incrustado.
+    entero = pg.eval_on_selector("#v-departamentos .mapacard .eyebrow a",
+                                 "a => a.getAttribute('href')")
+    if "e=1" in (entero or ""):
+        print("  EL ENLACE A PANTALLA COMPLETA ABRE EN MODO INCRUSTADO")
+        ok = False
+
     # El perfil es el unico modulo con una direccion por registro: 23,300
     # empresas comparten una sola vista y el RUC viaja en el hash. Se comprueba
     # el camino entero —directorio, clic, perfil— y no solo que la pagina abra.

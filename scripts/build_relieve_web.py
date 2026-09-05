@@ -43,7 +43,11 @@ OUT = os.path.abspath(os.path.join(RAIZ, "..", "..", "dashboard", "data"))
 
 # El Perú continental con un margen que evita el borde duro en la costa.
 PERU = (-81.6, -18.6, -68.4, 0.2)
-ANCHO_MAX = 2048       # pixeles del lado mayor tras reducir
+# El DEM de origen tiene 302 m por pixel. Reducir a 2048 lo dejaba en 1057 y
+# al acercarse el relieve se volvia una mancha: a 3072 quedan 705 m/px por 500
+# KB mas, que se pagan una sola vez porque la imagen se cachea y la comparten
+# todos los modulos que muestran mapa.
+ANCHO_MAX = 3072
 CALIDAD = 82
 
 

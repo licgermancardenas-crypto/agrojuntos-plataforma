@@ -224,6 +224,53 @@ function aplicarPeriodo(p) {
   });
 })();
 
+/* --------------------------------------------------------- mapa incrustado */
+/* El atlas completo dentro de cada modulo. Es la misma pagina de /mapa en un
+   iframe, no una version recortada: asi hay un solo motor de mapa y lo que se
+   arregla ahi vale en los once lugares donde aparece.
+
+   Se monta al pulsar y no al abrir la vista. Entre pagina, capas de sectores y
+   relieve son unos 4 MB, y quien entra a leer una tabla no tiene por que
+   pagarlos; despues quedan en cache y los demas modulos los reusan.
+
+   Una vez montado se reenfoca cambiando su hash, que es una navegacion dentro
+   del mismo documento: el mapa la atiende con su propio hashchange y no se
+   recarga. Por eso «#peru» existe como enlace explicito — vaciar el hash no
+   dispara el evento. */
+var MAPAS = {};
+function mapaEn(cid, hash) {
+  var cont = document.getElementById(cid);
+  if (!cont) return;
+  hash = hash || "#peru";
+  cont.dataset.hash = hash;
+  var f = MAPAS[cid];
+  if (!f) {
+    var btn = cont.querySelector(".mapabtn");
+    if (btn && !btn.dataset.listo) {
+      btn.dataset.listo = "1";
+      btn.onclick = function () { montarMapa(cid); };
+    }
+    return;
+  }
+  try {
+    var w = f.contentWindow;
+    if (w && w.location.hash !== hash) w.location.hash = hash;
+  } catch (e) {
+    f.src = "/mapa?e=1" + hash;
+  }
+}
+
+function montarMapa(cid) {
+  var cont = document.getElementById(cid);
+  if (!cont || MAPAS[cid]) return;
+  var f = document.createElement("iframe");
+  f.title = "Atlas geoespacial";
+  f.src = "/mapa?e=1" + (cont.dataset.hash || "#peru");
+  cont.innerHTML = "";
+  cont.appendChild(f);
+  MAPAS[cid] = f;
+}
+
 /* --------------------------------------------------------- territorios -- */
 function vistaTerritorios() {
   cargar("territorios").then(function (T) {
@@ -252,6 +299,17 @@ function vistaTerritorios() {
       { k: "mapa", t: "Mapa", l: true, f: function (r) {
           return enlaceMapa("ver", "ter=" + r.rank); } }
     ], T, { sort: "rank", asc: true });
+
+    /* Pulsar una fila enfoca su territorio en el mapa de abajo. El enlace
+       «ver» de la ultima columna sigue abriendo el atlas completo aparte. */
+    var tT = document.getElementById("tTerritorios");
+    tT.onclick = function (ev) {
+      if (ev.target.closest("a")) return;
+      var tr = ev.target.closest("tbody tr");
+      if (!tr) return;
+      var n = tr.querySelector("td:first-child");
+      if (n) mapaEn("mapTer", "#ter=" + n.textContent.trim());
+    };
   }).catch(fallo);
 }
 
@@ -298,7 +356,16 @@ function vistaEmpresas() {
           return '<option value="' + esc(t) + '">' + esc(t) + "</option>"; }).join("") +
       (D.ters.indexOf(FUERA) >= 0
         ? '<option value="' + esc(FUERA) + '">' + esc(FUERA) + "</option>" : "");
-    selT.onchange = function (e) { EMP.ter = e.target.value; pintarEmpresas(); };
+    selT.onchange = function (e) {
+      EMP.ter = e.target.value;
+      pintarEmpresas();
+      /* El rango viaja en el propio catalogo: deducirlo cruzando el texto
+         del territorio seria la misma trampa que ya rompio la ubicacion de
+         las empresas. */
+      var i = D.ters.indexOf(EMP.ter);
+      var rk = i >= 0 && D.ters_rank ? D.ters_rank[i] : -1;
+      mapaEn("mapEmp", rk > 0 ? "#ter=" + rk : "#peru");
+    };
 
     var CL = ["P", "A", "C", "V", "O", "E", "I"];
     document.getElementById("fClase").innerHTML =
@@ -714,6 +781,12 @@ function vistaEmpresa(ruc) {
       barrasDe("empExpP", E.partidas_top);
       barrasDe("empExpD", E.paises);
     }
+    /* El perfil ya tiene su localizador chico; el mapa completo va debajo,
+       centrado en la empresa cuando se sabe donde esta. */
+    mapaEn("mapPerfil", P.lat !== undefined
+      ? "#pt=" + P.lat + "," + P.lon + ",0.6"
+      : (P.rank > 0 ? "#ter=" + P.rank : "#peru"));
+
     var cv = document.getElementById("empMapa");
     if (cv) {
       dibujarLocalizador(cv, P, GEO);
@@ -1067,6 +1140,14 @@ function vistaDepartamentos() {
     llenar();
     pintar();
     REPINTAR.departamentos = pintar;
+    /* El mapa del modulo sigue a la region elegida: abrir la ficha de Junin y
+       ver el mapa del Peru entero obliga a un salto que la ficha ya resolvio. */
+    var _pintarDep = pintar;
+    pintar = function () {
+      _pintarDep();
+      mapaEn("mapDep", "#dep=" + actual);
+    };
+    mapaEn("mapDep", "#dep=" + actual);
   }).catch(fallo);
 }
 
@@ -1437,6 +1518,7 @@ function pintarProductos(D) {
 
     document.getElementById("fProDep").onchange = function () {
       dep = this.value; pintarDep();
+      mapaEn("mapPro", dep ? "#dep=" + slugU(dep) : "#peru");
     };
     pintarDep();
 
@@ -1526,6 +1608,9 @@ function ir(hash) {
     v.classList.toggle("on", v.id === "v-" + id); });
   document.querySelectorAll("nav a").forEach(function (a) {
     a.classList.toggle("on", a.getAttribute("href") === "#" + id); });
+
+  var slot = document.querySelector("#v-" + id + " .mapaslot");
+  if (slot) mapaEn(slot.id, slot.dataset.hash);
 
   if (!CARGADO[id]) {
     CARGADO[id] = true;

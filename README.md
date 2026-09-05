@@ -264,14 +264,29 @@ tres niveles sobre 194 capitales de provincia y los puertos agroexportadores.
 Es la capa que explica el mapa: se ve por qué un valle con mercado alto queda
 lejos en tiempo, que es lo que el color por sí solo no dice.
 
+**El atlas completo vive dentro de cada módulo.** Los once —resumen,
+departamentos, territorios, empresas, perfil, productos, comercio, importación,
+estacionalidad, logística y expansión— llevan la misma página de `/mapa` en un
+iframe, no una versión recortada: hay un solo motor de mapa y lo que se arregla
+ahí vale en los once lugares. Se monta al pulsar y no al abrir la vista, porque
+entre página, capas y relieve son unos 4 MB y quien entra a leer una tabla no
+tiene por qué pagarlos; después quedan en caché y los demás módulos los reusan.
+
+El módulo manda sobre su mapa: cambiar de región en la ficha departamental
+mueve el mapa, y pulsar un territorio lo enfoca. Se reenfoca cambiando el hash
+del iframe, que es una navegación dentro del mismo documento y no una recarga
+—por eso `#peru` existe como enlace explícito: vaciar el hash no dispara el
+evento—. Con `?e=1` el mapa se dibuja sin encabezado ni navegación, que dentro
+de una tarjeta serían una barra de navegación dentro de otra.
+
 **El atlas tiene relieve de fondo**, el mismo cálculo de sombreado que las
 láminas impresas: teselas Terrarium de AWS, sombreado de Horn, 302 m por píxel.
 El sombreado solo, que en papel a 130 dpi se lee perfecto, en pantalla a escala
 nacional desaparecía —la imagen se reduce de 1463 px a unos 400 y el promediado
 se come las líneas finas de pendiente—, así que se le suma una componente de
 altura: la pendiente dibuja el valle y la altura dibuja la masa. Va en JPEG
-(380 KB) porque el relieve es una superficie suave sin bordes duros, que es lo
-que un compresor con pérdida hace bien; el mar no se borra en la imagen sino
+(877 KB a 705 m por píxel) porque el relieve es una superficie suave sin bordes
+duros, que es lo que un compresor con pérdida hace bien; el mar no se borra en la imagen sino
 que el lienzo recorta contra el contorno del país al dibujarla, lo que evita
 pagar PNG por una transparencia. Se apaga con su propio interruptor.
 

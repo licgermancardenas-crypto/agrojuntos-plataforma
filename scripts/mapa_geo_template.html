@@ -141,6 +141,9 @@ input[type="search"]::placeholder{color:var(--faint)}
 @media (prefers-reduced-motion:reduce){
   .seg.cargando::after{animation:none; opacity:.7}
 }
+html.embed header.top, html.embed nav, html.embed .titulo{display:none}
+html.embed .wrap{padding-top:10px}
+html.embed .barra{margin-top:0}
 .zoom{position:absolute; bottom:11px; left:10px; display:flex; gap:5px}
 .zoom button{width:29px; height:29px; border:1px solid var(--line);
   background:var(--surf); color:var(--ink); border-radius:7px; cursor:pointer;
@@ -222,6 +225,12 @@ footer b{color:var(--ink2); font-weight:500}
 <script>
 /* El tema se fija antes de pintar: al final del documento, la página aparecería
    un instante en claro antes de volverse oscura. */
+/* Modo incrustado: el mapa vive dentro de las tarjetas de los demas modulos,
+   donde el encabezado y la navegacion del sitio sobran —serian una barra de
+   navegacion dentro de otra— y el titulo repite el de la tarjeta. Se marca
+   antes de pintar para que no haya un salto visible. */
+(function(){try{if(/[?&]e=1/.test(location.search))
+  document.documentElement.classList.add("embed");}catch(e){}})();
 (function(){try{var t=localStorage.getItem("tema");
 if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}})();
 </script>
@@ -404,12 +413,15 @@ function dibujarRelieve(){
   var oscuro = (document.documentElement.dataset.theme === "dark") ||
     (!document.documentElement.dataset.theme &&
      window.matchMedia("(prefers-color-scheme: dark)").matches);
-  var base = oscuro ? .34 : .70;
+  var base = oscuro ? .40 : .82;
   ctx.globalAlpha = Math.max(.26, base - Math.min(.30, (view.k - 1) * .045));
   ctx.imageSmoothingQuality="high";
   ctx.drawImage(RELIEVE, X0, Y0, X1-X0, Y1-Y0);
   ctx.restore();
 }
+
+/* Punto suelto que el modulo de perfil pide resaltar. */
+var PUNTO=null;
 
 var esperandoCapas=[];
 function conCapas(cb){
@@ -689,6 +701,29 @@ function escribirUnidad(tipo, valor){
 }
 
 function leerUnidad(){
+  /* «#peru» es el enlace a la vista nacional. Hace falta porque el mapa vive
+     incrustado en los demas modulos y hay que poder devolverlo al pais sin
+     recargarlo: vaciar el hash no dispara hashchange de forma fiable. */
+  if(/^#(peru|todo)$/.test(location.hash||"")){
+    st.dep=-1; st.ter=-1; st.prov=-1; st.sel=-1;
+    reflejarUnidad();
+    view={k:1,tx:0,ty:0};
+    aplicarFiltros();
+    return true;
+  }
+  /* «#pt=lat,lon» centra el mapa en un punto: es como el perfil de una empresa
+     se muestra donde esta, sin que exista una unidad administrativa que la
+     contenga. */
+  var mp=/^#pt=(-?[\d.]+),(-?[\d.]+)(?:,(\d+(?:\.\d+)?))?$/.exec(location.hash||"");
+  if(mp){
+    var la=parseFloat(mp[1]), lo=parseFloat(mp[2]), r=parseFloat(mp[3]||"0.8");
+    st.dep=-1; st.ter=-1; st.prov=-1; st.sel=-1;
+    reflejarUnidad();
+    encuadrar([lo-r, la-r, lo+r, la+r]);
+    PUNTO={lat:la, lon:lo};
+    aplicarFiltros();
+    return true;
+  }
   var m=/^#(dep|ter|prov)=(.+)$/.exec(location.hash||"");
   if(!m) return false;
   var tipo=m[1], v=decodeURIComponent(m[2]);
@@ -997,7 +1032,10 @@ function dibujarSectores(){
       ctx.moveTo(sx(p[0]),sy(p[1]));
       for(var i=2;i<p.length;i+=2) ctx.lineTo(sx(p[i]),sy(p[i+1]));
       ctx.closePath();
-      ctx.fillStyle=c; ctx.globalAlpha=dentro?.92:.10; ctx.fill();
+      /* Translucido a proposito: el relieve tiene que leerse por debajo del
+         sector. Con .92 el dato tapaba el terreno y el valle perdia la razon
+         por la que esta donde esta. */
+      ctx.fillStyle=c; ctx.globalAlpha=dentro?.68:.09; ctx.fill();
       if(conBorde){
         ctx.strokeStyle=ll; ctx.lineWidth=.4;
         ctx.globalAlpha=dentro?.5:.08; ctx.stroke();
@@ -1208,6 +1246,17 @@ function draw(){
                     : (alta?brass:tok("--surf"));
       ctx.strokeStyle=ink; ctx.lineWidth=.9; ctx.fill(); ctx.stroke();
     });
+  }
+
+  /* El punto que pidio el modulo que incrusta el mapa. Va al final para que
+     ninguna capa lo tape: es lo que el lector vino a ver. */
+  if(PUNTO){
+    var PX=sx(PUNTO.lon), PY=sy(PUNTO.lat);
+    ctx.beginPath(); ctx.arc(PX,PY,13,0,6.2832);
+    ctx.fillStyle=brass; ctx.globalAlpha=.20; ctx.fill(); ctx.globalAlpha=1;
+    ctx.beginPath(); ctx.arc(PX,PY,5,0,6.2832);
+    ctx.fillStyle=brass; ctx.fill();
+    ctx.strokeStyle=tok("--surf"); ctx.lineWidth=1.8; ctx.stroke();
   }
 }
 

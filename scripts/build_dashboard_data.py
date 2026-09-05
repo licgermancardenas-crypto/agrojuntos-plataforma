@@ -160,6 +160,11 @@ impo = pd.read_csv("out/comercio_importadores.csv", encoding="utf-8-sig",
 car = pd.read_csv("out/cartera_empresa.csv", encoding="utf-8-sig",
                   dtype={"ruc": str})
 ter_ruc = dict(zip(car["ruc"], car["territorio"]))
+# El rango del territorio viaja junto a su nombre. El sitio necesita ir del
+# filtro del directorio al mapa de ese territorio, y deducirlo cruzando textos
+# es la misma trampa que ya rompio la ubicacion de las empresas.
+rank_ter = {t: int(r) for t, r in zip(car["territorio"], car["rank"])
+            if r == r and r is not None and int(r) > 0}
 hub_ruc = dict(zip(car["ruc"], car["hub"].fillna("")))
 
 # Medido, no anualizado: el directorio comparte el selector de periodo con el
@@ -241,7 +246,8 @@ guardar("empresas.json", {
     "clases": ["Productor", "Agroindustria", "Canal", "Proveedor",
                "Otro agro", "Agroexportador", "Importador de insumos"],
     "deps": deps, "provs": provs, "dists": dists,
-    "ters": ters, "hubs": hubs,
+    "ters": ters, "ters_rank": [rank_ter.get(t, -1) for t in ters],
+    "hubs": hubs,
     # El FOB de las filas va medido: sin las semanas, el sitio no sabria
     # a que periodo llevarlo.
     "semanas": SEM_COMEX,

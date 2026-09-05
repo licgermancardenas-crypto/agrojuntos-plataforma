@@ -5,10 +5,10 @@ empresa, desde los microdatos de aduanas. Todo lo que se muestra en el módulo
 sale de este pipeline y se puede rastrear hasta la línea original del
 manifiesto.
 
-Estado al cierre de este documento: **72 semanas archivadas**, 28,514
-operaciones, 953 empresas con operación verificada, US$ 1,876.4 MM FOB y US$
-2,123.7 MM CIF. **2022 está completo: sus 52 semanas.** La descarga histórica
-sigue corriendo sobre 2023, 2024 y 2025.
+Estado al cierre de este documento: **116 semanas archivadas**, 45,446
+operaciones, 1,095 empresas con operación verificada, US$ 2,655.1 MM FOB y US$
+3,002.8 MM CIF. **2022 y 2023 están completos: 52 semanas cada uno.** La
+descarga histórica sigue corriendo sobre 2024 y 2025.
 
 ---
 
@@ -79,7 +79,7 @@ es **aduana + año de presentación + número correlativo + número de serie**
 (`CODI_ADUAN`, `ANO_PRESE`, `NUME_CORRE`, `NUME_SERIE`), y se guarda en la
 columna `declaracion`.
 
-Resultado del control: **0 declaraciones repetidas en 28,514 operaciones.** Los
+Resultado del control: **0 declaraciones repetidas en 45,446 operaciones.** Los
 archivos semanales no se solapan.
 
 ---
@@ -147,7 +147,7 @@ que es la única situación en que una palabra decide algo.
 | Fertilizantes foliares | 3105 | foliar |
 | Nutrición vegetal | 3105 | quelato, micronutriente, manganeso, molibdeno |
 
-**El 94.8% se clasifica solo por arancel** (27,040 de 28,514); el 5.2% restante
+**El 94.8% se clasifica solo por arancel** (43,075 de 45,446); el 5.2% restante
 se desempata con la descripción. Ninguna operación queda sin categoría.
 
 Una categoría más que se pensó y no sobrevivió: **micronutrientes** mueve US$
@@ -227,10 +227,15 @@ Cobertura al cierre de este documento:
 | Año | Semanas archivadas | De 52 |
 |---|---|---|
 | 2022 | 52 | **completo** |
-| 2023 | 9 | 17%, descarga en curso |
-| 2024 | 0 | pendiente de descarga |
+| 2023 | 52 | **completo** |
+| 2024 | 1 | descarga en curso |
 | 2025 | 0 | pendiente de descarga |
 | 2026 | 11 | año en curso, hasta el 2026-08-30 |
+
+Un año se considera **completo** con 45 de sus 52 semanas archivadas. Por
+debajo de ese umbral la cifra anual es un recorte presentado como año: la
+interfaz dibuja su barra rayada, la marca con asterisco y muestra su cobertura,
+para que nadie lea una caída donde solo falta archivo.
 
 **2026 es año en curso** y se marca como tal en toda la interfaz. La variación
 interanual se calcula sobre el mismo tramo de meses en ambos años, nunca un año
@@ -302,9 +307,9 @@ hecho y solo procesa lo nuevo.
 
 ## Limitaciones declaradas
 
-1. **La descarga histórica está incompleta.** 2022 está entero; 2023 va por 9
-   semanas y 2024 y 2025 no empiezan. Los años sin semanas no aparecen en cero:
-   aparecen sin dato, y el módulo lo dice con esas palabras.
+1. **La descarga histórica está incompleta.** 2022 y 2023 están enteros; 2024
+   va por una semana y 2025 no empieza. Los años sin semanas no aparecen en
+   cero: aparecen sin dato, y el módulo lo dice con esas palabras.
 2. **No hay proveedor internacional** en la fuente.
 3. **Los adyuvantes agrícolas no son medibles** por separado del jabón
    doméstico, así que quedan fuera del universo.

@@ -524,8 +524,8 @@ cuanto entre la semana siguiente.
 
 La subcategoría «importador de insumos» del directorio de empresas corre sobre
 una capa propia, reconstruida operación por operación desde los manifiestos
-acumulados: 72 semanas, 28,514 operaciones, 953 empresas con operación
-verificada, US$ 1,876.4 MM FOB. Cada empresa tiene su historia de importación
+acumulados: 116 semanas, 45,446 operaciones, 1,095 empresas con operación
+verificada, US$ 2,655.1 MM FOB, con 2022 y 2023 completos. Cada empresa tiene su historia de importación
 dentro de su ficha —mensual, anual, por producto, por país y por partida—.
 
 ```
@@ -554,7 +554,7 @@ y cuál se sacó y por qué— está en
 
 `agro_insumos_pe_data/raw_data/sunat/` versiona los 20 archivos DBF originales
 (197 MB) para que el análisis sea reproducible tal cual. El histórico completo
-—hoy 72 semanas— vive en `data/aduanas_hist/`, fuera del repositorio, y se
+—hoy 116 semanas— vive en `data/aduanas_hist/`, fuera del repositorio, y se
 reconstruye con `acumular_aduanas.py` desde el propio servidor de SUNAT.
 
 Si con el tiempo se acumulan muchas corridas, lo sano es mover los archivos

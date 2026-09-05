@@ -325,3 +325,9 @@ td.faint{color:var(--muted)}
 .serie .sb.vacio i{height:100%; background:none;
   border-bottom:1px dashed var(--line); opacity:.9}
 .serie .sb.vacio b{opacity:.45}
+
+/* Cero medido. El periodo si se miro y la respuesta fue que no hubo
+   operacion: eso es un cero de verdad y se dibuja como una linea llena al
+   ras, distinta de la base punteada del hueco. */
+.serie .sb.cero i{background:var(--line)}
+.serie .sb.cero b{opacity:.7}

@@ -147,6 +147,17 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     </div>
     <div class="tw"><table id="tEmpresas"></table></div>
   </div>
+
+  <!-- Resumen de la subcategoria: solo aparece con el chip de importadores -->
+  <div class="card" id="impPanel" hidden style="margin-top:16px">
+    <div class="h"><h3>Qué importa este mercado</h3>
+      <span class="eyebrow">FOB registrado en aduanas</span></div>
+    <div class="kpis" id="impResumen"></div>
+    <div class="b">
+      <div class="barras compact" id="impMercadoCat"></div>
+      <p class="sub" id="impCobertura"></p>
+    </div>
+  </div>
   <p class="sub">Fuente: padrón de contribuyentes de SUNAT y microdatos de
   aduanas. El FOB anualizado extrapola diez semanas de registros y debe leerse
   como orden de magnitud. La ubicación es el domicilio fiscal, que no siempre

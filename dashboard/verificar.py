@@ -358,6 +358,114 @@ with sync_playwright() as pw:
     else:
         print("  un RUC inexistente lo dice: ok")
 
+    # La subcategoria «importador de insumos» tiene una capa propia: el panel
+    # del directorio y el historico dentro de la ficha. Lo que se comprueba no
+    # es que dibuje, sino la regla que la gobierna: **un ano sin semanas
+    # descargadas no puede aparecer como US$ 0**. Un cero ahi seria una cifra
+    # inventada, que es exactamente lo que este modulo no puede hacer.
+    print("\nimportador de insumos")
+    pg.evaluate("() => location.hash = '#empresas'")
+    pg.wait_for_selector("#fClase .chip[data-c='6']")
+    pg.click("#fClase .chip[data-c='6']")
+    try:
+        pg.wait_for_selector("#impResumen .v", timeout=20000)
+    except Exception:
+        print("  EL PANEL DE LA SUBCATEGORIA NO CARGA")
+        ok = False
+    kpis = pg.eval_on_selector_all(
+        "#impResumen > div", "f => f.map(x => x.textContent)")
+    barras_cat = len(pg.query_selector_all("#impMercadoCat .bar, "
+                                           "#impMercadoCat > div"))
+    cob = (pg.text_content("#impCobertura") or "")
+    print(f"  panel: {len(kpis)} indicadores · {barras_cat} categorias")
+    if len(kpis) < 4 or barras_cat < 3:
+        print("  EL PANEL DE LA SUBCATEGORIA LLEGA INCOMPLETO")
+        ok = False
+    if "sin dato" not in cob:
+        print("  LA COBERTURA NO DECLARA LOS ANOS SIN DESCARGAR")
+        ok = False
+    else:
+        print("  declara los anos sin descargar como «sin dato»: ok")
+    if "FOB importado" not in cob:
+        print("  EL PANEL NO ACLARA QUE EL VALOR ES FOB IMPORTADO")
+        ok = False
+
+    # El panel pertenece a esta subcategoria y a ninguna otra: con cualquier
+    # otro chip tiene que desaparecer, no quedarse mostrando cifras ajenas.
+    otro = pg.eval_on_selector_all(
+        "#fClase .chip",
+        "f => { const o = f.find(x => x.dataset.c && x.dataset.c !== '6');"
+        " return o ? o.dataset.c : ''; }")
+    if otro:
+        pg.click("#fClase .chip[data-c='" + otro + "']")
+        pg.wait_for_timeout(200)
+        if not pg.eval_on_selector("#impPanel", "e => e.hidden"):
+            print("  EL PANEL SE QUEDA EN OTRAS SUBCATEGORIAS")
+            ok = False
+        else:
+            print("  no se muestra en las demas subcategorias: ok")
+
+    # El historico dentro de la ficha. Se entra por un RUC que tenga
+    # operaciones medidas, tomado del propio archivo agregado.
+    ruc_i = pg.evaluate(
+        "async () => { const r = await (await fetch("
+        "'/data/importaciones/importadores.json')).json();"
+        " return Object.keys(r)[0]; }")
+    anios = pg.evaluate(
+        "async () => { const m = await (await fetch("
+        "'/data/importaciones/mercado.json')).json();"
+        " return [m.anios_pedidos, m.anios_con_dato]; }")
+    faltan = [a for a in anios[0] if a not in anios[1]]
+    pg.evaluate("() => location.hash = '#empresa=" + ruc_i + "'")
+    try:
+        pg.wait_for_selector("#impAnual .sb", timeout=25000)
+    except Exception:
+        print("  EL HISTORICO DE IMPORTACIONES NO CARGA EN LA FICHA")
+        ok = False
+    meses = len(pg.query_selector_all("#impMes .sb"))
+    anuales = len(pg.query_selector_all("#impAnual .sb"))
+    huecos = len(pg.query_selector_all("#impAnual .sb.vacio"))
+    print(f"  ficha {ruc_i}: {meses} meses · {anuales} anos · "
+          f"{huecos} sin semanas")
+    if meses != 12:
+        print("  EL GRAFICO MENSUAL NO TRAE LOS DOCE MESES")
+        ok = False
+    if anuales != len(anios[0]):
+        print("  EL GRAFICO ANUAL NO TRAE LOS CINCO ANOS PEDIDOS")
+        ok = False
+    if huecos != len(faltan):
+        print(f"  {len(faltan)} anos sin semanas y {huecos} huecos: "
+              "ALGUN ANO SIN DATO SE ESTA PINTANDO COMO CERO")
+        ok = False
+    else:
+        print(f"  los {len(faltan)} anos sin semanas quedan en hueco: ok")
+
+    # Los anos que no se pueden mirar no se pueden elegir, y tienen que decir
+    # por que.
+    for a in faltan:
+        chip = pg.query_selector("#impAnioSel .chip[data-a='" + a + "']")
+        if not chip or chip.get_attribute("disabled") is None:
+            print(f"  EL ANO {a} SIN SEMANAS SE PUEDE ELEGIR")
+            ok = False
+        elif "sin semanas" not in (chip.get_attribute("title") or ""):
+            print(f"  EL ANO {a} NO EXPLICA POR QUE ESTA APAGADO")
+            ok = False
+
+    # Y lo mas importante de todo: el FOB importado no es facturacion. Si en
+    # algun momento un texto lo llama «ventas», el modulo esta afirmando algo
+    # que sus datos no dicen.
+    txt = (pg.text_content("#empImportHist") or "")
+    for prohibido in ("Ventas de la empresa", "Facturación", "Facturacion",
+                      "Ingresos de la empresa"):
+        if prohibido in txt:
+            print(f"  EL HISTORICO LLAMA «{prohibido}» AL VALOR IMPORTADO")
+            ok = False
+    if "FOB" not in txt:
+        print("  EL HISTORICO NO DICE QUE LA CIFRA ES FOB")
+        ok = False
+    else:
+        print("  llama FOB importado a lo importado: ok")
+
     # La vista de importacion vive de la fila desplegable: si el detalle no
     # cambia al pulsar otra categoria, la tabla es un adorno. Y las dos
     # categorias sin mercancia tienen que seguir visibles: son parte de la

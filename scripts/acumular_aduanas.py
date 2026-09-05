@@ -17,6 +17,13 @@ archivo se llama `ma{dia_inicial}{dia_final}{mes_final}{año}.zip` —`ma` para
 importación, `x` para exportación—. Se generan y se pide cada uno; el 404 es
 la respuesta de que esa semana ya no está publicada.
 
+Y deducirlos destapó algo que cambia el alcance del proyecto: **la ventana
+móvil es solo del índice**. Los archivos siguen en el servidor mucho después de
+dejar de estar listados. Se probaron diecinueve semanas de 2022 a 2026, una por
+trimestre, y las diecinueve responden con el ZIP completo; la de febrero de
+2022 trae 189,580 registros con el mismo esquema de campos que la de la semana
+pasada. El histórico que parecía imposible se baja de la fuente primaria.
+
 Sobre el mes del nombre: es el del ÚLTIMO día. `ma29050726` es la semana del
 29 de junio al 5 de julio y no la del 29 de julio, cosa que se verificó contra
 las fechas de los propios registros. Una de cada cuatro semanas cruza el
@@ -48,8 +55,10 @@ MANIFIESTO = os.path.join(ARCHIVO, "manifiesto.json")
 SEMILLA = "data/aduanas"          # lo que ya bajaron las corridas anteriores
 PRIMERA = dt.date(2026, 6, 15)    # la semana más vieja que llegamos a ver
 
+# line_buffering: la corrida historica dura horas y sin esto el avance no se
+# ve hasta el final, que es cuando ya no sirve para nada.
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
-                              errors="replace")
+                              errors="replace", line_buffering=True)
 
 
 def lunes(d):
@@ -169,6 +178,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--desde", default=PRIMERA.isoformat())
     ap.add_argument("--sembrar", action="store_true")
+    ap.add_argument("--solo", choices=["importacion", "exportacion"],
+                    help="baja un solo tipo; util para reconstruir historico")
     a = ap.parse_args()
 
     os.makedirs(ARCHIVO, exist_ok=True)
@@ -189,6 +200,8 @@ def main():
         e = man["semanas"].get(sem, {})
         pend = []
         for tipo, nombre in nombres(d).items():
+            if a.solo and tipo != a.solo:
+                continue
             reg = e.get(tipo)
             dest = os.path.join(ARCHIVO, nombre)
             if reg and os.path.exists(dest) and os.path.getsize(dest) == reg["bytes"]:

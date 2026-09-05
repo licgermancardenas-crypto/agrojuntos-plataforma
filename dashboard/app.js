@@ -339,6 +339,11 @@ function vistaEmpresas() {
     });
     EMP = { d: D, filas: filas, clase: -1, reg: "", ter: "", q: "",
             sem: D.semanas || 10 };
+    /* Importador de insumos es la clase 6, pero una empresa del padron agro
+       que importa queda clasificada por su clase del padron: se cuenta a
+       cualquiera con FOB de importacion registrado. */
+    EMP_IMPORTADORES = filas.filter(function (f) {
+      return f.c === 6 || f.i > 0; }).length;
 
     var sel = document.getElementById("fReg");
     sel.innerHTML = '<option value="">Todas las regiones</option>' +
@@ -381,6 +386,7 @@ function vistaEmpresas() {
         document.querySelectorAll("#fClase .chip").forEach(function (o) {
           o.setAttribute("aria-pressed", String(o === b)); });
         pintarEmpresas();
+        panelImportadores(EMP.clase === 6);
       };
     });
     var t = null;
@@ -435,6 +441,19 @@ function pintarEmpresas() {
   ], f, { sort: "x", limite: 400 });
 }
 REPINTAR.empresas = function () { if (EMP) pintarEmpresas(); };
+
+/* El panel de la subcategoria se arma una sola vez y despues solo se muestra
+   u oculta: sus dos archivos pesan 571 KB y no hay razon para repedirlos. */
+var IMP_PANEL = false;
+function panelImportadores(mostrar) {
+  var caja = document.getElementById("impPanel");
+  if (!caja) return;
+  caja.hidden = !mostrar;
+  if (!mostrar || IMP_PANEL) return;
+  IMP_PANEL = true;
+  impDatos().then(function (r) { pintarImpResumen(r[0]); })
+            .catch(function () { IMP_PANEL = false; });
+}
 
 /* ------------------------------------------------------------ importacion */
 function vistaImportacion() {
@@ -540,6 +559,240 @@ function pintarImportacion(D) {
       " de la tabla de exclusiones no son gasto agrícola no contado: son el " +
       "tamaño de la zona ambigua, donde el arancel no permite saber si el uso " +
       "es agrícola o industrial.";
+}
+
+/* ------------------------------------------------ importadores de insumos --
+   La capa histórica de la subcategoría. Se apoya en dos archivos que arma el
+   pipeline desde los manifiestos de aduanas: `mercado` con los totales y
+   `importadores` con una entrada por RUC.
+
+   La regla que gobierna todo lo que sigue: **un mes sin operaciones no es un
+   cero**. Puede ser que la empresa no importó o que esa semana todavía no se
+   bajó, y son cosas opuestas. Por eso cada año trae las semanas de origen que
+   lo respaldan y, sin semanas, la respuesta es «sin datos» y no US$ 0.
+
+   Y lo que se muestra es valor importado, nunca facturación: el FOB de una
+   importación no dice nada sobre las ventas de la empresa. */
+var MESES_IMP = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                 "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+/* Los importadores del directorio. El chip de clase muestra solo los que no
+   estan en el padron agro; el universo real incluye a los que si estan y
+   ademas importan, y ese es el numero que corresponde declarar. */
+var EMP_IMPORTADORES = 0;
+
+function impDatos() {
+  return Promise.all([cargar("importaciones/mercado"),
+                      cargar("importaciones/importadores")]);
+}
+
+/* --------------------------------------------- resumen de la subcategoría -- */
+function pintarImpResumen(M) {
+  var caja = document.getElementById("impResumen");
+  if (!caja) return;
+  var anios = M.anios_pedidos;
+  var conDato = M.anios_con_dato;
+  var actual = M.anio_en_curso;
+  var completos = conDato.filter(function (a) { return a !== actual; });
+  var ultimoCompleto = completos.length ? completos[completos.length - 1] : null;
+
+  var kpis = [
+    [nf(EMP_IMPORTADORES), "importadores identificados",
+     "con RUC, cruzados contra el padrón"],
+    [nf(M.empresas_con_dato), "con operación verificada",
+     nf(M.operaciones) + " operaciones aduaneras"],
+    [usd(M.por_anio[actual] ? M.por_anio[actual].fob : 0),
+     "importado " + actual + " YTD",
+     "hasta " + M.ultimo_registro + " · " +
+     (M.cobertura_semanas[actual] || 0) + " semanas medidas"],
+    [ultimoCompleto ? usd(M.por_anio[ultimoCompleto].fob) : "sin datos",
+     ultimoCompleto ? "importado " + ultimoCompleto : "último año completo",
+     ultimoCompleto
+       ? M.cobertura_semanas[ultimoCompleto] + " de 52 semanas descargadas"
+       : "todavía no se descargó ningún año completo"]
+  ];
+  caja.innerHTML = kpis.map(function (k) {
+    return "<div><span class='v'>" + k[0] + "</span><span class='l'>" +
+      k[1] + "</span><span class='s'>" + esc(k[2]) + "</span></div>";
+  }).join("");
+
+  barras(document.getElementById("impMercadoCat"),
+    M.categorias.slice(0, 10).map(function (c) {
+      return { n: c.n, v: c.fob, t: usd(c.fob), p: c.pct }; }));
+
+  var faltan = anios.filter(function (a) { return conDato.indexOf(a) < 0; });
+  document.getElementById("impCobertura").innerHTML =
+    "<b>Cobertura de la fuente.</b> Los manifiestos de SUNAT se archivan semana " +
+    "a semana; hoy hay <b>" + M.total.semanas + " semanas</b> descargadas, " +
+    "repartidas así: " +
+    conDato.map(function (a) {
+      return a + " (" + M.cobertura_semanas[a] + ")"; }).join(", ") + ". " +
+    (faltan.length
+      ? "De los cinco años pedidos, <b>" + faltan.join(", ") + "</b> todavía no " +
+        "se descargan: esos años no aparecen en cero, aparecen sin dato."
+      : "Los cinco años están completos.") +
+    " El valor mostrado es <b>FOB importado</b> y no facturación de la empresa.";
+}
+
+/* --------------------------------------------------- perfil de una empresa -- */
+function bloqueImportaciones(ruc, M, IMP) {
+  var e = IMP[ruc];
+  if (!e) {
+    return '<div class="card" style="margin-top:16px"><div class="h">' +
+      "<h3>Importaciones históricas</h3></div><div class='b'><p>" +
+      "Sin información histórica suficiente. Esta empresa figura en el " +
+      "directorio, pero no se encontraron operaciones de importación de " +
+      "insumos en las semanas de manifiestos descargadas hasta ahora.</p>" +
+      "</div></div>";
+  }
+  var actual = M.anio_en_curso;
+  var aniosConDato = Object.keys(e.por_anio).sort();
+  var completos = aniosConDato.filter(function (a) { return a !== actual; });
+  var ult = completos.length ? completos[completos.length - 1] : null;
+
+  return '<div class="card" style="margin-top:16px"><div class="h">' +
+      "<h3>Importaciones históricas</h3>" +
+      '<span class="eyebrow">FOB registrado en aduanas</span></div>' +
+    '<div class="b">' +
+      '<div class="kpis" style="margin:0 0 14px">' +
+        "<div><span class='v'>" + usd(e.por_anio[actual] ? e.por_anio[actual].fob : 0) +
+          "</span><span class='l'>importado " + actual + " YTD</span>" +
+          "<span class='s'>hasta " + esc(e.ultima) + "</span></div>" +
+        "<div><span class='v'>" + (ult ? usd(e.por_anio[ult].fob) : "sin datos") +
+          "</span><span class='l'>" + (ult ? "importado " + ult : "último año completo") +
+          "</span><span class='s'>" + (ult ? "" : "sin año completo descargado") +
+          "</span></div>" +
+        "<div><span class='v'>" + usd(e.total.fob) + "</span><span class='l'>" +
+          "acumulado registrado</span><span class='s'>" + nf(e.total.ops) +
+          " operaciones · CIF " + usd(e.total.cif) + "</span></div>" +
+        "<div><span class='v'>" + nf(e.paises.length) + "</span><span class='l'>" +
+          "países de origen</span><span class='s'>" +
+          esc(e.primera) + " a " + esc(e.ultima) + "</span></div>" +
+      "</div>" +
+
+      '<div class="eyebrow">Importaciones mensuales · FOB</div>' +
+      '<div class="chips" id="impAnioSel" style="margin:6px 0 4px"></div>' +
+      '<div class="serie" id="impMes"></div>' +
+      '<p class="sub" id="impMesNota"></p>' +
+
+      '<div class="eyebrow" style="margin-top:14px">Importaciones anuales</div>' +
+      '<div class="serie" id="impAnual"></div>' +
+      '<p class="sub" id="impAnualNota"></p>' +
+
+      '<div class="grid2" style="margin-top:14px">' +
+        "<div><div class='eyebrow'>Principales productos importados</div>" +
+          "<div class='barras compact' id='impCat'></div></div>" +
+        "<div><div class='eyebrow'>Principales países de origen</div>" +
+          "<div class='barras compact' id='impPais'></div></div>" +
+      "</div>" +
+      "<div class='eyebrow' style='margin-top:12px'>Partidas arancelarias</div>" +
+      "<div class='barras compact' id='impPart'></div>" +
+      '<p class="sub">Valor <b>FOB importado</b>, no facturación de la empresa. ' +
+      'Fuente: microdatos de manifiestos de SUNAT bajo la Ley 27806.</p>' +
+    "</div></div>";
+}
+
+function pintarImportaciones(ruc, M, IMP) {
+  var e = IMP[ruc];
+  if (!e) return;
+  var actual = M.anio_en_curso;
+  var conDato = Object.keys(e.por_anio).sort();
+
+  /* Selector de año: solo se puede elegir un año que tenga semanas detrás. Los
+     demás se muestran igual, apagados, para que se vea que existen y que lo
+     que falta es la descarga y no la empresa. */
+  var sel = document.getElementById("impAnioSel");
+  var elegido = conDato.indexOf(actual) >= 0 ? actual : conDato[conDato.length - 1];
+  sel.innerHTML = M.anios_pedidos.map(function (a) {
+    var hay = conDato.indexOf(a) >= 0;
+    return '<button class="chip" data-a="' + a + '"' +
+      (hay ? "" : " disabled title=\"sin semanas descargadas para " + a + "\"") +
+      ' aria-pressed="' + (a === elegido) + '">' + a +
+      (a === actual ? " YTD" : "") + "</button>";
+  }).join("");
+
+  function mensual(anio) {
+    var val = [], hay = [];
+    for (var m = 1; m <= 12; m++) {
+      var k = anio + "-" + (m < 10 ? "0" + m : m);
+      var cob = M.cobertura_mes[k];
+      hay.push(!!cob);
+      val.push(e.por_mes[k] || 0);
+    }
+    var mx = Math.max.apply(null, val.filter(function (v, i) { return hay[i]; }));
+    if (!isFinite(mx) || mx <= 0) mx = 1;
+    document.getElementById("impMes").innerHTML = val.map(function (v, i) {
+      if (!hay[i]) {
+        return '<div class="sb vacio" title="' + MESES_IMP[i] + " " + anio +
+          ' · sin semanas descargadas"><i></i><b>' + MESES_IMP[i] + "</b></div>";
+      }
+      var h = Math.max(2, Math.round(100 * v / mx));
+      return '<div class="sb" title="' + MESES_IMP[i] + " " + anio + " · " +
+        usd(v) + '"><i style="height:' + h + '%"></i><b>' +
+        MESES_IMP[i] + "</b></div>";
+    }).join("");
+    var conSem = hay.filter(Boolean).length;
+    document.getElementById("impMesNota").textContent =
+      conSem + " de 12 meses de " + anio + " tienen semanas descargadas. " +
+      "Los meses sin barra no son cero: son meses cuyos manifiestos todavía " +
+      "no se archivaron.";
+    sel.querySelectorAll(".chip").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.a === anio)); });
+  }
+  sel.onclick = function (ev) {
+    var b = ev.target.closest("button");
+    if (b && !b.disabled) mensual(b.dataset.a);
+  };
+  mensual(elegido);
+
+  /* Anual. Hay dos maneras de que un año no tenga barra y significan cosas
+     opuestas: que no se hayan descargado sus semanas —no sabemos— o que sí se
+     hayan medido y esta empresa no haya importado —sabemos que no importó—.
+     La primera es un hueco declarado; la segunda es un cero de verdad, y es la
+     única circunstancia en que este módulo puede escribir US$ 0. */
+  var va = M.anios_pedidos.map(function (a) {
+    return e.por_anio[a] ? e.por_anio[a].fob : 0; });
+  var medido = M.anios_pedidos.map(function (a) {
+    return (M.cobertura_semanas[a] || 0) > 0; });
+  var mxa = Math.max.apply(null, va.filter(function (v, i) {
+    return medido[i]; }));
+  if (!isFinite(mxa) || mxa <= 0) mxa = 1;
+  document.getElementById("impAnual").innerHTML =
+    M.anios_pedidos.map(function (a, i) {
+      if (!medido[i]) {
+        return '<div class="sb vacio" title="' + a +
+          ' · sin semanas descargadas: no hay información"><i></i><b>' +
+          a + "</b></div>";
+      }
+      if (!e.por_anio[a]) {
+        return '<div class="sb cero" title="' + a + " · " +
+          M.cobertura_semanas[a] + ' semanas medidas, sin importaciones ' +
+          'registradas de esta empresa"><i style="height:2%"></i><b>' +
+          a + "</b></div>";
+      }
+      var h = Math.max(2, Math.round(100 * va[i] / mxa));
+      return '<div class="sb" title="' + a + " · " + usd(va[i]) + " · " +
+        M.cobertura_semanas[a] + " semanas medidas" +
+        (a === M.anio_en_curso ? " (año en curso)" : "") +
+        '"><i style="height:' + h + '%"></i><b>' + a +
+        (a === M.anio_en_curso ? "*" : "") + "</b></div>";
+    }).join("");
+  var sinSemanas = M.anios_pedidos.filter(function (a, i) {
+    return !medido[i]; });
+  document.getElementById("impAnualNota").textContent =
+    "* " + M.anio_en_curso + " es año en curso, con información hasta " +
+    M.ultimo_registro + ". No es comparable contra un año entero." +
+    (sinSemanas.length
+      ? " " + sinSemanas.join(" y ") + " aparecen en hueco porque sus " +
+        "manifiestos todavía no se descargan: no son años sin importaciones, " +
+        "son años sin medir."
+      : "");
+
+  barras(document.getElementById("impCat"), e.categorias.slice(0, 8).map(
+    function (c) { return { n: c.n, v: c.fob, t: usd(c.fob) }; }));
+  barras(document.getElementById("impPais"), e.paises.slice(0, 8).map(
+    function (c) { return { n: pais(c.n), v: c.fob, t: usd(c.fob) }; }));
+  barras(document.getElementById("impPart"), e.partidas.slice(0, 8).map(
+    function (c) { return { n: c.n, v: c.fob, t: usd(c.fob) }; }));
 }
 
 /* --------------------------------------------------------------- perfil -- */
@@ -851,6 +1104,7 @@ function vistaEmpresa(ruc) {
             '<div class="b"><div class="barras compact" id="empExpD"></div></div></div>' +
           "</div>" : "") +
 
+      '<div id="empImportHist"></div>' +
       '<p class="sub" style="margin-top:14px">Microdatos de manifiestos de ' +
       'SUNAT bajo la Ley 27806, ' + IDX.semanas + ' semanas de junio a agosto ' +
       'de 2026. El mensual y el anual extrapolan esa ventana sin corregir ' +
@@ -889,6 +1143,16 @@ function vistaEmpresa(ruc) {
     mapaEn("mapPerfil", P.lat !== undefined
       ? "#pt=" + P.lat + "," + P.lon + ",0.6"
       : (P.rank > 0 ? "#ter=" + P.rank : "#peru"));
+
+    /* La capa historica de importaciones. Se pide solo aqui: son 568 KB que
+       quien mira una ficha de productor no tiene por que descargar. */
+    impDatos().then(function (r) {
+      var M = r[0], IMP = r[1];
+      var slot = document.getElementById("empImportHist");
+      if (!slot) return;
+      slot.innerHTML = bloqueImportaciones(ruc, M, IMP);
+      pintarImportaciones(ruc, M, IMP);
+    }).catch(function () {});
 
     var cv = document.getElementById("empMapa");
     if (cv) {
@@ -1071,20 +1335,155 @@ function barras(el, filas, opts) {
 /* Códigos ISO del manifiesto de aduanas. Solo los que aparecen arriba: el
    resto se muestra con su código, que es preferible a inventar un nombre. */
 var PAIS = {
-  US: "Estados Unidos", NL: "Países Bajos", ES: "España", GB: "Reino Unido",
-  MX: "México", CN: "China", CL: "Chile", EC: "Ecuador", CO: "Colombia",
-  BR: "Brasil", CA: "Canadá", DE: "Alemania", BE: "Bélgica", FR: "Francia",
-  IT: "Italia", RU: "Rusia", JP: "Japón", KR: "Corea del Sur", HK: "Hong Kong",
-  AR: "Argentina", BO: "Bolivia", PA: "Panamá", CR: "Costa Rica",
-  IL: "Israel", IN: "India", ID: "Indonesia", MA: "Marruecos", EG: "Egipto",
-  SA: "Arabia Saudita", QA: "Catar", OM: "Omán", AE: "Emiratos Árabes",
-  NO: "Noruega", SE: "Suecia", FI: "Finlandia", DK: "Dinamarca",
-  PL: "Polonia", TR: "Turquía", UA: "Ucrania", LT: "Lituania",
-  BY: "Bielorrusia", JO: "Jordania", TH: "Tailandia", VN: "Vietnam",
-  AU: "Australia", NZ: "Nueva Zelanda", ZA: "Sudáfrica", PT: "Portugal",
-  CH: "Suiza", TW: "Taiwán", MY: "Malasia", SG: "Singapur", GT: "Guatemala",
-  DO: "R. Dominicana", CU: "Cuba", PY: "Paraguay", UY: "Uruguay",
-  VE: "Venezuela", NI: "Nicaragua", HN: "Honduras", SV: "El Salvador"
+  "AE": "Emiratos Árabes",
+  "AG": "Antigua y Barbuda",
+  "AO": "Angola",
+  "AR": "Argentina",
+  "AT": "Austria",
+  "AU": "Australia",
+  "AW": "Aruba",
+  "BB": "Barbados",
+  "BD": "Bangladés",
+  "BE": "Bélgica",
+  "BG": "Bulgaria",
+  "BH": "Baréin",
+  "BJ": "Benín",
+  "BM": "Bermudas",
+  "BO": "Bolivia",
+  "BQ": "Caribe Neerlandés",
+  "BR": "Brasil",
+  "BS": "Bahamas",
+  "BZ": "Belice",
+  "CA": "Canadá",
+  "CG": "Congo",
+  "CH": "Suiza",
+  "CI": "Costa de Marfil",
+  "CL": "Chile",
+  "CN": "China",
+  "CO": "Colombia",
+  "CR": "Costa Rica",
+  "CU": "Cuba",
+  "CV": "Cabo Verde",
+  "CW": "Curazao",
+  "CY": "Chipre",
+  "CZ": "Chequia",
+  "DE": "Alemania",
+  "DK": "Dinamarca",
+  "DM": "Dominica",
+  "DO": "Rep. Dominicana",
+  "DZ": "Argelia",
+  "EC": "Ecuador",
+  "EE": "Estonia",
+  "EG": "Egipto",
+  "ES": "España",
+  "FI": "Finlandia",
+  "FO": "Islas Feroe",
+  "FR": "Francia",
+  "GB": "Reino Unido",
+  "GD": "Granada",
+  "GE": "Georgia",
+  "GF": "Guayana Francesa",
+  "GH": "Ghana",
+  "GM": "Gambia",
+  "GN": "Guinea",
+  "GP": "Guadalupe",
+  "GR": "Grecia",
+  "GT": "Guatemala",
+  "GY": "Guyana",
+  "HK": "Hong Kong",
+  "HN": "Honduras",
+  "HR": "Croacia",
+  "HT": "Haití",
+  "HU": "Hungría",
+  "ID": "Indonesia",
+  "IE": "Irlanda",
+  "IL": "Israel",
+  "IN": "India",
+  "IR": "Irán",
+  "IS": "Islandia",
+  "IT": "Italia",
+  "JM": "Jamaica",
+  "JO": "Jordania",
+  "JP": "Japón",
+  "KE": "Kenia",
+  "KG": "Kirguistán",
+  "KH": "Camboya",
+  "KN": "San Cristóbal y Nieves",
+  "KP": "Corea del Norte",
+  "KR": "Corea del Sur",
+  "KW": "Kuwait",
+  "KY": "Islas Caimán",
+  "KZ": "Kazajistán",
+  "LB": "Líbano",
+  "LC": "Santa Lucía",
+  "LK": "Sri Lanka",
+  "LR": "Liberia",
+  "LT": "Lituania",
+  "LU": "Luxemburgo",
+  "LV": "Letonia",
+  "MA": "Marruecos",
+  "MG": "Madagascar",
+  "ML": "Malí",
+  "MN": "Mongolia",
+  "MQ": "Martinica",
+  "MR": "Mauritania",
+  "MU": "Mauricio",
+  "MV": "Maldivas",
+  "MX": "México",
+  "MY": "Malasia",
+  "MZ": "Mozambique",
+  "NC": "Nueva Caledonia",
+  "NG": "Nigeria",
+  "NI": "Nicaragua",
+  "NL": "Países Bajos",
+  "NO": "Noruega",
+  "NP": "Nepal",
+  "NZ": "Nueva Zelanda",
+  "OM": "Omán",
+  "PA": "Panamá",
+  "PE": "Perú",
+  "PG": "Papúa Nueva Guinea",
+  "PH": "Filipinas",
+  "PK": "Pakistán",
+  "PL": "Polonia",
+  "PR": "Puerto Rico",
+  "PT": "Portugal",
+  "PY": "Paraguay",
+  "QA": "Catar",
+  "RO": "Rumanía",
+  "RS": "Serbia",
+  "RU": "Rusia",
+  "SA": "Arabia Saudita",
+  "SE": "Suecia",
+  "SG": "Singapur",
+  "SI": "Eslovenia",
+  "SK": "Eslovaquia",
+  "SL": "Sierra Leona",
+  "SN": "Senegal",
+  "SR": "Surinam",
+  "SV": "El Salvador",
+  "SX": "Sint Maarten",
+  "SY": "Siria",
+  "TG": "Togo",
+  "TH": "Tailandia",
+  "TN": "Túnez",
+  "TR": "Turquía",
+  "TT": "Trinidad y Tobago",
+  "TW": "Taiwán",
+  "TZ": "Tanzania",
+  "UA": "Ucrania",
+  "UG": "Uganda",
+  "US": "Estados Unidos",
+  "UY": "Uruguay",
+  "UZ": "Uzbekistán",
+  "VC": "San Vicente",
+  "VE": "Venezuela",
+  "VG": "Islas Vírgenes Br.",
+  "VI": "Islas Vírgenes EE.UU.",
+  "VN": "Vietnam",
+  "ZA": "Sudáfrica",
+  "ZM": "Zambia",
+  "ZW": "Zimbabue"
 };
 function pais(c) { return PAIS[c] || c; }
 

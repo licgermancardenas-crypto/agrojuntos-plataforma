@@ -20,3 +20,9 @@ ventas_*.csv
 # cada version para siempre. Lo que se versiona es el manifiesto —que semanas
 # hay, con su sha256— y no los ZIP. Si hace falta compartirlos, van a Releases.
 data/aduanas_hist/
+
+# La tabla de operaciones de importacion: 11 MB hoy, mas de 50 a cinco anos, y
+# se regenera entera desde los ZIP del manifiesto con build_import_historico.py
+# + build_import_clasificar.py. Se versionan los agregados, que son lo que el
+# sitio lee, y el manifiesto, que permite comprobar que los ZIP son los mismos.
+data/importaciones/processed/operaciones*.csv

@@ -171,8 +171,9 @@ congestión ni cierres estacionales, y 143 de los 7,036 sectores quedan fuera de
 grafo por no tener vía mapeada cerca. `logistica_sector.csv` conserva la
 estimación geodésica previa para contraste.
 
-**Los datos de aduanas cubren diez semanas**, de junio a agosto de 2026 —
-SUNAT mantiene una ventana móvil, no un histórico—. Las cifras anualizadas
+**Los datos de aduanas del eje general cubren diez semanas**, de junio a agosto
+de 2026. La subcategoría de importadores de insumos sí corre sobre el histórico
+acumulado —ver `IMPORTADORES_INSUMOS_METODOLOGIA.md`—. Las cifras anualizadas
 extrapolan ese período sin corregir estacionalidad y deben leerse como orden de
 magnitud. La partida 3102 incluye nitrato de amonio, que es fertilizante y a la
 vez base de explosivos de minería: empresas como Orica o Famesa aparecen por ese
@@ -479,12 +480,21 @@ commitee. Si con el tiempo pesan, van a *Releases*.
 
 ## El histórico de aduanas
 
-SUNAT publica los manifiestos bajo la Ley 27806 pero mantiene una **ventana
-móvil de unas diez semanas**: lo que hoy está, en tres meses no está. Por eso
-el eje anual del sitio tiene un solo año. La única forma de tener histórico es
-bajarlo antes de que se caiga, y eso hace `acumular_aduanas.py`: mira qué hay
-archivado, calcula qué semanas faltan y baja solo esas. Se puede correr todas
-las semanas sin pensar.
+SUNAT publica los manifiestos bajo la Ley 27806 y su página índice lista unas
+diez semanas. Este proyecto dio por sentado, durante meses, que fuera de esa
+ventana los archivos desaparecían. **Es falso, y nunca se había probado.**
+
+La ventana es del índice, no de los archivos: los ZIP siguen servidos mucho
+después de dejar de estar listados. Se probaron diecinueve semanas, una por
+trimestre entre 2022 y 2026, pidiendo el nombre deducido, y **las diecinueve
+respondieron con el archivo completo**; el de la semana del 14 de febrero de
+2022 trae 189,580 registros con el mismo esquema de 58 campos que el de la
+semana pasada.
+
+Así que el histórico se baja de la fuente primaria y no hay que estimarlo.
+`acumular_aduanas.py` mira qué hay archivado, calcula qué semanas faltan y baja
+solo esas; se puede correr todas las semanas sin pensar, y con `--desde` va
+hacia atrás tantos años como haga falta.
 
 No consulta la página índice —está detrás de un 403 y además obligaba a
 guardarla a mano, que es lo que impide correr esto sin nadie delante—. Los
@@ -510,13 +520,42 @@ Ninguna parte del pipeline tiene ya el número de semanas escrito a mano: sale
 de lo archivado. Una constante vieja anualizaría con el divisor equivocado en
 cuanto entre la semana siguiente.
 
+## Importadores de insumos
+
+La subcategoría «importador de insumos» del directorio de empresas corre sobre
+una capa propia, reconstruida operación por operación desde los manifiestos
+acumulados: 72 semanas, 28,514 operaciones, 953 empresas con operación
+verificada, US$ 1,876.4 MM FOB. Cada empresa tiene su historia de importación
+dentro de su ficha —mensual, anual, por producto, por país y por partida—.
+
+```
+scripts/build_import_historico.py    extrae las lineas de insumo de cada ZIP
+scripts/build_import_clasificar.py   clasifica: manda el arancel
+scripts/build_import_agregados.py    agrega por empresa y por mercado
+```
+
+Tres reglas la gobiernan y las tres están comprobadas en `verificar.py`:
+
+1. **Un año sin semanas descargadas no es US$ 0.** Se dibuja como hueco y se
+   dice con esas palabras. Un año que sí se midió y en el que la empresa no
+   importó es otra cosa —un cero de verdad— y se dibuja distinto.
+2. **Manda la partida arancelaria**, no la descripción. El 94.8% se clasifica
+   solo por arancel; la descripción únicamente parte lo que la subpartida junta,
+   como el 3808.93 que mete herbicidas y reguladores de crecimiento en el mismo
+   casillero.
+3. **El FOB importado no es facturación.** Los textos dicen «importaciones
+   FOB», «valor importado» o «FOB registrado», nunca «ventas».
+
+El detalle —fuentes, cobertura año por año, deduplicación, qué partidas entran
+y cuál se sacó y por qué— está en
+[`IMPORTADORES_INSUMOS_METODOLOGIA.md`](IMPORTADORES_INSUMOS_METODOLOGIA.md).
+
 ## Sobre los datos crudos de aduanas
 
 `agro_insumos_pe_data/raw_data/sunat/` versiona los 20 archivos DBF originales
-(197 MB) para que el análisis sea reproducible tal cual, sin depender de que
-SUNAT siga publicando esas semanas. Conviene saber que **SUNAT mantiene una
-ventana móvil de unas diez semanas, no un histórico**: acumular series exige
-correr `02_sunat_aduanas.py` de forma periódica.
+(197 MB) para que el análisis sea reproducible tal cual. El histórico completo
+—hoy 72 semanas— vive en `data/aduanas_hist/`, fuera del repositorio, y se
+reconstruye con `acumular_aduanas.py` desde el propio servidor de SUNAT.
 
 Si con el tiempo se acumulan muchas corridas, lo sano es mover los archivos
 crudos a *Releases* de GitHub en vez de al historial de git, que conserva cada

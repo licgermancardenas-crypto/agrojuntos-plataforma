@@ -277,6 +277,15 @@ que el archivo de hoy es el mismo de ayer—, los **agregados JSON** y el
 **reporte de validación**. Con el manifiesto en la mano, cualquiera vuelve a
 bajar los mismos archivos y debe llegar a las mismas cifras.
 
+Los tres estados que pide el encargo —crudo, procesado, histórico— existen,
+aunque no con esos nombres: el **crudo** es `data/aduanas_hist/`, que guarda los
+ZIP tal como los sirve SUNAT; el **procesado** es
+`data/importaciones/processed/`; y el **histórico** no es un tercer directorio
+sino una propiedad del crudo, porque cada ZIP es una semana fechada y el
+manifiesto dice cuáles hay. Un directorio aparte con los mismos archivos
+duplicaría 1.7 GB para no decir nada nuevo. El crudo se llama `aduanas_hist` y
+no `importaciones/raw` porque los mismos ZIP alimentan también la exportación.
+
 ### Trazabilidad de cada cifra
 
 Cada fila de `operaciones.csv` lleva: `ruc`, `razon_social`, `fecha`, `anio`,

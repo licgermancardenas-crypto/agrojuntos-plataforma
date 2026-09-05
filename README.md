@@ -349,6 +349,29 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Método | Cadena de cálculo, fuentes y limitaciones declaradas |
 | Mapa | Atlas geoespacial con seis representaciones, y un mapa propio por departamento, territorio y provincia |
 
+**Las cifras de comercio exterior tienen tres periodos**: *Medido*, *Mensual* y
+*Anual*, en un selector del encabezado que manda sobre todas las vistas. Todo
+el comercio exterior viaja MEDIDO en los JSON —las diez semanas tal cual— y es
+el navegador el que multiplica; así ninguna vista puede anualizar por su cuenta
+y mostrar una cifra distinta de la de al lado. «Medido» es el único dato duro:
+mensual y anual extrapolan la ventana sin corregir estacionalidad, y las
+cabeceras lo declaran («CIF anual», «FOB al mes», «FOB 10 sem»).
+
+**El eje de las series sigue a ese filtro.** Una sola función, `ejeTemporal`,
+decide el reparto del tiempo para todos los gráficos de serie: semanas en
+Medido, los doce meses en Mensual, los años en Anual, con el subtítulo cambiando
+entre *FOB por semana*, *por mes* y *por año*. Antes los tres modos reusaban el
+mismo arreglo de semanas, de modo que elegir «Mensual» cambiaba los montos pero
+el eje seguía rotulando 15/06 y 22/06.
+
+Aquí la agregación sí es real y no una extrapolación: la barra de junio es la
+suma de lo que entró en junio. El KPI de la tarjeta extrapola porque responde
+otra pregunta —cuánto sería en un mes tipo—, de modo que los dos números no
+coinciden ni deben. Y los periodos fuera de la ventana se dibujan como **hueco
+declarado, nunca como cero**: hoy hay registro en tres de los doce meses y en
+uno de los seis años del eje, y un cero diría que no hubo importación cuando lo
+cierto es que no hay dato.
+
 Cada vista carga su propio JSON la primera vez que se abre: el directorio de
 empresas pesa 1.8 MB —460 KB comprimido— y no debe frenar la portada.
 

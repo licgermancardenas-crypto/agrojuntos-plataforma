@@ -1003,6 +1003,85 @@ page(f"""
   extrapola ese período sin corregir estacionalidad, de modo que debe leerse como
   orden de magnitud.</p>
 """, "Parte IV · El mercado desde aduanas")
+
+# ------------------------------------- el historico de importacion --------
+# Esta pagina no anualiza nada: son anos medidos. Se lee del mismo agregado que
+# alimenta el sitio, para que el informe impreso y la plataforma no puedan
+# decir cifras distintas.
+import json as _json
+
+_M = _json.load(open("data/importaciones/processed/mercado.json",
+                     encoding="utf-8"))
+_IMP = _json.load(open("data/importaciones/processed/importadores.json",
+                       encoding="utf-8"))
+_ANIO_C = "2022"                       # el unico ano completo por ahora
+_top22 = sorted(
+    ((e["n"], e["por_anio"][_ANIO_C]["fob"], e["por_anio"][_ANIO_C]["ops"])
+     for e in _IMP.values() if _ANIO_C in e["por_anio"]),
+    key=lambda r: -r[1])
+_fob22 = _M["por_anio"][_ANIO_C]["fob"]
+_conc22 = 100 * sum(r[1] for r in _top22[:10]) / _fob22
+_faltan = [a for a in _M["anios_pedidos"] if a not in _M["anios_con_dato"]]
+_estado = {"2022": "año completo", "2023": "descarga en curso",
+           "2026": "año en curso"}
+
+page(f"""
+  <span class="kicker">Parte IV · El mercado desde aduanas</span>
+  <h2 class="title">El histórico <em>que sí estaba ahí</em></h2>
+  <p class="deck">Este informe venía afirmando que SUNAT mantiene una ventana
+     móvil de diez semanas. Es cierto del índice y <b>falso de los archivos</b>:
+     los ZIP siguen servidos mucho después de dejar de estar listados, y las
+     diecinueve semanas probadas entre 2022 y 2026 respondieron completas.</p>
+
+  <div class="kpis">
+    <div><span class="v">{nf(_M['total']['semanas'])}</span><span class="l">semanas de manifiesto<br>archivadas</span></div>
+    <div><span class="v">{nf(_M['operaciones'])}</span><span class="l">operaciones de importación<br>una fila por declaración</span></div>
+    <div><span class="v">{nf(_M['empresas_con_dato'])}</span><span class="l">importadores con<br>operación verificada</span></div>
+    <div><span class="v">{usd(_fob22)}</span><span class="l">importado en 2022<br>medido, no anualizado</span></div>
+  </div>
+
+  <div class="two" style="margin-top:6px">
+    <div>
+      <h3 class="rule">2022, año completo y medido</h3>
+      <p>Las 52 semanas de 2022 están archivadas: la primera cifra de
+      importación del informe que no extrapola nada. Diez empresas concentran
+      el <b>{_conc22:.0f}%</b>.</p>
+      {table([[cap(n)[:30], f'{v/1e6:,.1f}', nf(o)]
+              for n, v, o in _top22[:5]],
+             ["Importador", "FOB MM", "Oper."], ["l","r","r"], cls="tight")}
+      <p class="sub">FOB registrado en aduanas durante 2022. No es facturación
+      ni ventas: es lo que la empresa trajo del exterior.</p>
+    </div>
+    <div>
+      <h3 class="rule">Qué entra</h3>
+      <p>La categoría la decide la partida arancelaria y no la descripción del
+      declarante: el <b>94.8%</b> se clasifica solo por subpartida.</p>
+      {table([[c["n"], f'{c["fob"]/1e6:,.1f}', f'{c["pct"]:.1f}%']
+              for c in _M["categorias"][:5]],
+             ["Categoría", "FOB MM", "% del total"], ["l","r","r"], cls="tight")}
+      <div class="note brass">
+        <span class="h">Una partida que quedó fuera</span>
+        <p>La 3402 se incluyó pensando en adyuvantes. De sus US$ 134 MM, lo
+        que pesa es <i>base detergente</i> y <i>Ariel</i>: el adyuvante
+        comparte partida con el jabón de lavar ropa y no se separan por
+        arancel. <b>No entra.</b></p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="rule">Qué se llegó a mirar</h3>
+  <p>Un año sin barra puede significar que nadie importó o que ese archivo no
+  se bajó, así que cada año viaja con las semanas que lo respaldan.</p>
+  {table([[a, nf(_M["cobertura_semanas"].get(a, 0)),
+           _estado.get(a, "sin descargar")]
+          for a in _M["anios_pedidos"]],
+         ["Año", "Semanas archivadas", "Estado"], ["l","r","l"], cls="tight")}
+  <p class="sub">{" y ".join(_faltan)} no aparecen en cero: aparecen sin dato.
+  Antes decir «no encontramos información para {_faltan[0]}» que escribir US$ 0
+  sin evidencia. Fuente: manifiestos de SUNAT bajo la Ley 27806, último
+  registro {_M['ultimo_registro']}.</p>
+""", "Parte IV · El mercado desde aduanas")
+
 # --------------------------------------------- lo que el agro importa ------
 # El mercado vecino al que AgroJuntos ya vende: equipo, semilla, riego,
 # poscosecha y alimento balanceado, del mismo manifiesto de aduanas.

@@ -409,6 +409,29 @@ with sync_playwright() as pw:
     else:
         print("  tema oscuro aplicado")
 
+    # El relieve es una imagen bajo el dato: si no llega, el mapa sigue
+    # dibujandose y nadie se entera. Se comprueba que cambie el lienzo.
+    from PIL import Image
+    import io as _io
+    import numpy as _np
+
+    def _lienzo():
+        return _np.asarray(Image.open(_io.BytesIO(
+            pg.locator("#map").screenshot())).convert("L"), dtype=float)
+
+    con = _lienzo()
+    pg.click("#tRelieve")
+    pg.wait_for_timeout(900)
+    sin = _lienzo()
+    dif = _np.abs(con - sin)
+    print(f"\nrelieve")
+    print(f"  aporta sombra en el {100*(dif>2).mean():.0f}% del lienzo")
+    if dif.max() < 5:
+        print("  EL RELIEVE NO LLEGA AL LIENZO")
+        ok = False
+    pg.click("#tRelieve")
+    pg.wait_for_timeout(600)
+
     # Cada unidad tiene su propio mapa y su propia direccion. Se comprueba que
     # el enlace recorte de verdad —no que abra el mapa nacional— y que elegir
     # una unidad descarte la anterior: componerlas da recortes vacios que el

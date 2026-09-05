@@ -17,6 +17,7 @@ allí un fetch no tiene a quién preguntar.
 Uso:
     python scripts/build_atlas_html.py
 """
+import base64
 import io
 import json
 import os
@@ -57,9 +58,19 @@ def escribir(destino, payload):
     return os.path.getsize(destino) / 1024
 
 
+# El relieve: el sitio lo pide por URL y el atlas suelto lo lleva incrustado,
+# porque se abre desde el disco y ahi no hay a quien pedirle nada.
+RELIEVE = os.path.join(DATA_WEB, "relieve.jpg")
+RELIEVE_META = os.path.join(DATA_WEB, "relieve.json")
+relieve = None
+if os.path.exists(RELIEVE) and os.path.exists(RELIEVE_META):
+    relieve = json.loads(io.open(RELIEVE_META, encoding="utf-8").read())
+
 # El sitio pide las capas pesadas solo si el usuario elige esa representación.
 web = dict(base)
 web["capas_url"] = "/data/mapa_capas.json"
+if relieve:
+    web["relieve"] = dict(relieve, url="/data/relieve.jpg")
 kb_web = escribir(DASHBOARD, web)
 shutil.copyfile(CAPAS, os.path.join(DATA_WEB, "mapa_capas.json"))
 
@@ -67,6 +78,9 @@ shutil.copyfile(CAPAS, os.path.join(DATA_WEB, "mapa_capas.json"))
 # nada: ahí las capas van dentro o esas tres representaciones no existirían.
 solo = dict(base)
 solo.update(capas)
+if relieve:
+    b64 = base64.b64encode(io.open(RELIEVE, "rb").read()).decode()
+    solo["relieve"] = dict(relieve, url="data:image/jpeg;base64," + b64)
 kb_solo = escribir(SALIDA, solo)
 
 print(f"dashboard/mapa.html : {kb_web:,.0f} KB + "

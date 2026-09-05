@@ -313,6 +313,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
         <button data-vista="calor">Calor</button>
       </div>
       <div class="seg">
+        <button id="tRelieve" aria-pressed="true">Relieve</button>
         <button id="tCiudades" aria-pressed="true">Ciudades</button>
         <button id="tPuertos" aria-pressed="true">Puertos</button>
       </div>
@@ -362,6 +363,52 @@ function marcarCargando(on){
   var c=document.getElementById("vistaCtl");
   c.classList.toggle("cargando", !!on);
   c.querySelectorAll("[data-vista]").forEach(function(b){ b.disabled=!!on; });
+}
+
+/* El relieve del pais entero, el mismo calculo de sombreado que las laminas
+   impresas. Llega como una imagen y se dibuja recortada contra el contorno:
+   guardar la transparencia obligaria a PNG y a pagar cinco veces el peso por
+   un recorte que el lienzo hace gratis. */
+var RELIEVE=null, RELMETA=D.relieve||null;
+if(RELMETA && RELMETA.url){
+  var _im=new Image();
+  _im.onload=function(){ RELIEVE=_im; draw(); };
+  _im.onerror=function(){ RELMETA=null; };
+  _im.src=RELMETA.url;
+}
+
+function dibujarRelieve(){
+  if(!RELIEVE || !st.relieve) return;
+  var e=RELMETA.extent;
+  var X0=sx(e[0]), X1=sx(e[1]), Y0=sy(e[3]), Y1=sy(e[2]);
+  if(X1<0||X0>W||Y1<0||Y0>H) return;
+  ctx.save();
+  ctx.beginPath();
+  DEPS.forEach(function(d){
+    d.r.forEach(function(a){
+      for(var i=0;i<a.length;i++){
+        var x=sx(a[i][0]), y=sy(a[i][1]);
+        if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y);
+      }
+      ctx.closePath();
+    });
+  });
+  ctx.clip();
+  /* Multiply deja pasar el color de la tierra por debajo: el relieve aporta
+     la sombra y no el tono, que es lo que hace que no compita con el dato. */
+  ctx.globalCompositeOperation="multiply";
+  /* Mas opaco al alejarse: a escala nacional el navegador reduce la imagen de
+     1463 px a unos 400 y el promediado se come el sombreado, de modo que la
+     misma opacidad que sirve en un departamento deja el pais liso. Y menos en
+     oscuro, donde multiplicar sobre un fondo ya oscuro tapa el dato. */
+  var oscuro = (document.documentElement.dataset.theme === "dark") ||
+    (!document.documentElement.dataset.theme &&
+     window.matchMedia("(prefers-color-scheme: dark)").matches);
+  var base = oscuro ? .34 : .70;
+  ctx.globalAlpha = Math.max(.26, base - Math.min(.30, (view.k - 1) * .045));
+  ctx.imageSmoothingQuality="high";
+  ctx.drawImage(RELIEVE, X0, Y0, X1-X0, Y1-Y0);
+  ctx.restore();
 }
 
 var esperandoCapas=[];
@@ -414,7 +461,8 @@ function norm(s){ return String(s).normalize("NFD")
   .replace(/[̀-ͯ]/g,"").toLowerCase(); }
 
 /* ---------------- estado ---------------- */
-var st = { capa:"sam", vista:"area", umbral:"2", vial:1, dep:-1, reg:-1,
+var st = { capa:"sam", vista:"area", umbral:"2", vial:1, relieve:true,
+           dep:-1, reg:-1,
            ter:-1, prov:-1, q:"",
            hovP:-1,
            sel:-1, hov:-1, ciudades:true, puertos:true };
@@ -721,6 +769,8 @@ function toggle(id, campo){
   };
 }
 toggle("tCiudades","ciudades"); toggle("tPuertos","puertos");
+if(RELMETA) toggle("tRelieve","relieve");
+else document.getElementById("tRelieve").style.display="none";
 
 /* ---------------- escalas ---------------- */
 var RAMPA=["#EDF2EA","#C9DCC2","#93BE93","#559A78","#22755F","#0B4C40"];
@@ -1052,6 +1102,7 @@ function draw(){
   });
   ctx.globalAlpha=1;
 
+  dibujarRelieve();
   dibujarVias();
 
   var sub=hexFiltrados();

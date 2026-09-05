@@ -126,7 +126,8 @@ build_cultivos.py         qué se siembra en cada región, y qué mercado implic
 build_agroexport.py       qué se exporta y por qué aduana sale, desde el manifiesto
 build_dashboard_data.py   arma los JSON que consume el sitio
 build_mapas_pdf.py        figuras del reporte
-build_relieve.py          sombreado de relieve por departamento
+build_relieve.py          sombreado de relieve por departamento, para las láminas
+build_relieve_web.py      un solo sombreado nacional, para el fondo del atlas web
 build_cultivo.py          huella cultivada desde el landuse de OSM
 build_territorios.py      da forma a los territorios de venta para dibujarlos
 build_laminas_dep.py      una lámina a página completa por departamento
@@ -262,6 +263,17 @@ del encabezado se recalculan sobre lo filtrado—, y superpone la red vial en
 tres niveles sobre 194 capitales de provincia y los puertos agroexportadores.
 Es la capa que explica el mapa: se ve por qué un valle con mercado alto queda
 lejos en tiempo, que es lo que el color por sí solo no dice.
+
+**El atlas tiene relieve de fondo**, el mismo cálculo de sombreado que las
+láminas impresas: teselas Terrarium de AWS, sombreado de Horn, 302 m por píxel.
+El sombreado solo, que en papel a 130 dpi se lee perfecto, en pantalla a escala
+nacional desaparecía —la imagen se reduce de 1463 px a unos 400 y el promediado
+se come las líneas finas de pendiente—, así que se le suma una componente de
+altura: la pendiente dibuja el valle y la altura dibuja la masa. Va en JPEG
+(380 KB) porque el relieve es una superficie suave sin bordes duros, que es lo
+que un compresor con pérdida hace bien; el mar no se borra en la imagen sino
+que el lienzo recorta contra el contorno del país al dibujarla, lo que evita
+pagar PNG por una transparencia. Se apaga con su propio interruptor.
 
 **El mapa dibuja el sector, no un círculo sobre el sector.** La unidad de todo
 el análisis son los 7,036 sectores estadísticos del MIDAGRI, y el atlas los

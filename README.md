@@ -289,12 +289,20 @@ diferencias respecto del vértice anterior, los números pasan de `-80.1234` a
 pesaban los círculos. La capa se decodifica una vez al recibirla, no en cada
 cuadro.
 
-Los límites administrativos también estaban degradados de más. Se les aplicaba
-una tolerancia de 0.02 grados —**2.2 km**—, de modo que la costa salía recta y
-una provincia recortada se leía como un pentágono. Los departamentos ya no se
-simplifican (3,374 vértices, +7 KB comprimidos) y las provincias bajan a 111 m
-(12,491 vértices, +39 KB). Más detalle que ese no lo tiene la fuente: los
-geojson publicados ya vienen generalizados, y de ahí el «simple» de su nombre.
+**Los límites vienen del IGN y no del geojson publicado.** El archivo que se
+usaba antes ya venía generalizado por su editor —de ahí el «simple» de su
+nombre— con 3,374 vértices para los 25 departamentos. El servicio WFS del
+propio Instituto Geográfico Nacional tiene **307,384**: noventa y una veces
+más. Simplificados a 222 m quedan 22,868, que son 130 KB comprimidos.
+
+Las provincias salen de geoBoundaries, cuya fuente declarada es el IGN:
+**689,927 vértices contra 19,010**. No traen el departamento, así que el par
+(departamento, provincia) se recupera por **cruce espacial** —el punto
+representativo de cada forma nueva dentro de la forma vieja— y no por nombre:
+cruzar por nombre es lo que ya rompió la ubicación de las empresas una vez. El
+cruce ubica las 196 formas y cubre 195 de las 197 anteriores; las dos que
+sobran son erratas del archivo viejo, «PUIRA» y «VICTOR FAFARDO», que es una
+razón más para cambiarlo.
 
 La red dibujada sale de `build_vial_mapa.py`, que une los tramos de OSM antes
 de simplificarlos —OSM corta cada vía en los cruces, así que la Panamericana

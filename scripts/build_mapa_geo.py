@@ -69,13 +69,19 @@ mod = pd.read_csv("out/modelo_v3_departamento.csv", encoding="utf-8-sig")
 sec_ruteo = pd.read_csv("out/ruteo_sector.csv", encoding="utf-8-sig")
 
 # ------------------------------------------------------- contorno del pais -
-# El archivo de origen ya viene generalizado por su editor —de ahi el «simple»
-# del nombre—, con 3,374 vertices para los 25 departamentos. Encima de eso se
-# aplicaba una tolerancia de 0.02 grados, que son 2.2 km: los limites salian
-# poligonales y la costa, recta. Quitarla devuelve los 3,374 vertices y cuesta
-# 7 KB comprimidos. Mas detalle que este no lo tiene la fuente.
-dep_g = gpd.read_file("data/peru_departamental_simple.geojson").to_crs(4326)
-dep_g["geometry"] = dep_g.geometry.buffer(0)
+# El contorno sale del servicio WFS del propio IGN y no del geojson publicado
+# «simple», que ya venia generalizado por su editor: 307,384 vertices contra
+# 3,374, noventa y una veces mas. Simplificado a 222 m quedan 23 mil, que son
+# 130 KB comprimidos: siete veces el detalle de antes por 112 KB. Es la
+# diferencia entre una costa dibujada y una costa recta.
+#
+# El cruce va por IDDPTO y no por nombre, que es la unica manera de que no se
+# repita el problema de los distritos homonimos.
+TOL_ADM = 0.002
+dep_g = gpd.read_file("data/ign/departamentos.geojson").to_crs(4326)
+dep_g = dep_g.rename(columns={"DEPARTAMEN": "NOMBDEP"})
+dep_g["geometry"] = dep_g.geometry.buffer(0).simplify(
+    TOL_ADM, preserve_topology=True)
 
 
 def anillos(geom):
@@ -272,11 +278,30 @@ for _, r in sec_pt.sort_values("s_sam_usd", ascending=False).iterrows():
 # Provincias y no distritos: 196 formas se reconocen a escala nacional y
 # 1,874 se leen como ruido, además de pesar tres veces más.
 prov_g = gpd.read_file("data/peru_provincial_simple.geojson").to_crs(4326)
-# 0.01 grados son 1.1 km: dejaba cada provincia en 29 vertices y una costa
-# recortada se leia como un pentagono. A 111 m son 12,491 vertices y 39 KB
-# comprimidos mas, que es lo que cuesta que el mapa parezca un mapa.
-prov_g["geometry"] = prov_g.geometry.buffer(0).simplify(
-    0.001, preserve_topology=True)
+# La geometria viene de geoBoundaries, cuya fuente declarada es el IGN:
+# 689,927 vertices contra los 19,010 del archivo publicado. No trae el
+# departamento, asi que el par (departamento, provincia) se recupera por cruce
+# ESPACIAL contra el archivo viejo —el punto representativo de cada forma
+# nueva dentro de la forma vieja— y no por nombre. Cruzar por nombre es lo que
+# ya rompio la ubicacion de las empresas una vez.
+#
+# El cruce ubica las 196 formas y cubre 195 de nuestras 197 provincias. Las dos
+# que sobran son erratas del archivo viejo —«PUIRA» y «VICTOR FAFARDO»—, y esa
+# es una razon mas para cambiarlo.
+prov_vieja = prov_g
+gb = gpd.read_file("data/ign/provincias_gb.geojson").to_crs(4326)
+gb["geometry"] = gb.geometry.buffer(0)
+_pt = gb.copy()
+_pt["geometry"] = gb.geometry.representative_point()
+_j = gpd.sjoin(_pt, prov_vieja[["FIRST_NOMB", "NOMBPROV", "geometry"]],
+               how="left", predicate="within")
+gb["FIRST_NOMB"] = _j["FIRST_NOMB"].values
+gb["NOMBPROV"] = _j["NOMBPROV"].values
+_sin = gb["NOMBPROV"].isna().sum()
+if _sin:
+    print(f"  aviso: {_sin} provincias nuevas sin ubicar, se descartan")
+prov_g = gb[gb["NOMBPROV"].notna()].copy()
+prov_g["geometry"] = prov_g.geometry.simplify(TOL_ADM, preserve_topology=True)
 
 sec_pv = sec_ruteo.assign(
     kd=sec_ruteo["dep"].map(key), kp=sec_ruteo["prov"].map(key))

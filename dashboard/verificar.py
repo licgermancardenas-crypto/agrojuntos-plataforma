@@ -157,6 +157,58 @@ with sync_playwright() as pw:
         else:
             print("  limpiar y restaurar: ok")
 
+    # El eje de la serie tiene que seguir al filtro: antes se reusaba el mismo
+    # arreglo de semanas para los tres modos, de modo que «Mensual» cambiaba
+    # los montos pero seguia rotulando 15/06 y 22/06.
+    print("\neje temporal de la serie")
+    pg.evaluate("() => location.hash = '#empresa=20524269440'")
+    pg.wait_for_selector("#empSerie .sb", timeout=30000)
+    ESPERA = {
+        "medido":  (10, "semana", "15/06"),
+        "mensual": (12, "mes",    "Ene"),
+        "anual":   (6,  "año", "2021"),
+    }
+    for modo, (n, palabra, primera) in ESPERA.items():
+        pg.click(f'#fPeriodo button[data-p="{modo}"]')
+        pg.wait_for_timeout(1000)
+        etq = pg.eval_on_selector_all("#empSerie .sb b", "e => e.map(x => x.textContent)")
+        tit = (pg.text_content("#empSerieTit") or "").lower()
+        con = pg.eval_on_selector_all(
+            "#empSerie .sb", "e => e.filter(x => !x.classList.contains('vacio')).length")
+        print(f"  {modo:<8} {len(etq):>2} barras ({con} con dato) · «{tit}» · eje {etq[0]}..{etq[-1]}")
+        if len(etq) != n:
+            print(f"  EL EJE {modo} TIENE {len(etq)} BARRAS Y DEBERIA TENER {n}")
+            ok = False
+        if etq[0] != primera:
+            print(f"  EL EJE {modo} EMPIEZA EN {etq[0]} Y DEBERIA EN {primera}")
+            ok = False
+        if palabra not in tit:
+            print(f"  EL ROTULO {modo} NO DICE «{palabra}»: {tit}")
+            ok = False
+        # ninguna etiqueta de semana puede sobrevivir fuera de «medido»
+        if modo != "medido" and any("/" in e for e in etq):
+            print(f"  QUEDAN FECHAS SEMANALES EN EL EJE {modo}: {etq}")
+            ok = False
+        if con < 1:
+            print(f"  EL EJE {modo} NO TIENE NINGUNA BARRA CON DATO")
+            ok = False
+
+    # La suma agrupada no puede inventar ni perder dinero.
+    pg.click('#fPeriodo button[data-p="medido"]')
+    pg.wait_for_timeout(800)
+    tot_sem = pg.eval_on_selector_all(
+        "#empSerie .sb", "e => e.map(x => x.getAttribute('title'))")
+    pg.click('#fPeriodo button[data-p="mensual"]')
+    pg.wait_for_timeout(800)
+    con_mes = pg.eval_on_selector_all(
+        "#empSerie .sb:not(.vacio)", "e => e.length")
+    print(f"  {len(tot_sem)} semanas se agrupan en {con_mes} meses con dato")
+    if con_mes >= len(tot_sem):
+        print("  LA AGRUPACION MENSUAL NO AGRUPA NADA")
+        ok = False
+    pg.click('#fPeriodo button[data-p="anual"]')
+    pg.wait_for_timeout(600)
+
     # Las cifras de comercio exterior viajan medidas y el sitio las lleva al
     # periodo elegido. Se comprueba la aritmetica, no solo que el boton pinte:
     # anual tiene que ser doce veces el mensual, y medido la base de ambos.

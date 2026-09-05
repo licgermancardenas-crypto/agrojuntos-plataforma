@@ -318,3 +318,10 @@ td.faint{color:var(--muted)}
 .mapabtn:hover{border-color:var(--forest); color:var(--forest)}
 .mapacard .h .eyebrow a{text-transform:none; letter-spacing:0}
 @media (max-width:860px){ .mapaslot{height:380px} }
+
+/* Periodo sin registro en la serie temporal. No es un cero: es un hueco. Se
+   dibuja como una base punteada para que se distinga de una barra de valor
+   bajo, que es exactamente la confusion que hay que evitar. */
+.serie .sb.vacio i{height:100%; background:none;
+  border-bottom:1px dashed var(--line); opacity:.9}
+.serie .sb.vacio b{opacity:.45}

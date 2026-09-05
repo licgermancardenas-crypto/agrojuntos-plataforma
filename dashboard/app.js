@@ -620,15 +620,106 @@ function peso(kg) {
   return nf(Math.round(kg)) + " kg";
 }
 
-function serieSemanal(el, serie, sems) {
-  var mx = Math.max.apply(null, serie) || 1;
-  el.innerHTML = serie.map(function (v, i) {
+/* ------------------------------------------------------- eje temporal ----
+   Una sola función decide cómo se reparte el tiempo en TODOS los gráficos de
+   serie del sitio, para que el eje no pueda contradecir al filtro de periodo.
+   Antes cada gráfico reusaba el mismo arreglo de semanas, de modo que elegir
+   «Mensual» cambiaba los montos pero seguía rotulando 15/06, 22/06, 06/07: el
+   eje decía una granularidad y el número otra.
+
+   La agregación es real —se suman los despachos de cada mes o de cada año— y
+   no una extrapolación. El KPI de arriba sí extrapola, porque responde otra
+   pregunta: «cuánto sería en un mes tipo». Aquí la barra de junio es lo que
+   entró en junio.
+
+   Los manifiestos de SUNAT son una ventana móvil de diez semanas, no un
+   histórico: hoy cubren del 15 de junio al 27 de agosto de 2026. Los meses y
+   los años fuera de esa ventana existen en el eje pero se dibujan como hueco
+   declarado, nunca como cero. Un cero diría que no hubo importación; el hueco
+   dice que no hay registro, que es lo cierto. */
+var MES_COR = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
+               "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+var MES_LAR = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+               "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre",
+               "Diciembre"];
+var ANIO_DESDE = 2021;          // el eje anual arranca aquí aunque no haya dato
+
+function ejeTemporal(valores, fechas) {
+  valores = valores || [];
+  fechas = fechas || [];
+
+  if (PERIODO === "mensual") {
+    var vm = new Array(12).fill(0), hay = new Array(12).fill(false);
+    fechas.forEach(function (f, i) {
+      /* La semana se imputa al mes en que empieza. Una que cruza el cambio de
+         mes queda entera del lado en que abre: partirla exigiría el detalle
+         diario, que el manifiesto semanal no trae. */
+      var m = parseInt(String(f).slice(5, 7), 10) - 1;
+      if (m >= 0 && m < 12) { vm[m] += valores[i] || 0; hay[m] = true; }
+    });
+    return {
+      etq: MES_COR, etqLarga: MES_LAR, val: vm, hay: hay,
+      titulo: "Continuidad · FOB por mes",
+      nota: "Suma medida de cada mes. Los meses sin barra están fuera de la " +
+            "ventana de diez semanas que publica SUNAT: no hay registro, no " +
+            "es que no haya habido importación."
+    };
+  }
+
+  if (PERIODO === "anual") {
+    var anios = fechas.map(function (f) { return parseInt(String(f).slice(0, 4), 10); })
+                      .filter(function (a) { return a > 1900; });
+    var hasta = anios.length ? Math.max.apply(null, anios) : ANIO_DESDE;
+    var desde = Math.min(ANIO_DESDE, anios.length ? Math.min.apply(null, anios) : ANIO_DESDE);
+    var etq = [], va = [], ha = [];
+    for (var a = desde; a <= hasta; a++) {
+      etq.push(String(a));
+      va.push(0);
+      ha.push(false);
+    }
+    fechas.forEach(function (f, i) {
+      var k = parseInt(String(f).slice(0, 4), 10) - desde;
+      if (k >= 0 && k < va.length) { va[k] += valores[i] || 0; ha[k] = true; }
+    });
+    return {
+      etq: etq, etqLarga: etq, val: va, hay: ha,
+      titulo: "Continuidad · FOB por año",
+      nota: "Suma medida de cada año. SUNAT mantiene una ventana móvil de diez " +
+            "semanas y no un histórico, así que solo el año en curso tiene " +
+            "registro; los demás se muestran vacíos y no en cero."
+    };
+  }
+
+  /* Medido: la semana tal cual, que es la unidad en que llega el manifiesto. */
+  return {
+    etq: fechas.map(function (f) {
+      return String(f).slice(8) + "/" + String(f).slice(5, 7); }),
+    etqLarga: fechas.map(function (f) { return "Semana del " + f; }),
+    val: valores.slice(),
+    hay: valores.map(function () { return true; }),
+    titulo: "Continuidad · FOB por semana",
+    nota: "Cada barra es una semana de manifiestos, tal como los publica SUNAT."
+  };
+}
+
+/* Dibuja la serie con el eje que corresponda al periodo. Mantiene la misma
+   marca visual de siempre: .serie > .sb > i + b. */
+function pintarSerie(el, valores, fechas, elTitulo, elNota) {
+  if (!el) return;
+  var e = ejeTemporal(valores, fechas);
+  var mx = Math.max.apply(null, e.val.filter(function (v, i) { return e.hay[i]; }));
+  if (!isFinite(mx) || mx <= 0) mx = 1;
+  el.innerHTML = e.val.map(function (v, i) {
+    if (!e.hay[i]) {
+      return '<div class="sb vacio" title="' + esc(e.etqLarga[i]) +
+        ' · sin registro"><i></i><b>' + esc(e.etq[i]) + "</b></div>";
+    }
     var h = Math.max(2, Math.round(100 * v / mx));
-    return '<div class="sb" title="' + esc(sems[i] || "") + " · " + usd(v) +
-      '"><i style="height:' + h + '%"></i><b>' +
-      (sems[i] || "").slice(8) + "/" + (sems[i] || "").slice(5, 7) +
-      "</b></div>";
+    return '<div class="sb" title="' + esc(e.etqLarga[i]) + " · " + usd(v) +
+      '"><i style="height:' + h + '%"></i><b>' + esc(e.etq[i]) + "</b></div>";
   }).join("");
+  if (elTitulo) elTitulo.textContent = e.titulo;
+  if (elNota) elNota.textContent = e.nota;
 }
 
 function vistaEmpresa(ruc) {
@@ -717,8 +808,10 @@ function vistaEmpresa(ruc) {
           '<span class="eyebrow">FOB ' + pSuf(SEM) + "</span></div>" +
           '<div class="b">' + (I
             ? '<div class="barras compact" id="empCats"></div>' +
-              '<div class="eyebrow" style="margin-top:12px">Continuidad · FOB por semana</div>' +
-              '<div class="serie" id="empSerie"></div>'
+              '<div class="eyebrow" style="margin-top:12px" id="empSerieTit">' +
+              "Continuidad</div>" +
+              '<div class="serie" id="empSerie"></div>' +
+              '<p class="sub" id="empSerieNota"></p>'
             : "<p>Sin importación registrada en la ventana de aduanas.</p>") +
           "</div></div>" +
       "</div>" +
@@ -765,7 +858,9 @@ function vistaEmpresa(ruc) {
       barrasDe("empCats", I.cats);
       barrasDe("empPaises", I.paises);
       barrasDe("empGlosas", I.glosas);
-      serieSemanal(document.getElementById("empSerie"), I.serie, IDX.sems);
+      pintarSerie(document.getElementById("empSerie"), I.serie, IDX.sems,
+                  document.getElementById("empSerieTit"),
+                  document.getElementById("empSerieNota"));
       tabla(document.getElementById("tEmpDesc"), [
         { k: "d", t: "Descripción declarada", l: 1, f: function (r) {
             return esc(r.d); } },

@@ -107,6 +107,7 @@ harvest_vial.py           OSM  · red vial y terminales
 build_puertos.py          APN  · terminales portuarios, geocodificados
 build_logistica.py        tiempos de viaje y costo de servir
 build_empresas.py         SUNAT · padrón RUC -> empresas agrícolas
+acumular_aduanas.py       archiva cada semana antes de que SUNAT la retire
 listar_aduanas.py         lista los archivos de aduanas publicados
 bajar_aduanas.py          los descarga con verificación de integridad
 build_aduanas.py          lee los DBF y filtra partidas de insumos agrícolas
@@ -475,6 +476,39 @@ así que el historial de git acumula una versión por cada corrida que se
 commitee. Si con el tiempo pesan, van a *Releases*.
 
 ---
+
+## El histórico de aduanas
+
+SUNAT publica los manifiestos bajo la Ley 27806 pero mantiene una **ventana
+móvil de unas diez semanas**: lo que hoy está, en tres meses no está. Por eso
+el eje anual del sitio tiene un solo año. La única forma de tener histórico es
+bajarlo antes de que se caiga, y eso hace `acumular_aduanas.py`: mira qué hay
+archivado, calcula qué semanas faltan y baja solo esas. Se puede correr todas
+las semanas sin pensar.
+
+No consulta la página índice —está detrás de un 403 y además obligaba a
+guardarla a mano, que es lo que impide correr esto sin nadie delante—. Los
+nombres se deducen: la semana va de lunes a domingo y el archivo se llama
+`ma{día inicial}{día final}{mes final}{año}.zip`, `ma` para importación y `x`
+para exportación. El 404 es la respuesta de que esa semana ya no está.
+
+**El mes del nombre es el del último día.** `ma29050726` es la semana del 29 de
+junio al 5 de julio y no la del 29 de julio; se verificó contra las fechas de
+los propios registros, donde ese archivo trae 13,070 despachos de junio. Una de
+cada cuatro semanas cruza el cambio de mes, así que leerlo mal las desplazaba
+un mes entero y las mandaba al casillero equivocado en cualquier agrupación
+mensual. Estuvo mal hasta que el histórico obligó a mirarlo de cerca.
+
+Lo que se versiona es `datos/comercio/aduanas_manifiesto.json` —qué semanas
+hay, con su SHA-256, su tamaño y cuándo se bajaron— y no los ZIP: crecen unos
+40 MB por semana y git conserva cada versión para siempre. Los crudos viven en
+`data/aduanas_hist/`, fuera del repositorio. El manifiesto también anota si
+SUNAT **republica** una semana con contenido distinto, que es la clase de cosa
+que después nadie puede explicar.
+
+Ninguna parte del pipeline tiene ya el número de semanas escrito a mano: sale
+de lo archivado. Una constante vieja anualizaría con el divisor equivocado en
+cuanto entre la semana siguiente.
 
 ## Sobre los datos crudos de aduanas
 

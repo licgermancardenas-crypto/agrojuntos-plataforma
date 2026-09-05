@@ -164,24 +164,40 @@ def procesar_export(zip_path):
 
 
 def semana_de(nombre):
-    """ma06120726 -> the week's start date, from the ddDDmmyy filename code."""
+    """ma06120726 -> la fecha en que empieza la semana, desde el codigo del
+    nombre: dia inicial, dia final, mes y ano DEL DIA FINAL.
+
+    Que el mes sea el del ultimo dia importa en las semanas que cruzan de mes,
+    que son una de cada cuatro. `ma29050726` es del 29 de junio al 5 de julio,
+    no del 29 de julio: se verifico contra las fechas de los propios registros,
+    donde ese archivo trae 13,070 despachos de junio. Tomar el mes como el del
+    primer dia adelantaba esas semanas un mes entero y las mandaba al casillero
+    equivocado en cualquier agrupacion mensual.
+    """
     m = re.search(r"(\d{2})(\d{2})(\d{2})(\d{2})", nombre)
     if not m:
         return nombre
-    d1, d2, mes, anio = m.groups()
-    return f"20{anio}-{mes}-{d1}"
+    d1, d2, mes, anio = (int(x) for x in m.groups())
+    y, mm = 2000 + anio, mes
+    if d1 > d2:                      # la semana abre en el mes anterior
+        mm -= 1
+        if mm == 0:
+            mm, y = 12, y - 1
+    return f"{y}-{mm:02d}-{d1:02d}"
 
 
 def main():
     import glob
     imps, exps = [], []
-    for z in sorted(glob.glob("data/aduanas/ma*.zip")):
+    # El archivo historico y no la ventana movil: acumular_aduanas.py guarda
+    # cada semana antes de que SUNAT la retire, y de ahi sale el historico.
+    for z in sorted(glob.glob("data/aduanas_hist/ma*.zip")):
         d, n = procesar_import(z)
         d["semana"] = semana_de(os.path.basename(z))
         imps.append(d)
         print(f"  {os.path.basename(z):20s} {n:>9,} lineas -> {len(d):>6,} agro",
               flush=True)
-    for z in sorted(glob.glob("data/aduanas/x*.zip")):
+    for z in sorted(glob.glob("data/aduanas_hist/x*.zip")):
         d, n = procesar_export(z)
         d["semana"] = semana_de(os.path.basename(z))
         exps.append(d)

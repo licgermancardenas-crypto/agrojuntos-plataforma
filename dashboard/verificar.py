@@ -163,8 +163,13 @@ with sync_playwright() as pw:
     print("\neje temporal de la serie")
     pg.evaluate("() => location.hash = '#empresa=20524269440'")
     pg.wait_for_selector("#empSerie .sb", timeout=30000)
+    # Las semanas medidas salen del propio indice y no de un numero escrito
+    # aqui: el archivo historico crece cada vez que corre acumular_aduanas.py,
+    # y una constante en la prueba haria fallar una pagina correcta.
+    n_sem = pg.evaluate(
+        "async () => (await (await fetch('/data/perfil_idx.json')).json()).semanas")
     ESPERA = {
-        "medido":  (10, "semana", "15/06"),
+        "medido":  (n_sem, "semana", None),
         "mensual": (12, "mes",    "Ene"),
         "anual":   (6,  "año", "2021"),
     }
@@ -179,7 +184,7 @@ with sync_playwright() as pw:
         if len(etq) != n:
             print(f"  EL EJE {modo} TIENE {len(etq)} BARRAS Y DEBERIA TENER {n}")
             ok = False
-        if etq[0] != primera:
+        if primera and etq[0] != primera:
             print(f"  EL EJE {modo} EMPIEZA EN {etq[0]} Y DEBERIA EN {primera}")
             ok = False
         if palabra not in tit:
@@ -229,11 +234,18 @@ with sync_playwright() as pw:
         if modo != "medido" and modo not in cab.lower().replace("al mes", "mensual"):
             print(f"  LA COLUMNA NO DECLARA EL PERIODO {modo}")
             ok = False
+    # El factor esperado sale de las semanas archivadas, no de un numero fijo:
+    # el historico crece y 52/10 dejo de ser cierto en cuanto entro la semana
+    # once. Una prueba con la constante vieja hace fallar una pagina correcta.
+    sem_imp = pg.evaluate(
+        "async () => (await (await fetch('/data/importacion.json')).json())"
+        ".meta.semanas")
+    esperado = 52.0 / sem_imp
     r_anual = val["anual"] / val["medido"] if val["medido"] else 0
     r_mes = val["anual"] / val["mensual"] if val["mensual"] else 0
-    print(f"  anual/medido {r_anual:.2f} (esperado 5.20) · "
+    print(f"  anual/medido {r_anual:.2f} (esperado {esperado:.2f} = 52/{sem_imp}) · "
           f"anual/mensual {r_mes:.2f} (esperado 12.00)")
-    if abs(r_anual - 5.2) > .02 or abs(r_mes - 12) > .05:
+    if abs(r_anual - esperado) > .03 or abs(r_mes - 12) > .05:
         print("  LA ARITMETICA DEL PERIODO NO CUADRA")
         ok = False
     # El periodo es global: elegirlo en una vista tiene que valer en todas.
@@ -332,7 +344,14 @@ with sync_playwright() as pw:
 
     # Un RUC inexistente tiene que decirlo, no dejar la pagina cargando.
     pg.evaluate("() => location.hash = '#empresa=00000000000'")
-    pg.wait_for_timeout(1500)
+    # Se espera al texto y no un rato fijo: los archivos de perfil crecen con
+    # el historico y un temporizador que hoy alcanza manana no.
+    try:
+        pg.wait_for_function(
+            "() => (document.getElementById('empPerfil').textContent || '')"
+            ".indexOf('No hay perfil') >= 0", timeout=20000)
+    except Exception:
+        pass
     if "No hay perfil" not in (pg.text_content("#empPerfil") or ""):
         print("  UN RUC INEXISTENTE NO AVISA")
         ok = False

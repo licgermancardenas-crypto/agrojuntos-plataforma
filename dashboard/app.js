@@ -753,7 +753,15 @@ function vistaEmpresa(ruc) {
     }
     if (E) {
       kpis.push([pFob(E.fob, SEM), "agroexportación " + pSuf(SEM),
-                 E.destinos + (E.destinos === 1 ? " destino" : " destinos")]);
+                 usd(E.fob) + " medidos en " + SEM + " semanas"]);
+      if (E.kg) {
+        kpis.push([peso(E.kg), "peso exportado",
+                   (E.partidas || 0) + " partidas · " +
+                   (E.lineas || 0) + " embarques"]);
+      }
+      kpis.push([nf(E.destinos) + (E.destinos === 1 ? " país" : " países"),
+                 "destinos", E.semanas
+                   ? E.semanas + " de " + SEM + " semanas con embarque" : ""]);
     }
     if (!kpis.length) {
       kpis.push([esc(P.clase || "—"), "clase declarada",

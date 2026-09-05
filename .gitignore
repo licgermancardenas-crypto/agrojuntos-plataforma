@@ -15,3 +15,8 @@ __pycache__/
 # No va a un repositorio publico.
 ventas_*.csv
 *cotizacion*
+
+# El archivo historico de aduanas: crece unos 40 MB por semana y git conserva
+# cada version para siempre. Lo que se versiona es el manifiesto —que semanas
+# hay, con su sha256— y no los ZIP. Si hace falta compartirlos, van a Releases.
+data/aduanas_hist/

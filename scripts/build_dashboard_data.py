@@ -463,7 +463,9 @@ ax_dp = pd.read_csv("out/agroexport_dep_producto.csv", encoding="utf-8-sig")
 ax_ap = pd.read_csv("out/agroexport_aduana_producto.csv", encoding="utf-8-sig",
                     dtype={"codigo": str})
 
-SEM = 10                       # semanas de manifiestos publicadas
+# Derivado de lo archivado: el historico crece y una constante vieja
+# anualizaria con el divisor equivocado.
+SEM = int(imp_l["semana"].nunique())
 ANUAL = 52 / SEM
 
 
@@ -555,7 +557,7 @@ for k, g in imp_g.groupby("categoria"):
 con_mercancia = imp_c[imp_c.lineas > 0]
 guardar("importacion.json", {
     "meta": {
-        "semanas": 10,
+        "semanas": SEM,
         "lineas_pais": 2953512,
         "fob_pais": int(13748e6),
         "fob": int(con_mercancia.fob_usd.sum()),
@@ -577,4 +579,4 @@ guardar("importacion.json", {
                "fob": int(r["fob_usd"])} for _, r in imp_x.iterrows()],
 })
 print(f"\nimportacion agricola     : US$ {con_mercancia.fob_usd.sum()/1e6:,.1f} MM"
-      f" en 10 semanas, {imp_l.ruc.nunique():,} empresas")
+      f" en {SEM} semanas, {imp_l.ruc.nunique():,} empresas")

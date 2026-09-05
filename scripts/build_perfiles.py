@@ -30,7 +30,9 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.abspath(os.path.join(RAIZ, "..", "..", "dashboard", "data"))
 DEST = os.path.join(OUT, "perfil")
 os.makedirs(DEST, exist_ok=True)
-SEMANAS = 10
+# Las semanas salen de lo archivado y no de una constante: el historico
+# crece cada vez que corre acumular_aduanas.py.
+SEMANAS = None            # se fija abajo, cuando ya se leyeron las fuentes
 
 
 def cap(s):
@@ -163,6 +165,7 @@ for d in (imp, exp, emp):
         NOMBRE.setdefault(r, str(n))
 
 SEMS = sorted(imp["semana"].dropna().unique())
+SEMANAS = len(SEMS)
 
 
 def top(df, campo, valor, n, extra=None):
@@ -194,13 +197,23 @@ for ruc in rucs:
     ge = GE.get(ruc, exp.iloc[0:0])
     car_r = CARD.get(ruc, {})
     emp_r = EMPD.get(ruc, {})
+    # La ubicacion tambien esta en las tablas de comercio exterior, que traen
+    # distrito, provincia y departamento del padron por RUC. Sin este respaldo,
+    # una empresa que no clasifica como agro por su razon social —Perales
+    # Huancaruna, el mayor exportador de cafe del pais— quedaba con la ficha
+    # entera vacia aunque supieramos donde esta.
+    ubi = EXPR.get(ruc) or IMPR.get(ruc) or {}
     p = {
         "ruc": ruc,
         "n": NOMBRE.get(ruc, ""),
-        "clase": car_r.get("clase") or emp_r.get("clase") or "",
-        "dep": cap(car_r.get("dep") or emp_r.get("dep") or ""),
-        "prov": cap(car_r.get("provincia") or emp_r.get("provincia") or ""),
-        "dist": cap(car_r.get("distrito") or emp_r.get("distrito") or ""),
+        "clase": (car_r.get("clase") or emp_r.get("clase")
+                  or ("agroexportador" if ruc in EXPR else
+                      "importador" if ruc in IMPR else "")),
+        "dep": cap(car_r.get("dep") or emp_r.get("dep") or ubi.get("dep") or ""),
+        "prov": cap(car_r.get("provincia") or emp_r.get("provincia")
+                    or ubi.get("provincia") or ""),
+        "dist": cap(car_r.get("distrito") or emp_r.get("distrito")
+                    or ubi.get("distrito") or ""),
         "dir": str(emp_r.get("direccion") or "")[:90],
         "estado": emp_r.get("estado") or "",
         "condicion": emp_r.get("condicion") or "",

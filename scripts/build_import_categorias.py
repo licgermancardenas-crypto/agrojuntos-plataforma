@@ -44,8 +44,8 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_aduanas import abrir, leer_dbf, semana_de
 
-CRUDOS = "../../_repo/agro_insumos_pe_data/raw_data/sunat"
-SEMANAS = 10                     # la ventana móvil que publica SUNAT
+# El archivo historico, que crece cada vez que corre acumular_aduanas.py.
+CRUDOS = "data/aduanas_hist"
 
 CATS = [
     ("semillas", "Semillas y plantines"),
@@ -155,6 +155,9 @@ total_lineas = total_fob = 0
 archivos = sorted(glob.glob(os.path.join(CRUDOS, "ma*.zip")))
 if not archivos:
     sys.exit(f"no hay archivos de importacion en {CRUDOS}")
+# Las semanas salen de lo que hay archivado y no de un numero escrito a
+# mano: el historico crece y una constante vieja anualizaria mal.
+SEMANAS = len({semana_de(os.path.basename(z)) for z in archivos})
 for z in archivos:
     sem = semana_de(os.path.basename(z))
     fh, _ = abrir(z)
@@ -238,7 +241,9 @@ ref = ref.sort_values("fob_usd", ascending=False)
 ref.to_csv("out/import_agro_referencia.csv", index=False, encoding="utf-8-sig")
 
 TC = 52 / SEMANAS
-print(f"\nIMPORTACION AGRICOLA · {SEMANAS} semanas, junio a agosto de 2026")
+_sems = sorted({semana_de(os.path.basename(z)) for z in archivos})
+print(f"\nIMPORTACION AGRICOLA · {SEMANAS} semanas, "
+      f"{_sems[0]} a {_sems[-1]}")
 print(f"universo leido: {total_lineas:,} lineas · US$ {total_fob/1e6:,.0f} MM"
       f" (toda la importacion del pais)\n")
 print(f"{'CATEGORIA':<36} {'FOB 10 SEM':>12} {'ANUALIZADO':>12} "

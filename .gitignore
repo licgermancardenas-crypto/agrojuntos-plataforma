@@ -26,3 +26,8 @@ data/aduanas_hist/
 # + build_import_clasificar.py. Se versionan los agregados, que son lo que el
 # sitio lee, y el manifiesto, que permite comprobar que los ZIP son los mismos.
 data/importaciones/processed/operaciones*.csv
+
+# El enlace local con Vercel: identifica el proyecto de quien despliega, no el
+# sitio. Si se versiona, un `vercel --prod` desde otra copia publica en el
+# proyecto equivocado.
+.vercel/

@@ -152,9 +152,23 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   <div class="card" id="impPanel" hidden style="margin-top:16px">
     <div class="h"><h3>Qué importa este mercado</h3>
       <span class="eyebrow">FOB registrado en aduanas</span></div>
+    <div class="filters">
+      <span class="eyebrow">Vista</span>
+      <div class="chips" id="impVista">
+        <button class="chip" data-v="anio" aria-pressed="true">Año</button>
+        <button class="chip" data-v="evol" aria-pressed="false">Evolución</button>
+      </div>
+      <span class="eyebrow" id="impAnioEt">Año</span>
+      <select id="impAnio" aria-label="Año de las importaciones"></select>
+      <span class="eyebrow" id="impSerieEt" hidden>Serie</span>
+      <select id="impSerie" aria-label="Serie a comparar" hidden></select>
+    </div>
+    <p class="sub" id="impMiga" style="margin:10px 15px 0"></p>
     <div class="kpis" id="impResumen"></div>
     <div class="b">
       <div class="barras compact" id="impMercadoCat"></div>
+      <div id="impEvol" hidden></div>
+      <div id="impDetalle"></div>
       <p class="sub" id="impCobertura"></p>
     </div>
   </div>

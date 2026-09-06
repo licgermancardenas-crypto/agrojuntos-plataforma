@@ -517,6 +517,161 @@ with sync_playwright() as pw:
     else:
         print(f"  los {len(incompletos)} anos incompletos van marcados: ok")
 
+    # El recorrido completo del bloque: mercado -> ano -> categoria -> partida
+    # -> empresa. Lo que se comprueba no es que dibuje, sino que cada escalon
+    # diga la verdad del escalon anterior: que los porcentajes se recalculen
+    # sobre el ano elegido, que el ranking de una partida sea un subconjunto
+    # del de su categoria, y que un ano sin descargar no se pueda elegir.
+    print("\nque importa este mercado · recorrido")
+    pg.evaluate("() => location.hash = '#empresas'")
+    pg.wait_for_selector("#fClase .chip[data-c='6']")
+    pg.click("#fClase .chip[data-c='6']")
+    pg.wait_for_selector("#impMercadoCat .bar.clic", timeout=20000)
+
+    P = pg.evaluate(
+        "async () => (await (await fetch("
+        "'/data/importaciones/panel.json')).json())")
+    medidos = [a for a in P["anios_pedidos"]
+               if (P["cobertura_semanas"].get(a) or 0) > 0]
+    sin = [a for a in P["anios_pedidos"] if a not in medidos]
+
+    # Los anos sin manifiestos existen en el selector pero no se pueden elegir,
+    # y dicen por que.
+    ops = pg.eval_on_selector_all(
+        "#impAnio option",
+        "f => f.map(o => [o.value, o.disabled, o.textContent])")
+    apagados = [o[0] for o in ops if o[1]]
+    if sorted(apagados) != sorted(sin):
+        print(f"  {sin} sin descargar y {apagados} apagados: "
+              "UN ANO SIN MANIFIESTOS SE PUEDE ELEGIR")
+        ok = False
+    elif any("pendiente" not in o[2] for o in ops if o[1]):
+        print("  UN ANO APAGADO NO DICE QUE ESTA PENDIENTE DE CARGA")
+        ok = False
+    else:
+        print(f"  {len(sin)} anos pendientes de carga, apagados y explicados: ok")
+
+    def pcts():
+        return [float(t.replace("%", "").replace(",", "."))
+                for t in pg.eval_on_selector_all(
+                    "#impMercadoCat .bar .bp", "f => f.map(x => x.textContent)")]
+
+    # El reparto se recalcula sobre el ano elegido: si sumara 100 en un ano y
+    # no en otro, estaria reutilizando porcentajes ajenos.
+    for a in medidos[:2]:
+        pg.select_option("#impAnio", a)
+        pg.wait_for_timeout(250)
+        s = sum(pcts())
+        fob = pg.text_content("#impResumen .v") or ""
+        if abs(s - 100) > 1.5:
+            print(f"  {a}: las categorias suman {s:.1f}% "
+                  "EL REPARTO NO SE RECALCULA SOBRE EL ANO")
+            ok = False
+        else:
+            print(f"  {a}: {len(pcts())} categorias suman {s:.1f}% ok")
+
+    # Categoria.
+    anio = medidos[0]
+    pg.select_option("#impAnio", anio)
+    pg.wait_for_timeout(250)
+    cat = pg.eval_on_selector("#impMercadoCat .bar.clic",
+                              "e => e.dataset.k")
+    pg.click("#impMercadoCat .bar.clic")
+    pg.wait_for_selector("#impEmpresas tbody tr", timeout=15000)
+    miga = (pg.text_content("#impMiga") or "")
+    if cat not in miga:
+        print("  LA CATEGORIA NO APARECE EN LAS MIGAS")
+        ok = False
+    n_cat = len(pg.query_selector_all("#impEmpresas tbody tr"))
+    n_part = len(pg.query_selector_all("#impCatPart .bar.clic"))
+    print(f"  {cat}: {n_part} partidas · {n_cat} importadores en el top 10")
+
+    # El Top N y el buscador mueven el ranking, no lo decoran.
+    pg.click("#impTope .chip[data-t='0']")
+    pg.wait_for_timeout(200)
+    n_todos = len(pg.query_selector_all("#impEmpresas tbody tr"))
+    if n_todos <= n_cat:
+        print("  «TODOS» NO MUESTRA MAS EMPRESAS QUE EL TOP 10")
+        ok = False
+    else:
+        print(f"  Top 10 -> Todos: {n_cat} -> {n_todos} importadores ok")
+    ruc = pg.eval_on_selector(
+        "#impEmpresas tbody tr td.name a",
+        "a => a.getAttribute('href').split('=')[1]")
+    pg.fill("#impBuscar", ruc)
+    pg.wait_for_timeout(250)
+    n_busca = len(pg.query_selector_all("#impEmpresas tbody tr"))
+    if n_busca != 1:
+        print(f"  buscar un RUC exacto devuelve {n_busca} filas: "
+              "EL BUSCADOR NO FILTRA")
+        ok = False
+    else:
+        print("  el buscador encuentra un RUC exacto: ok")
+    pg.fill("#impBuscar", "")
+    pg.wait_for_timeout(200)
+
+    # Partida: su ranking tiene que ser un subconjunto del de la categoria.
+    if n_part:
+        pg.click("#impCatPart .bar.clic")
+        pg.wait_for_selector("#impEmpresas tbody tr", timeout=15000)
+        pg.click("#impTope .chip[data-t='0']")
+        pg.wait_for_timeout(200)
+        n_p = len(pg.query_selector_all("#impEmpresas tbody tr"))
+        if n_p > n_todos:
+            print("  UNA PARTIDA TIENE MAS IMPORTADORES QUE SU CATEGORIA")
+            ok = False
+        else:
+            print(f"  la partida acota el ranking: {n_todos} -> {n_p} ok")
+        if (pg.text_content("#impMiga") or "").count("›") < 3:
+            print("  LAS MIGAS NO LLEGAN AL NIVEL DE PARTIDA")
+            ok = False
+
+    # Volver por las migas devuelve al nivel anterior sin recargar.
+    pg.click("#impMiga a[data-n='raiz']")
+    pg.wait_for_selector("#impMercadoCat .bar.clic", timeout=10000)
+    print("  volver por las migas: ok")
+
+    # Evolucion.
+    pg.click("#impVista .chip[data-v='evol']")
+    pg.wait_for_selector("#impEvolSerie .sb", timeout=10000)
+    barras_ev = len(pg.query_selector_all("#impEvolSerie .sb"))
+    huecos_ev = len(pg.query_selector_all("#impEvolSerie .sb.vacio"))
+    if barras_ev != len(P["anios_pedidos"]) or huecos_ev != len(sin):
+        print(f"  evolucion: {barras_ev} barras y {huecos_ev} huecos, "
+              f"esperados {len(P['anios_pedidos'])} y {len(sin)}: MAL")
+        ok = False
+    else:
+        print(f"  evolucion: {barras_ev} anos, {huecos_ev} sin descargar ok")
+    alguna = sorted(P["cats"])[0]
+    pg.select_option("#impSerie", alguna)
+    pg.wait_for_timeout(300)
+    if alguna not in (pg.text_content("#impEvol") or ""):
+        print("  LA SERIE POR CATEGORIA NO SE APLICA")
+        ok = False
+    else:
+        print(f"  serie por categoria «{alguna[:22]}»: ok")
+
+    # El ano en curso nunca se presenta como ano cerrado.
+    txt_panel = pg.text_content("#impPanel") or ""
+    if P["anio_en_curso"] in txt_panel and "YTD" not in txt_panel:
+        print("  EL ANO EN CURSO SE PRESENTA SIN MARCA DE YTD")
+        ok = False
+    else:
+        print("  el ano en curso arrastra su YTD: ok")
+
+    # Y de la tabla se llega a la ficha de la empresa, que ya existia.
+    pg.click("#impVista .chip[data-v='anio']")
+    pg.wait_for_selector("#impMercadoCat .bar.clic", timeout=10000)
+    pg.click("#impMercadoCat .bar.clic")
+    pg.wait_for_selector("#impEmpresas tbody tr td.name a", timeout=15000)
+    pg.click("#impEmpresas tbody tr td.name a")
+    pg.wait_for_selector("#empPerfil h3", timeout=25000)
+    if not (pg.text_content("#empPerfil h3") or "").strip():
+        print("  DESDE EL RANKING NO SE LLEGA A LA FICHA DE LA EMPRESA")
+        ok = False
+    else:
+        print("  del ranking a la ficha de la empresa: ok")
+
     # La vista de importacion vive de la fila desplegable: si el detalle no
     # cambia al pulsar otra categoria, la tabla es un adorno. Y las dos
     # categorias sin mercancia tienen que seguir visibles: son parte de la

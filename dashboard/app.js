@@ -443,7 +443,9 @@ function pintarEmpresas() {
 REPINTAR.empresas = function () { if (EMP) pintarEmpresas(); };
 
 /* El panel de la subcategoria se arma una sola vez y despues solo se muestra
-   u oculta: sus dos archivos pesan 571 KB y no hay razon para repedirlos. */
+   u oculta: su cubo pesa 0.45 MB y no hay razon para repedirlo. El estado del
+   recorrido —ano, categoria, partida— sobrevive a ocultarlo, de modo que
+   volver al chip devuelve al usuario donde estaba. */
 var IMP_PANEL = false;
 function panelImportadores(mostrar) {
   var caja = document.getElementById("impPanel");
@@ -451,8 +453,8 @@ function panelImportadores(mostrar) {
   caja.hidden = !mostrar;
   if (!mostrar || IMP_PANEL) return;
   IMP_PANEL = true;
-  impDatos().then(function (r) { pintarImpResumen(r[0]); })
-            .catch(function () { IMP_PANEL = false; });
+  cargar("importaciones/panel").then(iniPanelImp)
+    .catch(function () { IMP_PANEL = false; });
 }
 
 /* ------------------------------------------------------------ importacion */
@@ -585,56 +587,503 @@ function impDatos() {
                       cargar("importaciones/importadores")]);
 }
 
-/* --------------------------------------------- resumen de la subcategoría -- */
-function pintarImpResumen(M) {
-  var caja = document.getElementById("impResumen");
-  if (!caja) return;
-  var anios = M.anios_pedidos;
-  var conDato = M.anios_con_dato;
-  var actual = M.anio_en_curso;
-  /* «Completo» es un año con casi todas sus semanas archivadas, no cualquier
-     año que tenga una operación suelta: con cuatro semanas bajadas la cifra
-     anual sería un recorte presentado como año. */
-  var completos = conDato.filter(function (a) {
-    return a !== actual && (M.cobertura_semanas[a] || 0) >= 45; });
-  var ultimoCompleto = completos.length ? completos[completos.length - 1] : null;
+/* ---------------------------------------- «Qué importa este mercado» ------
+   El bloque deja recorrer mercado → año → categoría → partida → empresa sin
+   salir del módulo de empresas. Todo sale de `importaciones/panel`, un cubo de
+   0.45 MB que ya trae cada corte sumado, de modo que moverse entre niveles no
+   pide nada a la red.
 
-  var kpis = [
-    [nf(EMP_IMPORTADORES), "importadores identificados",
-     "con RUC, cruzados contra el padrón"],
-    [nf(M.empresas_con_dato), "con operación verificada",
-     nf(M.operaciones) + " operaciones aduaneras"],
-    [usd(M.por_anio[actual] ? M.por_anio[actual].fob : 0),
-     "importado " + actual + " YTD",
-     "hasta " + M.ultimo_registro + " · " +
-     (M.cobertura_semanas[actual] || 0) + " semanas medidas"],
-    [ultimoCompleto ? usd(M.por_anio[ultimoCompleto].fob) : "sin datos",
-     ultimoCompleto ? "importado " + ultimoCompleto : "último año completo",
-     ultimoCompleto
-       ? M.cobertura_semanas[ultimoCompleto] + " de 52 semanas descargadas"
-       : "todavía no se descargó ningún año completo"]
-  ];
-  caja.innerHTML = kpis.map(function (k) {
-    return "<div><span class='v'>" + k[0] + "</span><span class='l'>" +
-      k[1] + "</span><span class='s'>" + esc(k[2]) + "</span></div>";
+   Dos reglas gobiernan lo que se puede afirmar:
+
+   1. Un año sin semanas descargadas no vale cero. Vale «pendiente de carga»,
+      y así se dice. Un año medido en el que nadie importó sí es un cero.
+   2. No se compara contra un año que no da para comparar. La variación
+      interanual exige dos años completos —45 de 52 semanas archivadas—; si
+      alguno no llega, la respuesta es N/D con el motivo a la vista. */
+var IMPP = null;
+var IMPQ = { vista: "anio", anio: "", cat: "", part: "", tope: 10, q: "",
+             serie: "" };
+
+function impCompleto(a) {
+  return (IMPP.cobertura_semanas[a] || 0) >= IMPP.semanas_completo;
+}
+function impMedido(a) { return (IMPP.cobertura_semanas[a] || 0) > 0; }
+function impEnCurso(a) { return a === IMPP.anio_en_curso; }
+
+/* Cómo se nombra un año en la interfaz. El año en curso nunca aparece a secas:
+   arrastra su «YTD» a todas partes para que nadie lo lea como año cerrado. */
+function impEt(a) {
+  if (impEnCurso(a)) return a + " YTD";
+  return a;
+}
+function impPie(a) {
+  var s = IMPP.cobertura_semanas[a] || 0;
+  if (!s) return "pendiente de carga";
+  if (impEnCurso(a)) return s + " semanas al " + IMPP.ultimo_registro;
+  return s + " de 52 semanas archivadas";
+}
+
+/* Variación interanual. Solo entre dos años completos: contra un año a medias
+   la cifra diría más de lo que la medición aguanta. */
+function impVar(a, valAct, valPrev) {
+  var prev = String(+a - 1);
+  if (!impCompleto(a)) {
+    return "N/D · " + (impEnCurso(a) ? "año en curso" : "año incompleto");
+  }
+  if (!impMedido(prev)) return "N/D · " + prev + " sin descargar";
+  if (!impCompleto(prev)) return "N/D · " + prev + " incompleto";
+  if (!valPrev) return "N/D · sin base en " + prev;
+  var v = 100 * (valAct - valPrev) / valPrev;
+  return (v >= 0 ? "+" : "") + nf(v, 1) + "% vs " + prev;
+}
+
+function kpi(v, l, s) {
+  return "<div><span class='v'>" + v + "</span><span class='l'>" + l +
+    "</span><span class='s'>" + esc(s || "") + "</span></div>";
+}
+
+/* Serie temporal de FOB por año. Tres estados de barra, que son tres cosas
+   distintas: medida, medida a medias —rayada, no comparable— y sin medir
+   —hueco punteado—. */
+function impSerie(el, filas, titulo) {
+  var mx = Math.max.apply(null, filas.map(function (f) {
+    return f.hay ? f.v : 0; }));
+  if (!isFinite(mx) || mx <= 0) mx = 1;
+  el.innerHTML = '<div class="serie">' + filas.map(function (f) {
+    var a = f.a;
+    if (!f.hay) {
+      return '<div class="sb vacio" title="' + esc(titulo + "\n" + a +
+        "\n\nSin semanas descargadas: no hay información para este año") +
+        '"><i></i><b>' + a + "</b></div>";
+    }
+    var par = !impCompleto(a);
+    var h = Math.max(2, Math.round(100 * f.v / mx));
+    return '<div class="sb' + (par ? " parcial" : "") +
+      (f.v > 0 ? "" : " cero") + '" title="' + esc(titulo + "\n" + impEt(a) +
+      "\n\nFOB: US$ " + nf(f.v) +
+      (f.p !== undefined ? "\nParticipación: " + nf(f.p, 1) + "%" : "") +
+      (f.ops !== undefined ? "\nOperaciones: " + nf(f.ops) : "") +
+      (f.emp !== undefined ? "\nImportadores: " + nf(f.emp) : "") +
+      "\n" + impPie(a)) + '"><i style="height:' + (f.v > 0 ? h : 2) +
+      '%"></i><b>' + a + (par ? "*" : "") + "</b></div>";
+  }).join("") + "</div>";
+}
+
+/* Filas de composición que además llevan a algún lado. Se reutiliza la misma
+   rejilla de `.bar` del resto del sitio y solo se agrega la columna del
+   indicador, para que un bloque que ahora se puede recorrer siga pareciendo
+   el mismo bloque. */
+function barrasClic(el, filas, alClic) {
+  var mx = Math.max.apply(null, filas.map(function (r) { return r.v; })) || 1;
+  el.innerHTML = filas.map(function (r) {
+    return '<div class="bar clic" role="button" tabindex="0" data-k="' +
+      esc(r.k) + '" title="' + esc(r.tt || "") + '">' +
+      '<span class="bn">' + esc(r.n) + "</span>" +
+      '<span class="bv mono">' + r.t + "</span>" +
+      '<span class="bt"><i style="width:' + (100 * r.v / mx).toFixed(1) +
+      '%"></i></span>' +
+      '<span class="bp mono">' + pct(r.p, 1) + "</span>" +
+      '<span class="bx">&rsaquo;</span></div>';
   }).join("");
+  function ir(ev) {
+    var f = ev.target.closest(".bar.clic");
+    if (f) alClic(f.dataset.k);
+  }
+  el.onclick = ir;
+  el.onkeydown = function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); ir(ev); }
+  };
+}
 
-  barras(document.getElementById("impMercadoCat"),
-    M.categorias.slice(0, 10).map(function (c) {
-      return { n: c.n, v: c.fob, t: usd(c.fob), p: c.pct }; }));
+/* ------------------------------------------------------------ controles -- */
+function impControles() {
+  var sel = document.getElementById("impAnio");
+  var esEvol = IMPQ.vista === "evol";
+  document.querySelectorAll("#impVista .chip").forEach(function (b) {
+    b.setAttribute("aria-pressed", String(b.dataset.v === IMPQ.vista)); });
 
-  var faltan = anios.filter(function (a) { return conDato.indexOf(a) < 0; });
+  sel.innerHTML = IMPP.anios_pedidos.map(function (a) {
+    var hay = impMedido(a);
+    return '<option value="' + a + '"' + (hay ? "" : " disabled") +
+      (a === IMPQ.anio ? " selected" : "") + ">" + impEt(a) +
+      (hay ? "" : " · pendiente de carga") + "</option>";
+  }).join("");
+  document.getElementById("impAnio").hidden = esEvol;
+  document.getElementById("impAnioEt").hidden = esEvol;
+
+  var ser = document.getElementById("impSerie");
+  ser.hidden = !esEvol;
+  document.getElementById("impSerieEt").hidden = !esEvol;
+  if (esEvol) {
+    var cats = Object.keys(IMPP.cats).sort();
+    ser.innerHTML = '<option value="">Mercado total</option>' +
+      cats.map(function (c) {
+        return '<option value="' + esc(c) + '"' +
+          (c === IMPQ.serie ? " selected" : "") + ">" + esc(c) + "</option>";
+      }).join("");
+  }
+}
+
+/* --------------------------------------------------------------- migas --- */
+function impMigas() {
+  var m = [["Empresas", ""], ["Importaciones", "raiz"]];
+  if (IMPQ.cat) m.push([IMPQ.cat, "cat"]);
+  if (IMPQ.part) m.push([impNombreParte(IMPQ.part), "part"]);
+  var caja = document.getElementById("impMiga");
+  caja.innerHTML = m.map(function (x, i) {
+    var ult = i === m.length - 1;
+    if (!x[1] || ult) return "<span>" + esc(x[0]) + "</span>";
+    return '<a href="#" data-n="' + x[1] + '">' + esc(x[0]) + "</a>";
+  }).join(' <span class="sep">&rsaquo;</span> ');
+  caja.onclick = function (ev) {
+    var a = ev.target.closest("a[data-n]");
+    if (!a) return;
+    ev.preventDefault();
+    if (a.dataset.n === "raiz") { IMPQ.cat = ""; IMPQ.part = ""; }
+    if (a.dataset.n === "cat") IMPQ.part = "";
+    IMPQ.q = ""; IMPQ.tope = 10;
+    pintarPanelImp();
+  };
+}
+
+function impNombreParte(p) {
+  var n = IMPP.nombres_partida[p];
+  var cod = p.slice(0, 4) + "." + p.slice(4);
+  return n ? n + " (" + cod + ")" : "Partida " + cod;
+}
+
+/* ---------------------------------------------------- nivel 0 · mercado -- */
+function impNivelMercado() {
+  var a = IMPQ.anio, T = IMPP.total[a];
+  var caja = document.getElementById("impResumen");
+  if (!T) {
+    caja.innerHTML =
+      kpi(nf(EMP_IMPORTADORES), "importadores identificados",
+          "con RUC, cruzados contra el padrón") +
+      kpi("N/D", "con operación verificada en " + a, "sin información") +
+      kpi("N/D", "FOB importado " + a, "año pendiente de carga") +
+      kpi("N/D", "operaciones aduaneras", "no hay manifiestos de " + a);
+    document.getElementById("impMercadoCat").innerHTML =
+      '<p class="sub">Sin información disponible para ' + a + ". Los " +
+      "manifiestos de ese año todavía no se descargan, de modo que no hay " +
+      "nada que repartir. No es que se haya importado por US$ 0.</p>";
+    return;
+  }
+  caja.innerHTML =
+    kpi(nf(EMP_IMPORTADORES), "importadores identificados",
+        "con RUC, cruzados contra el padrón") +
+    kpi(nf(T.emp), "con operación verificada en " + impEt(a), impPie(a)) +
+    kpi(usd(T.fob), "FOB importado " + impEt(a),
+        impCompleto(a) ? "año completo, medido" : "año incompleto: " +
+          impPie(a)) +
+    kpi(nf(T.ops), "operaciones aduaneras", "una fila por declaración");
+
+  var filas = Object.keys(IMPP.cats).map(function (c) {
+    var x = IMPP.cats[c].anios[a];
+    return x ? { k: c, n: c, v: x.fob, t: usd(x.fob),
+                 p: 100 * x.fob / T.fob,
+                 tt: c + "\n" + impEt(a) + "\n\nFOB: US$ " + nf(x.fob) +
+                   "\nParticipación: " + nf(100 * x.fob / T.fob, 1) +
+                   "%\nOperaciones: " + nf(x.ops) + "\nImportadores: " +
+                   nf(x.emp) + "\n\nVer detalle" } : null;
+  }).filter(Boolean).sort(function (x, y) { return y.v - x.v; });
+
+  barrasClic(document.getElementById("impMercadoCat"), filas, function (c) {
+    IMPQ.cat = c; IMPQ.part = ""; IMPQ.tope = 10; IMPQ.q = "";
+    pintarPanelImp();
+  });
+}
+
+/* -------------------------------------------------- nivel 0 · evolución -- */
+function impNivelEvolucion() {
+  var c = IMPQ.serie;
+  var dat = c ? IMPP.cats[c].anios : IMPP.total;
+  var nom = c || "Mercado total de insumos";
+  var medidos = IMPP.anios_pedidos.filter(impMedido);
+  var acum = medidos.reduce(function (s, a) {
+    return s + (dat[a] ? dat[a].fob : 0); }, 0);
+  var completos = medidos.filter(impCompleto);
+  var ult = completos.length ? completos[completos.length - 1] : null;
+
+  document.getElementById("impResumen").innerHTML =
+    kpi(nf(medidos.length), "años con información",
+        "de los " + IMPP.anios_pedidos.length + " pedidos") +
+    kpi(usd(acum), "FOB acumulado medido", "no anualizado ni estimado") +
+    kpi(ult ? usd(dat[ult].fob) : "N/D",
+        ult ? "FOB " + ult + ", año completo" : "último año completo",
+        ult ? impPie(ult) : "ningún año completo descargado") +
+    kpi(dat[IMPP.anio_en_curso] ? usd(dat[IMPP.anio_en_curso].fob) : "N/D",
+        "FOB " + IMPP.anio_en_curso + " YTD",
+        "acumulado al " + IMPP.ultimo_registro + ", año en curso");
+
+  document.getElementById("impMercadoCat").innerHTML = "";
+  var ev = document.getElementById("impEvol");
+  ev.hidden = false;
+  ev.innerHTML = '<div class="eyebrow">Evolución · ' + esc(nom) +
+    " · FOB importado</div><div id='impEvolSerie'></div>" +
+    "<p class='sub' id='impEvolNota'></p>";
+
+  var tot = IMPP.total;
+  impSerie(document.getElementById("impEvolSerie"),
+    IMPP.anios_pedidos.map(function (a) {
+      var x = dat[a];
+      return { a: a, hay: !!x && impMedido(a), v: x ? x.fob : 0,
+               ops: x ? x.ops : undefined, emp: x ? x.emp : undefined,
+               p: (c && x && tot[a]) ? 100 * x.fob / tot[a].fob : undefined };
+    }), nom);
+
+  var sin = IMPP.anios_pedidos.filter(function (a) { return !impMedido(a); });
+  var parc = medidos.filter(function (a) { return !impCompleto(a); });
+  document.getElementById("impEvolNota").textContent =
+    (parc.length ? "* " + parc.map(function (a) {
+        return a + " (" + IMPP.cobertura_semanas[a] + " de 52 semanas" +
+          (impEnCurso(a) ? ", año en curso" : "") + ")"; }).join(", ") +
+      ": años incompletos, no comparables contra uno entero. " : "") +
+    (sin.length ? sin.join(" y ") + " aparecen en hueco: sus manifiestos no " +
+      "se han descargado. No son años sin importaciones." : "");
+}
+
+/* ------------------------------------------------- nivel 1 · categoría --- */
+function impNivelCategoria() {
+  var a = IMPQ.anio, c = IMPQ.cat, C = IMPP.cats[c];
+  var X = C.anios[a], T = IMPP.total[a];
+  var prev = String(+a - 1), P = C.anios[prev];
+
+  var det = document.getElementById("impDetalle");
+  document.getElementById("impMercadoCat").innerHTML = "";
+  document.getElementById("impEvol").hidden = true;
+
+  if (!X) {
+    document.getElementById("impResumen").innerHTML =
+      kpi("N/D", "FOB importado " + a,
+          impMedido(a) ? "sin operaciones de esta categoría en " + a
+                       : "año pendiente de carga");
+    det.innerHTML = '<p class="sub">' + esc(c) + " no registra importaciones " +
+      "en " + a + (impMedido(a)
+        ? ". Ese año sí se midió —" + IMPP.cobertura_semanas[a] +
+          " semanas archivadas—, así que la respuesta es que no hubo."
+        : ", y ese año todavía no se descarga: no hay información.") + "</p>";
+    return;
+  }
+
+  document.getElementById("impResumen").innerHTML =
+    kpi(usd(X.fob), "FOB importado " + impEt(a),
+        impVar(a, X.fob, P ? P.fob : 0)) +
+    kpi(pct(100 * X.fob / T.fob, 1), "del mercado en " + impEt(a), impPie(a)) +
+    kpi(nf(X.emp), "importadores", impVar(a, X.emp, P ? P.emp : 0)) +
+    kpi(nf(X.ops), "operaciones", impVar(a, X.ops, P ? P.ops : 0));
+
+  var tot = IMPP.total;
+  det.innerHTML =
+    '<div class="eyebrow">Evolución de importaciones · ' + esc(c) + "</div>" +
+    "<div id='impCatSerie'></div><p class='sub' id='impCatNota'></p>" +
+    "<div class='eyebrow' style='margin-top:14px'>Principales productos y " +
+    "partidas · " + esc(impEt(a)) + "</div>" +
+    "<div class='barras compact' id='impCatPart'></div>" +
+    "<p class='sub'>Nombre oficial de la subpartida NANDINA. La categoría la " +
+    "decide el arancel, no la descripción del declarante.</p>" +
+    "<div class='eyebrow' style='margin-top:14px'>Principales países de " +
+    "origen</div><div class='barras compact' id='impCatPais'></div>" +
+    impBloqueEmpresas();
+
+  impSerie(document.getElementById("impCatSerie"),
+    IMPP.anios_pedidos.map(function (y) {
+      var x = C.anios[y];
+      return { a: y, hay: !!x && impMedido(y), v: x ? x.fob : 0,
+               ops: x ? x.ops : undefined, emp: x ? x.emp : undefined,
+               p: (x && tot[y]) ? 100 * x.fob / tot[y].fob : undefined };
+    }), c);
+  var sin = IMPP.anios_pedidos.filter(function (y) { return !impMedido(y); });
+  document.getElementById("impCatNota").textContent =
+    "FOB de " + c + " año por año. " +
+    (sin.length ? sin.join(" y ") + " sin descargar: hueco, no cero." : "");
+
+  var parts = C.partidas[a] || [];
+  barrasClic(document.getElementById("impCatPart"), parts.map(function (p) {
+    return { k: p.p, n: impNombreParte(p.p), v: p.fob, t: usd(p.fob),
+             p: 100 * p.fob / X.fob,
+             tt: impNombreParte(p.p) + "\n" + impEt(a) + "\n\nFOB: US$ " +
+               nf(p.fob) + "\nParticipación en la categoría: " +
+               nf(100 * p.fob / X.fob, 1) + "%\nOperaciones: " + nf(p.ops) +
+               "\nImportadores: " + nf(p.emp) + "\n\nVer importadores" };
+  }), function (p) {
+    IMPQ.part = p; IMPQ.tope = 10; IMPQ.q = "";
+    pintarPanelImp();
+  });
+
+  barras(document.getElementById("impCatPais"),
+    (C.paises[a] || []).map(function (p) {
+      return { n: pais(p.n), v: p.fob, t: usd(p.fob),
+               p: 100 * p.fob / X.fob }; }));
+
+  impPintarEmpresas();
+}
+
+/* --------------------------------------------------- nivel 2 · partida --- */
+function impNivelPartida() {
+  var a = IMPQ.anio, c = IMPQ.cat, p = IMPQ.part;
+  var C = IMPP.cats[c], X = C.anios[a];
+  var fila = (C.partidas[a] || []).filter(function (x) {
+    return x.p === p; })[0];
+  document.getElementById("impMercadoCat").innerHTML = "";
+  document.getElementById("impEvol").hidden = true;
+  var det = document.getElementById("impDetalle");
+
+  if (!fila) {
+    document.getElementById("impResumen").innerHTML =
+      kpi("N/D", impNombreParte(p) + " en " + a,
+          impMedido(a) ? "sin operaciones en este año"
+                       : "año pendiente de carga");
+    det.innerHTML = '<p class="sub">Sin registros de esta partida en ' + a +
+      ".</p>";
+    return;
+  }
+  document.getElementById("impResumen").innerHTML =
+    kpi(usd(fila.fob), "FOB importado " + impEt(a), impPie(a)) +
+    kpi(pct(100 * fila.fob / X.fob, 1), "de " + esc(c), "dentro de la categoría") +
+    kpi(nf(fila.emp), "importadores", "con operación en esta partida") +
+    kpi(nf(fila.ops), "operaciones", "una fila por declaración");
+
+  det.innerHTML =
+    '<div class="eyebrow">Presencia de la partida año por año</div>' +
+    "<div id='impPartSerie'></div>" +
+    "<p class='sub'>Subpartida " + esc(p.slice(0, 4) + "." + p.slice(4)) +
+    " dentro de " + esc(c) + ".</p>" + impBloqueEmpresas();
+
+  impSerie(document.getElementById("impPartSerie"),
+    IMPP.anios_pedidos.map(function (y) {
+      var f = (C.partidas[y] || []).filter(function (x) {
+        return x.p === p; })[0];
+      return { a: y, hay: !!f && impMedido(y), v: f ? f.fob : 0,
+               ops: f ? f.ops : undefined, emp: f ? f.emp : undefined };
+    }), impNombreParte(p));
+
+  impPintarEmpresas();
+}
+
+/* ------------------------------------------- ranking de importadores ----- */
+function impBloqueEmpresas() {
+  return "<div class='eyebrow' style='margin-top:16px'>Principales " +
+    "importadores</div>" +
+    "<div class='filters' style='border-bottom:0; padding:10px 0'>" +
+      "<div class='chips' id='impTope'></div>" +
+      "<input type='search' id='impBuscar' placeholder='Buscar empresa o RUC…' " +
+      "aria-label='Buscar empresa o RUC'></div>" +
+    "<div class='tw'><table id='impEmpresas'></table></div>" +
+    "<p class='sub' id='impEmpNota'></p>";
+}
+
+function impFilasEmpresas() {
+  var a = IMPQ.anio, C = IMPP.cats[IMPQ.cat];
+  if (IMPQ.part) return ((C.emp_part[a] || {})[IMPQ.part] || []);
+  return (C.empresas[a] || []);
+}
+
+function impPintarEmpresas() {
+  var todas = impFilasEmpresas();
+  var base = todas.reduce(function (s, e) { return s + e.fob; }, 0) || 1;
+  var q = IMPQ.q.trim().toLowerCase();
+  var filtradas = !q ? todas : todas.filter(function (e) {
+    return e.r.indexOf(q) >= 0 ||
+      (IMPP.nombres[e.r] || "").toLowerCase().indexOf(q) >= 0;
+  });
+  var muestra = IMPQ.tope ? filtradas.slice(0, IMPQ.tope) : filtradas;
+
+  var topes = document.getElementById("impTope");
+  topes.innerHTML = [[10, "Top 10"], [25, "Top 25"], [50, "Top 50"],
+                     [0, "Todos"]].map(function (t) {
+    return '<button class="chip" data-t="' + t[0] + '" aria-pressed="' +
+      (IMPQ.tope === t[0]) + '">' + t[1] + "</button>";
+  }).join("");
+  topes.onclick = function (ev) {
+    var b = ev.target.closest("button");
+    if (!b) return;
+    IMPQ.tope = +b.dataset.t;
+    impPintarEmpresas();
+  };
+  var bus = document.getElementById("impBuscar");
+  bus.value = IMPQ.q;
+  bus.oninput = function () { IMPQ.q = this.value; impPintarEmpresas(); };
+
+  var t = document.getElementById("impEmpresas");
+  t.innerHTML = "<thead><tr><th>#</th><th class='l'>Importador</th>" +
+    "<th class='l'>RUC</th><th>FOB</th><th>%</th><th>Oper.</th></tr></thead>" +
+    "<tbody>" +
+    (muestra.length ? muestra.map(function (e) {
+      return "<tr><td class='l n'>" + (todas.indexOf(e) + 1) + "</td>" +
+        "<td class='l name'><a href='#empresa=" + e.r + "'>" +
+        esc(IMPP.nombres[e.r] || e.r) + "</a></td>" +
+        "<td class='l n'>" + e.r + "</td>" +
+        "<td class='n'>" + usd(e.fob) + "</td>" +
+        "<td class='n'>" + pct(100 * e.fob / base, 1) + "</td>" +
+        "<td class='n'>" + nf(e.ops) + "</td></tr>";
+    }).join("") : "<tr><td class='l' colspan='6'>Ninguna empresa coincide " +
+      "con la búsqueda.</td></tr>") + "</tbody>";
+
+  document.getElementById("impEmpNota").textContent =
+    (q ? filtradas.length + " de " + todas.length + " importadores coinciden. "
+       : nf(todas.length) + " importadores con operación registrada. ") +
+    "El porcentaje es sobre el FOB de " +
+    (IMPQ.part ? "la partida" : "la categoría") + " en " + impEt(IMPQ.anio) +
+    ". Valor FOB importado, no facturación de la empresa.";
+}
+
+/* ------------------------------------------------------------ orquesta --- */
+function pintarPanelImp() {
+  impControles();
+  impMigas();
+  var det = document.getElementById("impDetalle");
+  det.innerHTML = "";
+  document.getElementById("impEvol").hidden = true;
+  if (IMPQ.vista === "evol") { impNivelEvolucion(); }
+  else if (IMPQ.part) { impNivelPartida(); }
+  else if (IMPQ.cat) { impNivelCategoria(); }
+  else { impNivelMercado(); }
+  impNotaCobertura();
+}
+
+function impNotaCobertura() {
+  var con = IMPP.anios_con_dato;
+  var faltan = IMPP.anios_pedidos.filter(function (a) {
+    return con.indexOf(a) < 0; });
   document.getElementById("impCobertura").innerHTML =
-    "<b>Cobertura de la fuente.</b> Los manifiestos de SUNAT se archivan semana " +
-    "a semana; hoy hay <b>" + M.total.semanas + " semanas</b> descargadas, " +
-    "repartidas así: " +
-    conDato.map(function (a) {
-      return a + " (" + M.cobertura_semanas[a] + ")"; }).join(", ") + ". " +
+    "<b>Cobertura de la fuente.</b> Los manifiestos de SUNAT se archivan " +
+    "semana a semana; hoy hay <b>" +
+    Object.keys(IMPP.cobertura_semanas).reduce(function (s, a) {
+      return s + IMPP.cobertura_semanas[a]; }, 0) +
+    " semanas</b> descargadas: " +
+    con.map(function (a) {
+      return a + " (" + IMPP.cobertura_semanas[a] + ")"; }).join(", ") + ". " +
     (faltan.length
-      ? "De los cinco años pedidos, <b>" + faltan.join(", ") + "</b> todavía no " +
-        "se descargan: esos años no aparecen en cero, aparecen sin dato."
+      ? "<b>" + faltan.join(", ") + "</b> todavía no se descargan: esos años " +
+        "no aparecen en cero, aparecen sin dato."
       : "Los cinco años están completos.") +
     " El valor mostrado es <b>FOB importado</b> y no facturación de la empresa.";
+}
+
+function iniPanelImp(P) {
+  IMPP = P;
+  if (!IMPQ.anio) {
+    var con = P.anios_con_dato;
+    IMPQ.anio = con.indexOf(P.anio_en_curso) >= 0
+      ? P.anio_en_curso : con[con.length - 1];
+  }
+  document.getElementById("impVista").onclick = function (ev) {
+    var b = ev.target.closest("button");
+    if (!b) return;
+    IMPQ.vista = b.dataset.v;
+    IMPQ.cat = ""; IMPQ.part = "";
+    pintarPanelImp();
+  };
+  document.getElementById("impAnio").onchange = function () {
+    IMPQ.anio = this.value; IMPQ.tope = 10; IMPQ.q = "";
+    pintarPanelImp();
+  };
+  document.getElementById("impSerie").onchange = function () {
+    IMPQ.serie = this.value;
+    pintarPanelImp();
+  };
+  pintarPanelImp();
 }
 
 /* --------------------------------------------------- perfil de una empresa -- */

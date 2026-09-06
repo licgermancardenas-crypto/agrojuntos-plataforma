@@ -49,7 +49,7 @@ POR_PARTIDA = {
     "380891": "Insecticidas",
     "380892": "Fungicidas",
     "380893": "Herbicidas",
-    "380894": "Desinfectantes agricolas",
+    "380894": "Desinfectantes agrícolas",
     "380899": "Otros fitosanitarios",
     "380852": "Fitosanitarios restringidos",
     "380859": "Fitosanitarios restringidos",
@@ -57,10 +57,10 @@ POR_PARTIDA = {
     "380862": "Fitosanitarios restringidos",
     "380869": "Fitosanitarios restringidos",
     "3808":   "Otros fitosanitarios",
-    "3101":   "Fertilizantes organicos",
+    "3101":   "Fertilizantes orgánicos",
     "3102":   "Fertilizantes nitrogenados",
     "3103":   "Fertilizantes fosfatados",
-    "3104":   "Fertilizantes potasicos",
+    "3104":   "Fertilizantes potásicos",
     "3105":   "Fertilizantes compuestos",
     "1209":   "Semillas",
     "0601":   "Plantines y bulbos",
@@ -75,7 +75,7 @@ REGLAS = [
      r"REGULADOR DE CRECIMIENTO|REGULADOR DEL CRECIMIENTO|GIBERELIC|"
      r"PACLOBUTRAZOL|ETHEPHON|ETEFON|CITOQUININ|AUXINA|BRASINO|"
      r"ACIDO GIBERELICO"),
-    ("Biologicos", ("3808",),
+    ("Biológicos", ("3808",),
      r"BACILLUS|TRICHODERMA|BEAUVERIA|METARHIZIUM|BACULOVIRUS|PAECILOMYCES|"
      r"MICORRIZ|RHIZOBIUM|BIOFUNGICIDA|BIOINSECTICIDA|BIOLOGICO"),
     ("Nematicidas", ("380891", "380899"),
@@ -84,7 +84,7 @@ REGLAS = [
      r"BIOESTIMULANT|ESTIMULANTE|EXTRACTO DE ALGA|ALGA MARINA|AMINOACID|"
      r"ACIDO HUMICO|ACIDOS HUMICOS|HUMICO|FULVICO"),
     ("Fertilizantes foliares", ("3105",), r"FOLIAR"),
-    ("Nutricion vegetal", ("3105",),
+    ("Nutrición vegetal", ("3105",),
      r"QUELAT|MICRONUTRIENTE|SULFATO DE ZINC|MANGANESO|MOLIBDEN"),
 ]
 

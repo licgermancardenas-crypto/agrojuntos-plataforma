@@ -675,6 +675,129 @@ with sync_playwright() as pw:
     else:
         print("  del ranking a la ficha de la empresa: ok")
 
+    # El precio por kilo. Lo que se comprueba no es que dibuje: es que solo
+    # aparezca donde significa algo. Una subpartida que agrupa productos que no
+    # se parecen —o que no se comercia por peso— no puede mostrar precio, y
+    # tiene que decir por que en vez de callarse.
+    print("\nprecio de importacion")
+    # El bloque anterior termino dentro de una ficha de empresa; hay que
+    # volver al directorio y encender la subcategoria para que el panel
+    # exista antes de recorrerlo.
+    pg.evaluate("() => location.hash = '#empresas'")
+    pg.wait_for_selector("#fClase .chip[data-c='6']", timeout=20000)
+    pg.click("#fClase .chip[data-c='6']")
+    pg.wait_for_selector("#impMiga", timeout=20000)
+    # El panel conserva el recorrido: puede haber quedado dentro de una
+    # categoria, y entonces la lista de categorias no esta a la vista.
+    raiz = pg.query_selector("#impMiga a[data-n='raiz']")
+    if raiz:
+        raiz.click()
+    pg.wait_for_selector("#impMercadoCat .bar.clic", timeout=20000)
+    PR = pg.evaluate(
+        "async () => (await (await fetch("
+        "'/data/importaciones/precios.json')).json())")
+    con_precio = sorted(PR["partidas"],
+                        key=lambda p: -PR["partidas"][p]["total"]["fob"])
+    sin_precio = list(PR["rechazadas"])
+    print(f"  {len(con_precio)} subpartidas publican precio, "
+          f"{len(sin_precio)} no")
+
+    def ir_a(part):
+        cat = (PR["partidas"].get(part) or {}).get("categoria")
+        if not cat:
+            cat = pg.evaluate(
+                "async (p) => { const j = await (await fetch("
+                "'/data/importaciones/panel.json')).json();"
+                " for (const c in j.cats) { const y = j.cats[c].partidas;"
+                "  for (const a in y) if (y[a].some(x => x.p === p)) return c; }"
+                " return null; }", part)
+        # En la raiz, «Importaciones» es texto y no enlace: solo hay que
+        # pulsarlo cuando el recorrido esta mas adentro.
+        r = pg.query_selector("#impMiga a[data-n='raiz']")
+        if r:
+            r.click()
+        pg.wait_for_selector("#impMercadoCat .bar.clic", timeout=10000)
+        pg.click("#impMercadoCat .bar.clic[data-k=" + repr(cat) + "]")
+        pg.wait_for_selector("#impCatPart .bar.clic", timeout=15000)
+        b = pg.query_selector("#impCatPart .bar.clic[data-k='" + part + "']")
+        if not b:
+            return False
+        b.click()
+        pg.wait_for_timeout(600)
+        return True
+
+    # Una partida con precio: cuatro indicadores, la serie anual completa y el
+    # mes a mes del ano elegido.
+    p_si = con_precio[0]
+    if ir_a(p_si):
+        k = len(pg.query_selector_all("#impPrecioKpi > div"))
+        an = len(pg.query_selector_all("#impPrecioAnual .sb"))
+        me = len(pg.query_selector_all("#impPrecioMes .sb"))
+        v = (pg.text_content("#impPrecioKpi .v") or "")
+        print(f"  {p_si}: {k} indicadores · {an} anos · {me} meses · {v}")
+        if k != 4 or an != 5 or me != 12:
+            print("  EL BLOQUE DE PRECIO LLEGA INCOMPLETO")
+            ok = False
+        if "US$" not in v or "/kg" not in v:
+            print("  EL PRECIO NO SE EXPRESA EN US$ POR KILO")
+            ok = False
+        # La escala recortada tiene que declararse: si no, la altura de la
+        # barra se lee como proporcion y no lo es.
+        nota = (pg.text_content("#impPrecioNota") or "")
+        if "no en cero" not in nota:
+            print("  LA ESCALA RECORTADA NO SE DECLARA")
+            ok = False
+        else:
+            print("  declara que la escala no arranca en cero: ok")
+        # Y el ranking gana las dos columnas del precio por empresa.
+        cols = pg.eval_on_selector_all(
+            "#impEmpresas thead th", "f => f.map(x => x.textContent)")
+        if "US$/kg" not in cols or "vs mercado" not in cols:
+            print(f"  EL RANKING NO TRAE PRECIO POR EMPRESA: {cols}")
+            ok = False
+        else:
+            print("  el ranking compara el precio de cada empresa: ok")
+
+    # Una partida sin precio: tiene que explicarse, no quedarse muda.
+    p_no = None
+    for p in ("380891", "380892", "310590"):
+        if p in PR["rechazadas"]:
+            p_no = p
+            break
+    if p_no and ir_a(p_no):
+        t = (pg.text_content("#impDetalle") or "")
+        if pg.query_selector("#impPrecioKpi"):
+            print(f"  {p_no} NO DEBERIA PUBLICAR PRECIO Y LO PUBLICA")
+            ok = False
+        elif "no publica precio" not in t:
+            print("  UNA PARTIDA SIN PRECIO NO EXPLICA POR QUE")
+            ok = False
+        else:
+            print(f"  {p_no} explica por que no publica precio: ok")
+
+    # Los importadores sin titular publicable no pueden aparecer como empresa.
+    pg.click("#impMiga a[data-n='raiz']")
+    pg.wait_for_selector("#impMercadoCat .bar.clic", timeout=10000)
+    pg.click("#impMercadoCat .bar.clic")
+    pg.wait_for_selector("#impEmpresas tbody tr", timeout=15000)
+    pg.click("#impTope .chip[data-t='0']")
+    pg.wait_for_timeout(300)
+    rucs = pg.eval_on_selector_all(
+        "#impEmpresas tbody tr td:nth-child(3)",
+        "f => f.map(x => x.textContent.trim())")
+    malos = [r for r in rucs if not r.isdigit()]
+    if malos:
+        print(f"  UN IMPORTADOR SIN RUC APARECE EN EL RANKING: {malos[:2]}")
+        ok = False
+    else:
+        print(f"  los {len(rucs)} del ranking tienen RUC de verdad: ok")
+    cob = (pg.text_content("#impCobertura") or "")
+    if "29733" not in cob:
+        print("  NO SE DECLARA LO RESERVADO POR LA LEY 29733")
+        ok = False
+    else:
+        print("  declara el monto reservado por la Ley 29733: ok")
+
     # La vista de importacion vive de la fila desplegable: si el detalle no
     # cambia al pulsar otra categoria, la tabla es un adorno. Y las dos
     # categorias sin mercancia tienen que seguir visibles: son parte de la

@@ -1022,6 +1022,14 @@ _completos = [a for a in sorted(_M["anios_con_dato"])
               if a != _M["anio_en_curso"]
               and _M["cobertura_semanas"].get(a, 0) >= _COMPLETO]
 _ANIO_C = _completos[-1]
+
+_PANEL = _json.load(open("data/importaciones/processed/panel.json",
+                         encoding="utf-8"))
+NOMBRES_P = _PANEL["nombres_partida"]
+
+
+def _nom_emp(ruc):
+    return _PANEL["nombres"].get(ruc, ruc)
 _top22 = sorted(
     ((e["n"], e["por_anio"][_ANIO_C]["fob"], e["por_anio"][_ANIO_C]["ops"])
      for e in _IMP.values() if _ANIO_C in e["por_anio"]),
@@ -1100,6 +1108,94 @@ page(f"""
          ["Año", "Semanas archivadas", "Estado"], ["l","r","l"], cls="tight")}
   <p class="sub">{_nota_faltan} Fuente: manifiestos de SUNAT bajo la Ley 27806,
   último registro {_M['ultimo_registro']}.</p>
+""", "Parte IV · El mercado desde aduanas")
+
+# ------------------------------------------------- precio de importacion --
+# El precio ya estaba en los datos: cada operacion trae su FOB y su peso. Lo
+# que decide esta pagina es donde ese cociente significa algo, y lo decide la
+# dispersion medida y no una lista escrita a mano.
+_PR = _json.load(open("data/importaciones/processed/precios.json",
+                      encoding="utf-8"))
+_PP = _PR["partidas"]
+_pr_fob = sum(x["total"]["fob"] for x in _PP.values())
+_pr_anios = [a for a in _M["anios_pedidos"] if a in _M["anios_con_dato"]]
+_pr_orden = sorted(_PP, key=lambda p: -_PP[p]["total"]["fob"])
+
+
+def _pcel(p, a):
+    x = _PP[p]["anios"].get(a)
+    return f'{x["uv"]:,.3f}' if x else "—"
+
+
+def _pvar(p):
+    """Del primer al ultimo ano con precio, en porcentaje."""
+    con = [a for a in _pr_anios if a in _PP[p]["anios"]]
+    if len(con) < 2:
+        return "—"
+    a0, a1 = _PP[p]["anios"][con[0]]["uv"], _PP[p]["anios"][con[-1]]["uv"]
+    v = 100 * (a1 - a0) / a0
+    return f'{v:+,.0f}%'
+
+
+page(f"""
+  <span class="kicker">Parte IV · El mercado desde aduanas</span>
+  <h2 class="title">Lo que costó <em>el kilo</em></h2>
+  <p class="deck">Cada declaración trae su valor y su peso, así que el precio
+     estaba en los datos sin calcular. Lo que hay que decidir es dónde ese
+     cociente significa algo: una subpartida de commodity agrupa un solo
+     producto y su US$/kg es un precio; una de fitosanitarios agrupa moléculas
+     que no se parecen, y promediarlas no da un precio.</p>
+
+  <div class="kpis">
+    <div><span class="v">{len(_PP)}</span><span class="l">subpartidas con<br>precio publicable</span></div>
+    <div><span class="v">{100 * _pr_fob / _M['total']['fob']:.0f}%</span><span class="l">del valor importado<br>queda cubierto</span></div>
+    <div><span class="v">{_PP['310210']['anios']['2022']['uv']:.3f}</span><span class="l">US$/kg de urea<br>en 2022</span></div>
+    <div><span class="v">{_PP['310210']['anios'][_pr_anios[-1]]['uv']:.3f}</span><span class="l">US$/kg de urea<br>en {_pr_anios[-1]}</span></div>
+  </div>
+
+  <h3 class="rule">El precio del fertilizante, año por año</h3>
+  <p>US$ por kilo, FOB sobre kilos: la curva del shock de 2022 y de lo que
+  vino después. La última columna va del primer año al último, en curso.</p>
+  {table([[NOMBRES_P.get(p, p)[:34], _pcel(p, "2022"), _pcel(p, "2023"),
+           _pcel(p, "2024"), _pcel(p, "2025"), _pcel(p, "2026"), _pvar(p)]
+          for p in _pr_orden[:6]],
+         ["Producto"] + _pr_anios + ["2022→hoy"],
+         ["l"] + ["r"] * (len(_pr_anios) + 1), cls="tight")}
+
+  <div class="two" style="margin-top:8px">
+    <div>
+      <h3 class="rule">Quién compra bien</h3>
+      <p>A igual subpartida y año, la diferencia de precio entre
+      importadores es una ventaja competitiva medible.</p>
+      {table([[_nom_emp(x["r"])[:26], f'{x["uv"]:,.3f}',
+               f'{100 * (x["uv"] - _PP["310210"]["anios"][_pr_anios[-2]]["uv"]) / _PP["310210"]["anios"][_pr_anios[-2]]["uv"]:+,.1f}%']
+              for x in _PP["310210"]["empresas"][_pr_anios[-2]][:4]],
+             ["Importador de urea · " + _pr_anios[-2], "US$/kg", "vs mercado"],
+             ["l", "r", "r"], cls="tight")}
+    </div>
+    <div>
+      <h3 class="rule">Dónde no hay precio</h3>
+      <p>De las {len(_PP) + len(_PR['rechazadas'])} subpartidas del universo,
+      {len(_PR['rechazadas'])} no publican precio, con el motivo anotado.</p>
+      {table([[NOMBRES_P.get(p, p)[:26],
+               "se comercia en litros" if "peso" in _PR["rechazadas"][p]
+               else ("productos distintos" if "dispersion" in _PR["rechazadas"][p]
+                     else "muy pocas operaciones")]
+              for p in ("380891", "380892", "310590")],
+             ["Subpartida", "Por qué no"], ["l", "l"], cls="tight")}
+      <div class="note brass">
+        <span class="h">Un frasco no mueve un mercado</span>
+        <p>El cloruro de potasio viaja en camiones de diez mil toneladas a
+        US$ 0.24–0.38 el kilo, y en la misma subpartida entran viales de 0.1 kg
+        de solución de laboratorio a US$ 900. Medir la dispersión por operación
+        lo habría descartado; medirla <b>por tonelada</b> lo deja donde
+        corresponde.</p>
+      </div>
+    </div>
+  </div>
+  <p class="sub">Se recortó el {100 * _PR['operaciones_recortadas'] / _PR['operaciones_con_peso']:.1f}%
+  de las operaciones por precio atípico. Fuente: manifiestos de SUNAT, Ley
+  27806.</p>
 """, "Parte IV · El mercado desde aduanas")
 
 # --------------------------------------------- lo que el agro importa ------

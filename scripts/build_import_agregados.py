@@ -44,13 +44,22 @@ def main():
     d = pd.read_csv(ENTRADA, encoding="utf-8-sig",
                     dtype={"ruc": str, "partida": str, "partida4": str,
                            "anio": str, "mes": str}, low_memory=False)
-    d = d[d.ruc.str.len() == 11]                       # RUC valido
     d = d[d.fob_usd >= 0]
+    # SUNAT no publica al titular cuando es persona natural: esas lineas
+    # llegan con el RUC literal «No Disponib» y la razon social «No
+    # Disponible - Ley 29733». Tiene once caracteres, asi que un filtro por
+    # longitud las dejaba pasar y aparecian en el ranking como si fueran una
+    # empresa. No lo son: son muchas personas bajo una misma etiqueta.
+    # Se quedan en los totales del mercado —el comercio ocurrio— y salen de
+    # todo corte por empresa, con el monto declarado aparte.
+    pub = d.ruc.str.fullmatch(r"\d{11}", na=False)
+    reservado = d[~pub]
+    d_emp = d[pub]
 
     # ---------------------------------------------------------- validacion --
     an = {"generado": dt.datetime.now().isoformat(timespec="seconds")}
     an["operaciones"] = int(len(d))
-    an["ruc_invalidos_descartados"] = 0
+    an["operaciones_sin_titular_publicable"] = int(len(reservado))
     an["mes_fuera_de_rango"] = int((~d.mes.isin(
         [f"{m:02d}" for m in range(1, 13)])).sum())
     an["fob_negativo"] = int((d.fob_usd < 0).sum())
@@ -76,7 +85,8 @@ def main():
             "cif": round(float(sub.cif_usd.sum()), 2),
             "kg": round(float(sub.peso_neto_kg.sum()), 1),
             "ops": int(len(sub)),
-            "empresas": int(sub.ruc.nunique()),
+            "empresas": int(sub.ruc[sub.ruc.str.fullmatch(r"\d{11}",
+                                                          na=False)].nunique()),
             "semanas": int(sub.semana_archivo.nunique()),
         }
 
@@ -110,7 +120,15 @@ def main():
         "anios_pedidos": [str(int(anio_actual) - i) for i in range(ANIOS - 1, -1, -1)],
         "cobertura_semanas": {k: int(v) for k, v in cob_anio.items()},
         "cobertura_mes": cob_mes,
-        "empresas_con_dato": int(d.ruc.nunique()),
+        "empresas_con_dato": int(d_emp.ruc.nunique()),
+        "reservado": {
+            "motivo": "importadores persona natural; SUNAT no publica al "
+                      "titular (Ley 29733 de protección de datos personales)",
+            "fob": round(float(reservado.fob_usd.sum()), 2),
+            "ops": int(len(reservado)),
+            "por_anio": {a: round(float(v), 2) for a, v in
+                         reservado.groupby("anio").fob_usd.sum().items()},
+        },
         "operaciones": int(len(d)),
         "total": bloque(d),
         "por_anio": por_anio,
@@ -129,7 +147,7 @@ def main():
                 sub.groupby(col).fob_usd.sum().nlargest(n).items()]
 
     emp = {}
-    for ruc, g in d.groupby("ruc"):
+    for ruc, g in d_emp.groupby("ruc"):
         meses = {f"{a}-{m}": round(float(v), 2) for (a, m), v in
                  g.groupby(["anio", "mes"]).fob_usd.sum().items()}
         # El mismo corte por producto, pais y partida repetido ano por ano, que
@@ -165,10 +183,13 @@ def main():
     an["cuadra_suma_anios"] = bool(abs(
         sum(v["fob"] for v in por_anio.values()) - tot) < 1)
     an["cuadra_suma_categorias"] = bool(abs(cat.fob.sum() - tot) < 1)
+    # Los cortes por empresa cuadran contra el total menos lo reservado, que
+    # es exactamente lo que no tiene empresa a la cual atribuirse.
+    tot_emp = tot - reservado.fob_usd.sum()
     an["cuadra_suma_empresas"] = bool(abs(
-        sum(e["total"]["fob"] for e in emp.values()) - tot) < 1)
+        sum(e["total"]["fob"] for e in emp.values()) - tot_emp) < 1)
     an["cuadra_suma_meses"] = bool(abs(
-        sum(sum(e["por_mes"].values()) for e in emp.values()) - tot) < 1)
+        sum(sum(e["por_mes"].values()) for e in emp.values()) - tot_emp) < 1)
 
     for p, o in ((SALIDA, emp), (MERCADO, mercado), (ANOMALIAS, an)):
         with io.open(p, "w", encoding="utf-8") as fh:

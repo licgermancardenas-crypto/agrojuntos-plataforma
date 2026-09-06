@@ -91,9 +91,13 @@ NOMBRE_PARTIDA = {
 
 
 def bloque(sub):
+    # «emp» cuenta importadores identificables. La etiqueta reservada de la Ley
+    # 29733 agrupa a muchas personas naturales bajo un mismo texto: contarla
+    # como una empresa seria contar mal en las dos direcciones.
     return {"fob": round(float(sub.fob_usd.sum()), 2),
             "ops": int(len(sub)),
-            "emp": int(sub.ruc.nunique())}
+            "emp": int(sub.ruc[sub.ruc.str.fullmatch(r"\d{11}", na=False)]
+                       .nunique())}
 
 
 def por_fob(pares):
@@ -106,8 +110,13 @@ def main():
     d = pd.read_csv(ENTRADA, encoding="utf-8-sig",
                     dtype={"ruc": str, "partida": str, "anio": str,
                            "mes": str}, low_memory=False)
-    d = d[(d.ruc.str.len() == 11) & (d.fob_usd >= 0)].copy()
+    d = d[d.fob_usd >= 0].copy()
     d["p6"] = d.partida.str[:6]
+    # «No Disponib» no es un RUC: es la etiqueta con la que SUNAT reserva al
+    # importador persona natural (Ley 29733). Suma en el mercado y no puede
+    # sumar en un ranking de empresas.
+    d["pub"] = d.ruc.str.fullmatch(r"\d{11}", na=False)
+    reservado = d[~d.pub]
 
     ultimo = str(d.fecha.max())
     anio_actual = ultimo[:4]
@@ -117,7 +126,8 @@ def main():
 
     # El nombre de cada empresa una sola vez: repetirlo en cada fila del cubo
     # multiplicaria el archivo sin agregar nada.
-    nombres = {r: g.razon_social.mode().iat[0] for r, g in d.groupby("ruc")}
+    nombres = {r: g.razon_social.mode().iat[0]
+               for r, g in d[d.pub].groupby("ruc")}
 
     total = {a: bloque(g) for a, g in d.groupby("anio")}
 
@@ -132,14 +142,14 @@ def main():
             c["empresas"][a] = [
                 {"r": r, "fob": round(float(gr.fob_usd.sum()), 2),
                  "ops": int(len(gr))}
-                for r, gr in por_fob(ga.groupby("ruc"))]
+                for r, gr in por_fob(ga[ga.pub].groupby("ruc"))]
             c["paises"][a] = [
                 {"n": p, "fob": round(float(v), 2)} for p, v in
                 ga.groupby("pais_origen").fob_usd.sum().nlargest(10).items()]
             c["emp_part"][a] = {
                 p: [{"r": r, "fob": round(float(gr.fob_usd.sum()), 2),
                      "ops": int(len(gr))}
-                    for r, gr in por_fob(gp.groupby("ruc"))]
+                    for r, gr in por_fob(gp[gp.pub].groupby("ruc"))]
                 for p, gp in ga.groupby("p6")}
         cats[cat] = c
 
@@ -153,6 +163,14 @@ def main():
         "cobertura_semanas": cob,
         "semanas_completo": 45,
         "total": total,
+        "reservado": {
+            "motivo": "importadores persona natural; SUNAT no publica al "
+                      "titular (Ley 29733)",
+            "fob": round(float(reservado.fob_usd.sum()), 2),
+            "ops": int(len(reservado)),
+            "por_anio": {a: round(float(v), 2) for a, v in
+                         reservado.groupby("anio").fob_usd.sum().items()},
+        },
         "cats": cats,
         "nombres": nombres,
         "nombres_partida": {p: NOMBRE_PARTIDA.get(p, "")
@@ -181,10 +199,14 @@ def main():
                 for x in l)
     s_ep = sum(x["fob"] for c in cats.values() for a in c["emp_part"].values()
                for l in a.values() for x in l)
-    for k, v in (("categoria x anio", s_cat), ("+ partida", s_par),
-                 ("+ empresa", s_emp), ("+ partida x empresa", s_ep)):
-        print("  cuadra %-22s %s" % (k, "OK" if abs(v - tot) < 1
+    tot_emp = tot - reservado.fob_usd.sum()
+    for k, v, ref in (("categoria x anio", s_cat, tot), ("+ partida", s_par, tot),
+                      ("+ empresa", s_emp, tot_emp),
+                      ("+ partida x empresa", s_ep, tot_emp)):
+        print("  cuadra %-22s %s" % (k, "OK" if abs(v - ref) < 1
                                      else "NO CUADRA"))
+    print("  reservado por Ley 29733     US$ %.1f MM en %s operaciones"
+          % (reservado.fob_usd.sum() / 1e6, format(len(reservado), ",")))
 
 
 if __name__ == "__main__":

@@ -533,7 +533,14 @@ dentro de su ficha —mensual, anual, por producto, por país y por partida—.
 scripts/build_import_historico.py    extrae las lineas de insumo de cada ZIP
 scripts/build_import_clasificar.py   clasifica: manda el arancel
 scripts/build_import_agregados.py    agrega por empresa y por mercado
+scripts/build_import_panel.py        cubo categoria x anio x partida x empresa
+scripts/build_import_precios.py      US$/kg donde el kilo significa algo
 ```
+
+El bloque «Qué importa este mercado» se recorre entero: mercado → año →
+categoría → partida → empresa → ficha. Y donde el kilo es la unidad en que se
+comercia, trae el precio de importación: la urea a US$ 0.663/kg en 2022 y US$
+0.314 en 2024, con la diferencia de precio entre importadores a la vista.
 
 Tres reglas la gobiernan y las tres están comprobadas en `verificar.py`:
 

@@ -453,7 +453,9 @@ function panelImportadores(mostrar) {
   caja.hidden = !mostrar;
   if (!mostrar || IMP_PANEL) return;
   IMP_PANEL = true;
-  cargar("importaciones/panel").then(iniPanelImp)
+  Promise.all([cargar("importaciones/panel"),
+               cargar("importaciones/precios")])
+    .then(function (r) { IMPPR = r[1]; iniPanelImp(r[0]); })
     .catch(function () { IMP_PANEL = false; });
 }
 
@@ -948,7 +950,8 @@ function impNivelPartida() {
     '<div class="eyebrow">Presencia de la partida año por año</div>' +
     "<div id='impPartSerie'></div>" +
     "<p class='sub'>Subpartida " + esc(p.slice(0, 4) + "." + p.slice(4)) +
-    " dentro de " + esc(c) + ".</p>" + impBloqueEmpresas();
+    " dentro de " + esc(c) + ".</p>" + bloquePrecio(p, a) +
+    impBloqueEmpresas();
 
   impSerie(document.getElementById("impPartSerie"),
     IMPP.anios_pedidos.map(function (y) {
@@ -958,7 +961,166 @@ function impNivelPartida() {
                ops: f ? f.ops : undefined, emp: f ? f.emp : undefined };
     }), impNombreParte(p));
 
+  pintarPrecio(p, a);
   impPintarEmpresas();
+}
+
+/* ------------------------------------------ precio de importación --------
+   US$ por kilo, que ya estaba en los datos —cada operación trae su FOB y su
+   peso— y solo hacía falta decidir dónde significa algo.
+
+   No en todas las partidas, y el criterio no es de gusto: se publica precio
+   donde el kilo es la unidad en que se comercia y donde la tonelada del mes se
+   mueve dentro de una banda estrecha. Los fitosanitarios quedan fuera porque
+   se declaran en litros y porque un insecticida de US$ 3/kg y otro de US$ 200
+   comparten subpartida. La regla, y el motivo de cada rechazo, viajan en el
+   propio archivo. */
+var IMPPR = null;
+
+function preciosDe(p) {
+  return IMPPR && IMPPR.partidas[p];
+}
+
+/* La variación de precio contra el año anterior. A diferencia del FOB, aquí no
+   hace falta que el año esté completo para que el promedio signifique algo:
+   un valor unitario de once semanas sigue siendo el precio de esas once
+   semanas. Lo que sí se declara es sobre cuánta tonelada se calculó. */
+function deltaPrecio(x, prev) {
+  if (!prev || !prev.uv) return null;
+  return 100 * (x.uv - prev.uv) / prev.uv;
+}
+
+function upk(v) {
+  return "US$ " + nf(v, v < 10 ? 3 : 2) + "/kg";
+}
+function tons(kg) {
+  return kg >= 1e6 ? nf(kg / 1e6, 1) + " M t" : nf(kg / 1000) + " t";
+}
+
+function bloquePrecio(p, a) {
+  var P = preciosDe(p);
+  if (!P) {
+    var motivo = IMPPR && IMPPR.rechazadas[p];
+    return '<div class="eyebrow" style="margin-top:16px">Precio de ' +
+      "importación</div><p class='sub'>Esta subpartida no publica precio por " +
+      "kilo" + (motivo ? ": " + esc(motivo) : "") + ". Calcularlo daría un " +
+      "número, no un precio.</p>";
+  }
+  return '<div class="eyebrow" style="margin-top:16px">Precio de importación · ' +
+    "US$ por kilo</div>" +
+    '<div class="kpis" id="impPrecioKpi" style="margin:6px 0 10px"></div>' +
+    "<div id='impPrecioAnual'></div>" +
+    "<p class='sub' id='impPrecioNota'></p>" +
+    "<div class='eyebrow' style='margin-top:12px'>Precio mes a mes · " +
+    esc(impEt(a)) + "</div><div id='impPrecioMes'></div>" +
+    "<p class='sub' id='impPrecioMesNota'></p>";
+}
+
+function pintarPrecio(p, a) {
+  var P = preciosDe(p);
+  if (!P) return;
+  var x = P.anios[a], prev = P.anios[String(+a - 1)];
+  var d = x ? deltaPrecio(x, prev) : null;
+
+  document.getElementById("impPrecioKpi").innerHTML =
+    kpi(x ? upk(x.uv) : "N/D", "precio medio " + impEt(a),
+        x ? "sobre " + tons(x.kg) + " en " + nf(x.ops) + " operaciones"
+          : "sin operaciones con peso en " + a) +
+    kpi(d === null ? "N/D" : (d >= 0 ? "+" : "") + nf(d, 1) + "%",
+        "vs " + String(+a - 1),
+        d === null ? "sin precio del año anterior"
+                   : "de " + upk(prev.uv) + " a " + upk(x.uv)) +
+    kpi(x ? nf(x.p25, 3) + " – " + nf(x.p75, 3) : "N/D",
+        "US$/kg · mitad central del año",
+        "la mitad de las operaciones cae en esta banda") +
+    kpi(x ? tons(x.kg) : "N/D", "tonelaje importado " + impEt(a),
+        "peso neto declarado");
+
+  /* La serie de precio no lleva las marcas de cobertura del FOB. Un año a
+     medias importa menos toneladas, pero el precio al que las importó es el
+     precio al que las importó: no es una suma incompleta, es un promedio. */
+  /* La serie de precio no arranca en cero. Un precio que se movió entre 0.31
+     y 0.66 dibujado desde cero da cinco barras casi iguales, que es lo
+     contrario de lo que pasó: el fertilizante se abarató a la mitad. Se
+     recorta la escala y se dice cuál es, para que nadie lea la altura como si
+     fuera proporcional al precio. */
+  var anios = IMPP.anios_pedidos;
+  var vals = anios.map(function (y) { return P.anios[y]; });
+  var us = vals.filter(Boolean).map(function (v) { return v.uv; });
+  var hi = Math.max.apply(null, us), lo = Math.min.apply(null, us);
+  var piso = lo - (hi - lo) * 0.25;
+  if (!(piso > 0)) piso = 0;
+  function alto(v) {
+    return hi > piso
+      ? Math.max(3, Math.round(100 * (v - piso) / (hi - piso))) : 100;
+  }
+  document.getElementById("impPrecioAnual").innerHTML =
+    '<div class="serie">' + anios.map(function (y, i) {
+      var v = vals[i];
+      if (!v) {
+        return '<div class="sb vacio" title="' + y +
+          ' · sin operaciones con peso"><i></i><b>' + y + "</b></div>";
+      }
+      return '<div class="sb" title="' + esc(impNombreParte(p) + "\n" +
+        impEt(y) + "\n\nPrecio: " + upk(v.uv) + "\nMitad central: " +
+        upk(v.p25) + " a " + upk(v.p75) + "\nTonelaje: " + tons(v.kg) +
+        "\nOperaciones: " + nf(v.ops)) + '"><i style="height:' + alto(v.uv) +
+        '%"></i><b>' + y + "</b></div>";
+    }).join("") + "</div>";
+
+  var conP = anios.filter(function (y) { return P.anios[y]; });
+  var pmin = null, pmax = null;
+  conP.forEach(function (y) {
+    var u = P.anios[y].uv;
+    if (pmin === null || u < P.anios[pmin].uv) pmin = y;
+    if (pmax === null || u > P.anios[pmax].uv) pmax = y;
+  });
+  document.getElementById("impPrecioNota").textContent =
+    (pmin && pmax && pmin !== pmax
+      ? "Del máximo de " + upk(P.anios[pmax].uv) + " en " + pmax +
+        " al mínimo de " + upk(P.anios[pmin].uv) + " en " + pmin + ". "
+      : "") +
+    "Valor unitario: suma de FOB sobre suma de kilos, ponderado por " +
+    "tonelada. La escala arranca en " + upk(piso) + " y no en cero, para que " +
+    "se vea el movimiento: la altura de la barra no es proporcional al precio.";
+
+  /* Mes a mes del año elegido. */
+  var mm = [], hay = [];
+  for (var m = 1; m <= 12; m++) {
+    var k = a + "-" + (m < 10 ? "0" + m : m);
+    var v = P.meses[k];
+    hay.push(!!v);
+    mm.push(v ? v.uv : 0);
+  }
+  var conV = mm.filter(function (v, i) { return hay[i]; });
+  var hiM = conV.length ? Math.max.apply(null, conV) : 1;
+  var loM = conV.length ? Math.min.apply(null, conV) : 0;
+  var pisoM = loM - (hiM - loM) * 0.25;
+  if (!(pisoM > 0)) pisoM = 0;
+  document.getElementById("impPrecioMes").innerHTML =
+    '<div class="serie">' + mm.map(function (v, i) {
+      if (!hay[i]) {
+        return '<div class="sb vacio" title="' + MESES_IMP[i] + " " + a +
+          ' · sin operaciones suficientes para un precio"><i></i><b>' +
+          MESES_IMP[i] + "</b></div>";
+      }
+      var k = a + "-" + (i < 9 ? "0" + (i + 1) : i + 1);
+      return '<div class="sb" title="' + esc(MESES_IMP[i] + " " + a +
+        "\n\nPrecio: " + upk(v) + "\nTonelaje: " + tons(P.meses[k].kg) +
+        "\nOperaciones: " + nf(P.meses[k].ops)) + '"><i style="height:' +
+        (hiM > pisoM
+          ? Math.max(3, Math.round(100 * (v - pisoM) / (hiM - pisoM))) : 100) +
+        '%"></i><b>' + MESES_IMP[i] + "</b></div>";
+    }).join("") + "</div>";
+  var n = hay.filter(Boolean).length;
+  document.getElementById("impPrecioMesNota").textContent =
+    n + " de 12 meses de " + a + " tienen operaciones suficientes para " +
+    "calcular un precio. Escala desde " + upk(pisoM) + ", no desde cero. Un mes sin barra no es un mes sin precio: es un mes " +
+    "con menos de cinco operaciones, donde el promedio diría más de lo que " +
+    "aguanta." +
+    (P.generica ? " Ojo: la subpartida es un casillero «los demás», así que " +
+      "este precio es el del producto que domina su tonelada, no el de una " +
+      "sola mercancía." : "");
 }
 
 /* ------------------------------------------- ranking de importadores ----- */
@@ -1006,26 +1168,52 @@ function impPintarEmpresas() {
   bus.oninput = function () { IMPQ.q = this.value; impPintarEmpresas(); };
 
   var t = document.getElementById("impEmpresas");
+  /* Dentro de una partida con precio publicable, el ranking gana dos columnas:
+     a qué precio compró cada empresa y cuánto se apartó del mercado de ese
+     año. Es la pregunta comercial que el FOB solo no contesta —quién compra
+     bien— y sale de dividir lo que ya estaba en cada declaración. */
+  var pr = IMPQ.part && preciosDe(IMPQ.part);
+  var prAnio = pr && pr.anios[IMPQ.anio];
+  var prEmp = {};
+  if (pr) {
+    (pr.empresas[IMPQ.anio] || []).forEach(function (x) { prEmp[x.r] = x; });
+  }
+  var colP = prAnio ? "<th>US$/kg</th><th>vs mercado</th>" : "";
+
   t.innerHTML = "<thead><tr><th>#</th><th class='l'>Importador</th>" +
-    "<th class='l'>RUC</th><th>FOB</th><th>%</th><th>Oper.</th></tr></thead>" +
-    "<tbody>" +
+    "<th class='l'>RUC</th><th>FOB</th><th>%</th><th>Oper.</th>" + colP +
+    "</tr></thead><tbody>" +
     (muestra.length ? muestra.map(function (e) {
+      var x = prEmp[e.r], cel = "";
+      if (prAnio) {
+        var d = x ? 100 * (x.uv - prAnio.uv) / prAnio.uv : null;
+        cel = "<td class='n'>" + (x ? upk(x.uv) : "—") + "</td>" +
+          "<td class='n' title='" + (x ? esc("Precio del mercado en " +
+            IMPQ.anio + ": " + upk(prAnio.uv) + "\n" +
+            "Esta empresa: " + upk(x.uv) + " sobre " + tons(x.kg))
+            : "sin peso declarado") +
+          "'>" + (d === null ? "—"
+            : (d >= 0 ? "+" : "") + nf(d, 1) + "%") + "</td>";
+      }
       return "<tr><td class='l n'>" + (todas.indexOf(e) + 1) + "</td>" +
         "<td class='l name'><a href='#empresa=" + e.r + "'>" +
         esc(IMPP.nombres[e.r] || e.r) + "</a></td>" +
         "<td class='l n'>" + e.r + "</td>" +
         "<td class='n'>" + usd(e.fob) + "</td>" +
         "<td class='n'>" + pct(100 * e.fob / base, 1) + "</td>" +
-        "<td class='n'>" + nf(e.ops) + "</td></tr>";
-    }).join("") : "<tr><td class='l' colspan='6'>Ninguna empresa coincide " +
-      "con la búsqueda.</td></tr>") + "</tbody>";
+        "<td class='n'>" + nf(e.ops) + "</td>" + cel + "</tr>";
+    }).join("") : "<tr><td class='l' colspan='" + (prAnio ? 8 : 6) +
+      "'>Ninguna empresa coincide con la búsqueda.</td></tr>") + "</tbody>";
 
   document.getElementById("impEmpNota").textContent =
     (q ? filtradas.length + " de " + todas.length + " importadores coinciden. "
        : nf(todas.length) + " importadores con operación registrada. ") +
     "El porcentaje es sobre el FOB de " +
     (IMPQ.part ? "la partida" : "la categoría") + " en " + impEt(IMPQ.anio) +
-    ". Valor FOB importado, no facturación de la empresa.";
+    ". Valor FOB importado, no facturación de la empresa." +
+    (prAnio ? " «vs mercado» compara el precio pagado por cada empresa contra " +
+      "el valor unitario de la partida ese año (" + upk(prAnio.uv) +
+      "); un guion significa que esa empresa no declaró peso." : "");
 }
 
 /* ------------------------------------------------------------ orquesta --- */
@@ -1058,7 +1246,15 @@ function impNotaCobertura() {
       ? "<b>" + faltan.join(", ") + "</b> todavía no se descargan: esos años " +
         "no aparecen en cero, aparecen sin dato."
       : "Los cinco años están completos.") +
-    " El valor mostrado es <b>FOB importado</b> y no facturación de la empresa.";
+    " El valor mostrado es <b>FOB importado</b> y no facturación de la " +
+    "empresa." +
+    (IMPP.reservado && IMPP.reservado.ops
+      ? " <b>" + usd(IMPP.reservado.fob) + "</b> en " + nf(IMPP.reservado.ops) +
+        " operaciones corresponden a importadores persona natural, cuyo " +
+        "titular SUNAT no publica por la Ley 29733 de protección de datos " +
+        "personales: suman en el mercado y quedan fuera de los rankings de " +
+        "empresas, porque no son una empresa sino muchas."
+      : "");
 }
 
 function iniPanelImp(P) {

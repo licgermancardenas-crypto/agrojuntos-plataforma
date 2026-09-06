@@ -180,6 +180,101 @@ importado» y «FOB registrado», nunca «ventas».
 
 ---
 
+## Precio de importación: dónde el kilo significa algo
+
+Cada declaración trae su FOB y su peso neto, así que el precio ya estaba en los
+datos sin calcular. Lo difícil no es dividir: es decidir **dónde ese cociente
+significa un precio**.
+
+Una subpartida de commodity agrupa un solo producto —urea es urea— y su US$/kg
+es un precio de mercado. Una subpartida de fitosanitarios agrupa moléculas que
+no se parecen: un insecticida de US$ 3/kg y otro de US$ 200/kg comparten
+casillero arancelario, y promediarlos no da un precio.
+
+La elegibilidad la deciden los datos, con tres filtros, y ninguna lista escrita
+a mano:
+
+**1. El kilo tiene que ser la unidad en que se comercia.** El declarante anota
+la unidad comercial y ahí se ve: la urea se declara en toneladas, la semilla de
+alfalfa en kilos, pero los árboles frutales se declaran en unidades y los
+bulbos en millares. Se exige que al menos el 60% de las declaraciones de la
+partida vengan en KG, TM o LB. Esto solo ya deja fuera a los fitosanitarios,
+que se comercian en litros.
+
+**2. La tonelada del mes tiene que moverse en una banda estrecha.** Se mide el
+recorrido intercuartílico sobre la mediana, y se exige que no pase de 0.40.
+
+Dos decisiones dentro de esa medida, y las dos importan:
+
+- **Dentro de cada mes, no sobre los cinco años.** Entre 2022 y 2026 el precio
+  del fertilizante se movió tanto que medirlo todo junto confundiría «producto
+  heterogéneo» con «precio que cambió». La urea pasa de 0.88 a 0.36 solo con
+  hacer bien esa distinción.
+- **Ponderado por kilos, no por operación.** Lo que se publica es un valor
+  unitario kilo-ponderado, así que la pregunta correcta no es si las
+  operaciones se parecen entre sí, sino si se parecen los kilos. El cloruro de
+  potasio lo muestra: por operación su dispersión es 0.47 —lo arrastra una cola
+  de viales de solución calibradora de laboratorio de 0.1 kg a US$ 900/kg—, y
+  por kilo es 0.08, porque el 99.99% de la tonelada es el mismo camión de
+  fertilizante a granel. Rechazarlo por lo primero habría sido rechazar un
+  commodity por culpa de un frasco.
+
+**3. Tiene que haber suficiente materia.** 150 operaciones con peso y 18 meses
+con al menos cinco cada uno.
+
+### Qué se publica
+
+**Valor unitario = suma de FOB ÷ suma de kilos**, que es la medida estándar de
+la estadística de comercio y además robusta por construcción: esos viales
+aportan US$ 15 y cero kilos. Junto a él viaja la banda intercuartílica, para
+que se vea cuánta dispersión hay detrás del promedio.
+
+Antes de calcular se recorta el 4.5% de las operaciones por precio atípico, con
+reglas de cuartiles sobre el **logaritmo** del precio —en escala lineal la
+valla de abajo cae en negativo y no recorta nada— dentro de cada partida y año.
+
+### Resultado
+
+**13 de 46 subpartidas** publican precio, y cubren el 38% del valor importado:
+las commodities de fertilizante y tres semillas forrajeras. Las otras 33 no
+publican nada y cada una lleva anotado su motivo, que la interfaz muestra en
+vez de callarse.
+
+La serie que sale de ahí es historia verificable: la urea a US$ 0.663/kg en
+2022, US$ 0.314 en 2024 y US$ 0.467 en 2026. Y dentro de un mismo año y una
+misma partida, la diferencia entre importadores es medible: en urea 2025 el
+mayor comprador del país pagó 4.6% por debajo del mercado y otros pagaron 30%
+por encima.
+
+### Una escala que no arranca en cero
+
+Los gráficos de precio se dibujan con la escala recortada y **lo dicen**. Un
+precio que se movió entre 0.31 y 0.66 dibujado desde cero da cinco barras casi
+iguales, que es lo contrario de lo que pasó. La nota al pie declara dónde
+arranca la escala, para que la altura de la barra no se lea como proporción.
+
+---
+
+## Importadores sin titular publicable
+
+SUNAT no publica el nombre cuando el importador es persona natural: esas líneas
+llegan con el RUC literal `No Disponib` y la razón social `No Disponible - Ley
+29733`, por la ley de protección de datos personales.
+
+Tiene once caracteres, así que un filtro por longitud de RUC las dejaba pasar y
+**aparecían en el ranking como si fueran una empresa**. No lo son: son muchas
+personas bajo una misma etiqueta, y contarlas como una sola empresa cuenta mal
+en las dos direcciones.
+
+Tratamiento: **US$ 6.0 MM en 1,204 operaciones** (0.11% del valor) se quedan en
+los totales del mercado —el comercio ocurrió— y salen de todo corte por
+empresa: rankings, conteos de importadores y comparaciones de precio. El monto
+se declara en la propia interfaz. Las cuadraturas por empresa se verifican
+contra el total menos lo reservado, que es exactamente lo que no tiene empresa
+a la cual atribuirse.
+
+---
+
 ## Lo que la fuente no tiene
 
 **Proveedor internacional.** El manifiesto trae país de origen, país de
@@ -261,6 +356,8 @@ data/importaciones/processed/
   operaciones.csv                  una fila por línea de manifiesto, 29 columnas
   operaciones_clasificadas.csv     lo mismo + categoría y cómo se clasificó
   importadores.json                agregados por RUC
+  panel.json                       cubo categoría × año × partida × empresa
+  precios.json                     valor unitario donde el kilo significa algo
   mercado.json                     totales, cobertura y categorías
   anomalias.json                   reporte de validación
   _semanas_procesadas.json         libro de semanas ya extraídas
@@ -307,10 +404,13 @@ python scripts/acumular_aduanas.py --desde 2022-01-03 --solo importacion
 python scripts/build_import_historico.py
 python scripts/build_import_clasificar.py
 python scripts/build_import_agregados.py
+python scripts/build_import_panel.py
+python scripts/build_import_precios.py
 ```
 
-Los cuatro son idempotentes y retomables: cada uno lleva registro de lo ya
-hecho y solo procesa lo nuevo.
+Los seis son idempotentes: la descarga y la extracción llevan registro de lo
+ya hecho y solo procesan lo nuevo; los cuatro agregados se rehacen enteros
+desde el CSV, que es barato y evita que un agregado quede desfasado del otro.
 
 ---
 

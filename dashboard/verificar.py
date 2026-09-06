@@ -381,11 +381,14 @@ with sync_playwright() as pw:
     if len(kpis) < 4 or barras_cat < 3:
         print("  EL PANEL DE LA SUBCATEGORIA LLEGA INCOMPLETO")
         ok = False
-    if "sin dato" not in cob:
-        print("  LA COBERTURA NO DECLARA LOS ANOS SIN DESCARGAR")
+    # La nota de cobertura tiene que decir la verdad en los dos escenarios: con
+    # anos pendientes, nombrarlos y llamarlos «sin dato»; con los cinco
+    # completos, decirlo. Lo que no puede es callarse.
+    if "sin dato" not in cob and "cinco años están completos" not in cob:
+        print("  LA COBERTURA NO DECLARA QUE ANOS FALTAN")
         ok = False
     else:
-        print("  declara los anos sin descargar como «sin dato»: ok")
+        print("  la cobertura declara que anos hay y cuales faltan: ok")
     if "FOB importado" not in cob:
         print("  EL PANEL NO ACLARA QUE EL VALOR ES FOB IMPORTADO")
         ok = False

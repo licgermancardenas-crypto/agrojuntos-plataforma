@@ -1029,6 +1029,17 @@ _top22 = sorted(
 _fob22 = _M["por_anio"][_ANIO_C]["fob"]
 _conc22 = 100 * sum(r[1] for r in _top22[:10]) / _fob22
 _faltan = [a for a in _M["anios_pedidos"] if a not in _M["anios_con_dato"]]
+# Con anos pendientes hay que nombrarlos; con los cinco descargados, decirlo.
+# Lo que no puede es callarse, que es como un hueco se vuelve un cero.
+_nota_faltan = (
+    " y ".join(_faltan) + " no aparecen en cero: aparecen sin dato. Antes "
+    "decir «no encontramos información para " + _faltan[0] + "» que escribir "
+    "US$ 0 sin evidencia."
+    if _faltan else
+    "Los cinco años están descargados; el único incompleto es " +
+    _M["anio_en_curso"] + ", que está en curso y se marca como tal.")
+
+
 def _est(a):
     sem = _M["cobertura_semanas"].get(a, 0)
     if not sem:
@@ -1087,10 +1098,8 @@ page(f"""
   {table([[a, nf(_M["cobertura_semanas"].get(a, 0)), _est(a)]
           for a in _M["anios_pedidos"]],
          ["Año", "Semanas archivadas", "Estado"], ["l","r","l"], cls="tight")}
-  <p class="sub">{" y ".join(_faltan)} no aparecen en cero: aparecen sin dato.
-  Antes decir «no encontramos información para {_faltan[0]}» que escribir US$ 0
-  sin evidencia. Fuente: manifiestos de SUNAT bajo la Ley 27806, último
-  registro {_M['ultimo_registro']}.</p>
+  <p class="sub">{_nota_faltan} Fuente: manifiestos de SUNAT bajo la Ley 27806,
+  último registro {_M['ultimo_registro']}.</p>
 """, "Parte IV · El mercado desde aduanas")
 
 # --------------------------------------------- lo que el agro importa ------

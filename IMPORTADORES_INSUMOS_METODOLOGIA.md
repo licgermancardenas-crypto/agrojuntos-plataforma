@@ -5,10 +5,10 @@ empresa, desde los microdatos de aduanas. Todo lo que se muestra en el módulo
 sale de este pipeline y se puede rastrear hasta la línea original del
 manifiesto.
 
-Estado al cierre de este documento: **116 semanas archivadas**, 45,446
-operaciones, 1,095 empresas con operación verificada, US$ 2,655.1 MM FOB y US$
-3,002.8 MM CIF. **2022 y 2023 están completos: 52 semanas cada uno.** La
-descarga histórica sigue corriendo sobre 2024 y 2025.
+Estado al cierre de este documento: **los cinco años están descargados**. 241
+semanas archivadas, 101,022 operaciones, 1,423 empresas con operación
+verificada, US$ 5,457.5 MM FOB y US$ 6,208.4 MM CIF. 2022, 2023, 2024 y 2025
+completos; 2026 en curso, con 34 semanas hasta el 30 de agosto.
 
 ---
 
@@ -79,7 +79,7 @@ es **aduana + año de presentación + número correlativo + número de serie**
 (`CODI_ADUAN`, `ANO_PRESE`, `NUME_CORRE`, `NUME_SERIE`), y se guarda en la
 columna `declaracion`.
 
-Resultado del control: **0 declaraciones repetidas en 45,446 operaciones.** Los
+Resultado del control: **0 declaraciones repetidas en 101,022 operaciones.** Los
 archivos semanales no se solapan.
 
 ---
@@ -147,7 +147,7 @@ que es la única situación en que una palabra decide algo.
 | Fertilizantes foliares | 3105 | foliar |
 | Nutrición vegetal | 3105 | quelato, micronutriente, manganeso, molibdeno |
 
-**El 94.8% se clasifica solo por arancel** (43,075 de 45,446); el 5.2% restante
+**El 95.0% se clasifica solo por arancel** (95,926 de 101,022); el 5.0% restante
 se desempata con la descripción. Ninguna operación queda sin categoría.
 
 Una categoría más que se pensó y no sobrevivió: **micronutrientes** mueve US$
@@ -228,9 +228,9 @@ Cobertura al cierre de este documento:
 |---|---|---|
 | 2022 | 52 | **completo** |
 | 2023 | 52 | **completo** |
-| 2024 | 1 | descarga en curso |
-| 2025 | 0 | pendiente de descarga |
-| 2026 | 11 | año en curso, hasta el 2026-08-30 |
+| 2024 | 52 | **completo** |
+| 2025 | 51 | **completo** |
+| 2026 | 34 | año en curso, hasta el 2026-08-30 |
 
 Un año se considera **completo** con 45 de sus 52 semanas archivadas. Por
 debajo de ese umbral la cifra anual es un recorte presentado como año: la
@@ -316,9 +316,10 @@ hecho y solo procesa lo nuevo.
 
 ## Limitaciones declaradas
 
-1. **La descarga histórica está incompleta.** 2022 y 2023 están enteros; 2024
-   va por una semana y 2025 no empieza. Los años sin semanas no aparecen en
-   cero: aparecen sin dato, y el módulo lo dice con esas palabras.
+1. **2026 es un año en curso**, con 34 de sus 52 semanas. Nunca se presenta
+   como año cerrado: arrastra su «YTD» y su barra va marcada. La maquinaria que
+   distingue «sin descargar» de «cero medido» sigue en pie por si en el futuro
+   falta una semana.
 2. **No hay proveedor internacional** en la fuente.
 3. **Los adyuvantes agrícolas no son medibles** por separado del jabón
    doméstico, así que quedan fuera del universo.
@@ -326,5 +327,5 @@ hecho y solo procesa lo nuevo.
    registros sin fecha válida caen en la semana del archivo.
 5. **El FOB no es facturación**, y el módulo no permite deducir el tamaño
    comercial de una empresa a partir de lo que importa.
-6. **La clasificación fina depende de lo que escriba el declarante.** El 5.2%
-   desempatado por descripción hereda esa imprecisión; el 94.8% restante no.
+6. **La clasificación fina depende de lo que escriba el declarante.** El 5.0%
+   desempatado por descripción hereda esa imprecisión; el 95.0% restante no.

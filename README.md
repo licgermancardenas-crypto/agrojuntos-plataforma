@@ -524,8 +524,9 @@ cuanto entre la semana siguiente.
 
 La subcategoría «importador de insumos» del directorio de empresas corre sobre
 una capa propia, reconstruida operación por operación desde los manifiestos
-acumulados: 116 semanas, 45,446 operaciones, 1,095 empresas con operación
-verificada, US$ 2,655.1 MM FOB, con 2022 y 2023 completos. Cada empresa tiene su historia de importación
+acumulados: los cinco años. 241 semanas, 101,022 operaciones, 1,423 empresas
+con operación verificada, US$ 5,457.5 MM FOB. 2022 a 2025 completos y 2026 en
+curso. Cada empresa tiene su historia de importación
 dentro de su ficha —mensual, anual, por producto, por país y por partida—.
 
 ```
@@ -539,7 +540,7 @@ Tres reglas la gobiernan y las tres están comprobadas en `verificar.py`:
 1. **Un año sin semanas descargadas no es US$ 0.** Se dibuja como hueco y se
    dice con esas palabras. Un año que sí se midió y en el que la empresa no
    importó es otra cosa —un cero de verdad— y se dibuja distinto.
-2. **Manda la partida arancelaria**, no la descripción. El 94.8% se clasifica
+2. **Manda la partida arancelaria**, no la descripción. El 95.0% se clasifica
    solo por arancel; la descripción únicamente parte lo que la subpartida junta,
    como el 3808.93 que mete herbicidas y reguladores de crecimiento en el mismo
    casillero.
@@ -554,7 +555,7 @@ y cuál se sacó y por qué— está en
 
 `agro_insumos_pe_data/raw_data/sunat/` versiona los 20 archivos DBF originales
 (197 MB) para que el análisis sea reproducible tal cual. El histórico completo
-—hoy 116 semanas— vive en `data/aduanas_hist/`, fuera del repositorio, y se
+—hoy 241 semanas— vive en `data/aduanas_hist/`, fuera del repositorio, y se
 reconstruye con `acumular_aduanas.py` desde el propio servidor de SUNAT.
 
 Si con el tiempo se acumulan muchas corridas, lo sano es mover los archivos

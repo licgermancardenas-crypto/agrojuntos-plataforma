@@ -2019,9 +2019,8 @@ page(f"""
   <h2 class="title">La demanda exportadora, puesta <em>donde se produce</em></h2>
   <p class="deck">Las páginas anteriores reparten el valor exportado por el
      domicilio fiscal, y eso lo acumula en Lima. Aquí se sitúa con el UBIGEO
-     del manifiesto, que apunta al fundo: {nf(_AC['distritos'])} distritos con
-     coordenada, {nf(_AC['empresas'])} empresas y {usd(_AC['fob'])} entre
-     {_AC['anios'][0]} y {_AC['anios'][-1]}.</p>
+     del manifiesto, que apunta al fundo: {nf(_AC['empresas'])} empresas y
+     {usd(_AC['fob'])} entre {_AC['anios'][0]} y {_AC['anios'][-1]}.</p>
 
   <div class="kpis">
     <div><span class="v">{nf(_AC['distritos'])}</span><span class="l">distritos<br>con embarque propio</span></div>
@@ -2035,7 +2034,7 @@ page(f"""
       <h3 class="rule">Cuánta carga alcanza cada centro</h3>
       {table([[h["hub"], f'{h["fob_2h_mm"]:,.0f}', f'{h["fob_4h_mm"]:,.0f}',
                f'{h["fob_6h_mm"]:,.0f}', nf(h["distritos"])]
-              for h in _ac_h[:5]],
+              for h in _ac_h[:4]],
              ["Centro", "2 h · MM", "4 h · MM", "6 h · MM", "Distritos"],
              ["l", "r", "r", "r", "r"], cls="tight")}
       <p class="sub">La pregunta de inventario no es cuánto mercado hay sino
@@ -2047,7 +2046,7 @@ page(f"""
     <div>
       <h3 class="rule">Los distritos que más embarcan</h3>
       {table([[f'{cap(x["n"])[:15]}', f'{x["fob"]/1e6:,.0f}', nf(x["empresas"]),
-               x["mes"]] for x in _ac_d[:5]],
+               x["mes"]] for x in _ac_d[:4]],
              ["Distrito", "FOB MM", "Empresas", "Pico"],
              ["l", "r", "r", "l"], cls="tight")}
       <p class="sub">Dos formas opuestas: {cap(_ac_d[0]["n"])} mueve
@@ -2065,8 +2064,8 @@ page(f"""
          ["Territorio", "FOB export MM", "Exportadores", "En cartera",
           "Importadores", "Al centro"],
          ["l", "r", "r", "r", "r", "r"], cls="tight")}
-  <p class="sub">«Importadores» son los de insumos vistos en aduanas: la
-  competencia instalada. Donde hay carga y no los hay, el canal está libre.</p>
+  <p class="sub">«Importadores» son los de insumos vistos en aduanas: donde hay
+  carga y no los hay, el canal está libre.</p>
 
   <div class="note brass" style="margin-top:6px">
     <span class="h">Quién tiene planta, y quién no la usa para exportar</span>
@@ -2080,7 +2079,9 @@ page(f"""
     {", ".join(list(_ac_s.get("por_region", {}))[:4])}.</p>
     <p class="sub" style="margin:6px 0 0">Las listas no ubican: son atributo,
     no posición. De {" y ".join(_AC["senasa_cobertura"]["sin_lista"])} SENASA
-    publica protocolos, no listas: revisadas las 672 del catálogo.</p>
+    publica protocolos y no listas, así que de esos dos no se sabe quién tiene
+    planta; el manifiesto sí los sitúa:
+    {"; ".join(f'{k} {usd(v["fob"])} en {v["distritos"]} distritos, mayor {v["top"][0]["n"]}' for k, v in _AC["sin_lista_senasa"].items())}.</p>
   </div>
 """, "Parte VI · Dónde está la carga")
 

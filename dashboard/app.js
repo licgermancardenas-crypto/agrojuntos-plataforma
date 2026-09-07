@@ -3133,7 +3133,39 @@ function pintarAcopio() {
         "que se usan como atributo sobre empresas que el manifiesto ya sitúa. " +
         "De " + esc((A.senasa_cobertura || {sin_lista: []}).sin_lista.join(" y ")) +
         " SENASA publica solo los protocolos por mercado, sin lista de " +
-        "establecimientos.";
+        "establecimientos: de esos dos no se sabe quién tiene planta, pero el " +
+        "manifiesto sí los sitúa.";
+      /* Y se sitúan aquí: es lo único que hay para los dos productos que la
+         capa de certificación no cubre, y son 6,070 MM entre ambos. */
+      var sl = A.sin_lista_senasa || {};
+      var filas = [];
+      Object.keys(sl).forEach(function (k) {
+        sl[k].top.slice(0, 5).forEach(function (t) {
+          filas.push({prod: k, n: t.n, dep: t.dep, fob: t.fob,
+                      empresas: t.empresas,
+                      hub: t.hub || "sin centro",
+                      horas: t.horas === null ? 99 : t.horas});
+        });
+      });
+      if (filas.length) {
+        var cont = document.getElementById("expSinLista");
+        cont.innerHTML = "<div class='eyebrow'>Uva y espárrago · dónde están, " +
+          "según el manifiesto</div><div class='tw'><table id='tSinLista'></table></div>" +
+          "<p class='sub'>" + esc(Object.keys(sl).map(function (k) {
+            return k + ": " + sl[k].salvedad; }).join(" · ")) + "</p>";
+        tabla(document.getElementById("tSinLista"), [
+          { k: "prod", t: "Producto", l: 1, f: function (r) {
+              return "<span class='tag'>" + esc(r.prod) + "</span>"; } },
+          { k: "n", t: "Distrito", l: 1, f: function (r) {
+              return "<b>" + esc(r.n) + "</b><span class='sub2'>" +
+                esc(r.dep) + "</span>"; } },
+          { k: "fob", t: "FOB", f: function (r) { return usd(r.fob); } },
+          { k: "empresas", t: "Empresas", f: function (r) {
+              return nf(r.empresas); } },
+          { k: "horas", t: "Al centro", f: function (r) {
+              return r.horas === 99 ? "—" : nf(r.horas, 1) + " h"; } },
+        ], filas, { sort: "fob" });
+      }
     }
   }).catch(fallo);
 }

@@ -154,6 +154,44 @@ def main():
         print("distritos fuera de todo territorio de venta: %d · US$ %s MM"
               % (fuera, format(round(j[j.cluster.isna()].fob.sum() / 1e6), ",")))
 
+    # ------------------------------- los productos que SENASA no lista --
+    # De uva y espárrago no hay lista de establecimientos: solo protocolos.
+    # Para esos dos, el manifiesto es la única fuente que los sitúa, y sitúa
+    # bien —por distrito de producción—, aunque no diga quién tiene planta.
+    # El corte va por familia arancelaria, con la salvedad de que la del
+    # espárrago agrupa otras hortalizas frescas y no se puede separar.
+    SIN_LISTA = {
+        "uva": ("Uva", "la partida agrupa uva fresca y pasas"),
+        "esparrago": ("Hortalizas frescas (espárrago y otras)",
+                      "la partida agrupa el espárrago con otras hortalizas "
+                      "frescas y no se pueden separar"),
+    }
+    por_prod = {}
+    for clave, (familia, salvedad) in SIN_LISTA.items():
+        sub = d[d.familia == familia]
+        if not len(sub):
+            continue
+        g = (sub.groupby("ubigeo")
+             .agg(fob=("fob_usd", "sum"), empresas=("ruc", "nunique")))
+        g = g.join(geo).dropna(subset=["lat"]).sort_values("fob", ascending=False)
+        g = g.join(asg[["hub", "horas_al_hub"]].reindex(
+            [h3.latlng_to_cell(float(a), float(b), RES_HUB)
+             for a, b in zip(g.lat, g.lon)]).set_index(g.index))
+        pm = sub.groupby("mes").fob_usd.sum()
+        por_prod[clave] = {
+            "familia": familia, "salvedad": salvedad,
+            "fob": float(sub.fob_usd.sum()),
+            "empresas": int(sub.ruc.nunique()),
+            "distritos": int(len(g)),
+            "mes_pico": MESES[int(pm.idxmax()) - 1] if len(pm) else "",
+            "top": [{"n": str(r.dist).title(), "dep": str(r.dep),
+                     "fob": float(r.fob), "empresas": int(r.empresas),
+                     "hub": str(r.hub) if pd.notna(r.hub) else "",
+                     "horas": (float(r.horas_al_hub)
+                               if pd.notna(r.horas_al_hub) else None)}
+                    for _, r in g.head(8).iterrows()],
+        }
+
     # ------------------------------------------------- lo que lee la web --
     sin_hub = j[j.hub.isna()]
     # Un JSON chico con lo que las dos salidas muestran: el detalle por
@@ -202,6 +240,7 @@ def main():
                          .sort_values("fob_export_mm", ascending=False).head(15).iterrows()]
                         if ter is not None else []),
         "senasa": pack,
+        "sin_lista_senasa": por_prod,
         "senasa_cobertura": (_js.load(io.open("out/senasa_cobertura.json",
                                               encoding="utf-8"))
                              if os.path.exists("out/senasa_cobertura.json")
@@ -210,6 +249,12 @@ def main():
     with io.open("out/acopio.json", "w", encoding="utf-8") as fh:
         _js.dump(web, fh, ensure_ascii=False, separators=(",", ":"))
 
+    for k, v in por_prod.items():
+        t = v["top"][0] if v["top"] else {}
+        print("%-11s sin lista SENASA: %s MM en %d distritos · pico %s · "
+              "mayor %s" % (k, format(round(v["fob"] / 1e6), ","),
+                            v["distritos"], v["mes_pico"], t.get("n", "-")))
+    print("")
     print("años con ubigeo    : %s" % ", ".join(anios))
     print("distritos con carga: %s  (sin sector agrícola mapeado: %d)"
           % (format(len(j), ","), sin_geo))

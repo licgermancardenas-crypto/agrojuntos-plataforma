@@ -1603,15 +1603,17 @@ page(f"""
         <span class="h">Este total no coincide con el oficial, y por cuánto</span>
         <p>MIDAGRI publica <b>US$ 15,013 MM</b> para {_XA} y aquí sale
         <b>US$ {nf(_xfob/1e6)} MM</b>, un
-        <b>{100*(_xfob/1e6 - 15013)/15013:.0f}% más</b>. Del archivo ya se
-        apartó lo que estaba mal —US$ 2,085 MM de líneas que SUNAT repite y
-        US$ 175 MM a precios que el producto no aguanta, café a US$ 657 el
-        kilo— y la diferencia sigue. Apunta a dos cosas sin medir: que la
-        serie se ancle en el embarque y la oficial en la regularización, y que
-        el universo de partidas no sea el mismo. <b>Hasta cerrar eso el nivel
-        no es comparable con la cifra oficial</b>; lo que sí sostiene la
-        medición es la estructura —qué productos, a qué destinos, desde qué
-        territorio y en qué meses—.</p>
+        <b>{abs(100*(_xfob/1e6 - 15013)/15013):.0f}% menos</b>. Contrastarlo
+        contra esa cifra —que es lo que nadie había hecho— destapó que
+        <b>SUNAT republica cada declaración con el valor rectificado</b>: en
+        {_XA} el 51% del valor estaba repetido entre semanas, y sumarlo
+        contaba varias veces el mismo embarque. Depurado, la serie queda por
+        debajo de la oficial, que es lo esperable: el universo de partidas de
+        este informe es más estrecho que el de MIDAGRI.</p>
+        <p class="sub" style="margin:6px 0 0">Antes de depurar, esta página
+        daba US$ 17,928 MM y una caída de 5.4% en el año; las dos cosas eran
+        el arrastre de las republicaciones, que se acumulan más en los años
+        viejos que en el corriente.</p>
       </div>
     </div>
     <div>

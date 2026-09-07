@@ -6,12 +6,17 @@ esa cifra —que es lo que nadie había hecho— destapó dos cosas distintas en
 archivo de SUNAT. Ninguna es un error de este proyecto; las dos vienen en el
 DBF y hay que decidir qué hacer con ellas.
 
-**Filas repetidas.** El manifiesto trae la misma línea dos veces: misma
-aduana, mismo año, misma declaración, misma serie, mismo FOB y mismo peso. A
-veces dentro del mismo archivo semanal y a veces republicada en el siguiente.
-Sumarlas dos veces infla el total sin que se note, porque cada una parece una
-operación legítima. Se descartan: una serie de una declaración es un hecho, y
-un hecho ocurre una vez.
+**Declaraciones republicadas.** Esto es lo gordo, y no se ve mirando el
+archivo de una semana. SUNAT vuelve a publicar una declaración en semanas
+posteriores con el valor rectificado: la misma aduana, el mismo año, la misma
+declaración y la misma serie aparecen hasta media docena de veces, con el
+mismo peso y un FOB que cambia unos miles de dólares. En 2025 eso alcanzaba al
+**51% del valor**: 216,303 de 216,381 líneas repetidas estaban en archivos
+distintos, y solo 78 dentro del mismo, así que una serie es una fila y toda
+repetición es una versión nueva de la misma exportación.
+
+Sumarlas todas contaba varias veces el mismo embarque e inflaba el total un
+tercio. Se conserva **la última versión de cada serie**, que es la vigente.
 
 **Precios que el producto no aguanta.** Una declaración de café verde declara
 US$ 37.4 millones por 56,925 kg —US$ 657 el kilo— cuando la serie anterior del
@@ -39,7 +44,9 @@ ENTRADA = os.path.join(PROC, "operaciones.csv")
 SALIDA = os.path.join(PROC, "operaciones_limpias.csv")
 INFORME = os.path.join(PROC, "depuracion.json")
 VECES = 50          # cuántas medianas de su familia puede valer un kilo
-CLAVE = ["declaracion", "fob_usd", "peso_neto_kg"]
+# La serie de una declaración: aduana-año-declaración-serie. Es la unidad de
+# la exportación, y lo que se repite entre semanas son versiones de ella.
+CLAVE = ["declaracion"]
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
                               errors="replace", line_buffering=True)
@@ -59,7 +66,11 @@ def main():
     n0, fob0 = len(d), float(d.fob_usd.sum())
 
     # ------------------------------------------------------- repetidas --
-    rep = d.duplicated(subset=CLAVE, keep="first")
+    # Se ordena por archivo para que «la última» sea la republicación más
+    # reciente: el nombre del ZIP lleva año y mes al final, así que el orden
+    # alfabético no sirve y hay que ordenar por la fecha que ya trae la fila.
+    d = d.sort_values(["declaracion", "semana_archivo"], kind="stable")
+    rep = d.duplicated(subset=CLAVE, keep="last")
     fob_rep = float(d.loc[rep, "fob_usd"].sum())
     por_anio_rep = (d.loc[rep].groupby("anio").fob_usd.sum() / 1e6).round(1)
     d = d[~rep].copy()
@@ -83,9 +94,9 @@ def main():
         "entrada": {"lineas": n0, "fob": round(fob0, 2)},
         "salida": {"lineas": int(len(d)), "fob": round(fob1, 2)},
         "repetidas": {
-            "motivo": "la misma serie de la misma declaración aparece más de "
-                      "una vez en el archivo de SUNAT, a veces dentro del "
-                      "mismo ZIP y a veces republicada en el siguiente",
+            "motivo": "SUNAT republica la declaración en semanas posteriores "
+                      "con el valor rectificado; se conserva la última "
+                      "versión de cada serie, que es la vigente",
             "clave": CLAVE,
             "lineas": int(rep.sum()), "fob": round(fob_rep, 2),
             "fob_por_anio_mm": {k: float(v) for k, v in por_anio_rep.items()},

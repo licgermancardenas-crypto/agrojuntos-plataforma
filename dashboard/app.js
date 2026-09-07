@@ -2944,14 +2944,13 @@ function pintarExportacion() {
     "<span class='h'>Este total no coincide con el oficial, y por cuánto</span>" +
     "MIDAGRI publica <b>US$ 15,013 MM</b> de agroexportación para " + _a +
     " y aquí sale <b>" + usd(_nuestro * 1e6) + "</b>, un <b>" +
-    nf(100 * (_nuestro - _ofi) / _ofi, 0) + "% más</b>. Del archivo ya se " +
-    "apartó lo que estaba mal —líneas que SUNAT repite y precios que el " +
-    "producto no aguanta— y la diferencia sigue: apunta a que la serie se " +
-    "ancle en la fecha de embarque y la oficial en la de regularización, y a " +
-    "que el universo de partidas no sea el mismo. <b>Hasta cerrar eso el " +
-    "nivel no es comparable con la cifra oficial</b>; lo que sí sostiene la " +
-    "medición es la estructura: qué productos, a qué destinos, desde qué " +
-    "territorio y en qué meses." : "";
+    nf(Math.abs(100 * (_nuestro - _ofi) / _ofi), 0) + "% menos</b>. " +
+    "Contrastarlo contra esa cifra destapó que <b>SUNAT republica cada " +
+    "declaración con el valor rectificado</b>: en " + _a + " el 51% del " +
+    "valor estaba repetido entre semanas, y sumarlo contaba varias veces el " +
+    "mismo embarque. Depurado, la serie queda por debajo de la oficial, que " +
+    "es lo esperable: el universo de partidas de esta plataforma es más " +
+    "estrecho que el de MIDAGRI." : "";
 
   expSerie(document.getElementById("expSerie"), EXPM.anios_pedidos);
   document.getElementById("expSerieNota").innerHTML =

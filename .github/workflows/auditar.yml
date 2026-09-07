@@ -1,0 +1,46 @@
+# Audita las pruebas: reintroduce cada defecto que dicen cubrir y exige que
+# salte la comprobación que le corresponde. Una prueba que nunca vio fallar su
+# defecto no es una prueba, es una línea que pasa —de dieciséis casos, cuatro
+# resultaron vacíos la primera vez que se midió—.
+#
+# No va en cada push: cada caso levanta un navegador y corre la suite entera,
+# así que son diecisiete corridas. Va una vez por semana y a mano cuando se
+# toquen las pruebas.
+name: auditar pruebas
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"      # lunes temprano
+  workflow_dispatch:
+    inputs:
+      casos:
+        description: "casos a auditar, separados por espacio (vacío = todos)"
+        required: false
+        default: ""
+
+jobs:
+  auditar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: playwright y su chromium
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: levantar el sitio
+        working-directory: dashboard
+        run: |
+          python servir.py 8899 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8899/ >/dev/null && break
+            sleep 1
+          done
+      - name: reintroducir los defectos
+        working-directory: dashboard
+        env:
+          NAVEGADOR: chromium
+        run: python auditar_pruebas.py ${{ github.event.inputs.casos }}

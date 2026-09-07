@@ -1,0 +1,59 @@
+# Dos niveles, porque cuestan cosas muy distintas.
+#
+# `datos` lee los archivos publicados y tarda segundos: cuadraturas, JSON que
+# el navegador sepa parsear, coherencia entre agregados y las cifras de la
+# documentación contra los datos de los que salen. Ese último chequeo existe
+# porque la documentación de este proyecto se desfasó tres veces en un día y
+# las tres se encontraron a mano.
+#
+# `dashboard` abre Chrome de verdad y recorre el sitio. Un `200` del servidor
+# no dice nada sobre si la página se ve: un error de JavaScript la deja en
+# blanco y el servidor ni se entera.
+name: verificar
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  datos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: los datos publicados
+        run: python scripts/verificar_datos.py
+
+  dashboard:
+    runs-on: ubuntu-latest
+    # No tiene sentido abrir un navegador si los datos ya vienen mal.
+    needs: datos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: playwright y su chromium
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: levantar el sitio como lo sirve Vercel
+        working-directory: dashboard
+        run: |
+          python servir.py 8899 &
+          # servir.py no avisa cuando está listo: se espera a que conteste.
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8899/ >/dev/null && break
+            sleep 1
+          done
+      - name: recorrer el sitio
+        working-directory: dashboard
+        # verificar.py usa el canal `chrome`, que en el runner no está: el
+        # chromium de playwright sí.
+        env:
+          NAVEGADOR: chromium
+        run: python verificar.py

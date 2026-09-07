@@ -253,7 +253,12 @@ errores = []
 ok = True
 
 with sync_playwright() as pw:
-    b = pw.chromium.launch(channel="chrome")
+    # En esta máquina se usa el Chrome instalado; en un runner de CI no hay
+    # ninguno y sí está el chromium que trae playwright. La diferencia se
+    # elige por entorno para que el mismo archivo sirva en los dos sitios.
+    _nav = os.environ.get("NAVEGADOR", "chrome")
+    b = (pw.chromium.launch() if _nav == "chromium"
+         else pw.chromium.launch(channel=_nav))
     pg = b.new_page(viewport={"width": 1500, "height": 1000})
     _mut = os.environ.get("MUTAR", "")
     if _mut:

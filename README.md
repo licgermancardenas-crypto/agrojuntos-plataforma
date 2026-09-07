@@ -153,6 +153,13 @@ reporte.py                reporte PDF
 medir_paginas.py          mide cada página del reporte contra el marco A4
 ```
 
+**Qué se comprueba solo.** En cada push, `verificar_datos.py` revisa los
+archivos publicados —que los JSON parseen sin `Infinity` ni `NaN`, que las
+cuadraturas den, que los agregados sean coherentes entre sí y que las cifras
+de esta documentación correspondan a los datos— y `verificar.py` recorre el
+sitio en un Chrome de verdad. Una vez por semana, `auditar_pruebas.py`
+reintroduce cada defecto que las pruebas dicen cubrir y exige que salten.
+
 **El orden no es opcional y ya no es tradición oral.** `pipeline.py` declara
 las catorce etapas con lo que lee y lo que escribe cada una, corre lo que haga
 falta y falla —diciendo qué etapa produce lo que falta— cuando una entrada no

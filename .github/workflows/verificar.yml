@@ -39,7 +39,7 @@ jobs:
           python-version: "3.12"
       - name: playwright y su chromium
         run: |
-          pip install playwright
+          pip install -r dashboard/requirements-ci.txt
           python -m playwright install --with-deps chromium
       - name: levantar el sitio como lo sirve Vercel
         working-directory: dashboard

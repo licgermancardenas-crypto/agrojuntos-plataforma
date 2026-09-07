@@ -1,0 +1,7 @@
+# Lo que necesita la verificación del sitio. La primera corrida en un
+# runner falló por Pillow: está instalado en la máquina donde se escribió
+# la suite y no en el runner, y el import vive dentro de una función, así
+# que no se ve leyendo la cabecera del archivo.
+playwright
+pillow
+numpy

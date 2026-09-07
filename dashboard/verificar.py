@@ -21,6 +21,8 @@ Uso:
     python verificar.py
 """
 import io
+import json
+import os
 import sys
 
 from playwright.sync_api import sync_playwright
@@ -62,12 +64,107 @@ def usd_a_num(t):
         return 0.0
 
 
+# --------------------------------------------------------- mutaciones ----
+# Una prueba que nunca vio fallar su defecto no es una prueba: es una línea
+# que pasa. Con MUTAR=<nombre> se reintroduce a propósito un defecto concreto
+# en la página —no en los datos— y se corre la suite entera: si la
+# comprobación que debería cazarlo no aparece en la salida, esa comprobación
+# es vacua. `auditar_pruebas.py` las recorre todas.
+#
+# Dos cosas que costaron y conviene dejar dichas. La mutación tiene que ir
+# envuelta y llamada: `add_init_script` con una flecha suelta la evalúa y la
+# descarta sin ejecutarla, y entonces todo «pasa» y la auditoría miente. Y
+# tiene que tocar **nodos de texto**: reescribir innerHTML cada tantos
+# milisegundos destruye los manejadores de los chips y deja la página
+# inservible, con lo que la suite falla por no poder navegar y no por el
+# defecto que se quería probar.
+_MUT_BASE = """
+  const textos = (sel, de, a) => {
+    document.querySelectorAll(sel).forEach(raiz => {
+      const it = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT);
+      const ns = []; while (it.nextNode()) ns.push(it.currentNode);
+      ns.forEach(n => { if (n.nodeValue.includes(de))
+        n.nodeValue = n.nodeValue.split(de).join(a); });
+    });
+  };
+"""
+
+_SEL_IMP = "#impCobertura, #impCorteNota, #impDetalle, #impResumen"
+
+MUTACIONES = {
+    # El panel deja de aclarar que la cifra es FOB importado y no venta.
+    "sin_fob": "(() => {" + _MUT_BASE + """
+      setInterval(() => textos('""" + _SEL_IMP + """', 'FOB', 'valor'), 120);
+    })();""",
+
+    # La nota vuelve a tapar los años a los que les faltan días.
+    "sin_dias": "(() => {" + _MUT_BASE + """
+      setInterval(() => {
+        textos('#impCobertura', 'día por día', 'en general');
+        textos('#impCobertura', 'faltan los días', 'sobran los días');
+      }, 120);
+    })();""",
+
+    # El año en curso se presenta como un año cerrado más.
+    "sin_ytd": "(() => {" + _MUT_BASE + """
+      setInterval(() => textos('#impPanel, #expKpis', ' YTD', ''), 120);
+    })();""",
+
+    # La serie dibuja un año menos de los pedidos.
+    "serie_corta": """(() => {
+      setInterval(() => document.querySelectorAll('.serie').forEach(s => {
+        if (s.children.length > 1) s.removeChild(s.lastElementChild);
+      }), 120);
+    })();""",
+
+    # Un año sin semanas descargadas se puede elegir como si tuviera dato.
+    "anio_sin_dato_elegible": """(() => {
+      setInterval(() => document.querySelectorAll(
+        '#impAnio option, #expAnio option').forEach(o => {
+        if (o.disabled) { o.disabled = false; o.title = ''; }
+      }), 120);
+    })();""",
+
+    # El gráfico de precio recorta la escala sin declararlo.
+    "sin_nota_escala": "(() => {" + _MUT_BASE + """
+      setInterval(() => textos('#v-empresas', 'no en cero', 'en cero'), 120);
+    })();""",
+
+    # Deja de declararse lo reservado por la Ley 29733.
+    "sin_29733": "(() => {" + _MUT_BASE + """
+      setInterval(() => textos('#impPanel, #v-exportacion', 'Ley 29733',
+        'la norma'), 60);
+    })();""",
+
+    # El precio deja de expresarse por kilo.
+    "sin_kg": "(() => {" + _MUT_BASE + """
+      setInterval(() => textos('#v-empresas', '/kg', ''), 120);
+    })();""",
+
+    # Las migas dejan de mostrar el camino recorrido.
+    "migas_cortas": """(() => {
+      setInterval(() => {
+        const n = document.getElementById('impMiga');
+        if (n && n.textContent.indexOf('\\u203a') >= 0)
+          n.textContent = n.textContent.split('\\u203a')[0];
+      }, 120);
+    })();""",
+}
+
+
 errores = []
 ok = True
 
 with sync_playwright() as pw:
     b = pw.chromium.launch(channel="chrome")
     pg = b.new_page(viewport={"width": 1500, "height": 1000})
+    _mut = os.environ.get("MUTAR", "")
+    if _mut:
+        if _mut not in MUTACIONES:
+            sys.exit("mutacion desconocida: " + _mut + " · disponibles: "
+                     + ", ".join(sorted(MUTACIONES)))
+        print("[MUTADO: " + _mut + "] defecto reintroducido a proposito; la suite DEBE fallar")
+        pg.add_init_script(MUTACIONES[_mut])
     pg.on("console", lambda m: errores.append(m.text) if m.type == "error" else None)
     pg.on("pageerror", lambda e: errores.append(str(e)))
     pg.on("response", lambda r: errores.append(f"HTTP {r.status} {r.url}")
@@ -294,12 +391,13 @@ with sync_playwright() as pw:
         pg.wait_for_timeout(500)
     print(f"  montado: {uno}")
 
-    chrome = pg.evaluate("""() => {
+    chrome = pg.evaluate("""(() => {
         const d = document.querySelector('#mapDep iframe').contentDocument;
         return ['nav', 'header.top', '.titulo'].map(
             s => { const el = d.querySelector(s);
                    return el ? getComputedStyle(el).display : 'ausente'; });
-    }""")
+    })();
+    """)
     if any(c not in ("none", "ausente") for c in chrome):
         print(f"  EL MAPA INCRUSTADO MUESTRA EL CROMO DEL SITIO: {chrome}")
         ok = False
@@ -579,8 +677,42 @@ with sync_playwright() as pw:
     elif any("pendiente" not in o[2] for o in ops if o[1]):
         print("  UN ANO APAGADO NO DICE QUE ESTA PENDIENTE DE CARGA")
         ok = False
-    else:
+    elif sin:
         print(f"  {len(sin)} anos pendientes de carga, apagados y explicados: ok")
+
+    # Con los cinco anos descargados no hay ninguno que apagar, y una prueba
+    # sin caso pasa en silencio: comparaba una lista vacia contra otra y
+    # firmaba «ok» sin haber mirado nada. El caso se construye —se sirve el
+    # panel con un ano sin semanas— y se mira si la interfaz lo apaga.
+    falso = json.loads(json.dumps(P))
+    hueco = P["anios_pedidos"][0]
+    falso["cobertura_semanas"][hueco] = 0
+    falso["anios_con_dato"] = [a for a in P["anios_con_dato"] if a != hueco]
+    pg.route("**/data/importaciones/panel.json", lambda ruta: ruta.fulfill(
+        status=200, content_type="application/json",
+        body=json.dumps(falso, ensure_ascii=False)))
+    pg.reload(wait_until="networkidle")
+    pg.wait_for_selector("#fClase .chip[data-c='6']")
+    pg.click("#fClase .chip[data-c='6']")
+    pg.wait_for_selector("#impResumen .v", timeout=20000)
+    fila = [o for o in pg.eval_on_selector_all(
+        "#impAnio option",
+        "f => f.map(o => [o.value, o.disabled, o.textContent])")
+        if o[0] == hueco]
+    if not fila or not fila[0][1]:
+        print(f"  UN ANO SIN SEMANAS SE PUEDE ELEGIR: {hueco}")
+        ok = False
+    elif "pendiente" not in fila[0][2]:
+        print(f"  EL ANO {hueco} NO DICE QUE ESTA PENDIENTE DE CARGA")
+        ok = False
+    else:
+        print(f"  con {hueco} sin semanas, la interfaz lo apaga y lo "
+              "explica: ok")
+    pg.unroute("**/data/importaciones/panel.json")
+    pg.reload(wait_until="networkidle")
+    pg.wait_for_selector("#fClase .chip[data-c='6']")
+    pg.click("#fClase .chip[data-c='6']")
+    pg.wait_for_selector("#impResumen .v", timeout=20000)
 
     def pcts():
         return [float(t.replace("%", "").replace(",", "."))

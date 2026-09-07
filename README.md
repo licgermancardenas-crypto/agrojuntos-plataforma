@@ -562,7 +562,12 @@ categoría → partida → empresa → ficha. Y donde el kilo es la unidad en qu
 comercia, trae el precio de importación: la urea a US$ 0.663/kg en 2022 y US$
 0.314 en 2024, con la diferencia de precio entre importadores a la vista.
 
-Tres reglas la gobiernan y las tres están comprobadas en `verificar.py`:
+Tres reglas la gobiernan y las tres están comprobadas en `verificar.py`, que
+a su vez se comprueba con `auditar_pruebas.py`: reintroduce a propósito cada
+defecto que las pruebas dicen cubrir y exige que salte la que corresponde. Una
+prueba que nunca vio fallar su defecto no es una prueba, es una línea que
+pasa —así se descubrió que la de los años sin descargar comparaba dos listas
+vacías y firmaba «ok» sin mirar nada—.
 
 1. **Un año sin semanas descargadas no es US$ 0.** Se dibuja como hueco y se
    dice con esas palabras. Un año que sí se midió y en el que la empresa no

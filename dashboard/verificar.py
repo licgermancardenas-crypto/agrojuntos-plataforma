@@ -217,6 +217,35 @@ MUTACIONES = {
       }, true);
     })();""",
 
+
+    # --- cuarta tanda: las vistas de acopio ---------------------------
+    "radio_invertido": """(() => {
+      setInterval(() => document.querySelectorAll('#tAcopioHub tbody tr')
+        .forEach(t => {
+          if (t.dataset.mut) return;
+          t.dataset.mut = '1';
+          var c = t.querySelectorAll('td');
+          if (c.length > 3) { var x = c[1].textContent;
+            c[1].textContent = c[3].textContent; c[3].textContent = x; }
+        }), 200);
+    })();""",
+
+    "sin_carga_huerfana": """(() => {
+      setInterval(() => {
+        var n = document.getElementById('expAcopioNota');
+        if (n && n.textContent.indexOf('fuera de alcance') >= 0)
+          n.textContent = n.textContent.split('Y ')[0];
+      }, 120);
+    })();""",
+
+    "sin_salvedad_partida": """(() => {
+      setInterval(() => {
+        var n = document.getElementById('expSinLista');
+        if (!n) return;
+        n.querySelectorAll('.sub').forEach(function (s) { s.textContent = ''; });
+      }, 120);
+    })();""",
+
 }
 
 
@@ -1320,6 +1349,82 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  declara lo que queda fuera por proteccion de datos: ok")
+
+
+    # ------------------------------------------------------- acopio ------
+    # El bloque que sitúa la carga donde se produce. Lo que se comprueba no es
+    # que dibuje, sino tres reglas que el dato tiene que cumplir y que un
+    # error de cruce rompería sin que se note:
+    #
+    #   El alcance crece con el radio. Si a dos horas se alcanzara más que a
+    #   seis, el cruce con las horas al centro estaría invertido.
+    #   La carga sin centro se declara. Es el hueco del análisis y callarlo lo
+    #   convierte en un cero.
+    #   Los productos sin lista de SENASA dicen que su partida agrupa otras
+    #   cosas. Decir «espárrago» a secas afina más de lo que el dato aguanta.
+    print("")
+    print("acopio · la carga puesta donde se produce")
+    AC = pg.evaluate("""async () => {
+        const r = await fetch('/data/acopio.json'); return await r.json(); }""")
+    filas_hub = pg.eval_on_selector_all(
+        "#tAcopioHub tbody tr",
+        "f => f.map(t => [...t.querySelectorAll('td')].map(x => x.textContent))")
+    print("  %d centros, %d distritos, %d territorios"
+          % (len(filas_hub), len(pg.query_selector_all("#tAcopioDist tbody tr")),
+             len(pg.query_selector_all("#tAcopioTer tbody tr"))))
+    if not filas_hub:
+        print("  EL BLOQUE DE ACOPIO NO CARGA")
+        ok = False
+    else:
+        malos = []
+        for f in filas_hub:
+            v2, v4, v6 = (usd_a_num(f[1]), usd_a_num(f[2]), usd_a_num(f[3]))
+            if not (v2 <= v4 <= v6):
+                malos.append((f[0].splitlines()[0],
+                              round(v2), round(v4), round(v6)))
+        if malos:
+            print("  EL ALCANCE NO CRECE CON EL RADIO: %s" % malos[:2])
+            ok = False
+        else:
+            print("  el alcance de cada centro crece con el radio: ok")
+        # y contra el dato, no contra sí mismo
+        mayor = max(AC["hubs"], key=lambda h: h["fob_2h_mm"])
+        visto = usd_a_num(filas_hub[0][1])
+        if abs(visto - mayor["fob_2h_mm"] * 1e6) / (mayor["fob_2h_mm"] * 1e6) > 0.02:
+            print("  LA TABLA DE CENTROS NO CUADRA CON EL AGREGADO")
+            ok = False
+        else:
+            print("  el alcance del primer centro sale del agregado: ok")
+
+    nota = pg.text_content("#expAcopioNota") or ""
+    if "fuera de alcance" not in nota or str(AC["sin_centro"]["distritos"]) not in nota:
+        print("  NO SE DECLARA LA CARGA QUE NINGUN CENTRO ALCANZA")
+        ok = False
+    else:
+        print("  declara los %d distritos sin centro: ok"
+              % AC["sin_centro"]["distritos"])
+
+    sl = AC.get("sin_lista_senasa") or {}
+    txt_sl = pg.text_content("#expSinLista") or ""
+    if sl:
+        faltan = [k for k in sl if k not in txt_sl]
+        sin_salvedad = [k for k, v in sl.items()
+                        if v["salvedad"][:25] not in txt_sl]
+        if faltan or sin_salvedad:
+            print("  LOS PRODUCTOS SIN LISTA NO DECLARAN SU SALVEDAD: %s"
+                  % (faltan or sin_salvedad))
+            ok = False
+        else:
+            print("  %s: situados y con su salvedad a la vista: ok"
+                  % ", ".join(sl))
+
+    cob = (AC.get("senasa_cobertura") or {}).get("productos", [])
+    txt_s = pg.text_content("#expSenasa") or ""
+    if cob and any(c not in txt_s for c in cob):
+        print("  LA NOTA DE SENASA NO NOMBRA TODOS LOS PRODUCTOS QUE CUBRE")
+        ok = False
+    elif cob:
+        print("  la nota nombra los %d productos certificados: ok" % len(cob))
 
     # La vista de importacion vive de la fila desplegable: si el detalle no
     # cambia al pulsar otra categoria, la tabla es un adorno. Y las dos

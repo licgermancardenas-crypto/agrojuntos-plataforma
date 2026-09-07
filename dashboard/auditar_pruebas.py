@@ -74,6 +74,13 @@ CASOS = [
      "la búsqueda del directorio deja de filtrar"),
     ("periodo_muerto", "PERIODO",
      "el selector de periodo deja de actuar sobre las cifras"),
+    # Cuarta tanda: las vistas de acopio, recién añadidas.
+    ("radio_invertido", "ALCANCE NO CRECE",
+     "el alcance de cada centro deja de crecer con el radio"),
+    ("sin_carga_huerfana", "NINGUN CENTRO ALCANZA",
+     "se calla la carga que ningún centro alcanza"),
+    ("sin_salvedad_partida", "SALVEDAD",
+     "uva y espárrago dejan de declarar que su partida agrupa otras cosas"),
 ]
 
 

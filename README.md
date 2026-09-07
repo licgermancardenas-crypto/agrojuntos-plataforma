@@ -22,8 +22,10 @@ construye.
 | Clientes en el mercado atendible | 156,880 |
 | Empresas agrícolas formales con RUC | 21,063 |
 | Importadores de insumos agrícolas | 491 |
-| Agroexportadores con RUC, 2022–2026 | 4,062 |
-| Agroexportación medida en 2025 | US$ 18,304 MM FOB |
+| Agroexportadores con RUC, 2022–2026 | 4,054 |
+| Agroexportación medida en 2025 | US$ 13,169 MM FOB |
+| Distritos con embarque propio, situados por el manifiesto | 580 |
+| Plantas de empaque certificadas por SENASA | 296 |
 | Importación de insumos, anualizada | US$ 1,313 MM CIF |
 | Sectores estadísticos georreferenciados | 7,036 |
 
@@ -51,6 +53,7 @@ datos/
   comercio/         importadores de insumos y agroexportadores, desde aduanas
   importacion/      la importación agrícola repartida en categorías
   exportaciones/    cinco años de agroexportación por empresa y territorio
+  acopio/           dónde se produce lo que se embarca, y quién tiene planta
   geo/              geometrías: sectores y límites administrativos
   geoespacial/      grilla H3, territorios de venta y centros de distribución
 scripts/            el pipeline completo, en orden de dependencia
@@ -81,13 +84,17 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/exportaciones/mercado.json` | Cinco años de agroexportación: por año, por mes, por familia, por destino y por departamento, con su cobertura |
 | `datos/exportaciones/exportadores.json` | 4,062 exportadores con su cubo de producto × destino × partida, año por año |
 | `datos/exportaciones/exportadores_min.json` | El recorte de 1.25 MB que consume el dashboard, del archivo de 7.8 MB |
+| `datos/acopio/acopio_distrito.csv` | Los 580 distritos que embarcan, con producto líder, mes pico, centro que los sirve y horas |
+| `datos/acopio/acopio_hub.csv` | Cuánta carga alcanza cada centro candidato a 2, 4 y 6 horas |
+| `datos/acopio/acopio_huerfanos.csv` | Los 386 distritos con embarque que no caen en ningún territorio de venta |
+| `datos/acopio/senasa_exportadores.csv` | Establecimientos certificados por SENASA, cruzados con quien embarca |
 | `datos/geoespacial/h3_r5.csv` | 1,992 celdas hexagonales de ~292 km² con mercado, clientes y accesibilidad |
 | `datos/geoespacial/clusters_territorio.csv` | 57 territorios de venta detectados por densidad |
 | `datos/geoespacial/hubs_cobertura.csv` | Orden óptimo de apertura de centros, a 2, 4 y 6 horas |
 | `datos/empresas/cartera_empresa.csv` | Cada empresa con su territorio de venta y el centro que la sirve |
 | `datos/empresas/cartera_territorio.csv` | Cartera de los 57 territorios: empresas, agroindustria, agroexportadores y cobertura a dos horas |
 | `agro_insumos_pe_data/processed_data/importadores_insumos_agro.csv` | 446 importadores de insumos, sin el nitrato de amonio de uso minero |
-| `agro_insumos_pe_data/processed_data/agroexportadores.csv` | 1,529 agroexportadores consolidados por RUC |
+| `agro_insumos_pe_data/processed_data/agroexportadores.csv` | 1,529 agroexportadores de la ventana de diez semanas; el histórico está en `datos/exportaciones/` |
 
 ---
 
@@ -131,6 +138,9 @@ build_atlas_html.py       compone plantilla + datos en un HTML autónomo
 build_cultivos.py         qué se siembra en cada región, y qué mercado implica
 build_agroexport.py       qué se exporta y por qué aduana sale, desde el manifiesto
 build_figs_export.py      la serie mensual de exportación y el perfil por región
+build_acopio.py           sitúa la carga donde se produce y la cruza con los centros
+build_senasa.py           plantas certificadas por producto y mercado de destino
+diag_universo.py          qué capítulos deja fuera el universo agro, y cuánto valen
 build_dashboard_data.py   arma los JSON que consume el sitio
 build_mapas_pdf.py        figuras del reporte
 build_relieve.py          sombreado de relieve por departamento, para las láminas
@@ -141,6 +151,20 @@ build_laminas_dep.py      una lámina a página completa por departamento
 build_multiples.py        series de mapas pequeños: 57 territorios, 197 provincias
 reporte.py                reporte PDF
 medir_paginas.py          mide cada página del reporte contra el marco A4
+```
+
+**El orden no es opcional y ya no es tradición oral.** `pipeline.py` declara
+las catorce etapas con lo que lee y lo que escribe cada una, corre lo que haga
+falta y falla —diciendo qué etapa produce lo que falta— cuando una entrada no
+está. Depurar antes de agregar, agregar antes del panel —que lee del agregado
+la frontera de completitud—, SENASA antes que acopio. Correrlas en otro orden
+no revienta nada: mezcla cifras viejas con nuevas, que es peor.
+
+```
+python scripts/pipeline.py            corre lo que haga falta
+python scripts/pipeline.py --secar    dice qué haría, sin hacerlo
+python scripts/pipeline.py --desde export
+python scripts/medir_paginas.py       después del informe, siempre
 ```
 
 ---
@@ -534,8 +558,8 @@ cuanto entre la semana siguiente.
 
 La subcategoría «importador de insumos» del directorio de empresas corre sobre
 una capa propia, reconstruida operación por operación desde los manifiestos
-acumulados: los cinco años. 241 semanas, 101,022 operaciones, 1,422 empresas
-con operación verificada, US$ 5,457.5 MM FOB. Cada empresa tiene su historia
+acumulados: los cinco años. 244 semanas, 101,722 operaciones, 1,426 empresas
+con operación verificada, US$ 5,505 MM FOB. Cada empresa tiene su historia
 de importación dentro de su ficha —mensual, anual, por producto, por país y
 por partida—.
 
@@ -566,7 +590,7 @@ categoría → partida → empresa → ficha. Y donde el kilo es la unidad en qu
 comercia, trae el precio de importación: la urea a US$ 0.663/kg en 2022 y US$
 0.314 en 2024, con la diferencia de precio entre importadores a la vista.
 
-Tres reglas la gobiernan y las tres están comprobadas en `verificar.py`, que
+Cuatro reglas la gobiernan y las cuatro están comprobadas en `verificar.py`, que
 a su vez se comprueba con `auditar_pruebas.py`: reintroduce a propósito cada
 defecto que las pruebas dicen cubrir y exige que salte la que corresponde. Una
 prueba que nunca vio fallar su defecto no es una prueba, es una línea que
@@ -578,18 +602,18 @@ vacías y firmaba «ok» sin mirar nada—.
    importó es otra cosa —un cero de verdad— y se dibuja distinto. Y un año con
    sus 52 semanas archivadas al que le faltan días del calendario no es un año
    cerrado: la ficha y el informe declaran cuántos días le faltan.
-4. **La variación interanual solo compara meses enteros en los dos años.**
+2. **La variación interanual solo compara meses enteros en los dos años.**
    Antes el tramo llegaba hasta el mes del último despacho visto, que por
    definición está a medias: comparar 30 días de agosto contra 31 resta un día
    de comercio y lo presenta como caída. Hoy el tramo se recorta a los meses
    con todos sus días descargados en ambos años y se declara cuáles quedaron
    fuera. El cambio movió la cifra publicada de +9.5% a **+9.8%**, tres
    décimas: el criterio estaba mal aunque el número casi no se moviera.
-2. **Manda la partida arancelaria**, no la descripción. El 95.0% se clasifica
+3. **Manda la partida arancelaria**, no la descripción. El 95.0% se clasifica
    solo por arancel; la descripción únicamente parte lo que la subpartida junta,
    como el 3808.93 que mete herbicidas y reguladores de crecimiento en el mismo
    casillero.
-3. **El FOB importado no es facturación.** Los textos dicen «importaciones
+4. **El FOB importado no es facturación.** Los textos dicen «importaciones
    FOB», «valor importado» o «FOB registrado», nunca «ventas».
 
 El detalle —fuentes, cobertura año por año, deduplicación, qué partidas entran
@@ -599,9 +623,9 @@ y cuál se sacó y por qué— está en
 ## Agroexportadores
 
 El otro lado de la aduana, y con la misma regla que el lado importador: años
-medidos, nunca anualizados. 240 semanas de manifiesto de exportación, 1,967,814
-líneas de embarque en 1,457,949 declaraciones, 4,062 exportadores con RUC,
-US$ 65,834 MM FOB entre 2022 y 2026. 72 familias de producto y 140 destinos.
+medidos, nunca anualizados. 244 semanas de manifiesto, 1,468,627 series de
+embarque, 4,054 exportadores con RUC y US$ 47,811 MM FOB entre 2022 y 2026,
+en 72 familias de producto y 140 destinos.
 
 ```
 scripts/build_export_historico.py   extrae las lineas de agro de cada ZIP
@@ -688,11 +712,140 @@ recorta son las advertencias: la cobertura del ubigeo año por año y la fronter
 de completitud viajan en el recorte, porque una cifra sin su salvedad viaja más
 rápido que la salvedad.
 
+### Lo que el archivo repite, y hay que quitar
+
+El total salía 25% **por encima** del que publica MIDAGRI, y contrastarlo
+contra esa cifra —que es lo que nadie había hecho— destapó dos cosas del
+archivo de SUNAT. Ninguna es un error de este proyecto y las dos son
+invisibles si no se buscan.
+
+**Republicaciones.** SUNAT vuelve a publicar cada declaración en semanas
+posteriores con el valor rectificado: misma aduana, año, declaración y serie,
+mismo peso, un FOB que cambia unos miles de dólares. En 2025 eso alcanzaba al
+**51% del valor**, y de 216,381 líneas repetidas, 216,303 estaban en archivos
+distintos y solo 78 dentro del mismo. Una serie es una fila, así que toda
+repetición es una versión nueva del mismo embarque. Se conserva la última, que
+es la vigente: son US$ 19,150 MM en cinco años.
+
+**Precios que el producto no aguanta.** Una declaración de café verde declara
+US$ 37.4 millones por 56,925 kg —US$ 657 el kilo— cuando la serie anterior del
+mismo documento va a 8.7. No se filtran con un umbral fijo, porque la semilla
+híbrida de hortaliza cuesta legítimamente cientos de dólares el kilo: se
+compara cada línea contra la mediana de su propia familia. Son 127 MM.
+
+Depurado, 2025 pasa de US$ 17,928 MM a **13,169**. Y con eso se cae una
+afirmación que este informe publicaba: la caída de 5.4% de la agroexportación
+en 2026 era el arrastre de las republicaciones, que se acumulan más en los
+años viejos que en el corriente. El tramo comparable da **+2.4%**.
+
+### Por qué el total no coincide con el oficial, medido
+
+Depurado, el total queda **12% por debajo** de los US$ 15,013 MM que publica
+MIDAGRI para 2025. La explicación está medida en `diag_universo.py`, no
+supuesta: este proyecto cuenta como agro siete capítulos arancelarios —07, 08,
+09, 12, 18, 20 y 21— y la estadística oficial cuenta más.
+
+Los capítulos agrarios que quedan fuera suman **US$ 1,976 MM** en 2025:
+aceites 802, preparaciones de cereales 308, quinua 181, pisco 167, esencias
+141, azúcar 92, lácteos 76. Con ellos el total sería 15,206 contra 15,013: un
+**1.3%**.
+
+Los dos mayores que aparecen fuera no se suman a propósito: alimento para
+animales, 2,126 MM, y preparaciones de carne, 433, que en Perú son harina de
+pescado y conservas. Sumarlos daría 17,765 y pasaría de largo la cifra del
+país, que es la señal de que el universo estrecho está bien elegido y solo le
+faltaba explicarse.
+
+El diagnóstico costó tres intentos, y los dos primeros fallaron igual: no
+reproducían el universo conocido y aun así devolvían un desglose de aspecto
+razonable. El primero leía solo los archivos del año, cuando los embarques de
+2025 aparecen también en archivos de 2026. El segundo tomaba el capítulo de
+`PART_NANDI` sin rellenar, y **ese campo llega sin el cero inicial** —la uva
+viene como `806100000`—, así que perdía frutas, hortalizas y café enteros. El
+script imprime ahora al lado lo que dice el pipeline: si el control no cuadra,
+se ve en la misma línea.
+
+## Dónde se produce lo que se embarca
+
+El proyecto repartía el valor exportado por el domicilio fiscal del padrón,
+que lo acumula en Lima: una agroexportadora con oficina en San Isidro aportaba
+su tonelaje a la capital. Para decidir dónde abrir un almacén ese es
+justamente el error que importa.
+
+`build_acopio.py` sitúa la carga con el UBIGEO del manifiesto, que apunta al
+lugar de producción. Son **580 distritos con coordenada, 3,247 empresas y
+US$ 28,190 MM** entre 2022 y 2024 —los años en que SUNAT llenó el campo—, cada
+uno con su producto líder, su mes pico y el centro que lo sirve.
+
+```
+datos/acopio/acopio_distrito.csv    los 580 distritos, con centro y horas
+datos/acopio/acopio_hub.csv         cuánto alcanza cada centro a 2, 4 y 6 h
+datos/acopio/acopio_territorio.csv  la carga de cada territorio de venta
+datos/acopio/acopio_huerfanos.csv   la que no cae en ningún territorio
+```
+
+**La pregunta de inventario no es cuánto mercado hay sino cuánto se alcanza.**
+Pisco llega a US$ 6,107 MM a dos horas y Otuzco a 2,963; Chiclayo pasa de
+2,105 a 7,430 al abrir el radio de dos a seis, así que lo que vale depende del
+compromiso de entrega. Y 36 distritos con 1,948 MM no tienen centro que los
+sirva —Olmos solo son 1,541—: no es carga cero, es carga fuera de alcance.
+
+**La mitad de la carga cae fuera de los territorios de venta.** US$ 14,436 MM
+en 386 distritos, el 51%. No es que estén mal trazados —dentro se exportan
+8,308 dólares por hectárea agrícola y fuera 4,856, así que capturan lo denso—
+sino que se detectaron sobre la densidad del mercado de insumos, y la demanda
+exportadora no se concentra en el mismo sitio. Se intentó agrupar los
+huérfanos para proponer territorios nuevos y el método no sirve: los distritos
+se alinean a lo largo de la costa y un DBSCAN por cercanía los encadena en un
+bloque de 322, que no es un territorio sino el país. Van listados por valor,
+que es lo que permite decidirlos uno a uno.
+
+### Quién tiene planta certificada
+
+El manifiesto dice quién embarca y desde dónde; no dice quién tiene
+infraestructura de acopio. Eso lo publica SENASA por par producto–mercado, y
+`build_senasa.py` lo recoge: **296 plantas de empaque y 21,046 lugares de
+producción** de arándano, palta, cítricos, limón y mango.
+
+Los dos universos responden preguntas distintas y mezclarlos da un porcentaje
+que no dice nada. Las plantas son infraestructura —pocas, grandes, 101
+embarcan a su nombre— y **las 195 que no embarcan son el perfil de un socio
+logístico**: tienen acopio y venden por medio de terceros. Los lugares de
+producción son fundos certificados, casi todos de personas naturales que
+embarcan a través de un tercero: no son socios, son demanda de insumo con
+certificación encima.
+
+Tres cosas del catálogo que conviene saber. La mitad de las listas son de
+establecimientos **extranjeros** autorizados a exportar al Perú —manzanas de
+Chile, naranjas de Egipto— y se filtran por el nombre de la publicación. Cada
+lista nombra la columna del titular a su manera —`ENTERPRISE NAME`, `COMPANY
+NAME`, `PACKINGHOUSE NAME`— y la variante que falta se lleva la hoja entera en
+silencio: así se perdieron primero la lista de limón y después las plantas de
+mango. Y el mercado de destino no está en la hoja, va en el nombre del
+archivo.
+
+**Estas listas no ubican.** Traen la región y nada más fino, y cruzarlas
+contra el padrón para sacar la dirección devuelve la oficina: Agrícola Pampa
+Baja figura en Arequipa según SENASA y en Ate según el padrón. Se usan como
+atributo sobre empresas que el manifiesto ya sitúa.
+
+El detalle —fuentes, universo, depuración, las dos reglas que gobiernan lo que
+se puede afirmar y el orden de ejecución— está en
+[`AGROEXPORTACION_METODOLOGIA.md`](AGROEXPORTACION_METODOLOGIA.md).
+
+De **uva y espárrago** no hay lista: SENASA publica solo los protocolos de
+trabajo por mercado, en PDF —se revisaron las 672 publicaciones del catálogo—.
+De esos dos no se sabe quién tiene planta, pero el manifiesto sí los sitúa:
+uva son US$ 4,892 MM en 105 distritos y las hortalizas frescas del espárrago
+1,178 MM en 138. Cada uno con su salvedad, porque la partida agrupa más de lo
+que el nombre sugiere: la de uva junta fresca y pasas, y la del espárrago lo
+mete con otras hortalizas frescas sin manera de separarlos.
+
 ## Sobre los datos crudos de aduanas
 
 `agro_insumos_pe_data/raw_data/sunat/` versiona los 20 archivos DBF originales
 (197 MB) para que el análisis sea reproducible tal cual. El histórico completo
-—hoy 241 semanas— vive en `data/aduanas_hist/`, fuera del repositorio, y se
+—hoy 244 semanas y 4.2 GB— vive en `data/aduanas_hist/`, fuera del repositorio, y se
 reconstruye con `acumular_aduanas.py` desde el propio servidor de SUNAT.
 
 Si con el tiempo se acumulan muchas corridas, lo sano es mover los archivos

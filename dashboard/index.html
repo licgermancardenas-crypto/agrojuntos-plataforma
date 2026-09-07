@@ -48,6 +48,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   <a href="#productos">Productos</a>
   <a href="#comercio">Comercio</a>
   <a href="#importacion">Importación</a>
+  <a href="#exportacion">Exportación</a>
   <a href="#estacionalidad">Estacionalidad</a>
   <a href="#logistica">Logística</a>
   <a href="#expansion">Expansión</a>
@@ -374,6 +375,64 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
       <span class="eyebrow"><a class="vermapa" href="/mapa#peru" target="_blank"
         rel="noopener">abrir a pantalla completa &#8599;</a></span></div>
     <div class="b"><div class="mapaslot" id="mapCom" data-hash="#peru">
+      <button class="mapabtn" type="button">Ver el mapa</button></div></div>
+  </div>
+</section>
+
+<!-- -------------------------------------------------------- exportación -->
+<section class="view" id="v-exportacion">
+  <div class="kpis" id="expKpis"><div class="load">Cargando…</div></div>
+
+  <div class="card">
+    <div class="h"><h3>Cinco años de embarques, medidos</h3>
+      <span class="eyebrow" id="expSerieEt">FOB por año</span></div>
+    <div class="b">
+      <div id="expSerie"></div>
+      <p class="sub" id="expSerieNota"></p>
+    </div>
+  </div>
+
+  <div class="filtros" style="margin-top:16px">
+    <span class="eyebrow">Año</span>
+    <select id="expAnio" aria-label="Año de la exportación"></select>
+    <span class="count" id="expAnioPie"></span>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="h"><h3>Qué sale</h3>
+        <span class="eyebrow" id="expFamEt">Por familia de producto</span></div>
+      <div class="b"><div class="barras" id="expFamilias"></div></div>
+    </div>
+    <div class="card">
+      <div class="h"><h3>A dónde va</h3>
+        <span class="eyebrow" id="expDestEt">País de destino</span></div>
+      <div class="b"><div class="barras" id="expDestinos"></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>De dónde sale la cosecha</h3>
+      <span class="eyebrow" id="expDepEt"></span></div>
+    <div class="b">
+      <div class="tw"><table id="tExpDeps"></table></div>
+      <div class="note" id="expDepNota"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Quién exporta</h3>
+      <span class="eyebrow" id="expTopEt"></span></div>
+    <div class="tw"><table id="tExpEmpresas"></table></div>
+  </div>
+
+  <p class="sub" id="expNota"></p>
+
+  <div class="card mapacard" style="margin-top:16px">
+    <div class="h"><h3>La exportación sobre el mapa</h3>
+      <span class="eyebrow"><a class="vermapa" href="/mapa#peru" target="_blank"
+        rel="noopener">abrir a pantalla completa &#8599;</a></span></div>
+    <div class="b"><div class="mapaslot" id="mapExpo" data-hash="#peru">
       <button class="mapabtn" type="button">Ver el mapa</button></div></div>
   </div>
 </section>

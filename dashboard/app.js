@@ -2416,6 +2416,9 @@ function pintarComercio(D) {
     ], D.exportadores, { sort: "fob" });
 
     document.getElementById("comNota").innerHTML =
+      "Esta pantalla mide una ventana de diez semanas y la anualiza. Para el " +
+      "lado exportador hay cinco años medidos, sin extrapolar, en " +
+      "<a href='#exportacion'>Exportación</a>. " +
       "Fuente: microdatos de manifiestos de SUNAT, publicados bajo la Ley " +
       "27806 de transparencia. Lo medido son " + m.semanas_imp +
       " semanas; el mensual y el anual extrapolan esa ventana sin corregir " +
@@ -2779,9 +2782,239 @@ function pintarProductos(D) {
       "salida sale del campo <span class='mono'>CADU</span> del manifiesto y " +
       "se nombra con la Tabla 4 del Anexo 01 de SUNAT; el código 370 " +
       "corresponde a Chancay, habilitada el 21 de octubre de 2024 y todavía " +
-      "ausente de ese anexo. El reparto por departamento usa el domicilio " +
-      "fiscal del exportador, porque el ubigeo del propio manifiesto viene " +
-      "vacío en el 97% del FOB.";
+      "ausente de ese anexo. El reparto por departamento de <i>esta</i> " +
+      "pantalla usa el domicilio fiscal del exportador, porque en las diez " +
+      "semanas de 2026 que la alimentan el ubigeo del manifiesto viene vacío " +
+      "en el 97% del FOB. Eso vale para 2026 y no para antes: en 2022–2024 " +
+      "el campo viene lleno en el 100% del FOB y apunta al lugar de " +
+      "producción, no a la oficina. El corte territorial bueno está en " +
+      "<a href='#exportacion'>Exportación</a>, sobre esos años.";
+}
+
+
+/* ---------------------------------------------------------- exportación --
+   El gemelo exportador del módulo de importación, y con la misma disciplina:
+   años medidos, nunca anualizados, y cada año con las semanas que lo
+   respaldan. Se lee de `exportaciones/mercado` —43 KB— y de
+   `exportaciones/exportadores_min`, el recorte de 1.2 MB del directorio de
+   4,062 empresas; el archivo completo pesa 7.7 MB y lleva por empresa un cubo
+   de producto × destino × partida que esta vista no muestra.
+
+   Dos advertencias viajan con los datos y se pintan, no se omiten:
+
+   1. El último mes nunca está completo. El embarque se declara al salir pero
+      el archivo se arma al regularizar, y de ahí sale una frontera de
+      completitud que aquí se dice en palabras.
+   2. El origen sale del ubigeo del manifiesto, que apunta al fundo y no al
+      domicilio fiscal, pero que SUNAT dejó de llenar. El corte se limita a
+      los años que lo traen y la vista lo declara. */
+var EXPM = null, EXPE = null, EXPQ = { anio: "" };
+var EXP_COMPLETO = 45;   /* semanas archivadas para llamar completo a un año */
+var MESES_EXP = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                 "Jul", "Ago", "Set", "Oct", "Nov", "Dic"];
+
+function expCompleto(a) {
+  return (EXPM.cobertura_semanas[a] || 0) >= EXP_COMPLETO;
+}
+function expEnCurso(a) { return a === EXPM.anio_en_curso; }
+function expEt(a) { return expEnCurso(a) ? a + " YTD" : a; }
+function expPie(a) {
+  var s = EXPM.cobertura_semanas[a] || 0;
+  if (!s) return "pendiente de carga";
+  if (expEnCurso(a)) {
+    return s + " semanas al " + EXPM.ultimo_registro +
+      " · el último mes sigue regularizando";
+  }
+  return s + " semanas archivadas";
+}
+
+/* Los nombres de departamento viajan sin tilde, como en todo el proyecto; se
+   acentúan al mostrarlos y en ningún otro lado. */
+var DEP_TILDE = { "ANCASH": "Áncash", "APURIMAC": "Apurímac",
+                  "HUANUCO": "Huánuco", "JUNIN": "Junín",
+                  "SAN MARTIN": "San Martín" };
+function depNom(n) {
+  var u = String(n).toUpperCase();
+  if (DEP_TILDE[u]) return DEP_TILDE[u];
+  return u.toLowerCase().replace(/(^|\s)([a-záéíóúñ])/g, function (m, a, c) {
+    return a + c.toUpperCase();
+  });
+}
+function expPico(r) {
+  if (!r.perfil || !r.perfil.length) return -1;
+  return r.perfil.indexOf(Math.max.apply(null, r.perfil));
+}
+
+/* La serie por año. Misma gramática de barras que la de importación: medida,
+   parcial —rayada, con asterisco— o sin descargar —hueco punteado—. */
+function expSerie(el, anios) {
+  var vals = anios.map(function (a) {
+    var b = EXPM.por_anio[a];
+    return { a: a, hay: !!b, v: b ? b.fob : 0, emp: b ? b.empresas : 0,
+             ops: b ? b.ops : 0 };
+  });
+  var mx = Math.max.apply(null, vals.map(function (f) {
+    return f.hay ? f.v : 0; })) || 1;
+  el.innerHTML = '<div class="serie">' + vals.map(function (f) {
+    if (!f.hay) {
+      return '<div class="sb vacio" title="' + esc(f.a +
+        "\n\nSin semanas descargadas: no hay información para este año") +
+        '"><i></i><b>' + f.a + "</b></div>";
+    }
+    var par = !expCompleto(f.a);
+    var h = Math.max(2, Math.round(100 * f.v / mx));
+    return '<div class="sb' + (par ? " parcial" : "") + '" title="' +
+      esc(expEt(f.a) + "\n\nFOB: US$ " + nf(f.v) +
+          "\nExportadores: " + nf(f.emp) +
+          "\nOperaciones: " + nf(f.ops) + "\n" + expPie(f.a)) +
+      '"><i style="height:' + h + '%"></i><b>' + f.a +
+      (par ? "*" : "") + "</b></div>";
+  }).join("") + "</div>";
+}
+
+function vistaExportacion() {
+  Promise.all([cargar("exportaciones/mercado"),
+               cargar("exportaciones/exportadores_min")])
+    .then(function (r) {
+      EXPM = r[0];
+      EXPE = r[1].emp;
+      /* Se abre en el último año completo, no en el año en curso: un año a
+         medias de titular invita a compararlo con años enteros. */
+      var completos = EXPM.anios_con_dato.filter(function (a) {
+        return !expEnCurso(a) && expCompleto(a); });
+      EXPQ.anio = completos[completos.length - 1] || EXPM.anio_en_curso;
+
+      var sel = document.getElementById("expAnio");
+      sel.innerHTML = EXPM.anios_pedidos.map(function (a) {
+        return '<option value="' + a + '"' +
+          (a === EXPQ.anio ? " selected" : "") + ">" + expEt(a) + "</option>";
+      }).join("");
+      sel.onchange = function () { EXPQ.anio = sel.value; pintarExpAnio(); };
+
+      REPINTAR.exportacion = function () { pintarExportacion(); };
+      pintarExportacion();
+    }).catch(fallo);
+}
+
+function pintarExportacion() {
+  var y = EXPQ.anio, yoy = EXPM.yoy;
+
+  document.getElementById("expKpis").innerHTML = [
+    [usd(EXPM.por_anio[y] ? EXPM.por_anio[y].fob : 0),
+     "agroexportado en " + expEt(y), expPie(y)],
+    [nf(EXPM.empresas_con_dato), "exportadores con RUC",
+     "en " + EXPM.anios_con_dato.length + " años medidos"],
+    [nf(EXPM.familias.length), "familias de producto",
+     "a cuatro dígitos de partida"],
+    [yoy ? (yoy.variacion_pct >= 0 ? "+" : "") + nf(yoy.variacion_pct, 1) + "%"
+         : "N/D",
+     yoy ? yoy.tramo.replace("-", " a ") + " de " + yoy.anios[1] : "variación",
+     yoy ? "contra " + yoy.anios[0] + ", solo meses cerrados" : ""],
+  ].map(function (k) { return kpi(esc(k[0]), k[1], k[2]); }).join("");
+
+  expSerie(document.getElementById("expSerie"), EXPM.anios_pedidos);
+  document.getElementById("expSerieNota").innerHTML =
+    "El asterisco marca el año que no está completo. El último embarque " +
+    "registrado es del " + esc(EXPM.ultimo_registro) + ", pero la serie solo " +
+    "se puede leer hasta el <b>" + esc(EXPM.rezago.frontera_completitud) +
+    "</b>: el embarque se declara al salir y el archivo se arma cuando la " +
+    "declaración se regulariza, " + EXPM.rezago.mediana + " días después en " +
+    "la mediana. Lo posterior a esa fecha está incompleto por rezago, no " +
+    "porque haya caído.";
+
+  /* El corte territorial no depende del año elegido: se calcula sobre los
+     años en que el manifiesto trae el ubigeo, y decir cuáles son es parte
+     del dato. */
+  var dep = EXPM.departamentos, du = dep.anios_usados;
+  var ult = du[du.length - 1];
+  document.getElementById("expDepEt").textContent =
+    "Ubigeo del manifiesto · " + du[0] + "–" + ult;
+  tabla(document.getElementById("tExpDeps"), [
+    { k: "n", t: "Departamento", l: 1, f: function (r) {
+        return "<b>" + esc(depNom(r.n)) + "</b><span class='sub2'>" +
+          nf(r.empresas) + " empresas</span>"; } },
+    { k: "fob", t: "FOB " + du[0] + "–" + ult, f: function (r) {
+        return usd(r.fob); } },
+    { k: "pct", t: "% del total", f: function (r) { return pct(r.pct, 1); } },
+    { k: "pico", t: "Mes pico", v: expPico, f: function (r) {
+        var i = expPico(r);
+        return i < 0 ? "—" : "<span class='tag'>" + MESES_EXP[i] + "</span>" +
+          "<span class='sub2'>" + pct(r.perfil[i], 0) + " de su año</span>"; } },
+  ], dep.lista, { sort: "fob" });
+
+  var cob = dep.cobertura_fob_por_anio;
+  document.getElementById("expDepNota").innerHTML =
+    "<span class='h'>Fundo, no oficina — y por cuánto tiempo</span>" +
+    "El ubigeo del manifiesto no es el domicilio fiscal: cruzado contra el " +
+    "padrón de SUNAT sobre " + ult + " coincide en el distrito el 26.6% de " +
+    "las veces y en el departamento el 48.8%, y donde el manifiesto dice Ica " +
+    "o La Libertad el padrón dice Lima. Apunta al lugar de producción, que " +
+    "es el dato que sirve para ubicar demanda de insumo. <b>Pero SUNAT lo " +
+    "está dejando de llenar</b>: viene en el " + pct(cob[ult], 0) + " del " +
+    "FOB en " + ult + " y en el " + pct(cob[EXPM.anio_en_curso], 1) + " en " +
+    EXPM.anio_en_curso + ", así que el corte se limita a " + du[0] + "–" +
+    ult + " y no se extiende a los demás años.";
+
+  pintarExpAnio();
+}
+
+/* Lo que sí depende del año elegido: quién embarcó y cuánto. La composición
+   por producto y destino se muestra acumulada de los cinco años —es lo que
+   `mercado.json` trae sumado— y se etiqueta como tal, en vez de recortarla a
+   un año que el archivo no separa. */
+function pintarExpAnio() {
+  var y = EXPQ.anio;
+  var rango = EXPM.anios_con_dato[0] + "–" +
+              EXPM.anios_con_dato[EXPM.anios_con_dato.length - 1];
+  document.getElementById("expAnioPie").textContent = expPie(y);
+
+  barras(document.getElementById("expFamilias"),
+    EXPM.familias.slice(0, 12).map(function (r) {
+      return { n: r.n, v: r.fob, t: usd(r.fob), p: r.pct };
+    }));
+  document.getElementById("expFamEt").textContent = "Acumulado " + rango;
+
+  barras(document.getElementById("expDestinos"),
+    EXPM.destinos.slice(0, 12).map(function (r) {
+      return { n: pais(r.n), v: r.fob, t: usd(r.fob), p: r.pct };
+    }));
+  document.getElementById("expDestEt").textContent = "Acumulado " + rango;
+
+  var filas = EXPE.filter(function (e) { return (e.a[y] || 0) > 0; });
+  document.getElementById("expTopEt").textContent =
+    nf(filas.length) + " con embarque en " + expEt(y) + " · 100 mayores";
+  tabla(document.getElementById("tExpEmpresas"), [
+    { k: "n", t: "Empresa", l: 1, f: function (r) {
+        return "<b>" + esc(r.n) + "</b><span class='sub2'>" + esc(r.r) +
+          (r.d ? " · " + esc(depNom(r.d)) : "") + "</span>"; } },
+    { k: "fob", t: "FOB " + expEt(y), v: function (r) { return r.a[y] || 0; },
+      f: function (r) { return usd(r.a[y] || 0); } },
+    { k: "prod", t: "Producto principal", l: 1,
+      v: function (r) { return r.f.length ? r.f[0].n : ""; },
+      f: function (r) {
+        return r.f.length ? "<span class='tag'>" + esc(r.f[0].n) + "</span>"
+                          : "—"; } },
+    { k: "dest", t: "Destino principal", l: 1,
+      v: function (r) { return r.p.length ? r.p[0].n : ""; },
+      f: function (r) {
+        return r.p.length
+          ? esc(pais(r.p[0].n)) + "<span class='sub2'>" + nf(r.np) +
+            " destinos</span>" : "—"; } },
+    { k: "t", t: "FOB total · " + rango, f: function (r) {
+        return usd(r.t); } },
+  ], filas, { sort: "fob", limite: 100 });
+
+  document.getElementById("expNota").innerHTML =
+    "Fuente: microdatos de manifiestos de SUNAT bajo la Ley 27806, " +
+    nf(EXPM.operaciones) + " líneas de embarque en " +
+    nf(EXPM.declaraciones) + " declaraciones, último registro " +
+    esc(EXPM.ultimo_registro) + ". Nada aquí se anualiza: son años medidos. " +
+    "La tabla muestra los 100 mayores del año elegido, de " +
+    nf(EXPE.length) + " exportadores con RUC. Quedan fuera " +
+    usd(EXPM.reservado.fob) + " en " + nf(EXPM.reservado.ops) +
+    " operaciones de exportadores persona natural, cuyo titular SUNAT no " +
+    "publica por la Ley 29733: están en los totales del mercado y en ningún " +
+    "corte por empresa.";
 }
 
 /* ------------------------------------------------------------ navegación -*/
@@ -2824,6 +3057,7 @@ function ir(hash) {
     if (id === "comercio") vistaComercio();
     if (id === "productos") vistaProductos();
     if (id === "importacion") vistaImportacion();
+    if (id === "exportacion") vistaExportacion();
     if (id === "logistica") vistaLogistica();
     if (id === "metodo") vistaMetodo();
   }

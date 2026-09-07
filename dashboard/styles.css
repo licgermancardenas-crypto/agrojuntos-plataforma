@@ -307,12 +307,18 @@ td.faint{color:var(--muted)}
 .pares dd{margin:0; color:var(--ink)}
 /* Serie semanal: diez barras y su fecha. Con diez valores un gráfico de línea
    sugiere una tendencia que una ventana móvil de diez semanas no sostiene. */
-.serie{display:flex; align-items:flex-end; gap:4px; height:74px; margin-top:6px}
+/* La etiqueta del año sale del flujo. Cuando compartía la caja con la barra
+   le comía 17 de los 74px, pero el `height:%` de la barra seguía calculándose
+   sobre los 74: todo lo que pasara del 77% topaba contra el mismo alto y dos
+   años distintos se dibujaban iguales. */
+.serie{display:flex; align-items:flex-end; gap:4px; height:74px;
+  margin:6px 0 22px}
 .serie .sb{flex:1; display:flex; flex-direction:column; justify-content:flex-end;
-  height:100%}
+  height:100%; position:relative}
 .serie .sb i{display:block; width:100%; background:var(--forest2); border-radius:1px}
 .serie .sb b{font-family:"IBM Plex Mono",monospace; font-size:8.5px;
-  font-weight:400; color:var(--muted); text-align:center; margin-top:4px}
+  font-weight:400; color:var(--muted); text-align:center; margin-top:4px;
+  position:absolute; top:100%; left:0; right:0}
 
 /* Selector de periodo. Vive en el encabezado y no dentro de cada vista porque
    manda sobre todas: importación, comercio, productos, perfil y directorio

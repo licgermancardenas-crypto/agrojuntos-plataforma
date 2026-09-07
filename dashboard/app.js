@@ -2949,9 +2949,12 @@ function pintarExportacion() {
     "Contrastarlo contra esa cifra destapó que <b>SUNAT republica cada " +
     "declaración con el valor rectificado</b>: en " + _a + " el 51% del " +
     "valor estaba repetido entre semanas, y sumarlo contaba varias veces el " +
-    "mismo embarque. Depurado, la serie queda por debajo de la oficial, que " +
-    "es lo esperable: el universo de partidas de esta plataforma es más " +
-    "estrecho que el de MIDAGRI." : "";
+    "mismo embarque. Lo que resta está medido y es el universo: faltan " +
+    "capítulos que esta plataforma no cuenta como agro —aceites US$ 802 MM, " +
+    "preparaciones de cereales 308, quinua 181, pisco 167, esencias 141—, y " +
+    "con ellos sumaría <b>US$ 15,206 MM</b>, un 1.3% de la cifra oficial. " +
+    "Los dos mayores que quedan fuera —alimento para animales y " +
+    "preparaciones de carne— son harina de pescado y conservas." : "";
 
   expSerie(document.getElementById("expSerie"), EXPM.anios_pedidos);
   document.getElementById("expSerieNota").innerHTML =

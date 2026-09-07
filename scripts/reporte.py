@@ -1606,20 +1606,21 @@ page(f"""
         <b>{abs(100*(_xfob/1e6 - 15013)/15013):.0f}% menos</b>. Contrastarlo
         contra esa cifra —que es lo que nadie había hecho— destapó que
         <b>SUNAT republica cada declaración con el valor rectificado</b>: en
-        {_XA} el 51% del valor estaba repetido entre semanas, y sumarlo
-        contaba varias veces el mismo embarque. Depurado, la serie queda por
-        debajo de la oficial, que es lo esperable: el universo de partidas de
-        este informe es más estrecho que el de MIDAGRI.</p>
-        <p class="sub" style="margin:6px 0 0">Antes de depurar, esta página
-        daba US$ 17,928 MM y una caída de 5.4% en el año; las dos cosas eran
-        el arrastre de las republicaciones, que se acumulan más en los años
-        viejos que en el corriente.</p>
+        {_XA} el 51% del valor estaba repetido entre semanas. Lo que resta
+        está medido y es el universo: faltan capítulos que este informe no
+        cuenta como agro —aceites 802 MM, preparaciones de cereales 308,
+        quinua 181, pisco 167, esencias 141—, y con ellos sumaría
+        <b>US$ 15,206 MM</b>, un 1.3% del oficial. Los dos mayores que quedan
+        fuera son harina de pescado y conservas.</p>
+        <p class="sub" style="margin:6px 0 0">Antes de depurar esta página daba
+        US$ 17,928 MM y una caída de 5.4%: las dos cosas eran el arrastre de
+        las republicaciones.</p>
       </div>
     </div>
     <div>
       <h3 class="rule">Qué sale, en {_XA}</h3>
       {table([[k[:30], f'{v/1e6:,.0f}', f'{100*v/_xfob:.1f}%', nf(e)]
-              for k, v, e in _xfam[:4]],
+              for k, v, e in _xfam[:3]],
              ["Producto", "FOB MM", "% del total", "Empresas"],
              ["l", "r", "r", "r"], cls="tight")}
       <p class="sub">Cuatro de las {len(_XP['cats'])} familias del universo.
@@ -1629,9 +1630,8 @@ page(f"""
   </div>
 
   <p class="sub">A dónde va, en {_XA}:
-  {", ".join(f"{_xpais(p)} {100*v/_xfob:.1f}%" for p, v in _xdest[:6])}.
-  Países Bajos es puerta de entrada a Europa antes que consumidor final:
-  Rotterdam redistribuye. Manifiestos de SUNAT bajo la Ley 27806, último embarque
+  {", ".join(f"{_xpais(p)} {100*v/_xfob:.1f}%" for p, v in _xdest[:5])}.
+  Países Bajos redistribuye a Europa, no consume. Manifiestos de SUNAT bajo la Ley 27806, último embarque
   {_XM['ultimo_registro']}, frontera de completitud
   {_XR['frontera_completitud']}. Quedan fuera del recorte de cinco años
   US$ {nf(_XM['fuera_de_rango']['ventana_anterior']['fob']/1e6)} MM de

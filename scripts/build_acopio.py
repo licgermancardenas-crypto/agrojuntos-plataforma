@@ -41,6 +41,7 @@ SECTORES = "out/sectores_2024.csv"
 ASIGNACION = "out/hubs_asignacion.csv"
 CARTERA = "out/cartera_territorio.csv"
 CELDAS = "out/clusters_celda.csv"
+SENASA = "out/senasa_exportadores.csv"
 RES_HUB = 5      # la grilla con la que se asignaron los centros
 RES_TER = 6      # la grilla con la que se detectaron los territorios
 MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
@@ -153,6 +154,58 @@ def main():
         print("distritos fuera de todo territorio de venta: %d · US$ %s MM"
               % (fuera, format(round(j[j.cluster.isna()].fob.sum() / 1e6), ",")))
 
+    # ------------------------------------------------- lo que lee la web --
+    sin_hub = j[j.hub.isna()]
+    # Un JSON chico con lo que las dos salidas muestran: el detalle por
+    # distrito son 580 filas que nadie mira de una vez.
+    import json as _js
+    pack = None
+    if os.path.exists(SENASA):
+        sn = pd.read_csv(SENASA, encoding="utf-8-sig")
+        pk = sn[sn.empacadoras > 0]
+        pack = {
+            "empacadoras": int(len(pk)),
+            "embarcan": int(pk.ruc.notna().sum()),
+            "sin_embarque_propio": int(pk.ruc.isna().sum()),
+            "lugares_produccion": int((sn.empacadoras == 0).sum()),
+            "por_region": (pk.regiones.fillna("").str.split(",").explode()
+                           .str.strip().replace("", pd.NA).dropna()
+                           .value_counts().head(10).to_dict()),
+            "mayores": [{"n": r.empresa, "fob": float(r.fob or 0),
+                         "dep": str(r.dep or ""), "prod": str(r.productos or "")}
+                        for _, r in pk[pk.ruc.notna()].head(10).iterrows()],
+        }
+    web = {
+        "generado": pd.Timestamp.now().isoformat(timespec="seconds"),
+        "anios": anios,
+        "fuente": "ubigeo del manifiesto de SUNAT (lugar de producción) y "
+                  "listas de establecimientos certificados de SENASA",
+        "distritos": int(len(j)), "empresas": int(d.ruc.nunique()),
+        "fob": float(j.fob.sum()),
+        "sin_centro": {"distritos": int(len(sin_hub)),
+                       "fob": float(sin_hub.fob.sum()),
+                       "mayores": [{"n": str(r.dist).title(), "fob": float(r.fob)}
+                                   for _, r in sin_hub.head(5).iterrows()]},
+        "hubs": hub.to_dict("records"),
+        "top_distritos": [
+            {"n": str(r.dist).title(), "dep": str(r.dep), "fob": float(r.fob),
+             "empresas": int(r.empresas), "familia": str(r.familia_lider),
+             "mes": str(r.mes_pico), "hub": str(r.hub) if pd.notna(r.hub) else "",
+             "horas": float(r.horas_al_hub) if pd.notna(r.horas_al_hub) else None}
+            for _, r in j.head(25).iterrows()],
+        "territorios": ([{"n": str(r.territorio), "fob": float(r.fob_export_mm or 0) * 1e6,
+                          "empresas_export": int(r.empresas_export or 0),
+                          "cartera": int(r.empresas or 0),
+                          "importadores": int(r.importadores or 0),
+                          "hub": str(r.hub), "horas": float(r.horas_al_hub or 0)}
+                         for _, r in ter.dropna(subset=["fob_export_mm"])
+                         .sort_values("fob_export_mm", ascending=False).head(15).iterrows()]
+                        if ter is not None else []),
+        "senasa": pack,
+    }
+    with io.open("out/acopio.json", "w", encoding="utf-8") as fh:
+        _js.dump(web, fh, ensure_ascii=False, separators=(",", ":"))
+
     print("años con ubigeo    : %s" % ", ".join(anios))
     print("distritos con carga: %s  (sin sector agrícola mapeado: %d)"
           % (format(len(j), ","), sin_geo))
@@ -167,7 +220,6 @@ def main():
     print("\ncuánta carga alcanza cada centro, por radio:")
     # Un distrito cuya celda no está en la asignación no tiene centro que
     # lo sirva: no es carga cero, es carga fuera de alcance, y se dice.
-    sin_hub = j[j.hub.isna()]
     print("")
     print("sin centro asignado : %d distritos · US$ %s MM"
           % (len(sin_hub), format(round(sin_hub.fob.sum() / 1e6), ",")))

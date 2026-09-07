@@ -1883,7 +1883,8 @@ divider("VI", "La geometría <em>del mercado</em>",
         "venta que emergen de la densidad, el orden de apertura de centros de "
         "distribución que maximiza la cobertura, y la cartera con nombre propio "
         "que cae dentro de cada territorio.",
-        ["La grilla hexagonal", "Centros de distribución", "La cartera del territorio"])
+        ["La grilla hexagonal", "Centros de distribución",
+         "Dónde está la carga", "La cartera del territorio"])
 
 CLU_ROWS = [[int(r["rank"]), r["dep_ok"], cap(r["provincias"]),
              f'{r["sam_usd"]/1e6:,.1f}', nf(r["clientes"]),
@@ -1998,6 +1999,89 @@ page(f"""
     </div>
   </div>
 """, "Parte VI · Centros de distribución")
+
+
+# ------------------------------------------- dónde está la carga de verdad --
+# El reparto exportador de las páginas anteriores sitúa a cada empresa por su
+# domicilio fiscal. Esta lo hace por el ubigeo del manifiesto, que apunta al
+# lugar de producción, y por eso cambia el mapa: la carga se va de Lima al
+# campo. Es la diferencia entre saber dónde está la oficina y saber dónde hay
+# que descargar el camión.
+_AC = _json.load(open("out/acopio.json", encoding="utf-8"))
+_ac_h = _AC["hubs"]
+_ac_t = _AC["territorios"]
+_ac_s = _AC["senasa"] or {}
+_ac_d = _AC["top_distritos"]
+_ac_sc = _AC["sin_centro"]
+
+page(f"""
+  <span class="kicker">Parte VI · Dónde está la carga</span>
+  <h2 class="title">La demanda exportadora, puesta <em>donde se produce</em></h2>
+  <p class="deck">Las páginas anteriores reparten el valor exportado por el
+     domicilio fiscal, y eso lo acumula en Lima. Aquí se sitúa con el UBIGEO
+     del manifiesto, que apunta al fundo: {nf(_AC['distritos'])} distritos con
+     coordenada, {nf(_AC['empresas'])} empresas y {usd(_AC['fob'])} entre
+     {_AC['anios'][0]} y {_AC['anios'][-1]}.</p>
+
+  <div class="kpis">
+    <div><span class="v">{nf(_AC['distritos'])}</span><span class="l">distritos<br>con embarque propio</span></div>
+    <div><span class="v">{usd(_ac_h[0]['fob_2h_mm']*1e6)}</span><span class="l">alcanza {_ac_h[0]['hub']}<br>a dos horas</span></div>
+    <div><span class="v">{nf(_ac_s.get('empacadoras', 0))}</span><span class="l">plantas de empaque<br>certificadas por SENASA</span></div>
+    <div><span class="v">{usd(_ac_sc['fob'])}</span><span class="l">en {_ac_sc['distritos']} distritos<br>sin centro que los sirva</span></div>
+  </div>
+
+  <div class="two" style="margin-top:2px">
+    <div>
+      <h3 class="rule">Cuánta carga alcanza cada centro</h3>
+      {table([[h["hub"], f'{h["fob_2h_mm"]:,.0f}', f'{h["fob_4h_mm"]:,.0f}',
+               f'{h["fob_6h_mm"]:,.0f}', nf(h["distritos"])]
+              for h in _ac_h[:5]],
+             ["Centro", "2 h · MM", "4 h · MM", "6 h · MM", "Distritos"],
+             ["l", "r", "r", "r", "r"], cls="tight")}
+      <p class="sub">La pregunta de inventario no es cuánto mercado hay sino
+      cuánto se alcanza: {_ac_h[2]['hub']} pasa de
+      {_ac_h[2]['fob_2h_mm']:,.0f} a {_ac_h[2]['fob_6h_mm']:,.0f} MM al abrir
+      el radio de dos a seis horas, así que lo que vale depende del
+      compromiso de entrega que se ofrezca.</p>
+    </div>
+    <div>
+      <h3 class="rule">Los distritos que más embarcan</h3>
+      {table([[f'{cap(x["n"])[:15]}', f'{x["fob"]/1e6:,.0f}', nf(x["empresas"]),
+               x["mes"]] for x in _ac_d[:5]],
+             ["Distrito", "FOB MM", "Empresas", "Pico"],
+             ["l", "r", "r", "l"], cls="tight")}
+      <p class="sub">Dos formas opuestas: {cap(_ac_d[0]["n"])} mueve
+      {_ac_d[0]["fob"]/1e6:,.0f} MM entre {_ac_d[0]["empresas"]} empresas;
+      Tambo Grande, {[x for x in _ac_d if "Tambo" in x["n"]][0]["fob"]/1e6:,.0f} MM
+      entre {[x for x in _ac_d if "Tambo" in x["n"]][0]["empresas"]}. En uno se
+      negocia; en el otro hay que estar.</p>
+    </div>
+  </div>
+
+  <h3 class="rule">Territorio por territorio, contra la cartera que ya existe</h3>
+  {table([[t["n"][:32], f'{t["fob"]/1e6:,.0f}', nf(t["empresas_export"]),
+           nf(t["cartera"]), nf(t["importadores"]), f'{t["horas"]:.1f} h']
+          for t in _ac_t[:5]],
+         ["Territorio", "FOB export MM", "Exportadores", "En cartera",
+          "Importadores", "Al centro"],
+         ["l", "r", "r", "r", "r", "r"], cls="tight")}
+  <p class="sub">«Importadores» son los de insumos vistos en aduanas: la
+  competencia instalada. Donde hay carga y no los hay, el canal está libre.</p>
+
+  <div class="note brass" style="margin-top:6px">
+    <span class="h">Quién tiene planta, y quién no la usa para exportar</span>
+    <p>SENASA certifica establecimientos por producto y mercado de destino:
+    hay <b>{nf(_ac_s.get('empacadoras', 0))} plantas de empaque</b> y
+    {nf(_ac_s.get('lugares_produccion', 0))} lugares de producción en las listas
+    de arándano, palta, cítricos y limón. De las plantas,
+    <b>{nf(_ac_s.get('sin_embarque_propio', 0))} no embarcan a su nombre</b>:
+    tienen infraestructura de acopio y venden a través de terceros, que es
+    exactamente el perfil de un socio logístico. Están sobre todo en
+    {", ".join(list(_ac_s.get("por_region", {}))[:4])}.</p>
+    <p class="sub" style="margin:6px 0 0">Las listas no ubican: son atributo,
+    no posición. Quedan fuera uva, mango y espárrago.</p>
+  </div>
+""", "Parte VI · Dónde está la carga")
 
 CAR_ROWS = [[int(r["rank"]), r["territorio"], nf(r["empresas"]),
              nf(r["agroindustria"]), int(r["exportadores"]),

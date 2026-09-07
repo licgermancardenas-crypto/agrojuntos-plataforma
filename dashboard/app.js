@@ -2916,6 +2916,7 @@ function vistaExportacion() {
 
       REPINTAR.exportacion = function () { pintarExportacion(); };
       pintarExportacion();
+      pintarAcopio();
     }).catch(fallo);
 }
 
@@ -3055,6 +3056,83 @@ function pintarExpAnio() {
     " operaciones de exportadores persona natural, cuyo titular SUNAT no " +
     "publica por la Ley 29733: están en los totales del mercado y en ningún " +
     "corte por empresa.";
+}
+
+
+/* ------------------------------------------------ dónde está la carga ----
+   El resto de la plataforma reparte el valor exportado por el domicilio
+   fiscal, que lo acumula en Lima. Este bloque lo sitúa con el ubigeo del
+   manifiesto, que apunta al fundo, y por eso contesta una pregunta que las
+   otras vistas no pueden: a cuánta carga llega cada centro según el radio
+   que se acepte, y dónde hay carga que ningún centro alcanza. */
+function pintarAcopio() {
+  cargar("acopio").then(function (A) {
+    var s = A.senasa || {};
+    document.getElementById("expAcopioEt").textContent =
+      nf(A.distritos) + " distritos · " + A.anios[0] + "–" +
+      A.anios[A.anios.length - 1] + " · ubigeo del manifiesto";
+
+    tabla(document.getElementById("tAcopioHub"), [
+      { k: "hub", t: "Centro", l: 1, f: function (r) {
+          return "<b>" + esc(r.hub) + "</b><span class='sub2'>" +
+            nf(r.distritos) + " distritos</span>"; } },
+      { k: "fob_2h_mm", t: "Alcanza a 2 h", f: function (r) {
+          return usd(r.fob_2h_mm * 1e6); } },
+      { k: "fob_4h_mm", t: "a 4 h", f: function (r) {
+          return usd(r.fob_4h_mm * 1e6); } },
+      { k: "fob_6h_mm", t: "a 6 h", f: function (r) {
+          return usd(r.fob_6h_mm * 1e6); } },
+    ], A.hubs, { sort: "fob_2h_mm", limite: 8 });
+
+    var sc = A.sin_centro;
+    document.getElementById("expAcopioNota").innerHTML =
+      "La pregunta de inventario no es cuánto mercado hay sino cuánto se " +
+      "alcanza: el mismo centro cambia de valor con el radio que se " +
+      "comprometa. Y <b>" + usd(sc.fob) + " en " + sc.distritos +
+      " distritos no tienen centro que los sirva</b> —" +
+      sc.mayores.slice(0, 2).map(function (x) {
+        return esc(x.n) + " son " + usd(x.fob); }).join(", ") +
+      "—: no es carga cero, es carga fuera de alcance.";
+
+    tabla(document.getElementById("tAcopioDist"), [
+      { k: "n", t: "Distrito", l: 1, f: function (r) {
+          return "<b>" + esc(r.n) + "</b><span class='sub2'>" + esc(r.dep) +
+            " · pico " + esc(r.mes) + "</span>"; } },
+      { k: "fob", t: "FOB", f: function (r) { return usd(r.fob); } },
+      { k: "empresas", t: "Empresas", f: function (r) {
+          return nf(r.empresas); } },
+    ], A.top_distritos, { sort: "fob", limite: 10 });
+
+    tabla(document.getElementById("tAcopioTer"), [
+      { k: "n", t: "Territorio", l: 1, f: function (r) {
+          return "<b>" + esc(r.n) + "</b><span class='sub2'>" +
+            nf(r.cartera) + " en cartera · " + nf(r.importadores) +
+            " importadores</span>"; } },
+      { k: "fob", t: "FOB export", f: function (r) { return usd(r.fob); } },
+      { k: "empresas_export", t: "Exportadores", f: function (r) {
+          return nf(r.empresas_export); } },
+    ], A.territorios, { sort: "fob", limite: 10 });
+
+    /* Las plantas certificadas no ubican nada —SENASA da región y nada más
+       fino— pero dicen quién tiene infraestructura de acopio, que es lo que
+       separa a un socio posible de una razón social. */
+    if (s.empacadoras) {
+      var reg = Object.keys(s.por_region || {}).slice(0, 4).join(", ");
+      document.getElementById("expSenasa").innerHTML =
+        "<span class='h'>Quién tiene planta, y quién no la usa para exportar</span>" +
+        "SENASA certifica establecimientos por producto y mercado: hay <b>" +
+        nf(s.empacadoras) + " plantas de empaque</b> y " +
+        nf(s.lugares_produccion) + " lugares de producción en las listas de " +
+        "arándano, palta, cítricos y limón. De las plantas, <b>" +
+        nf(s.sin_embarque_propio) + " no embarcan a su nombre</b>: tienen " +
+        "acopio y venden por medio de terceros, que es el perfil de un socio " +
+        "logístico. Están sobre todo en " + esc(reg) + ". Los fundos " +
+        "certificados no son socios: son demanda de insumo con certificación " +
+        "encima. Estas listas no ubican —traen región y nada más fino—, así " +
+        "que se usan como atributo sobre empresas que el manifiesto ya sitúa, " +
+        "y quedan fuera uva, mango y espárrago.";
+    }
+  }).catch(fallo);
 }
 
 /* ------------------------------------------------------------ navegación -*/

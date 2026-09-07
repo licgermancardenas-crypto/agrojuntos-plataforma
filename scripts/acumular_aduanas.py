@@ -54,6 +54,7 @@ ARCHIVO = "data/aduanas_hist"
 MANIFIESTO = os.path.join(ARCHIVO, "manifiesto.json")
 SEMILLA = "data/aduanas"          # lo que ya bajaron las corridas anteriores
 PRIMERA = dt.date(2026, 6, 15)    # la semana más vieja que llegamos a ver
+TROZO = 1 << 16                   # 64 KB por lectura; con 1 MB reventaba
 
 # line_buffering: la corrida historica dura horas y sin esto el avance no se
 # ve hasta el final, que es cuando ya no sirve para nada.
@@ -134,10 +135,16 @@ def bajar(nombre, dest, intentos=5):
                 if r.status_code == 404:
                     return "ausente"
                 with open(tmp, "wb") as fh:
-                    for c in r.iter_content(1 << 20):
+                    for c in r.iter_content(TROZO):
                         fh.write(c)
-        except requests.RequestException as ex:
+        except (requests.RequestException, MemoryError, OSError) as ex:
+            # El MemoryError es el que costo una corrida entera: urllib3 pide
+            # el trozo de una sola lectura y despues de horas bajando la
+            # peticion de memoria falla. No es motivo para tirar lo andado —
+            # cuenta como intento fallido y se reintenta como cualquier corte.
             print(f"      intento {n}: {type(ex).__name__}")
+            if os.path.exists(tmp):
+                os.remove(tmp)
             time.sleep(4 * n)
             continue
         ok = zip_sano(tmp) and (not esperado or os.path.getsize(tmp) == esperado)

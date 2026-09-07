@@ -590,7 +590,14 @@ with sync_playwright() as pw:
         const r = await fetch('/data/importaciones/panel.json');
         const p = await r.json();
         return p.dias_sin_cubrir_por_anio || {}; }""")
-    parciales = [a for a, v in XP.items() if v]
+    # El año en curso siempre tiene días por delante: que le falten no es un
+    # hueco que declarar, y ya arrastra su YTD por todas partes. La regla vale
+    # para los años cerrados, que son los que se leen como definitivos.
+    parciales = [a for a, v in XP.items() if v and a != XP.get("_curso")]
+    curso = pg.evaluate("""async () => {
+        const p = await (await fetch('/data/importaciones/panel.json')).json();
+        return p.anio_en_curso; }""")
+    parciales = [a for a in parciales if a != curso]
     if "sin dato" in cob:
         print("  la cobertura nombra los anos sin descargar: ok")
     elif parciales:
@@ -606,6 +613,32 @@ with sync_playwright() as pw:
             print(f"  declara que {', '.join(parciales)} no estan enteros: ok")
     elif "cinco años están completos" in cob:
         print("  la cobertura declara los cinco anos completos: ok")
+        # Que hoy no falte ningun dia no puede dejar la regla sin probar:
+        # manana falta uno y nadie se entera. Se sirve un panel con un ano
+        # cerrado al que le faltan dias y se exige que la nota lo diga.
+        _falso = json.loads(json.dumps(PN))
+        _victima = [a for a in PN["anios_pedidos"]
+                    if a != PN["anio_en_curso"]][-1]
+        _falso.setdefault("dias_sin_cubrir_por_anio", {})[_victima] = 9
+        pg.route("**/data/importaciones/panel.json", lambda r: r.fulfill(
+            status=200, content_type="application/json",
+            body=json.dumps(_falso, ensure_ascii=False)))
+        pg.reload(wait_until="networkidle")
+        pg.wait_for_selector("#fClase .chip[data-c='6']")
+        pg.click("#fClase .chip[data-c='6']")
+        pg.wait_for_selector("#impResumen .v", timeout=20000)
+        _cob2 = pg.text_content("#impCobertura") or ""
+        if _victima not in _cob2 or "día por día" not in _cob2:
+            print(f"  CON {_victima} INCOMPLETO, LA COBERTURA NO LO DECLARA")
+            ok = False
+        else:
+            print(f"  con {_victima} al que le faltan dias, la nota lo "
+                  "nombra: ok")
+        pg.unroute("**/data/importaciones/panel.json")
+        pg.reload(wait_until="networkidle")
+        pg.wait_for_selector("#fClase .chip[data-c='6']")
+        pg.click("#fClase .chip[data-c='6']")
+        pg.wait_for_selector("#impResumen .v", timeout=20000)
     else:
         print("  LA COBERTURA NO DECLARA QUE ANOS FALTAN")
         ok = False

@@ -66,10 +66,38 @@ def lunes(d):
     return d - dt.timedelta(days=d.weekday())
 
 
-def nombres(inicio):
-    """Los dos archivos de la semana que abre en `inicio` (un lunes)."""
+def _cod(d1, d2):
+    return f"{d1.day:02d}{d2.day:02d}{d2.month:02d}{d2.year % 100:02d}"
+
+
+def tramos(inicio):
+    """Los tramos en que SUNAT publica la semana que abre en `inicio`.
+
+    Casi siempre es uno solo, de lunes a domingo. Pero **cuando la semana
+    cruza el fin de año, a veces la parte en dos**: los días de diciembre en
+    un archivo y los de enero en otro. No siempre: la del 26 de diciembre de
+    2022 salió entera y la del 30 de diciembre de 2024 partida, así que no hay
+    regla que valga, hay que pedir y ver.
+
+    Esto costó ocho días de calendario. El pipeline solo generaba el nombre de
+    la semana completa, recibía un 404 y anotaba «ya no publicado»; de ahí
+    salió la conclusión —equivocada— de que SUNAT no publicaba esa semana. Lo
+    que no publicaba era ese *nombre*. Los días perdidos aparecían después
+    como huecos de diciembre y enero en cuatro de los cinco años.
+    """
     fin = inicio + dt.timedelta(days=6)
-    cod = f"{inicio.day:02d}{fin.day:02d}{fin.month:02d}{fin.year % 100:02d}"
+    if inicio.year == fin.year:
+        return [(inicio, fin)]
+    cierre = dt.date(inicio.year, 12, 31)
+    apertura = dt.date(fin.year, 1, 1)
+    # El entero primero: si existe, es el que hay que usar.
+    return [(inicio, fin), (inicio, cierre), (apertura, fin)]
+
+
+def nombres(inicio, tramo=None):
+    """Los dos archivos de un tramo de semana."""
+    d1, d2 = tramo if tramo else (inicio, inicio + dt.timedelta(days=6))
+    cod = _cod(d1, d2)
     return {"importacion": f"ma{cod}.zip", "exportacion": f"x{cod}.zip"}
 
 
@@ -206,15 +234,24 @@ def main():
         sem = d.isoformat()
         e = man["semanas"].get(sem, {})
         pend = []
-        for tipo, nombre in nombres(d).items():
+        # La semana entera primero. Si cruza el año y esa no está, se piden los
+        # dos pedazos —y hay que bajar los dos, no uno—.
+        trs = tramos(d)
+        for tipo in ("importacion", "exportacion"):
             if a.solo and tipo != a.solo:
                 continue
             reg = e.get(tipo)
-            dest = os.path.join(ARCHIVO, nombre)
+            entero = nombres(d, trs[0])[tipo]
+            dest = os.path.join(ARCHIVO, entero)
             if reg and os.path.exists(dest) and os.path.getsize(dest) == reg["bytes"]:
                 ya += 1
                 continue
-            pend.append((tipo, nombre, dest))
+            partes = e.get("partes", {}).get(tipo, [])
+            if partes and all(
+                    os.path.exists(os.path.join(ARCHIVO, n)) for n in partes):
+                ya += 1
+                continue
+            pend.append((tipo, entero, dest))
         if pend:
             print(f"  {sem}")
             for tipo, nombre, dest in pend:
@@ -224,10 +261,26 @@ def main():
                     print(f"      {nombre}  {os.path.getsize(dest):,} bytes")
                     nuevas += 1
                 elif r == "ausente":
-                    man["semanas"].setdefault(sem, {}).setdefault(
-                        "ausentes", {})[tipo] = dt.date.today().isoformat()
-                    print(f"      {nombre}  ya no publicado")
-                    ausentes += 1
+                    # Antes de darla por no publicada: si la semana cruza el
+                    # año, SUNAT puede haberla partido en dos.
+                    trozos = []
+                    for tr in trs[1:]:
+                        n2 = nombres(d, tr)[tipo]
+                        d2 = os.path.join(ARCHIVO, n2)
+                        if bajar(n2, d2) == "bajado":
+                            registrar(man, sem, tipo, n2, d2, "aduanet")
+                            print(f"      {n2}  {os.path.getsize(d2):,} bytes"
+                                  "  (pedazo de una semana partida)")
+                            trozos.append(n2)
+                            nuevas += 1
+                    if trozos:
+                        man["semanas"].setdefault(sem, {}).setdefault(
+                            "partes", {})[tipo] = trozos
+                    else:
+                        man["semanas"].setdefault(sem, {}).setdefault(
+                            "ausentes", {})[tipo] = dt.date.today().isoformat()
+                        print(f"      {nombre}  ya no publicado")
+                        ausentes += 1
             guardar(man)
         d += dt.timedelta(days=7)
 

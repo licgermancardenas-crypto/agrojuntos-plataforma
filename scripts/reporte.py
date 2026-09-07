@@ -1054,11 +1054,9 @@ _nota_faltan = (
     "decir «no encontramos información para " + _faltan[0] + "» que escribir "
     "US$ 0 sin evidencia."
     if _faltan else
-    "Los cinco años están descargados. Enteros, día por día, solo lo están " +
-    ", ".join(a for a in _M["anios_pedidos"]
-              if a != _M["anio_en_curso"] and not _FALTAN_DIA.get(a)) +
-    ": a los demás les faltan los días de la semana de año nuevo, que SUNAT " +
-    "no publica.")
+    "Los cinco años están descargados y enteros día por día: los ocho días "
+    "que faltaban estaban en la semana que cruza el año, que SUNAT publica "
+    "partida en dos.")
 
 
 def _est(a):
@@ -1070,9 +1068,10 @@ def _est(a):
         return "año en curso"
     if sem < _COMPLETO:
         return "descarga en curso"
-    # Un año con 52 semanas archivadas todavía puede no estar entero: SUNAT no
-    # publica la semana de año nuevo y con ella se van los días de fin y
-    # principio de año. Decir «completo» ahí es afirmar de más por dos días.
+    # Un año con 52 semanas archivadas todavía puede no estar entero, así que
+    # el estado se decide por días cubiertos. Los que faltaban salían de la
+    # semana que cruza el año, que SUNAT publica partida en dos archivos y el
+    # pipeline no pedía; recuperados, los años cerrados quedaron enteros.
     return "año completo" if not fal else f"entero salvo {fal} día{'s' * (fal > 1)}"
 
 page(f"""
@@ -1096,7 +1095,7 @@ page(f"""
       <p>Las {nf(_M["cobertura_semanas"][_ANIO_C])} semanas de {_ANIO_C} están
       archivadas: la primera cifra de importación del informe que no extrapola
       nada. {"" if not _FALTAN_DIA.get(_ANIO_C) else
-      f"Le faltan {_FALTAN_DIA[_ANIO_C]} días —SUNAT no publica la semana de año nuevo—, así que la cifra es un piso y no un cierre. "}Diez
+      f"Le faltan {_FALTAN_DIA[_ANIO_C]} días del calendario, así que la cifra es un piso y no un cierre. "}Diez
       empresas concentran el <b>{_conc22:.0f}%</b>.</p>
       {table([[cap(n)[:30], f'{v/1e6:,.1f}', nf(o)]
               for n, v, o in _top22[:5]],
@@ -1128,7 +1127,7 @@ page(f"""
            nf(_FALTAN_DIA.get(a, 0)) if _FALTAN_DIA.get(a, 0) else "—",
            _est(a)]
           for a in _M["anios_pedidos"]],
-         ["Año", "Semanas archivadas", "Días sin cubrir", "Estado"],
+         ["Año", "Semanas", "Días sin cubrir", "Estado"],
          ["l","r","r","l"], cls="tight")}
   <p class="sub">{_nota_faltan} Fuente: manifiestos de SUNAT bajo la Ley 27806,
   último registro {_M['ultimo_registro']}.</p>

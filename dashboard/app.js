@@ -625,9 +625,10 @@ function impDiasFalta(a) {
 function impPie(a) {
   var s = IMPP.cobertura_semanas[a] || 0;
   if (!s) return "pendiente de carga";
-  // Las semanas archivadas no cubren el año entero: SUNAT no publica la de
-  // año nuevo, y con ella se van los días de fin y principio de año. Decir
-  // «52 de 52» sin más daba por cerrado un año al que le faltan días.
+  // Las semanas archivadas no siempre cubren el año entero, así que el pie
+  // dice los días que ningún archivo respalda. Cuando faltaban, era porque la
+  // semana que cruza el año viene partida en dos archivos y el pipeline solo
+  // pedía el entero; recuperados, hoy suele no faltar ninguno.
   var f = impDiasFalta(a);
   var cola = f ? " · faltan " + f + (f > 1 ? " días" : " día") : "";
   if (impEnCurso(a)) return s + " semanas al " + IMPP.ultimo_registro + cola;
@@ -1265,9 +1266,8 @@ function impNotaCobertura() {
           // Un año con sus 52 semanas todavía puede no estar entero, y es
           // preferible decirlo que dejar que se lea como cierre.
           return "Los cinco años están descargados, pero enteros día por día " +
-            "solo lo está " + (ent.join(", ") || "ninguno") + ": a " +
-            par.join(", ") + " le faltan los días de la semana de año nuevo, " +
-            "que SUNAT no publica.";
+            "solo lo están " + (ent.join(", ") || "ninguno") + ": a " +
+            par.join(", ") + " le faltan días sueltos del calendario.";
         })()) +
     " El valor mostrado es <b>FOB importado</b> y no facturación de la " +
     "empresa." +

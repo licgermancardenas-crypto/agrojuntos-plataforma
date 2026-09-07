@@ -539,15 +539,19 @@ con operación verificada, US$ 5,457.5 MM FOB. Cada empresa tiene su historia
 de importación dentro de su ficha —mensual, anual, por producto, por país y
 por partida—.
 
-**Ningún año está entero salvo 2023, y conviene decirlo.** Este README venía
-afirmando «2022 a 2025 completos», y el criterio detrás era un umbral de
-semanas: 45 de 52 y el año se daba por cerrado. Pero las semanas se cuentan
-sobre las que traen operación, y sobre todo **52 semanas no cubren 365 días**:
-SUNAT no publica la semana que va del 29 de diciembre al 4 de enero, y con
-ella se van días de dos años seguidos. Medido en días, que es la unidad en la
-que un mes está o no está, a 2025 le faltan 8 días, a 2024 y 2022 les faltan
-2, y solo 2023 está entero. Son huecos chicos —el mayor es el 2.2% de un
-año— pero eran huecos que el sistema llamaba «completo».
+**Los años se miden en días, no en semanas, y ocho días estuvieron perdidos
+por un nombre.** Este README afirmaba «2022 a 2025 completos» con un umbral de
+45 de 52 semanas. Dos cosas fallan ahí: las semanas se cuentan sobre las que
+traen operación, y **52 semanas no cubren 365 días**. Contados en días, a 2025
+le faltaban 8, a 2024 y 2022 les faltaban 2 y solo 2023 estaba entero.
+
+Los huecos caían siempre en la misma semana, la que cruza el año, y se dio por
+hecho que SUNAT no la publicaba. **Sí la publica: cuando cruza el año la parte
+en dos archivos** —los días de diciembre en uno, los de enero en otro— y el
+pipeline solo pedía el nombre de la semana entera, recibía un 404 y la anotaba
+como no publicada. No siempre la parte: la del 26 de diciembre de 2022 salió
+entera, y por eso 2023 era el único año sin huecos. Con los doce archivos
+recuperados, **los cuatro años cerrados están enteros día por día**.
 
 ```
 scripts/build_import_historico.py    extrae las lineas de insumo de cada ZIP

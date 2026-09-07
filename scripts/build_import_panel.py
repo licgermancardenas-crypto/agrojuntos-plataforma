@@ -130,6 +130,10 @@ def main():
     anio_actual = ultimo[:4]
     cob = {a: int(v) for a, v in
            d.groupby("anio").semana_archivo.nunique().items()}
+    # Misma ventana que el agregado: sin esto el panel ofreceria 2021 con
+    # cinco dias de dato.
+    _ped = [str(int(ultimo[:4]) - i) for i in range(4, -1, -1)]
+    d = d[d.anio.isin(_ped)].copy()
     anios = sorted(cob)
 
     # El nombre de cada empresa una sola vez: repetirlo en cada fila del cubo

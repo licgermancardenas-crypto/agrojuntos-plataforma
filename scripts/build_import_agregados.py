@@ -54,6 +54,14 @@ def dias_cubiertos():
     llamando completos.
 
     Aquí se cuentan días, que es la unidad en la que un mes está o no está.
+
+    De esa cuenta salió la pista que faltaba. Los días huecos caían siempre en
+    la misma semana —la que cruza el año— y se dio por hecho que SUNAT no la
+    publicaba. Sí la publica: cuando cruza el año **la parte en dos archivos**,
+    los días de diciembre en uno y los de enero en otro, y el pipeline solo
+    pedía el nombre de la semana entera. Ver `tramos()` en
+    `acumular_aduanas.py`. Recuperados esos archivos, los cuatro años cerrados
+    quedaron enteros.
     """
     cub = set()
     for k in json.load(io.open(SEMANAS, encoding="utf-8")):
@@ -119,6 +127,18 @@ def main():
     ultimo = str(d.fecha.max())
     anio_actual = ultimo[:4]
     mes_ultimo = ultimo[5:7]
+    # La ventana es de cinco años. Al recuperar la semana partida de fin de
+    # año entraron despachos de diciembre de 2021 —el archivo trae los dos
+    # lados del corte—, y un año con cinco días de dato no es un año: se
+    # cuenta aparte y sale de todos los cortes.
+    pedidos = [str(int(anio_actual) - i) for i in range(ANIOS - 1, -1, -1)]
+    fuera_ventana = d[~d.anio.isin(pedidos)]
+    d = d[d.anio.isin(pedidos)].copy()
+    # Los cortes por empresa se rehacen sobre la ventana: calculados antes,
+    # arrastraban 2021 y dejaban de cuadrar contra los totales de aqui.
+    pub = d.ruc.str.fullmatch(r"\d{11}", na=False)
+    reservado = d[~pub]
+    d_emp = d[pub]
     anios = sorted(cob_anio)
     an["cobertura_semanas_por_anio"] = {k: int(v) for k, v in cob_anio.items()}
 
@@ -174,17 +194,28 @@ def main():
         "anio_en_curso": anio_actual,
         "meses_del_anio_en_curso": meses_ytd,
         "anios_con_dato": anios,
-        "anios_pedidos": [str(int(anio_actual) - i) for i in range(ANIOS - 1, -1, -1)],
+        "anios_pedidos": pedidos,
+        "fuera_de_ventana": {
+            "motivo": "despachos anteriores a la ventana de cinco años, que "
+                      "llegan dentro del archivo partido de fin de año",
+            "fob": round(float(fuera_ventana.fob_usd.sum()), 2),
+            "ops": int(len(fuera_ventana)),
+            "anios": sorted(fuera_ventana.anio.unique().tolist()),
+        },
         "cobertura_semanas": {k: int(v) for k, v in cob_anio.items()},
         "cobertura_mes": cob_mes,
         # Cobertura medida en dias, que es la que decide si un mes o un ano
         # estan enteros. La de semanas se conserva porque dice cuantos
         # archivos respaldan cada tramo, que es otra pregunta.
-        "completitud_mes": comp_mes,
-        "dias_sin_cubrir": faltan_dia,
+        # Solo la ventana: la cobertura se mide sobre todos los meses que el
+        # archivo toca, pero 2021 no es un año de este informe.
+        "completitud_mes": {k: v for k, v in comp_mes.items()
+                            if k[:4] in pedidos},
+        "dias_sin_cubrir": {k: v for k, v in faltan_dia.items()
+                            if k[:4] in pedidos},
         "dias_sin_cubrir_por_anio": {
             a: sum(v for k, v in faltan_dia.items() if k[:4] == a)
-            for a in sorted({k[:4] for k in comp_mes})},
+            for a in pedidos},
         "ultimo_dia_cubierto": max(x for x in cub
                                    if x <= dt.date.fromisoformat(ultimo)).isoformat(),
         "empresas_con_dato": int(d_emp.ruc.nunique()),

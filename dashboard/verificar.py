@@ -149,6 +149,48 @@ MUTACIONES = {
           n.textContent = n.textContent.split('\\u203a')[0];
       }, 120);
     })();""",
+
+    # --- segunda tanda: mutaciones de valor -------------------
+    # Las de arriba tocan texto y solo pueden auditar las
+    # comprobaciones que leen texto. Estas cambian las cifras sin
+    # tocar la forma —mismas casillas, mismos rotulos, otros
+    # numeros— y sirven para ver si algo contrasta contra el dato.
+    "cifras_infladas": r"""(() => {
+      const infla = () => document.querySelectorAll(
+        '#impResumen .v, #impKpis .v').forEach(n => {
+        if (n.dataset.mut) return;
+        n.dataset.mut = '1';
+        n.textContent = n.textContent.replace(/[\d.,]+/, m => {
+          const x = parseFloat(m.replace(/,/g, ''));
+          return isNaN(x) ? m : (x * 3).toLocaleString('es-PE',
+            {maximumFractionDigits: 1});
+        });
+      });
+      setInterval(infla, 120);
+    })();""",
+    "meses_en_blanco": """(() => {
+      setInterval(() => document.querySelectorAll(
+        '#impMensual .sb i, #impMes .sb i').forEach(i => {
+        i.style.height = '0%';
+      }), 120);
+    })();""",
+    "reparto_falso": """(() => {
+      setInterval(() => document.querySelectorAll(
+        '#impMercadoCat .bar .bp').forEach(n => {
+        if (n.dataset.mut) return;
+        n.dataset.mut = '1';
+        n.textContent = (parseFloat(n.textContent) / 2).toFixed(1) + '%';
+      }), 120);
+    })();""",
+    "ranking_desordenado": """(() => {
+      setInterval(() => document.querySelectorAll(
+        '#tImportadores tbody, #tExportadores tbody, #tExpEmpresas tbody')
+        .forEach(t => {
+          if (t.dataset.mut || t.children.length < 3) return;
+          t.dataset.mut = '1';
+          t.appendChild(t.firstElementChild);
+        }), 300);
+    })();""",
 }
 
 
@@ -487,6 +529,32 @@ with sync_playwright() as pw:
     if len(kpis) < 4 or barras_cat < 3:
         print("  EL PANEL DE LA SUBCATEGORIA LLEGA INCOMPLETO")
         ok = False
+
+    # Contar cuatro indicadores no dice nada de lo que hay escrito en ellos:
+    # con los cuatro rotulos en su sitio y las cifras multiplicadas por tres,
+    # esta comprobacion pasaba. Ahora el importe se lee de la pantalla y se
+    # contrasta contra el agregado del que la pagina dice sacarlo.
+    PN = pg.evaluate("""async () => {
+        const r = await fetch('/data/importaciones/panel.json');
+        return await r.json(); }""")
+    _tot = PN.get("total") or {}
+    _por = {a: (_tot.get(a) or {}).get("fob") or 0 for a in PN["anios_pedidos"]}
+    _acum = sum(_por.values())
+    # El textContent de cada indicador pega valor, rotulo y pie: hay que leer
+    # el valor solo, o el importe no se parsea y la comprobacion se cae sobre
+    # un cero que no existe en ninguna parte.
+    _vistos = [usd_a_num(v) for v in pg.eval_on_selector_all(
+        "#impResumen .v", "f => f.map(x => x.textContent)") if "US$" in v]
+    _esperados = [v for v in list(_por.values()) + [_acum] if v > 0]
+    _cuadra = [v for v in _vistos
+               if any(abs(v - e) / e < 0.02 for e in _esperados)]
+    if _vistos and not _cuadra:
+        print("  LAS CIFRAS DEL PANEL NO CUADRAN CON EL AGREGADO: "
+              f"{[round(v) for v in _vistos]} no está en el JSON")
+        ok = False
+    elif _vistos:
+        print(f"  {len(_cuadra)} de {len(_vistos)} importes del panel salen "
+              "del agregado: ok")
     # La nota de cobertura tiene que decir la verdad en los tres escenarios:
     # con anos pendientes, nombrarlos y llamarlos «sin dato»; con los cinco
     # descargados pero alguno al que le faltan dias, decir cuales estan
@@ -559,6 +627,32 @@ with sync_playwright() as pw:
     if meses != 12:
         print("  EL GRAFICO MENSUAL NO TRAE LOS DOCE MESES")
         ok = False
+    # Doce casillas vacías siguen siendo doce: contar barras daba por bueno un
+    # gráfico con todas las alturas en cero. Lo que importa es que dibujen
+    # algo y que el mes más alto sea el que manda en el dato.
+    _alt = pg.eval_on_selector_all(
+        "#impMes .sb i",
+        "f => f.map(x => parseFloat(x.style.height) || 0)")
+    if _alt and max(_alt) <= 0:
+        print("  EL GRAFICO MENSUAL DIBUJA LOS DOCE MESES EN CERO")
+        ok = False
+    else:
+        _pico = _alt.index(max(_alt)) + 1 if _alt else 0
+        _emp = pg.evaluate("""async (ruc) => {
+            const r = await fetch('/data/importaciones/importadores.json');
+            const d = await r.json();
+            return (d[ruc] || {}).por_mes || {}; }""", ruc_i)
+        _anio = pg.eval_on_selector("#impAnio", "s => s.value") if             pg.query_selector("#impAnio") else ""
+        _mes = {k[5:]: v for k, v in _emp.items() if k[:4] == _anio}
+        if _mes:
+            _pico_dato = int(max(_mes, key=lambda k: _mes[k]))
+            if _pico != _pico_dato:
+                print(f"  EL MES PICO DIBUJADO ({_pico}) NO ES EL DEL DATO "
+                      f"({_pico_dato})")
+                ok = False
+            else:
+                print(f"  el mes más alto del gráfico es el del dato "
+                      f"({_pico_dato:02d}): ok")
     if anuales != len(anios[0]):
         print("  EL GRAFICO ANUAL NO TRAE LOS CINCO ANOS PEDIDOS")
         ok = False
@@ -839,6 +933,29 @@ with sync_playwright() as pw:
     # aparezca donde significa algo. Una subpartida que agrupa productos que no
     # se parecen —o que no se comercia por peso— no puede mostrar precio, y
     # tiene que decir por que en vez de callarse.
+    # Un ranking desordenado sigue teniendo sus cien filas y sus columnas:
+    # ninguna comprobacion de forma lo nota. Y el orden es justamente lo que
+    # la tabla promete en su encabezado —«los cien mayores»—, asi que si la
+    # primera fila no es la mayor, la pagina miente donde mas se la lee.
+    pg.evaluate("() => location.hash = '#comercio'")
+    pg.wait_for_selector("#tImportadores tbody tr td", timeout=25000)
+    for tid, col in (("tImportadores", 3), ("tExportadores", 2)):
+        vals = [usd_a_num(t) for t in pg.eval_on_selector_all(
+            "#" + tid + " tbody tr td:nth-child(" + str(col) + ")",
+            "f => f.map(x => x.textContent)")]
+        vals = [v for v in vals if v > 0]
+        if len(vals) < 3:
+            continue
+        if vals != sorted(vals, reverse=True):
+            bajos = [i for i in range(len(vals) - 1) if vals[i] < vals[i + 1]]
+            print("  " + tid + ": EL RANKING NO ESTA ORDENADO POR VALOR "
+                  "(filas " + str(bajos[:2]) + ")")
+            ok = False
+        else:
+            print("  " + tid + ": " + str(len(vals)) +
+                  " filas en orden descendente: ok")
+
+
     print("\nprecio de importacion")
     # El bloque anterior termino dentro de una ficha de empresa; hay que
     # volver al directorio y encender la subcategoria para que el panel

@@ -14,10 +14,17 @@ La distinción importa: que la suite se ponga roja no basta, porque puede
 enrojecer por un daño colateral de la mutación mientras el agujero que
 importaba sigue abierto.
 
+Cada caso levanta un Chrome y corre la suite entera, así que las trece
+seguidas piden más memoria de la que suele haber libre: conviene ir por lotes
+de dos o tres. Si el sistema queda apretado, la página no llega a pintar y una
+prueba sana aparece como vacua —por eso cada «vacua» se reintenta antes de
+reportarse, y aun así un lote más chico da resultados más fiables—.
+
 Uso:
     python servir.py
-    python auditar_pruebas.py           todas las mutaciones
-    python auditar_pruebas.py sin_fob   una sola
+    python auditar_pruebas.py sin_fob sin_dias   un lote
+    python auditar_pruebas.py sin_fob            una sola
+    python auditar_pruebas.py                    todas, si la máquina da
 """
 import io
 import os
@@ -49,6 +56,17 @@ CASOS = [
      "el precio deja de expresarse por kilo"),
     ("migas_cortas", "MIGAS",
      "las migas dejan de mostrar el camino recorrido"),
+    # Segunda tanda: el defecto ya no está en el texto sino en las cifras.
+    # Sirven para ver qué comprobaciones contrastan contra el dato y cuáles
+    # solo cuentan casillas.
+    ("cifras_infladas", "CIFRAS DEL PANEL",
+     "las cifras del panel dejan de corresponder al agregado"),
+    ("meses_en_blanco", "MENSUAL",
+     "el gráfico mensual conserva sus doce casillas y pierde el contenido"),
+    ("reparto_falso", "REPARTO",
+     "el reparto por categoría deja de sumar cien"),
+    ("ranking_desordenado", "NO ESTA ORDENADO",
+     "el ranking deja de estar ordenado por valor"),
 ]
 
 
@@ -77,8 +95,13 @@ def main():
         # a «arreglar» lo que no estaba roto.
         for intento in (1, 2):
             cod, salida = corre(mut)
+            # Un fallo no siempre viene en una linea toda en mayusculas:
+            # varios mensajes mezclan el grito con el dato que lo motiva
+            # —«las categorias suman 47.5% EL REPARTO NO...»—. Filtrar por
+            # isupper() los descartaba y hacia pasar por vacuas a pruebas
+            # que si cazaban. Se toma cualquier linea que no sea un «ok».
             lineas = [l.strip() for l in salida.splitlines()
-                      if l.strip().isupper() and len(l.strip()) > 8]
+                      if l.strip() and not l.rstrip().endswith("ok")]
             cazado = any(senal in l for l in lineas)
             if cazado or intento == 2:
                 break

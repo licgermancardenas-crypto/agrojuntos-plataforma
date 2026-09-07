@@ -35,6 +35,7 @@ import pandas as pd
 PROC = "data/importaciones/processed"
 ENTRADA = os.path.join(PROC, "operaciones_clasificadas.csv")
 SALIDA = os.path.join(PROC, "panel.json")
+MERCADO = os.path.join(PROC, "mercado.json")   # de donde sale la cobertura
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
                               errors="replace", line_buffering=True)
@@ -104,6 +105,13 @@ def por_fob(pares):
     return sorted(pares, key=lambda kv: -kv[1].fob_usd.sum())
 
 
+def _cobertura(clave, porDefecto):
+    """Lee del agregado lo que el agregado ya midió."""
+    if not os.path.exists(MERCADO):
+        return porDefecto
+    return json.load(io.open(MERCADO, encoding="utf-8")).get(clave, porDefecto)
+
+
 def main():
     if not os.path.exists(ENTRADA):
         sys.exit("falta " + ENTRADA + ": corre build_import_clasificar.py")
@@ -162,6 +170,13 @@ def main():
         "anios_con_dato": anios,
         "cobertura_semanas": cob,
         "semanas_completo": 45,
+        # Los dias que ningun archivo descargado respalda. Los calcula
+        # `build_import_agregados.py` y aqui se leen: contar semanas no basta
+        # para decir que un ano esta entero —52 semanas no cubren 365 dias— y
+        # dos archivos que lo midieran por separado acabarian discrepando.
+        "dias_sin_cubrir_por_anio": _cobertura("dias_sin_cubrir_por_anio", {}),
+        "dias_sin_cubrir": _cobertura("dias_sin_cubrir", {}),
+        "completitud_mes": _cobertura("completitud_mes", {}),
         "total": total,
         "reservado": {
             "motivo": "importadores persona natural; SUNAT no publica al "

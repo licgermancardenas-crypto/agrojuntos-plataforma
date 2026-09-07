@@ -618,11 +618,20 @@ function impEt(a) {
   if (impEnCurso(a)) return a + " YTD";
   return a;
 }
+function impDiasFalta(a) {
+  return (IMPP.dias_sin_cubrir_por_anio || {})[a] || 0;
+}
+
 function impPie(a) {
   var s = IMPP.cobertura_semanas[a] || 0;
   if (!s) return "pendiente de carga";
-  if (impEnCurso(a)) return s + " semanas al " + IMPP.ultimo_registro;
-  return s + " de 52 semanas archivadas";
+  // Las semanas archivadas no cubren el año entero: SUNAT no publica la de
+  // año nuevo, y con ella se van los días de fin y principio de año. Decir
+  // «52 de 52» sin más daba por cerrado un año al que le faltan días.
+  var f = impDiasFalta(a);
+  var cola = f ? " · faltan " + f + (f > 1 ? " días" : " día") : "";
+  if (impEnCurso(a)) return s + " semanas al " + IMPP.ultimo_registro + cola;
+  return s + " de 52 semanas archivadas" + cola;
 }
 
 /* Variación interanual. Solo entre dos años completos: contra un año a medias
@@ -636,7 +645,9 @@ function impVar(a, valAct, valPrev) {
   if (!impCompleto(prev)) return "N/D · " + prev + " incompleto";
   if (!valPrev) return "N/D · sin base en " + prev;
   var v = 100 * (valAct - valPrev) / valPrev;
-  return (v >= 0 ? "+" : "") + nf(v, 1) + "% vs " + prev;
+  var f = impDiasFalta(a) + impDiasFalta(prev);
+  return (v >= 0 ? "+" : "") + nf(v, 1) + "% vs " + prev +
+    (f ? " (faltan " + f + " días entre ambos)" : "");
 }
 
 function kpi(v, l, s) {
@@ -1245,7 +1256,19 @@ function impNotaCobertura() {
     (faltan.length
       ? "<b>" + faltan.join(", ") + "</b> todavía no se descargan: esos años " +
         "no aparecen en cero, aparecen sin dato."
-      : "Los cinco años están completos.") +
+      : (function () {
+          var ent = con.filter(function (a) {
+            return !impEnCurso(a) && !impDiasFalta(a); });
+          var par = con.filter(function (a) {
+            return !impEnCurso(a) && impDiasFalta(a); });
+          if (!par.length) return "Los cinco años están completos.";
+          // Un año con sus 52 semanas todavía puede no estar entero, y es
+          // preferible decirlo que dejar que se lea como cierre.
+          return "Los cinco años están descargados, pero enteros día por día " +
+            "solo lo está " + (ent.join(", ") || "ninguno") + ": a " +
+            par.join(", ") + " le faltan los días de la semana de año nuevo, " +
+            "que SUNAT no publica.";
+        })()) +
     " El valor mostrado es <b>FOB importado</b> y no facturación de la " +
     "empresa." +
     (IMPP.reservado && IMPP.reservado.ops

@@ -15,16 +15,19 @@ mismo tramo de meses en los dos años y se declara cuál es ese tramo.
 Uso:
     python scripts/build_import_agregados.py
 """
+import calendar
 import datetime as dt
 import io
 import json
 import os
+import re
 import sys
 
 import pandas as pd
 
 PROC = "data/importaciones/processed"
 ENTRADA = os.path.join(PROC, "operaciones_clasificadas.csv")
+SEMANAS = os.path.join(PROC, "_semanas_procesadas.json")
 SALIDA = os.path.join(PROC, "importadores.json")
 MERCADO = os.path.join(PROC, "mercado.json")
 ANOMALIAS = os.path.join(PROC, "anomalias.json")
@@ -36,6 +39,38 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
 
 def semanas_por(d, cols):
     return d.groupby(cols).semana_archivo.nunique()
+
+
+def dias_cubiertos():
+    """Los días del calendario que respalda algún archivo descargado.
+
+    Contar semanas no alcanza para decir que un año está completo, y este
+    archivo lo daba por bueno con un umbral: 45 de 52 y listo. Pero las
+    semanas se cuentan sobre las que **traen operación**, así que una semana
+    que no se bajó y otra en la que nadie importó suman igual, y sobre todo:
+    52 semanas no cubren 365 días. El año nuevo es el caso: la semana del 29
+    de diciembre al 4 de enero no la publica SUNAT, y con ella se van tres
+    días de diciembre y cuatro de enero de dos años que el informe venía
+    llamando completos.
+
+    Aquí se cuentan días, que es la unidad en la que un mes está o no está.
+    """
+    cub = set()
+    for k in json.load(io.open(SEMANAS, encoding="utf-8")):
+        n = re.sub(r"^ma", "", k.split(":")[0]).split(".")[0]
+        # El nombre lleva dia inicial, dia final, mes y año **del ultimo dia**.
+        fin = dt.date(2000 + int(n[6:8]), int(n[4:6]), int(n[2:4]))
+        for j in range(7):
+            cub.add(fin - dt.timedelta(days=6 - j))
+    return cub
+
+
+def completitud(cub, anio, mes):
+    """Fracción de los días de un mes que algún archivo descargado respalda."""
+    nd = calendar.monthrange(int(anio), int(mes))[1]
+    hay = sum(1 for d in range(1, nd + 1)
+              if dt.date(int(anio), int(mes), d) in cub)
+    return round(100 * hay / nd, 2), nd - hay
 
 
 def main():
@@ -72,6 +107,15 @@ def main():
     cob_anio = semanas_por(d, ["anio"]).to_dict()
     cob_mes = {f"{a}-{m}": int(v) for (a, m), v in
                semanas_por(d, ["anio", "mes"]).items()}
+    # La cobertura de verdad se mide en dias del calendario, no en semanas con
+    # operacion. Un mes al que le faltan tres dias no es un mes.
+    cub = dias_cubiertos()
+    comp_mes, faltan_dia = {}, {}
+    for a, m in sorted({(x, y) for x, y in zip(d.anio, d.mes)}):
+        pct_, falta = completitud(cub, a, m)
+        comp_mes[f"{a}-{m}"] = pct_
+        if falta:
+            faltan_dia[f"{a}-{m}"] = falta
     ultimo = str(d.fecha.max())
     anio_actual = ultimo[:4]
     mes_ultimo = ultimo[5:7]
@@ -91,15 +135,28 @@ def main():
         }
 
     por_anio = {a: bloque(g) for a, g in d.groupby("anio")}
-    # Variacion interanual sobre el mismo tramo de meses, no ano contra ano.
-    meses_ytd = [f"{m:02d}" for m in range(1, int(mes_ultimo) + 1)]
-    yoy = None
+    # Variacion interanual sobre el mismo tramo de meses, y solo sobre meses
+    # que esten enteros **en los dos anios**. Antes el tramo llegaba hasta el
+    # mes del ultimo despacho visto, que por definicion es un mes a medias:
+    # comparar treinta dias de agosto contra treinta y uno resta un dia de
+    # comercio y lo presenta como caida.
     prev = str(int(anio_actual) - 1)
-    if prev in por_anio:
+    meses_ytd = [f"{m:02d}" for m in range(1, int(mes_ultimo) + 1)
+                 if comp_mes.get(f"{anio_actual}-{m:02d}", 0) >= 100
+                 and comp_mes.get(f"{prev}-{m:02d}", 0) >= 100]
+    yoy = None
+    if prev in por_anio and meses_ytd:
         a1 = d[(d.anio == anio_actual) & (d.mes.isin(meses_ytd))].fob_usd.sum()
         a0 = d[(d.anio == prev) & (d.mes.isin(meses_ytd))].fob_usd.sum()
         if a0 > 0:
-            yoy = {"tramo": f"ene-{mes_ultimo}", "anios": [prev, anio_actual],
+            yoy = {"tramo": f"{meses_ytd[0]}-{meses_ytd[-1]}",
+                   "meses": meses_ytd,
+                   "motivo": "solo meses con todos sus dias descargados en los "
+                             "dos anios; los que no lo estan quedan fuera",
+                   "excluidos": [m for m in
+                                 (f"{x:02d}" for x in range(1, int(mes_ultimo) + 1))
+                                 if m not in meses_ytd],
+                   "anios": [prev, anio_actual],
                    "fob_previo": round(float(a0), 2),
                    "fob_actual": round(float(a1), 2),
                    "variacion_pct": round(100 * (a1 - a0) / a0, 1)}
@@ -120,6 +177,16 @@ def main():
         "anios_pedidos": [str(int(anio_actual) - i) for i in range(ANIOS - 1, -1, -1)],
         "cobertura_semanas": {k: int(v) for k, v in cob_anio.items()},
         "cobertura_mes": cob_mes,
+        # Cobertura medida en dias, que es la que decide si un mes o un ano
+        # estan enteros. La de semanas se conserva porque dice cuantos
+        # archivos respaldan cada tramo, que es otra pregunta.
+        "completitud_mes": comp_mes,
+        "dias_sin_cubrir": faltan_dia,
+        "dias_sin_cubrir_por_anio": {
+            a: sum(v for k, v in faltan_dia.items() if k[:4] == a)
+            for a in sorted({k[:4] for k in comp_mes})},
+        "ultimo_dia_cubierto": max(x for x in cub
+                                   if x <= dt.date.fromisoformat(ultimo)).isoformat(),
         "empresas_con_dato": int(d_emp.ruc.nunique()),
         "reservado": {
             "motivo": "importadores persona natural; SUNAT no publica al "
@@ -203,6 +270,12 @@ def main():
     print(f"anios sin dato    : "
           f"{[a for a in mercado['anios_pedidos'] if a not in anios]}")
     print(f"semanas por anio  : {an['cobertura_semanas_por_anio']}")
+    print("dias sin cubrir   : "
+          + (", ".join(f"{k} ({v})" for k, v in sorted(faltan_dia.items()))
+             or "ninguno"))
+    enteros = [a for a in mercado["anios_pedidos"]
+               if a in anios and not any(k[:4] == a for k in faltan_dia)]
+    print(f"anios enteros     : {enteros}")
     print("\ncuadraturas:")
     for k in ("cuadra_suma_anios", "cuadra_suma_categorias",
               "cuadra_suma_empresas", "cuadra_suma_meses"):

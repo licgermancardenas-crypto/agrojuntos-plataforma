@@ -1026,6 +1026,7 @@ _IMP = _json.load(open("data/importaciones/processed/importadores.json",
 # El ano de referencia es el ultimo completo, y «completo» quiere decir con
 # casi todas sus semanas archivadas: con cuatro semanas bajadas la cifra anual
 # seria un recorte presentado como ano.
+_FALTAN_DIA = _M.get("dias_sin_cubrir_por_anio", {})
 _COMPLETO = 45
 _completos = [a for a in sorted(_M["anios_con_dato"])
               if a != _M["anio_en_curso"]
@@ -1053,17 +1054,26 @@ _nota_faltan = (
     "decir «no encontramos información para " + _faltan[0] + "» que escribir "
     "US$ 0 sin evidencia."
     if _faltan else
-    "Los cinco años están descargados; el único incompleto es " +
-    _M["anio_en_curso"] + ", que está en curso y se marca como tal.")
+    "Los cinco años están descargados. Enteros, día por día, solo lo están " +
+    ", ".join(a for a in _M["anios_pedidos"]
+              if a != _M["anio_en_curso"] and not _FALTAN_DIA.get(a)) +
+    ": a los demás les faltan los días de la semana de año nuevo, que SUNAT " +
+    "no publica.")
 
 
 def _est(a):
     sem = _M["cobertura_semanas"].get(a, 0)
+    fal = _FALTAN_DIA.get(a, 0)
     if not sem:
         return "sin descargar"
     if a == _M["anio_en_curso"]:
         return "año en curso"
-    return "año completo" if sem >= _COMPLETO else "descarga en curso"
+    if sem < _COMPLETO:
+        return "descarga en curso"
+    # Un año con 52 semanas archivadas todavía puede no estar entero: SUNAT no
+    # publica la semana de año nuevo y con ella se van los días de fin y
+    # principio de año. Decir «completo» ahí es afirmar de más por dos días.
+    return "año completo" if not fal else f"entero salvo {fal} día{'s' * (fal > 1)}"
 
 page(f"""
   <span class="kicker">Parte IV · El mercado desde aduanas</span>
@@ -1082,10 +1092,12 @@ page(f"""
 
   <div class="two" style="margin-top:6px">
     <div>
-      <h3 class="rule">{_ANIO_C}, año completo y medido</h3>
+      <h3 class="rule">{_ANIO_C}, medido{"" if not _FALTAN_DIA.get(_ANIO_C) else " casi entero"}</h3>
       <p>Las {nf(_M["cobertura_semanas"][_ANIO_C])} semanas de {_ANIO_C} están
       archivadas: la primera cifra de importación del informe que no extrapola
-      nada. Diez empresas concentran el <b>{_conc22:.0f}%</b>.</p>
+      nada. {"" if not _FALTAN_DIA.get(_ANIO_C) else
+      f"Le faltan {_FALTAN_DIA[_ANIO_C]} días —SUNAT no publica la semana de año nuevo—, así que la cifra es un piso y no un cierre. "}Diez
+      empresas concentran el <b>{_conc22:.0f}%</b>.</p>
       {table([[cap(n)[:30], f'{v/1e6:,.1f}', nf(o)]
               for n, v, o in _top22[:5]],
              ["Importador", "FOB MM", "Oper."], ["l","r","r"], cls="tight")}
@@ -1112,9 +1124,12 @@ page(f"""
   <h3 class="rule">Qué se llegó a mirar</h3>
   <p>Un año sin barra puede significar que nadie importó o que ese archivo no
   se bajó, así que cada año viaja con las semanas que lo respaldan.</p>
-  {table([[a, nf(_M["cobertura_semanas"].get(a, 0)), _est(a)]
+  {table([[a, nf(_M["cobertura_semanas"].get(a, 0)),
+           nf(_FALTAN_DIA.get(a, 0)) if _FALTAN_DIA.get(a, 0) else "—",
+           _est(a)]
           for a in _M["anios_pedidos"]],
-         ["Año", "Semanas archivadas", "Estado"], ["l","r","l"], cls="tight")}
+         ["Año", "Semanas archivadas", "Días sin cubrir", "Estado"],
+         ["l","r","r","l"], cls="tight")}
   <p class="sub">{_nota_faltan} Fuente: manifiestos de SUNAT bajo la Ley 27806,
   último registro {_M['ultimo_registro']}.</p>
 """, "Parte IV · El mercado desde aduanas")

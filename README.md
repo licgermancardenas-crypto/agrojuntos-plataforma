@@ -534,10 +534,20 @@ cuanto entre la semana siguiente.
 
 La subcategoría «importador de insumos» del directorio de empresas corre sobre
 una capa propia, reconstruida operación por operación desde los manifiestos
-acumulados: los cinco años. 241 semanas, 101,022 operaciones, 1,423 empresas
-con operación verificada, US$ 5,457.5 MM FOB. 2022 a 2025 completos y 2026 en
-curso. Cada empresa tiene su historia de importación
-dentro de su ficha —mensual, anual, por producto, por país y por partida—.
+acumulados: los cinco años. 241 semanas, 101,022 operaciones, 1,422 empresas
+con operación verificada, US$ 5,457.5 MM FOB. Cada empresa tiene su historia
+de importación dentro de su ficha —mensual, anual, por producto, por país y
+por partida—.
+
+**Ningún año está entero salvo 2023, y conviene decirlo.** Este README venía
+afirmando «2022 a 2025 completos», y el criterio detrás era un umbral de
+semanas: 45 de 52 y el año se daba por cerrado. Pero las semanas se cuentan
+sobre las que traen operación, y sobre todo **52 semanas no cubren 365 días**:
+SUNAT no publica la semana que va del 29 de diciembre al 4 de enero, y con
+ella se van días de dos años seguidos. Medido en días, que es la unidad en la
+que un mes está o no está, a 2025 le faltan 8 días, a 2024 y 2022 les faltan
+2, y solo 2023 está entero. Son huecos chicos —el mayor es el 2.2% de un
+año— pero eran huecos que el sistema llamaba «completo».
 
 ```
 scripts/build_import_historico.py    extrae las lineas de insumo de cada ZIP
@@ -556,7 +566,16 @@ Tres reglas la gobiernan y las tres están comprobadas en `verificar.py`:
 
 1. **Un año sin semanas descargadas no es US$ 0.** Se dibuja como hueco y se
    dice con esas palabras. Un año que sí se midió y en el que la empresa no
-   importó es otra cosa —un cero de verdad— y se dibuja distinto.
+   importó es otra cosa —un cero de verdad— y se dibuja distinto. Y un año con
+   sus 52 semanas archivadas al que le faltan días del calendario no es un año
+   cerrado: la ficha y el informe declaran cuántos días le faltan.
+4. **La variación interanual solo compara meses enteros en los dos años.**
+   Antes el tramo llegaba hasta el mes del último despacho visto, que por
+   definición está a medias: comparar 30 días de agosto contra 31 resta un día
+   de comercio y lo presenta como caída. Hoy el tramo se recorta a los meses
+   con todos sus días descargados en ambos años y se declara cuáles quedaron
+   fuera. El cambio movió la cifra publicada de +9.5% a **+9.8%**, tres
+   décimas: el criterio estaba mal aunque el número casi no se moviera.
 2. **Manda la partida arancelaria**, no la descripción. El 95.0% se clasifica
    solo por arancel; la descripción únicamente parte lo que la subpartida junta,
    como el 3808.93 que mete herbicidas y reguladores de crecimiento en el mismo

@@ -389,14 +389,34 @@ with sync_playwright() as pw:
     if len(kpis) < 4 or barras_cat < 3:
         print("  EL PANEL DE LA SUBCATEGORIA LLEGA INCOMPLETO")
         ok = False
-    # La nota de cobertura tiene que decir la verdad en los dos escenarios: con
-    # anos pendientes, nombrarlos y llamarlos «sin dato»; con los cinco
-    # completos, decirlo. Lo que no puede es callarse.
-    if "sin dato" not in cob and "cinco años están completos" not in cob:
+    # La nota de cobertura tiene que decir la verdad en los tres escenarios:
+    # con anos pendientes, nombrarlos y llamarlos «sin dato»; con los cinco
+    # descargados pero alguno al que le faltan dias, decir cuales estan
+    # enteros y cuales no; y solo si no falta nada, declararlos completos. Lo
+    # que no puede es callarse ninguno de los tres.
+    XP = pg.evaluate("""async () => {
+        const r = await fetch('/data/importaciones/panel.json');
+        const p = await r.json();
+        return p.dias_sin_cubrir_por_anio || {}; }""")
+    parciales = [a for a, v in XP.items() if v]
+    if "sin dato" in cob:
+        print("  la cobertura nombra los anos sin descargar: ok")
+    elif parciales:
+        # 52 semanas archivadas no son 365 dias: la semana de ano nuevo no se
+        # publica y se lleva dias de dos anos. Si la nota los tapa, un ano al
+        # que le faltan ocho dias se lee como cerrado.
+        faltan_nombrados = [a for a in parciales if a not in cob]
+        if "día por día" not in cob or faltan_nombrados:
+            print(f"  LA COBERTURA NO DECLARA LOS ANOS INCOMPLETOS "
+                  f"{faltan_nombrados or parciales}")
+            ok = False
+        else:
+            print(f"  declara que {', '.join(parciales)} no estan enteros: ok")
+    elif "cinco años están completos" in cob:
+        print("  la cobertura declara los cinco anos completos: ok")
+    else:
         print("  LA COBERTURA NO DECLARA QUE ANOS FALTAN")
         ok = False
-    else:
-        print("  la cobertura declara que anos hay y cuales faltan: ok")
     if "FOB importado" not in cob:
         print("  EL PANEL NO ACLARA QUE EL VALOR ES FOB IMPORTADO")
         ok = False

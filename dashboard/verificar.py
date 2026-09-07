@@ -246,6 +246,28 @@ MUTACIONES = {
       }, 120);
     })();""",
 
+    # La mitad exportadora de Comercio vuelve a anualizarse: la cifra medida
+    # se multiplica por el factor de la ventana de importacion.
+    "comercio_export_anualiza": """(() => {
+      setInterval(() => {
+        var v = document.querySelector('#comKpis > div:nth-child(3) .v');
+        if (!v || v.dataset.mut) return;
+        var m = v.textContent.match(/([0-9][0-9.,]*)/);
+        if (!m) return;
+        var n = parseFloat(m[1].replace(/,/g, '')) * 4.7;
+        v.textContent = v.textContent.replace(m[1], n.toFixed(2));
+        v.dataset.mut = '1';
+      }, 120);
+    })();""",
+
+    # La ficha muestra el origen del manifiesto como si fuera el domicilio
+    # fiscal de la empresa, que es la lectura equivocada de ese campo.
+    "ficha_origen_sin_salvedad": "(() => {" + _MUT_BASE + """
+      setInterval(() => textos('#empExpHist',
+        'ubigeo del manifiesto, no domicilio fiscal', 'domicilio de la empresa'),
+        120);
+    })();""",
+
 }
 
 
@@ -1354,6 +1376,139 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  declara lo que queda fuera por proteccion de datos: ok")
+
+    # ------------------------------- comercio · dos relojes en una pantalla --
+    # La pantalla junta la importacion de insumos —diez semanas anualizadas,
+    # que es todo lo que hay— con la agroexportacion, que desde el historico
+    # tiene cinco anos medidos. Mezclarlas sin decirlo era el defecto: las dos
+    # cifras se leian como si salieran del mismo periodo. Se comprueba que la
+    # mitad exportadora salga del agregado, que el selector no la toque y que
+    # el pie diga cual es cual.
+    print("")
+    print("comercio · dos relojes en una pantalla")
+    pg.evaluate("() => location.hash = '#comercio'")
+    pg.wait_for_selector("#tExportadores tbody tr td", timeout=25000)
+    pg.wait_for_timeout(700)
+    EX = pg.evaluate("""async () => {
+        const r = await fetch('/data/exportaciones/mercado.json');
+        return await r.json(); }""")
+    WEB = pg.evaluate("""async () => {
+        const r = await fetch('/data/exportaciones/exportadores_min.json');
+        return await r.json(); }""")
+    cerrado = [a for a in EX["anios_con_dato"] if a < EX["anio_en_curso"]][-1]
+    esperado = EX["por_anio"][cerrado]["fob"]
+    kpis = pg.eval_on_selector_all("#comKpis > div",
+                                   "d => d.map(x => x.textContent)")
+    k_exp = [k for k in kpis if "agroexportación" in k]
+    visto = usd_a_num(pg.eval_on_selector(
+        "#comKpis > div:nth-child(3) .v", "e => e.textContent"))
+    print("  agroexportacion %s: pantalla %s · agregado %s"
+          % (cerrado, f"{visto:,.0f}", f"{esperado:,.0f}"))
+    if not k_exp or cerrado not in k_exp[0]:
+        print("  EL KPI EXPORTADOR NO DECLARA EL ANO QUE MIDE")
+        ok = False
+    elif abs(visto - esperado) / esperado > 0.01:
+        print("  EL FOB EXPORTADO DE COMERCIO NO CUADRA CON EL AGREGADO")
+        ok = False
+    else:
+        print("  el KPI exportador es el ano cerrado del agregado: ok")
+
+    # El selector de periodo mueve una mitad y no la otra. Que las dos se
+    # muevan —o que ninguna lo haga— significa que se perdio la distincion.
+    imp_a = pg.eval_on_selector("#comKpis > div:nth-child(1) .v",
+                                "e => e.textContent")
+    exp_a = pg.eval_on_selector("#comKpis > div:nth-child(3) .v",
+                                "e => e.textContent")
+    pg.click(".periodo button:has-text('Medido')")
+    pg.wait_for_timeout(700)
+    imp_d = pg.eval_on_selector("#comKpis > div:nth-child(1) .v",
+                                "e => e.textContent")
+    exp_d = pg.eval_on_selector("#comKpis > div:nth-child(3) .v",
+                                "e => e.textContent")
+    if imp_a == imp_d:
+        print("  EL PERIODO NO ACTUA SOBRE LA MITAD IMPORTADORA")
+        ok = False
+    elif exp_a != exp_d:
+        print("  EL PERIODO ANUALIZA LA MITAD EXPORTADORA: %s -> %s"
+              % (exp_a, exp_d))
+        ok = False
+    else:
+        print("  el periodo mueve la importacion (%s -> %s) y deja quieta la "
+              "exportacion: ok" % (imp_a, imp_d))
+    pg.click(".periodo button:has-text('Anual')")
+    pg.wait_for_timeout(500)
+
+    # El ranking tiene que salir del recorte de cinco anos y no de la ventana:
+    # con diez semanas la primera fila era otra empresa y otro orden de
+    # magnitud.
+    mayor = max(WEB["emp"], key=lambda e: e["t"])
+    fila = pg.eval_on_selector_all(
+        "#tExportadores tbody tr:first-child td",
+        "c => c.map(x => x.textContent)")
+    if mayor["n"][:20] not in fila[0] or \
+            abs(usd_a_num(fila[1]) - mayor["t"]) / mayor["t"] > 0.01:
+        print("  EL RANKING EXPORTADOR NO SALE DEL RECORTE DE CINCO ANOS: "
+              "%s / %s" % (fila[0][:40], fila[1]))
+        ok = False
+    else:
+        print("  el ranking sale de los cinco anos medidos (%s, %s): ok"
+              % (mayor["n"][:24], fila[1]))
+
+    nota_com = pg.text_content("#comNota") or ""
+    if "anualiza" not in nota_com or "no se extrapola" not in nota_com:
+        print("  LA NOTA NO DISTINGUE LOS DOS PERIODOS DE LA PANTALLA")
+        ok = False
+    else:
+        print("  el pie declara los dos relojes: ok")
+
+    # ---------------------------- la ficha, del lado exportador -------------
+    # La ficha de empresa mostraba la exportacion de la ventana de diez
+    # semanas. Ahora trae los cinco anos y, con ellos, el origen declarado en
+    # el manifiesto —que apunta al fundo y no al domicilio fiscal—. Esa
+    # salvedad es la que hace util el campo: sin ella, la ficha estaria
+    # afirmando que la empresa tiene su sede donde en realidad tiene el campo.
+    print("")
+    print("la ficha, del lado exportador")
+    pg.evaluate("() => location.hash = '#empresa=" + mayor["r"] + "'")
+    pg.wait_for_selector("#empExpHist .card", timeout=25000)
+    pg.wait_for_timeout(600)
+    ficha = " ".join((pg.text_content("#empExpHist") or "").split())
+    fob_ficha = usd_a_num(pg.eval_on_selector(
+        "#empExpHist .kpis > div:first-child .v", "e => e.textContent"))
+    barras_anio = len(pg.query_selector_all("#empExpHist .serie .sb"))
+    print("  %s: %s en %d anos" % (mayor["n"][:24],
+                                   f"{fob_ficha:,.0f}", barras_anio))
+    if abs(fob_ficha - mayor["t"]) / mayor["t"] > 0.01:
+        print("  EL FOB DE LA FICHA NO CUADRA CON EL RECORTE")
+        ok = False
+    elif barras_anio != len(WEB["meta"]["anios"]):
+        print("  LA SERIE DE LA FICHA NO TRAE LOS %d ANOS"
+              % len(WEB["meta"]["anios"]))
+        ok = False
+    else:
+        print("  el bloque de cinco anos cuadra con el recorte: ok")
+    if "no domicilio fiscal" not in ficha:
+        print("  LA FICHA PRESENTA EL ORIGEN COMO DOMICILIO FISCAL")
+        ok = False
+    else:
+        print("  declara que el origen es el ubigeo del manifiesto: ok")
+
+    # Y una empresa que solo importa no puede estrenar un bloque exportador
+    # vacio: la ausencia de dato tiene que ser ausencia de bloque.
+    rucs_exp = set(e["r"] for e in WEB["emp"])
+    solo_imp = pg.evaluate("""async () => {
+        const r = await fetch('/data/comercio.json'); const d = await r.json();
+        return d.importadores.map(x => x.r); }""")
+    candidato = next((r for r in solo_imp if r not in rucs_exp), None)
+    if candidato:
+        pg.evaluate("() => location.hash = '#empresa=" + candidato + "'")
+        pg.wait_for_timeout(1500)
+        resto = (pg.text_content("#empExpHist") or "").strip()
+        if resto:
+            print("  UNA EMPRESA SIN EXPORTACION ESTRENA BLOQUE EXPORTADOR")
+            ok = False
+        else:
+            print("  quien no exporta no estrena bloque de embarques: ok")
 
 
     # ------------------------------------------------------- acopio ------

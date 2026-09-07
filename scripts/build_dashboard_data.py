@@ -415,32 +415,27 @@ def agrupar(df, campo, n=None):
              "tn": int(round(r["peso_kg"] / 1000))} for _, r in g.iterrows()]
 
 
+# La mitad exportadora salia de aqui —la misma ventana de diez semanas,
+# anualizada— y ya no: la vista lee `exportaciones/mercado.json` y
+# `exportadores_min.json`, que son cinco anos medidos y depurados de
+# republicaciones. Se quitan los campos en vez de dejarlos sin leer: un
+# `fob_exp` que ya nadie usa y que no coincide con lo que muestra la pantalla
+# es una cifra esperando que alguien la tome por buena.
 guardar("comercio.json", {
     "meta": {
         "semanas_imp": int(imp_l["semana"].nunique()),
-        "semanas_exp": int(exp_l["semana"].nunique()),
         "fob_imp": int(imp_l["fob_usd"].sum()),
-        "fob_exp": int(exp_l["fob_usd"].sum()),
         "n_imp": int(imp_l["ruc"].nunique()),
-        "n_exp": int(exp_l["ruc"].nunique()),
     },
     "rubros": agrupar(imp_l, "rubro"),
     "familias": agrupar(imp_l, "familia"),
     "origenes": agrupar(imp_l, "pais_origen", 20),
-    "destinos": agrupar(exp_l, "pais_destino", 20),
     "importadores": [{
         "r": str(r["ruc"]), "n": str(r["razon_social"])[:60],
         "rubro": str(r["rubro"]), "fob": int(r["fob"]),
         "tn": num(r["tn"], 1), "pct": num(r["pct"], 2),
         "dep": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
     } for _, r in impo.sort_values("fob", ascending=False)
-        .head(100).iterrows()],
-    "exportadores": [{
-        "r": str(r["ruc"]), "n": str(r["razon_social"])[:60],
-        "fob": int(r["fob"]), "tn": num(r["tn"], 1),
-        "dest": int(r["destinos"]),
-        "dep": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
-    } for _, r in expo.sort_values("fob", ascending=False)
         .head(100).iterrows()],
 })
 

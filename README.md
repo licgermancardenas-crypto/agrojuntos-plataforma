@@ -382,23 +382,31 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Territorios | Los 57 núcleos de venta, con extensión, cartera, centro que los sirve y si se recorren en un día |
 | Empresas | Directorio buscable de 22,437 empresas con RUC, clase, ubicación, territorio de venta, centro y FOB |
 | Productos | Qué se cultiva, qué se exporta y por qué aduana sale, filtrable por región |
-| Comercio | Importadores de insumos y agroexportadores, desde el manifiesto de aduanas |
+| Comercio | Importadores de insumos —diez semanas anualizadas— junto a la agroexportación medida de cinco años, cada mitad con su periodo declarado |
 | Importación | Qué importa el agro en ocho categorías, con detalle por partida y mayores importadores |
 | Exportación | Cinco años medidos: serie por año, qué sale y a dónde, de qué departamento y quién lo embarca |
 | Estacionalidad | Calendario de demanda mes a mes por región |
 | Logística | Horas al centro provincial y al puerto, y el costo de servir cada región |
 | Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
-| Perfil de empresa | Una página por RUC: qué importa, de qué origen, con qué continuidad, qué exporta y dónde está |
+| Perfil de empresa | Una página por RUC: qué importa, de qué origen, con qué continuidad, sus cinco años de embarques y el origen declarado en el manifiesto |
 | Método | Cadena de cálculo, fuentes y limitaciones declaradas |
 | Mapa | Atlas geoespacial con seis representaciones, y un mapa propio por departamento, territorio y provincia |
 
-**Las cifras de comercio exterior tienen tres periodos**: *Medido*, *Mensual* y
-*Anual*, en un selector del encabezado que manda sobre todas las vistas. Todo
-el comercio exterior viaja MEDIDO en los JSON —las diez semanas tal cual— y es
+**Las cifras de la ventana de diez semanas tienen tres periodos**: *Medido*,
+*Mensual* y *Anual*, en un selector del encabezado que manda sobre todas las
+vistas. Esa ventana viaja MEDIDA en los JSON —las diez semanas tal cual— y es
 el navegador el que multiplica; así ninguna vista puede anualizar por su cuenta
 y mostrar una cifra distinta de la de al lado. «Medido» es el único dato duro:
 mensual y anual extrapolan la ventana sin corregir estacionalidad, y las
 cabeceras lo declaran («CIF anual», «FOB al mes», «FOB 10 sem»).
+
+**El selector no toca lo que ya está medido.** Las vistas que corren sobre el
+histórico —Importación, Exportación, la mitad exportadora de Comercio y el
+bloque de embarques de la ficha— lo ignoran a propósito: anualizar cinco años
+medidos sería inventar. En Comercio esto deja dos relojes en una pantalla, y
+por eso cada KPI declara el suyo y el pie explica la diferencia; el ranking de
+exportadores salió de la ventana de diez semanas hasta que hubo histórico, y
+ahí la primera fila era otra empresa y otro orden de magnitud.
 
 **El eje de las series sigue a ese filtro.** Una sola función, `ejeTemporal`,
 decide el reparto del tiempo para todos los gráficos de serie: semanas en

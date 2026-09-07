@@ -81,6 +81,12 @@ CASOS = [
      "se calla la carga que ningún centro alcanza"),
     ("sin_salvedad_partida", "SALVEDAD",
      "uva y espárrago dejan de declarar que su partida agrupa otras cosas"),
+    # Quinta tanda: la mitad exportadora de Comercio, que dejo de extrapolarse,
+    # y el bloque de cinco anos de la ficha de empresa.
+    ("comercio_export_anualiza", "NO CUADRA CON EL AGREGADO",
+     "la mitad exportadora de Comercio vuelve a anualizarse"),
+    ("ficha_origen_sin_salvedad", "DOMICILIO FISCAL",
+     "la ficha presenta el ubigeo del manifiesto como domicilio fiscal"),
 ]
 
 

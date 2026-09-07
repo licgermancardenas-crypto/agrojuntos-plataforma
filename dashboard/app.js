@@ -1868,6 +1868,8 @@ function vistaEmpresa(ruc) {
       ? "#pt=" + P.lat + "," + P.lon + ",0.6"
       : (P.rank > 0 ? "#ter=" + P.rank : "#peru"));
 
+    pintarPerfilExport(ruc);
+
     /* La capa historica de importaciones. Se pide solo aqui: son 568 KB que
        quien mira una ficha de productor no tiene por que descargar. */
     impDatos().then(function (r) {
@@ -2378,78 +2380,113 @@ function vistaDepartamentos() {
 }
 
 /* -------------------------------------------------------------- comercio -- */
+/* Las dos mitades de esta pantalla dejaron de medir lo mismo y conviene
+   decirlo donde se piden los datos. La importación de insumos sigue siendo la
+   ventana de diez semanas que el sitio anualiza —es lo único que hay—. La
+   agroexportación tiene cinco años medidos desde que se bajó el histórico, y
+   no había razón para seguir mostrándola extrapolada al lado: se leía como si
+   ambas cifras salieran del mismo periodo. Cada una declara el suyo. */
 function vistaComercio() {
-  cargar("comercio").then(function (D) {
-    var m = D.meta;
-    REPINTAR.comercio = function () { pintarComercio(D); };
-    pintarComercio(D);
-  }).catch(fallo);
+  Promise.all([cargar("comercio"),
+               cargar("exportaciones/mercado"),
+               cargar("exportaciones/exportadores_min")])
+    .then(function (r) {
+      REPINTAR.comercio = function () { pintarComercio(r[0], r[1], r[2]); };
+      pintarComercio(r[0], r[1], r[2]);
+    }).catch(fallo);
 }
 
-function pintarComercio(D) {
-  var m = D.meta, si = m.semanas_imp, se = m.semanas_exp;
-    document.getElementById("comKpis").innerHTML = [
-      ["v", pFob(m.fob_imp, si), "insumos importados",
-       pSuf(si) + ", desde " + si + " semanas medidas"],
-      ["v", nf(m.n_imp), "importadores de insumos", "con RUC identificado"],
-      ["v", pFob(m.fob_exp, se), "agroexportación",
-       pSuf(se) + ", capítulos 07–21"],
-      ["v", nf(m.n_exp), "agroexportadores", "empresas distintas"],
-    ].map(function (k) {
-      return "<div><span class='v'>" + k[1] + "</span><span class='l'>" +
-        k[2] + "</span><span class='s'>" + k[3] + "</span></div>";
-    }).join("");
+/* El último año que ya cerró. El año en curso está incompleto por definición
+   —el rezago de regularización— y ponerlo al lado de uno entero inventa una
+   caída que no ocurrió. */
+function anioCerrado(E) {
+  var c = E.anios_con_dato.filter(function (a) { return a < E.anio_en_curso; });
+  return c[c.length - 1];
+}
 
-    barras(document.getElementById("comFamilias"),
-      D.familias.map(function (r) {
-        return { n: r.n, v: r.fob,
-                 t: pFob(r.fob, si) + " · " + pNum(r.tn, si) + " t" };
-      }));
+function pintarComercio(D, E, W) {
+  var m = D.meta, si = m.semanas_imp;
+  var anios = E.anios_con_dato, ac = anioCerrado(E);
+  var rango = anios[0] + "–" + anios[anios.length - 1];
 
-    barras(document.getElementById("comOrigenes"),
-      D.origenes.slice(0, 12).map(function (r) {
-        return { n: pais(r.n), v: r.fob, t: pFob(r.fob, si) };
-      }));
+  /* El periodo elegido arriba mueve la mitad importadora y no la exportadora:
+     una cifra medida no se anualiza. El pie de cada KPI dice cuál es cuál. */
+  document.getElementById("comKpis").innerHTML = [
+    [pFob(m.fob_imp, si), "insumos importados",
+     pSuf(si) + ", desde " + si + " semanas medidas"],
+    [nf(m.n_imp), "importadores de insumos", "con RUC identificado"],
+    [usd(E.por_anio[ac].fob), "agroexportación " + ac,
+     "año cerrado, medido sin extrapolar"],
+    [nf(E.empresas_con_dato), "agroexportadores", "con RUC, " + rango],
+  ].map(function (k) {
+    return "<div><span class='v'>" + k[0] + "</span><span class='l'>" +
+      k[1] + "</span><span class='s'>" + k[2] + "</span></div>";
+  }).join("");
 
-    barras(document.getElementById("comDestinos"),
-      D.destinos.slice(0, 12).map(function (r) {
-        return { n: pais(r.n), v: r.fob, t: pFob(r.fob, se) };
-      }));
+  barras(document.getElementById("comFamilias"),
+    D.familias.map(function (r) {
+      return { n: r.n, v: r.fob,
+               t: pFob(r.fob, si) + " · " + pNum(r.tn, si) + " t" };
+    }));
 
-    tabla(document.getElementById("tImportadores"), [
-      { k: "n", t: "Empresa", l: 1, f: function (r) {
-          return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
-            (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
-      { k: "rubro", t: "Rubro", l: 1, f: function (r) {
-          return "<span class='tag'>" + esc(r.rubro) + "</span>"; } },
-      { k: "fob", t: "CIF " + pSuf(si), f: function (r) {
-          return pFob(r.fob, si); } },
-      { k: "tn", t: "Toneladas", f: function (r) { return pNum(r.tn, si); } },
-      { k: "pct", t: "% del total", f: function (r) { return pct(r.pct, 2); } },
-    ], D.importadores, { sort: "fob" });
+  barras(document.getElementById("comOrigenes"),
+    D.origenes.slice(0, 12).map(function (r) {
+      return { n: pais(r.n), v: r.fob, t: pFob(r.fob, si) };
+    }));
 
-    tabla(document.getElementById("tExportadores"), [
-      { k: "n", t: "Empresa", l: 1, f: function (r) {
-          return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
-            (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
-      { k: "fob", t: "FOB " + pSuf(se), f: function (r) {
-          return pFob(r.fob, se); } },
-      { k: "tn", t: "Toneladas", f: function (r) { return pNum(r.tn, se); } },
-      { k: "dest", t: "Destinos", f: function (r) { return nf(r.dest); } },
-    ], D.exportadores, { sort: "fob" });
+  barras(document.getElementById("comDestinos"),
+    E.destinos.slice(0, 12).map(function (r) {
+      return { n: pais(r.n), v: r.fob, t: usd(r.fob) };
+    }));
 
-    document.getElementById("comNota").innerHTML =
-      "Esta pantalla mide una ventana de diez semanas y la anualiza. Para el " +
-      "lado exportador hay cinco años medidos, sin extrapolar, en " +
-      "<a href='#exportacion'>Exportación</a>. " +
-      "Fuente: microdatos de manifiestos de SUNAT, publicados bajo la Ley " +
-      "27806 de transparencia. Lo medido son " + m.semanas_imp +
-      " semanas; el mensual y el anual extrapolan esa ventana sin corregir " +
-      "estacionalidad y deben leerse como orden de magnitud, no como el " +
-      "cierre del año. La agroexportación se restringe a los capítulos " +
-      "arancelarios 07, 08, 09, 12, 18, 20 y 21: el archivo de aduanas trae " +
-      "la exportación completa del país, donde el mineral de cobre y el oro " +
-      "por sí solos son el 60% del FOB.";
+  tabla(document.getElementById("tImportadores"), [
+    { k: "n", t: "Empresa", l: 1, f: function (r) {
+        return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
+          (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
+    { k: "rubro", t: "Rubro", l: 1, f: function (r) {
+        return "<span class='tag'>" + esc(r.rubro) + "</span>"; } },
+    { k: "fob", t: "CIF " + pSuf(si), f: function (r) {
+        return pFob(r.fob, si); } },
+    { k: "tn", t: "Toneladas", f: function (r) { return pNum(r.tn, si); } },
+    { k: "pct", t: "% del total", f: function (r) { return pct(r.pct, 2); } },
+  ], D.importadores, { sort: "fob" });
+
+  /* El ranking exportador sale del recorte de cinco años, no de la ventana.
+     El departamento que acompaña al RUC es el ubigeo del manifiesto, que
+     apunta al fundo: por eso Camposol aparece en La Libertad y no en Lima. */
+  var top = W.emp.map(function (e) {
+    return { r: e.r, n: e.n, d: e.d, t: e.t, ult: e.a[ac] || 0,
+             np: e.np, o: e.o };
+  }).sort(function (a, b) { return b.t - a.t; }).slice(0, 100);
+
+  tabla(document.getElementById("tExportadores"), [
+    { k: "n", t: "Empresa", l: 1, f: function (r) {
+        return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
+          (r.d ? " · " + esc(depNom(r.d)) : "") + "</span>"; } },
+    { k: "t", t: "FOB " + rango, f: function (r) { return usd(r.t); } },
+    { k: "ult", t: "FOB " + ac, f: function (r) { return usd(r.ult); } },
+    { k: "np", t: "Destinos", f: function (r) { return nf(r.np); } },
+    { k: "o", t: "Embarques", f: function (r) { return nf(r.o); } },
+  ], top, { sort: "t" });
+
+  document.getElementById("comNota").innerHTML =
+    "Esta pantalla junta dos relojes y conviene leerlos por separado. " +
+    "<b>La importación de insumos</b> mide " + si + " semanas y las " +
+    "anualiza: el mensual y el anual extrapolan esa ventana sin corregir " +
+    "estacionalidad, así que son orden de magnitud y no el cierre del año. " +
+    "El selector de periodo actúa solo sobre esa mitad. " +
+    "<b>La agroexportación</b> ya no se extrapola: son " + rango + " " +
+    "medidos sobre " + nf(E.total.semanas) + " semanas de manifiesto y " +
+    nf(E.operaciones) + " series de embarque, depuradas de las " +
+    "republicaciones con que SUNAT rectifica una declaración ya publicada. " +
+    "Por eso no se mueve al cambiar el periodo, y por eso " + anios[anios.length - 1] +
+    " no se compara con un año cerrado. El detalle por producto, destino y " +
+    "territorio está en <a href='#exportacion'>Exportación</a>. " +
+    "Fuente: microdatos de manifiestos de SUNAT, publicados bajo la Ley " +
+    "27806 de transparencia. La agroexportación se restringe a los capítulos " +
+    "arancelarios 07, 08, 09, 12, 18, 20 y 21: el archivo de aduanas trae la " +
+    "exportación completa del país, donde el mineral de cobre y el oro por sí " +
+    "solos son el 60% del FOB.";
 }
 
 /* ------------------------------------------------------------- logistica -- */
@@ -3178,6 +3215,77 @@ function pintarAcopio() {
       }
     }
   }).catch(fallo);
+}
+
+
+/* ------------------------------- la ficha, del lado exportador ----------
+   La ficha traía la exportación de la ventana de diez semanas, que es lo
+   único que había cuando se escribió. Hoy existen cinco años medidos y el
+   recorte pesa 1.25 MB: se pide aquí y no en la portada, igual que la capa
+   histórica de importación.
+
+   Y trae algo que la ventana de diez semanas no podía dar: el origen
+   declarado en el manifiesto, que apunta al fundo y no al domicilio fiscal.
+   Por eso una empresa con oficina en Lima aparece aquí en La Libertad. */
+function pintarPerfilExport(ruc) {
+  var caja = document.getElementById("empExpHist");
+  if (!caja) return;
+  cargar("exportaciones/exportadores_min").then(function (D) {
+    var e = (D.emp || []).filter(function (x) { return x.r === ruc; })[0];
+    if (!e) {
+      caja.innerHTML = "";
+      return;
+    }
+    var m = D.meta, anios = m.anios;
+    var serie = anios.map(function (a) {
+      return {a: a, v: e.a[a] || 0, hay: e.a[a] !== undefined};
+    });
+    var mx = Math.max.apply(null, serie.map(function (s) { return s.v; })) || 1;
+
+    caja.innerHTML =
+      '<div class="card" style="margin-top:16px">' +
+      '<div class="h"><h3>Cinco años de embarques</h3>' +
+      '<span class="eyebrow">' + esc(anios[0]) + "–" +
+      esc(anios[anios.length - 1]) + " · manifiesto de SUNAT</span></div>" +
+      '<div class="b">' +
+      '<div class="kpis">' +
+      kpi(usd(e.t), "FOB exportado", "medido, no anualizado") +
+      kpi(nf(e.np), e.np === 1 ? "destino" : "destinos",
+          e.f.length ? e.f[0].n : "") +
+      kpi(e.d ? esc(depNom(e.d)) : "—", "origen declarado",
+          e.d ? "ubigeo del manifiesto, no domicilio fiscal"
+              : "sin ubigeo en el manifiesto") +
+      kpi(esc(e.de) + " → " + esc(e.ha), "primer y último embarque",
+          nf(e.o) + " operaciones") +
+      "</div>" +
+      '<div class="serie" style="margin-top:14px">' +
+      serie.map(function (s) {
+        var h = Math.max(2, Math.round(100 * s.v / mx));
+        if (!s.hay) {
+          return '<div class="sb vacio" title="' + esc(s.a +
+            "\n\nsin embarque en este año") + '"><i></i><b>' + s.a +
+            "</b></div>";
+        }
+        return '<div class="sb" title="' + esc(s.a + "\n\nFOB: " + usd(s.v)) +
+          '"><i style="height:' + h + '%"></i><b>' + s.a + "</b></div>";
+      }).join("") + "</div>" +
+      '<div class="grid2" style="margin-top:22px">' +
+      '<div class="sub-card"><div class="eyebrow">Qué embarca</div>' +
+      '<div class="barras compact" id="empExpFam"></div></div>' +
+      '<div class="sub-card"><div class="eyebrow">A dónde</div>' +
+      '<div class="barras compact" id="empExpPais"></div></div>' +
+      "</div>" +
+      '<p class="sub">FOB de exportación registrado en aduanas: no es ' +
+      "facturación ni ventas. El último mes de la serie está incompleto por " +
+      "el rezago de regularización, así que " + esc(anios[anios.length - 1]) +
+      " no se compara con un año cerrado.</p>" +
+      "</div></div>";
+
+    barras(document.getElementById("empExpFam"), e.f.map(function (x) {
+      return {n: x.n, v: x.v, t: usd(x.v)}; }));
+    barras(document.getElementById("empExpPais"), e.p.map(function (x) {
+      return {n: pais(x.n), v: x.v, t: usd(x.v)}; }));
+  }).catch(function () { caja.innerHTML = ""; });
 }
 
 /* ------------------------------------------------------------ navegación -*/

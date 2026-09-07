@@ -3123,14 +3123,17 @@ function pintarAcopio() {
         "SENASA certifica establecimientos por producto y mercado: hay <b>" +
         nf(s.empacadoras) + " plantas de empaque</b> y " +
         nf(s.lugares_produccion) + " lugares de producción en las listas de " +
-        "arándano, palta, cítricos y limón. De las plantas, <b>" +
+        esc((A.senasa_cobertura || {productos: []}).productos.join(", ")) +
+        ". De las plantas, <b>" +
         nf(s.sin_embarque_propio) + " no embarcan a su nombre</b>: tienen " +
         "acopio y venden por medio de terceros, que es el perfil de un socio " +
         "logístico. Están sobre todo en " + esc(reg) + ". Los fundos " +
         "certificados no son socios: son demanda de insumo con certificación " +
         "encima. Estas listas no ubican —traen región y nada más fino—, así " +
-        "que se usan como atributo sobre empresas que el manifiesto ya sitúa, " +
-        "y quedan fuera uva, mango y espárrago.";
+        "que se usan como atributo sobre empresas que el manifiesto ya sitúa. " +
+        "De " + esc((A.senasa_cobertura || {sin_lista: []}).sin_lista.join(" y ")) +
+        " SENASA publica solo los protocolos por mercado, sin lista de " +
+        "establecimientos.";
     }
   }).catch(fallo);
 }

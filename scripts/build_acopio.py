@@ -202,6 +202,10 @@ def main():
                          .sort_values("fob_export_mm", ascending=False).head(15).iterrows()]
                         if ter is not None else []),
         "senasa": pack,
+        "senasa_cobertura": (_js.load(io.open("out/senasa_cobertura.json",
+                                              encoding="utf-8"))
+                             if os.path.exists("out/senasa_cobertura.json")
+                             else {"productos": [], "sin_lista": []}),
     }
     with io.open("out/acopio.json", "w", encoding="utf-8") as fh:
         _js.dump(web, fh, ensure_ascii=False, separators=(",", ":"))

@@ -49,7 +49,18 @@ PUBS = {
     "2169220": "limon",
     "1715878": "citricos",
     "1732515": "granada",
+    # El mango no aparece bajo «lista de lugares de produccion» sino como
+    # «listas aprobadas para la exportacion»: buscar por el patrón de las
+    # otras lo dejaba fuera. Trae códigos de LP y de planta de tratamiento
+    # por temporada y mercado.
+    "3651257": "mango",
 }
+
+# Uva y espárrago no tienen lista de establecimientos en este catálogo: de
+# ellos SENASA publica solo los protocolos de trabajo por mercado, en PDF. Se
+# comprobó publicación por publicación sobre las 672 del catálogo. No es que
+# falten aquí: es que no existen como lista.
+SIN_LISTA = ("uva", "esparrago")
 AJENAS = re.compile(r"al-peru|desde-(uruguay|egipto|chile|china|espana|portugal)")
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
@@ -130,9 +141,16 @@ def lee(fila):
         # Cada lista nombra la columna a su manera —ENTERPRISE NAME,
         # COMPANY NAME, EMPRESA— y una sola variante sin contemplar deja la
         # lista entera fuera sin avisar: la de limón se perdía por eso.
+        # Van tres variantes distintas del mismo campo —ENTERPRISE NAME,
+        # COMPANY NAME, PACKINGHOUSE NAME— y cada una que falta se lleva una
+        # lista entera en silencio: así se perdió la de limón primero y las
+        # plantas de mango después. Se acepta cualquier columna de nombre que
+        # no sea la del fundo, que es un dato distinto.
         col_nom = next((c for c in d.columns
-                        if any(t in c for t in ("ENTERPRISE", "COMPANY",
-                                                "EMPRESA", "NOMBRE", "RAZON"))
+                        if (any(t in c for t in ("ENTERPRISE", "COMPANY",
+                                                 "EMPRESA", "RAZON",
+                                                 "PACKINGHOUSE"))
+                            or c.endswith("NAME") or "NOMBRE" in c)
                         and "ORCHARD" not in c and "FUNDO" not in c), None)
         col_cod = next((c for c in d.columns if "CODE" in c or "CODIGO" in c
                         or "CÓDIGO" in c), None)
@@ -166,6 +184,12 @@ def main():
     d["k"] = d.empresa.map(limpia)
     d = d[d.k.str.len() > 3]
     d.to_csv(SALIDA, index=False, encoding="utf-8-sig")
+    # Qué productos cubre la capa, para que los textos no lo lleven escrito a
+    # mano: al entrar el mango, el informe y la web decían «arándano, palta,
+    # cítricos y limón» y ya no era verdad.
+    with io.open("out/senasa_cobertura.json", "w", encoding="utf-8") as fh:
+        json.dump({"productos": sorted(d.producto.unique().tolist()),
+                   "sin_lista": list(SIN_LISTA)}, fh, ensure_ascii=False)
 
     emp = d.groupby("k").agg(
         empresa=("empresa", "first"),
@@ -194,6 +218,8 @@ def main():
     print("empresas distintas        : %s" % format(len(emp), ","))
     print("  con planta de empaque   : %s" % format(int((emp.empacadoras > 0).sum()), ","))
     print("productos cubiertos       : %s" % ", ".join(sorted(d.producto.unique())))
+    print("sin lista publicada       : %s  (solo protocolos, en PDF)"
+          % ", ".join(SIN_LISTA))
     if len(cruz):
         con = cruz.ruc.notna()
         # Los dos universos responden preguntas distintas y mezclarlos da

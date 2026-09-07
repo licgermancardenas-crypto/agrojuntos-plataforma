@@ -2073,13 +2073,14 @@ page(f"""
     <p>SENASA certifica establecimientos por producto y mercado de destino:
     hay <b>{nf(_ac_s.get('empacadoras', 0))} plantas de empaque</b> y
     {nf(_ac_s.get('lugares_produccion', 0))} lugares de producción en las listas
-    de arándano, palta, cítricos y limón. De las plantas,
+    de {", ".join(_AC["senasa_cobertura"]["productos"])}. De las plantas,
     <b>{nf(_ac_s.get('sin_embarque_propio', 0))} no embarcan a su nombre</b>:
     tienen infraestructura de acopio y venden a través de terceros, que es
     exactamente el perfil de un socio logístico. Están sobre todo en
     {", ".join(list(_ac_s.get("por_region", {}))[:4])}.</p>
     <p class="sub" style="margin:6px 0 0">Las listas no ubican: son atributo,
-    no posición. Quedan fuera uva, mango y espárrago.</p>
+    no posición. De {" y ".join(_AC["senasa_cobertura"]["sin_lista"])} SENASA
+    publica protocolos, no listas: revisadas las 672 del catálogo.</p>
   </div>
 """, "Parte VI · Dónde está la carga")
 

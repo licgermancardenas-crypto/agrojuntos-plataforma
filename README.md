@@ -22,7 +22,8 @@ construye.
 | Clientes en el mercado atendible | 156,880 |
 | Empresas agrícolas formales con RUC | 21,063 |
 | Importadores de insumos agrícolas | 491 |
-| Agroexportadores con RUC verificado | 1,529 |
+| Agroexportadores con RUC, 2022–2026 | 4,062 |
+| Agroexportación medida en 2025 | US$ 18,304 MM FOB |
 | Importación de insumos, anualizada | US$ 1,313 MM CIF |
 | Sectores estadísticos georreferenciados | 7,036 |
 
@@ -49,6 +50,7 @@ datos/
   empresas/         21,063 empresas agrícolas con RUC; prospectos OSM
   comercio/         importadores de insumos y agroexportadores, desde aduanas
   importacion/      la importación agrícola repartida en categorías
+  exportaciones/    cinco años de agroexportación por empresa y territorio
   geo/              geometrías: sectores y límites administrativos
   geoespacial/      grilla H3, territorios de venta y centros de distribución
 scripts/            el pipeline completo, en orden de dependencia
@@ -75,7 +77,10 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/comercio/comercio_importadores.csv` | Quién importa fertilizante y agroquímico, con valor FOB y distrito |
 | `datos/importacion/import_agro_categoria.csv` | La importación agrícola en ocho categorías comerciales, con FOB, tonelaje y empresas |
 | `datos/importacion/import_agro_lineas.csv` | Línea a línea con RUC, partida y país de origen, para prospectar cada rubro |
-| `datos/comercio/comercio_exportadores.csv` | Los agroexportadores del país, con RUC, FOB y destinos |
+| `datos/comercio/comercio_exportadores.csv` | Los agroexportadores del país, con RUC, FOB y destinos · diez semanas |
+| `datos/exportaciones/mercado.json` | Cinco años de agroexportación: por año, por mes, por familia, por destino y por departamento, con su cobertura |
+| `datos/exportaciones/exportadores.json` | 4,062 exportadores con su cubo de producto × destino × partida, año por año |
+| `datos/exportaciones/exportadores_min.json` | El recorte de 1.25 MB que consume el dashboard, del archivo de 7.8 MB |
 | `datos/geoespacial/h3_r5.csv` | 1,992 celdas hexagonales de ~292 km² con mercado, clientes y accesibilidad |
 | `datos/geoespacial/clusters_territorio.csv` | 57 territorios de venta detectados por densidad |
 | `datos/geoespacial/hubs_cobertura.csv` | Orden óptimo de apertura de centros, a 2, 4 y 6 horas |
@@ -125,6 +130,7 @@ build_mapa_geo.py         empaqueta las capas para el atlas web
 build_atlas_html.py       compone plantilla + datos en un HTML autónomo
 build_cultivos.py         qué se siembra en cada región, y qué mercado implica
 build_agroexport.py       qué se exporta y por qué aduana sale, desde el manifiesto
+build_figs_export.py      la serie mensual de exportación y el perfil por región
 build_dashboard_data.py   arma los JSON que consume el sitio
 build_mapas_pdf.py        figuras del reporte
 build_relieve.py          sombreado de relieve por departamento, para las láminas
@@ -172,8 +178,9 @@ grafo por no tener vía mapeada cerca. `logistica_sector.csv` conserva la
 estimación geodésica previa para contraste.
 
 **Los datos de aduanas del eje general cubren diez semanas**, de junio a agosto
-de 2026. La subcategoría de importadores de insumos sí corre sobre el histórico
-acumulado —ver `IMPORTADORES_INSUMOS_METODOLOGIA.md`—. Las cifras anualizadas
+de 2026. Las dos subcategorías que corren sobre el histórico acumulado son la
+de importadores de insumos —ver `IMPORTADORES_INSUMOS_METODOLOGIA.md`— y la de
+agroexportación, con cinco años medidos; ninguna de las dos anualiza nada. Las cifras anualizadas
 extrapolan ese período sin corregir estacionalidad y deben leerse como orden de
 magnitud. La partida 3102 incluye nitrato de amonio, que es fertilizante y a la
 vez base de explosivos de minería: empresas como Orica o Famesa aparecen por ese
@@ -195,7 +202,9 @@ registros públicos.
 
 **El domicilio de una empresa no es donde cultiva.** La ubicación viene del
 domicilio fiscal del padrón, y los agroexportadores suelen estar registrados en
-Lima aunque su fundo esté en La Libertad o Ica.
+Lima aunque su fundo esté en La Libertad o Ica. Para exportación hay un dato
+mejor y está medido: el UBIGEO del propio manifiesto apunta al lugar de
+producción —ver «Agroexportadores»—, aunque solo hasta 2024.
 
 **La empresa se sitúa por su distrito**, en el punto medio de los sectores
 agrícolas que ese distrito tiene, cruzando por departamento + provincia +
@@ -344,6 +353,7 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Productos | Qué se cultiva, qué se exporta y por qué aduana sale, filtrable por región |
 | Comercio | Importadores de insumos y agroexportadores, desde el manifiesto de aduanas |
 | Importación | Qué importa el agro en ocho categorías, con detalle por partida y mayores importadores |
+| Exportación | Cinco años medidos: serie por año, qué sale y a dónde, de qué departamento y quién lo embarca |
 | Estacionalidad | Calendario de demanda mes a mes por región |
 | Logística | Horas al centro provincial y al puerto, y el costo de servir cada región |
 | Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
@@ -445,7 +455,7 @@ partes más el atlas regional:
 | II · Quién es cliente | El embudo de 2.26 M de productores a 156,880 compradores, y la economía unitaria observada |
 | III · Cuándo y cómo llegar | Calendario de compra, costo de servir y puerto de salida de cada región |
 | IV · Dónde empezar | Priorización de las 24 regiones, escenarios de captura, prospección con nombre propio y el mercado vecino de importación |
-| V · Qué se cultiva y por dónde sale | Los 144 cultivos y el mercado que implican, las 66 partidas agroexportadas y las 15 aduanas de salida |
+| V · Qué se cultiva y por dónde sale | Los 144 cultivos y el mercado que implican, las 66 partidas agroexportadas y las 15 aduanas de salida, más los cinco años de exportación medida: qué sale, cuándo sale y de dónde |
 | VI · La geometría del mercado | La grilla hexagonal, los 57 territorios, el orden de apertura de centros y la cartera con nombre propio de cada territorio |
 | VII · Atlas regional | Ficha y lámina por cada una de las 24 regiones, más las series de mapas pequeños con los 57 territorios y las 197 provincias |
 | VIII · Metodología y fuentes | Cadena de cálculo, contraste con aduanas y limitaciones declaradas |
@@ -557,6 +567,98 @@ Tres reglas la gobiernan y las tres están comprobadas en `verificar.py`:
 El detalle —fuentes, cobertura año por año, deduplicación, qué partidas entran
 y cuál se sacó y por qué— está en
 [`IMPORTADORES_INSUMOS_METODOLOGIA.md`](IMPORTADORES_INSUMOS_METODOLOGIA.md).
+
+## Agroexportadores
+
+El otro lado de la aduana, y con la misma regla que el lado importador: años
+medidos, nunca anualizados. 240 semanas de manifiesto de exportación, 1,967,814
+líneas de embarque en 1,457,949 declaraciones, 4,062 exportadores con RUC,
+US$ 65,834 MM FOB entre 2022 y 2026. 72 familias de producto y 140 destinos.
+
+```
+scripts/build_export_historico.py   extrae las lineas de agro de cada ZIP
+scripts/build_export_agregados.py   agrega por empresa, mercado y territorio
+scripts/build_export_panel.py       cubo producto x destino x exportador
+scripts/build_export_web.py         el recorte que baja el navegador
+scripts/build_figs_export.py        la serie mensual y el perfil por region
+```
+
+En importación interesa **qué** se trae y con qué partida; en exportación
+interesa **a dónde** va, así que la jerarquía del cubo está dada vuelta: el
+producto no se entiende sin saber si sale a Estados Unidos o a Países Bajos.
+
+Dos cosas gobiernan lo que aquí se puede afirmar, y las dos viajan dentro de
+los archivos.
+
+### El último mes nunca está completo
+
+El embarque se declara al salir, pero el archivo semanal se arma cuando la
+declaración se **regulariza**, y entre una cosa y otra pasan 11 días en la
+mediana. El último mes de la serie está incompleto aunque su semana esté
+descargada.
+
+El percentil de días no sirve para decidir cuándo un mes cerró, y conviene
+decir por qué: se calcula sobre las líneas que ya llegaron, y las que faltan
+son justamente las lentas. Que el p99 dé 30 días no significa que un mes de 30
+días de antigüedad esté completo; significa que el 99% de lo que ya llegó llegó
+en menos de 30. Es censura por la derecha, y leída al revés **inventa caídas del
+último trimestre**.
+
+Lo que sí decide es la curva de maduración, medida sobre meses de embarque con
+más de 120 días —cuando el mes ya no crece—: a los 7 días se ve el 25.0% del
+FOB de un mes, a los 14 el 63.0%, a los 28 el 97.0%, a los 30 el 99.5% y a los
+120 el 100%. Aplicada día por día da la completitud esperada de cada mes
+reciente. Un mes entra en la variación interanual solo si llega al 99.5% en los
+dos años comparados, y el tramo se declara: la caída de **−5.4% de enero a
+julio de 2026** se calcula así, con agosto —al 48%— fuera.
+
+`build_export_panel.py` ya no calcula esa frontera por su cuenta: la lee de
+`mercado.json`. Antes restaba 28 días fijos y declaraba una fecha distinta de
+la del agregado sobre los mismos embarques, que es la clase de contradicción
+que aparece cuando dos archivos calculan lo mismo por separado.
+
+### El UBIGEO del manifiesto apunta al fundo, y se está apagando
+
+Este proyecto dio por inservible el campo UBIGEO: se midió sobre diez semanas
+de 2026, se vio vacío en el 97% del FOB y se generalizó a todo el archivo. **Es
+cierto de 2026 y falso de los años anteriores**: viene lleno en el 100% del FOB
+hasta 2024 y en el 60% en 2025.
+
+Y no es el domicilio fiscal. Cruzado contra el padrón de SUNAT sobre 2024 —529
+exportadores, 120,815 líneas— coincide en el distrito el 26.6% de las veces y
+en el departamento el 48.8%. Las diferencias no son ruido: donde el manifiesto
+dice Ica, La Libertad, Lambayeque o Piura, el padrón dice Lima. El manifiesto
+apunta al fundo y el padrón a la oficina. Es el único puente directo entre la
+aduana y el territorio, y da un mapa de producción exportadora que encabezan
+Ica con el 22.9% del valor y La Libertad con el 21.6%.
+
+Por eso el corte territorial se calcula solo sobre 2022–2024 y se niega a
+extenderse: un mapa que incluyera 2026 sería el mapa de la caída del campo, no
+el de la producción. Descargar el archivo viejo mientras SUNAT lo siga sirviendo
+es lo que preserva ese dato.
+
+### Lo que queda fuera, dicho
+
+US$ 54.6 MM en 9,325 operaciones son de exportadores persona natural, cuyo
+titular SUNAT no publica por la Ley 29733 de protección de datos personales:
+están en los totales del mercado y en ningún corte por empresa. Quedan fuera
+del recorte de cinco años US$ 1,592.9 MM de 2021 —embarques de diciembre que
+regularizan en enero— y 2,798 líneas con fecha de embarque anterior, que no se
+corrigen ni se borran: se cuentan y se declaran.
+
+Una declaración trae 1.35 líneas en promedio —una por partida y serie—, así que
+la declaración repetida no es una anomalía como en importación: es la forma del
+documento, y las dos cifras se cuentan por separado.
+
+### Lo que baja el navegador
+
+El dashboard no recibe `exportadores.json`: son 7.8 MB y llevan por empresa un
+cubo que la pantalla no muestra. `build_export_web.py` deja el ranking, la serie
+por año, el origen declarado y los tres primeros productos y destinos de cada
+empresa —**1.25 MB, el 16%**— y con eso se pinta la vista entera. Lo que no se
+recorta son las advertencias: la cobertura del ubigeo año por año y la frontera
+de completitud viajan en el recorte, porque una cifra sin su salvedad viaja más
+rápido que la salvedad.
 
 ## Sobre los datos crudos de aduanas
 

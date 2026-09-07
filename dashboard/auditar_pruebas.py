@@ -67,6 +67,13 @@ CASOS = [
      "el reparto por categoría deja de sumar cien"),
     ("ranking_desordenado", "NO ESTA ORDENADO",
      "el ranking deja de estar ordenado por valor"),
+    # Tercera tanda: el control sigue ahí y se deja pulsar, pero no hace nada.
+    ("filtro_territorio_muerto", "FILTRO DE TERRITORIO",
+     "el filtro de territorio deja de filtrar"),
+    ("busqueda_muerta", "BUSQUEDA",
+     "la búsqueda del directorio deja de filtrar"),
+    ("periodo_muerto", "PERIODO",
+     "el selector de periodo deja de actuar sobre las cifras"),
 ]
 
 

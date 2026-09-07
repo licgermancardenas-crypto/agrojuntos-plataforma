@@ -191,6 +191,32 @@ MUTACIONES = {
           t.appendChild(t.firstElementChild);
         }), 300);
     })();""",
+
+    # --- tercera tanda: mutaciones de interaccion ---------------------
+    # Las anteriores cambian lo que la pagina dice. Estas cambian lo que la
+    # pagina hace: se traga el evento antes de que llegue a su manejador, de
+    # modo que el control sigue ahi, se deja pulsar y no surte efecto. Es el
+    # defecto mas facil de tener sin enterarse, porque no se ve.
+    "filtro_territorio_muerto": """(() => {
+      document.addEventListener('change', e => {
+        if (e.target && e.target.id === 'fTer') e.stopImmediatePropagation();
+      }, true);
+    })();""",
+
+    "busqueda_muerta": """(() => {
+      ['input', 'keyup', 'change'].forEach(ev =>
+        document.addEventListener(ev, e => {
+          if (e.target && e.target.id === 'q') e.stopImmediatePropagation();
+        }, true));
+    })();""",
+
+    "periodo_muerto": """(() => {
+      document.addEventListener('click', e => {
+        if (e.target && e.target.closest && e.target.closest('.periodo button'))
+          e.stopImmediatePropagation();
+      }, true);
+    })();""",
+
 }
 
 

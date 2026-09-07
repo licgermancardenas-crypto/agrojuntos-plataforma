@@ -76,6 +76,15 @@ def cap(s):
     return s
 
 
+def corta(txt, n):
+    """Recorta en el ultimo espacio antes de n, para no dejar media palabra."""
+    t = str(txt)
+    if len(t) <= n:
+        return t
+    c = t[:n].rsplit(" ", 1)[0]
+    return (c if len(c) >= n * 0.6 else t[:n]).rstrip(" ,.") + "…"
+
+
 def img(path, cls="fig"):
     b64 = base64.b64encode(open(path, "rb").read()).decode()
     return f'<img class="{cls}" src="data:image/png;base64,{b64}" alt="">'
@@ -1223,6 +1232,7 @@ SIN_GRAN = IMP_A - GRAN_A
 # «CARGILL AMERICAS PERU S.R.L.» en «Cargill Americas P» deja basura en la
 # pagina. Se quitan la forma societaria y el pais, que no informan nada.
 _SUF = ("S.R.L.", "S.A.C.", "S.A.A.", "S.A.", "E.I.R.L.", "SRL", "SAC", "SA",
+        "S.R.L", "S.A.C", "S.A.A", "S.A", "E.I.R.L",
         "SOCIEDAD ANONIMA CERRADA", "SOCIEDAD ANONIMA", "DEL PERU", "PERU")
 
 
@@ -1350,7 +1360,9 @@ divider("V", "Qué se cultiva <em>y por dónde sale</em>",
         "El modelo dice cuánto vale cada región. Esta parte dice qué se siembra "
         "en ella, qué se exporta y por qué puerto sale: el cultivo decide el "
         "producto que se ofrece y el mes en que hay que tenerlo en almacén.",
-        ["Los cultivos", "La agroexportación", "Los puntos de salida"])
+        ["Los cultivos", "La agroexportación", "La agroexportación medida",
+         "El calendario del embarque", "El origen de la cosecha",
+         "Los puntos de salida"])
 
 CUL_ROWS = [[r["cultivo"], nf(r["ha_nac"]), f'US$ {nf(r["usd_ha"])}',
              f'{r["usd_nac"]/1e6:,.0f}', int(r["deps"]), cap(r["dep_lider"]),
@@ -1470,6 +1482,282 @@ page(f"""
   </div>
 """, "Parte V · La agroexportación")
 
+# ------------------------------------- el historico de exportacion --------
+# El gemelo exportador de la pagina de importacion, y con la misma regla: no
+# se anualiza nada, son anos medidos, leidos del mismo agregado que alimenta
+# la plataforma para que el papel y la pantalla no digan cifras distintas.
+_XM = _json.load(open("data/exportaciones/processed/mercado.json",
+                      encoding="utf-8"))
+_XE = _json.load(open("data/exportaciones/processed/exportadores.json",
+                      encoding="utf-8"))
+_XP = _json.load(open("data/exportaciones/processed/panel.json",
+                      encoding="utf-8"))
+_XC = [a for a in sorted(_XM["anios_con_dato"])
+       if a != _XM["anio_en_curso"]
+       and _XM["cobertura_semanas"].get(a, 0) >= _COMPLETO]
+_XA = _XC[-1]                      # ultimo ano completo
+_XR = _XM["rezago"]
+_XD = _XM["departamentos"]
+_XY = _XM["yoy"]
+
+# Los destinos llegan como codigo ISO de dos letras, que en una tabla no dice
+# nada. Solo se nombran los que se muestran; el resto queda con su codigo.
+PAIS = {"US": "Estados Unidos", "NL": "Países Bajos", "ES": "España",
+        "GB": "Reino Unido", "CN": "China", "MX": "México", "EC": "Ecuador",
+        "CL": "Chile", "CA": "Canadá", "KR": "Corea del Sur", "DE": "Alemania",
+        "HK": "Hong Kong", "CO": "Colombia", "BE": "Bélgica", "IT": "Italia",
+        "JP": "Japón", "BO": "Bolivia", "BR": "Brasil", "PA": "Panamá",
+        "RU": "Rusia", "AE": "Emiratos Árabes", "TH": "Tailandia"}
+
+
+def _xpais(c):
+    return PAIS.get(c, c)
+
+
+_TILDE = {"ANCASH": "Áncash", "APURIMAC": "Apurímac", "HUANUCO": "Huánuco",
+          "JUNIN": "Junín", "SAN MARTIN": "San Martín", "MADRE DE DIOS":
+          "Madre de Dios", "LA LIBERTAD": "La Libertad"}
+
+
+def _xdep(n):
+    return _TILDE.get(str(n).upper(), str(n).title())
+
+
+def _xpico(d):
+    """Numero de mes en que el departamento embarca mas, sobre su perfil."""
+    p = d["perfil"]
+    return p.index(max(p)) + 1
+
+
+# Familias y destinos del ultimo ano completo, del cubo del panel.
+_xfam = sorted(((k, v["anios"][_XA]["fob"], v["anios"][_XA]["emp"])
+                for k, v in _XP["cats"].items() if _XA in v["anios"]),
+               key=lambda r: -r[1])
+_xdest = {}
+for _v in _XP["cats"].values():
+    for _p in _v["paises"].get(_XA, []):
+        _xdest[_p["n"]] = _xdest.get(_p["n"], 0) + _p["fob"]
+_xdest = sorted(_xdest.items(), key=lambda r: -r[1])
+_xfob = _XM["por_anio"][_XA]["fob"]
+_xtop = sorted(((e["n"], e["por_anio"][_XA]["fob"], e["dep"],
+                 e["familias"][0]["n"] if e["familias"] else "—")
+                for e in _XE.values() if _XA in e["por_anio"]),
+               key=lambda r: -r[1])
+_xconc = 100 * sum(r[1] for r in _xtop[:10]) / _xfob
+# El mes mas reciente y cuanto de el se espera ver: es la cifra que impide
+# leer el ultimo punto de la serie como una caida.
+_xparc = sorted((k, v) for k, v in _XR["completitud_mes"].items()
+                if v < _XR["umbral_completo_pct"])
+_xcurva = _XR["curva_maduracion"]["pct_por_dia"]
+
+
+def _xest(a):
+    if a == _XM["anio_en_curso"]:
+        return "año en curso"
+    return ("año completo" if _XM["cobertura_semanas"].get(a, 0) >= _COMPLETO
+            else "descarga en curso")
+
+
+page(f"""
+  <span class="kicker">Parte V · La agroexportación medida</span>
+  <h2 class="title">Cinco años de embarques, <em>no diez semanas</em></h2>
+  <p class="deck">La página anterior mide una ventana de diez semanas y la
+     anualiza. Esta no anualiza nada: son
+     {nf(_XM['operaciones'])} líneas de embarque descargadas semana por semana
+     desde 2022, con RUC, producto, destino y valor FOB. Es la demanda final
+     que arrastra al insumo, medida.</p>
+
+  <div class="kpis">
+    <div><span class="v">{usd(_xfob)}</span><span class="l">agroexportado en {_XA}<br>año completo, medido</span></div>
+    <div><span class="v">{nf(_XM['empresas_con_dato'])}</span><span class="l">exportadores con<br>RUC verificado</span></div>
+    <div><span class="v">{len(_XP['cats'])}</span><span class="l">familias de producto<br>a cuatro dígitos</span></div>
+    <div><span class="v">{_XY['variacion_pct']:+.1f}%</span><span class="l">{_XY['tramo'].replace('-', ' a ')} de {_XY['anios'][1]}<br>contra {_XY['anios'][0]}</span></div>
+  </div>
+
+  <div class="two" style="margin-top:6px">
+    <div>
+      <h3 class="rule">Año por año, y qué lo respalda</h3>
+      {table([[a, f'{_XM["por_anio"][a]["fob"]/1e6:,.0f}',
+               nf(_XM["por_anio"][a]["empresas"]),
+               nf(_XM["cobertura_semanas"].get(a, 0)), _xest(a)]
+              for a in _XM["anios_pedidos"]],
+             ["Año", "FOB MM", "Empresas", "Semanas", "Estado"],
+             ["l", "r", "r", "r", "l"], cls="tight")}
+      <p class="sub">«Semanas» son archivos de manifiesto, no semanas del
+      calendario: un embarque de diciembre aparece en un archivo de enero.</p>
+    </div>
+    <div>
+      <h3 class="rule">Qué sale, en {_XA}</h3>
+      {table([[k[:30], f'{v/1e6:,.0f}', f'{100*v/_xfob:.1f}%', nf(e)]
+              for k, v, e in _xfam[:4]],
+             ["Producto", "FOB MM", "% del total", "Empresas"],
+             ["l", "r", "r", "r"], cls="tight")}
+      <p class="sub">Cuatro de las {len(_XP['cats'])} familias del universo.
+      Arándano y uva juntos son el
+      {100*(_xfam[0][1]+_xfam[1][1])/_xfob:.0f}%.</p>
+    </div>
+  </div>
+
+  <h3 class="rule">A dónde va, en {_XA}</h3>
+  {table([[_xpais(p), f'{v/1e6:,.0f}', f'{100*v/_xfob:.1f}%']
+          for p, v in _xdest[:8]],
+         ["Destino", "FOB MM", "% del total"] * 1,
+         ["l", "r", "r"], cls="tight")}
+  <p class="sub">Estados Unidos y Países Bajos reciben el
+  {100*(_xdest[0][1]+_xdest[1][1])/_xfob:.0f}% entre los dos, y Países Bajos es
+  puerta de entrada a Europa antes que consumidor final: Rotterdam
+  redistribuye. Manifiestos de SUNAT bajo la Ley 27806, último embarque
+  {_XM['ultimo_registro']}, frontera de completitud
+  {_XR['frontera_completitud']}. Quedan fuera del recorte de cinco años
+  US$ {nf(_XM['fuera_de_rango']['ventana_anterior']['fob']/1e6)} MM de
+  {_XM['fuera_de_rango']['ventana_anterior']['anio']} y
+  {nf(_XM['fuera_de_rango']['fechas_no_creibles']['ops'])} líneas con fecha de
+  embarque anterior, que se declaran y no se corrigen.</p>
+""", "Parte V · La agroexportación medida")
+
+_xdl = _XD["lista"]
+_xdu = _XD["anios_usados"]
+_xd5 = sum(x["pct"] for x in _xdl[:5])
+_xcob = _XD["cobertura_fob_por_anio"]
+
+# ------------------------------------------- el calendario del embarque ---
+# La estacionalidad merece pagina propia: es la variable que decide cuando hay
+# que tener inventario, y en media pagina las dos curvas no se leian.
+_xmes_c = [a for a in _XM["anios_pedidos"] if a != _XM["anio_en_curso"]
+           and _XM["cobertura_semanas"].get(a, 0) >= _COMPLETO]
+_xperf = [sum(_XM["por_mes"].get(f"{a}-{m:02d}", {"fob": 0})["fob"]
+              for a in _xmes_c) for m in range(1, 13)]
+_xperf_t = sum(_xperf)
+_xperf_p = [100 * v / _xperf_t for v in _xperf]
+_xpk = _xperf_p.index(max(_xperf_p)) + 1
+_xvl = _xperf_p.index(min(_xperf_p)) + 1
+_xq4 = sum(_xperf_p[9:12])
+
+page(f"""
+  <span class="kicker">Parte V · El calendario del embarque</span>
+  <h2 class="title">Cuándo sale la cosecha, <em>y cuándo se compra el insumo</em></h2>
+  <p class="deck">La campaña se concentra. El insumo se compra antes de que la
+     fruta salga, así que el mes de embarque fija el mes en que el almacén
+     tiene que estar lleno —y no es el mismo en Ica que en Piura.</p>
+
+  <div class="kpis">
+    <div><span class="v">{MES_ES[_xpk][:3].title()}</span><span class="l">mes pico nacional<br>{max(_xperf_p):.0f}% del año</span></div>
+    <div><span class="v">{_xq4:.0f}%</span><span class="l">del año sale entre<br>octubre y diciembre</span></div>
+    <div><span class="v">{max(_xperf_p)/min(_xperf_p):.1f}×</span><span class="l">el mes pico sobre<br>el mes valle ({MES_ES[_xvl][:3]}.)</span></div>
+    <div><span class="v">{len(_XM['por_mes'])}</span><span class="l">meses medidos<br>desde {min(_XM['por_mes'])}</span></div>
+  </div>
+
+  <h3 class="rule">La serie, mes a mes</h3>
+  {fig("export_serie")}
+  <p class="sub">Piso en abril y mayo, pico entre octubre y diciembre, cuando
+  salen a la vez la uva de Ica y el arándano de La Libertad.</p>
+
+  <h3 class="rule">Cuándo embarca cada región</h3>
+  {fig("export_perfil_dep")}
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <p>En porcentaje del año de cada uno, porque en dólares Ica y La
+      Libertad aplastan al resto. Lo que las separa no es cuánto embarcan sino
+      <b>cuándo</b>: {_xdep(_xdl[0]['n'])} pica en {MES_ES[_xpico(_xdl[0])]},
+      {_xdep(_xdl[1]['n'])} y {_xdep(_xdl[4]['n'])} en
+      {MES_ES[_xpico(_xdl[1])]}, y {_xdep(_xdl[3]['n'])} concentra el
+      {max(_xdl[3]['perfil']):.0f}% en {MES_ES[_xpico(_xdl[3])]} para caer al
+      {min(_xdl[3]['perfil']):.0f}% en
+      {MES_ES[_xdl[3]['perfil'].index(min(_xdl[3]['perfil'])) + 1]}. Un almacén
+      que reparte igual todo el año le llega tarde a las dos.</p>
+      <p class="sub">Perfil de {_xdu[0]}–{_xdu[-1]}.</p>
+    </div>
+    <div>
+      <div class="note brass">
+        <span class="h">Por qué el último mes no es una caída</span>
+        <p>El embarque se declara al salir y el archivo se arma al
+        regularizar, {_XR['mediana']} días después en la mediana. A los
+        {list(_xcurva)[1]} días solo se ve el
+        {_xcurva[list(_xcurva)[1]]:.0f}% del valor de un mes; a los 30, el
+        {_xcurva['30']:.1f}%. Por eso <b>{_xparc[0][0]} figura al
+        {_xparc[0][1]:.0f}%</b>, va punteado y queda fuera de toda
+        comparación.</p>
+        <p>El percentil de días no sirve: se calcula sobre lo que ya llegó, y
+        lo que falta es lo lento. Lo decide la curva de maduración.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte V · El calendario del embarque")
+
+# ------------------------------------ donde se produce lo que se exporta --
+page(f"""
+  <span class="kicker">Parte V · El origen de la cosecha</span>
+  <h2 class="title">El manifiesto sí dice <em>dónde se produjo</em></h2>
+  <p class="deck">Este informe daba por perdido el UBIGEO del manifiesto. Sobre
+     los años en que SUNAT lo llenó, viene completo y <b>no coincide con el
+     domicilio fiscal</b>: apunta al fundo y no a la oficina. Es el único
+     puente directo entre la aduana y el territorio.</p>
+
+  <div class="kpis">
+    <div><span class="v">{len(_xdl)}</span><span class="l">departamentos con<br>embarque propio</span></div>
+    <div><span class="v">{_xdep(_xdl[0]['n'])}</span><span class="l">encabeza con<br>{_xdl[0]['pct']:.0f}% del valor</span></div>
+    <div><span class="v">{_xd5:.0f}%</span><span class="l">lo concentran<br>cinco departamentos</span></div>
+    <div><span class="v">{_xconc:.0f}%</span><span class="l">lo concentran diez<br>exportadores en {_XA}</span></div>
+  </div>
+
+  <div class="two" style="margin-top:6px">
+    <div>
+      <h3 class="rule">De dónde sale el valor</h3>
+      {table([[_xdep(x["n"]), f'{x["fob"]/1e6:,.0f}', f'{x["pct"]:.1f}%',
+               nf(x["empresas"])]
+              for x in _xdl[:8]],
+             ["Departamento", "FOB MM", "% del total", "Empresas"],
+             ["l", "r", "r", "r"], cls="tight")}
+      <p class="sub">Acumulado de {_xdu[0]}–{_xdu[-1]}, los años en que el
+      campo viene lleno. No se extiende a {_XM['anio_en_curso']}: ahí el
+      manifiesto ya casi no lo trae.</p>
+    </div>
+    <div>
+      <h3 class="rule">Quién embarca, y desde dónde</h3>
+      {table([[corta(marca(n), 28), (_xdep(d) if d else "—"),
+               f'{v/1e6:,.0f}']
+              for n, v, d, _f in _xtop[:8]],
+             ["Exportador · " + _XA, "Origen", "FOB MM"],
+             ["l", "l", "r"], cls="tight")}
+      <p class="sub">«Origen» es el departamento que más declara esa empresa
+      en sus manifiestos, no su domicilio fiscal: por eso Camposol figura en La
+      Libertad y no en Lima, donde tiene la oficina.</p>
+    </div>
+  </div>
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <div class="note brass">
+        <span class="h">Corrección respecto de una versión anterior</span>
+        <p>Este informe afirmaba que el UBIGEO del manifiesto «resultó
+        inservible, solo el 3% del FOB lo trae». Es cierto de
+        {_XM['anio_en_curso']} y <b>falso de los años anteriores</b>: trae el
+        {_xcob[_xdu[-1]]:.0f}% del FOB hasta {_xdu[-1]}, cae al
+        {_xcob.get(str(int(_xdu[-1]) + 1), 0):.0f}% en {int(_xdu[-1]) + 1} y al
+        {_xcob[_XM['anio_en_curso']]:.1f}% en {_XM['anio_en_curso']}. La
+        medición previa se hizo sobre diez semanas de {_XM['anio_en_curso']}
+        —donde el campo ya venía vacío— y se generalizó a los cinco años. El
+        campo se está apagando; no estuvo siempre vacío.</p>
+      </div>
+    </div>
+    <div>
+      <div class="note warn">
+        <span class="h">Fundo, no oficina — y la prueba</span>
+        <p>Cruzado contra el domicilio fiscal del padrón de SUNAT sobre
+        {_xdu[-1]} —529 exportadores, 120,815 líneas— el ubigeo del manifiesto
+        coincide en el distrito solo el <b>26.6%</b> de las veces y en el
+        departamento el <b>48.8%</b>. Si fueran el mismo dato coincidirían; si
+        el desacuerdo fuera ruido, no apuntaría siempre en la misma dirección:
+        donde el manifiesto dice Ica, La Libertad, Lambayeque o Piura, el
+        padrón dice Lima.</p>
+        <p>Descargar el archivo viejo mientras siga servido es lo que preserva
+        este mapa.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte V · El origen de la cosecha")
+
 ADU_ROWS = [[r["codigo"], r["aduana"], f'{r["fob_usd"]/1e6:,.1f}',
              nf(r["kg"]/1e6, 1), int(r["empresas"]), r["producto_lider"],
              f'{r["pct_lider"]:.0f}%', r["via_principal"], f'{r["ac"]:.1f}%']
@@ -1514,10 +1802,13 @@ page(f"""
         <span class="h">Lima aparece grande porque ahí está la oficina</span>
         <p>Lima concentra el {100*_adep.fob_usd.iat[0]/_adep.fob_usd.sum():.0f}%
         del FOB y {int(_adep.empresas.iat[0])} empresas, pero no cultiva esa
-        proporción: el UBIGEO del manifiesto resultó inservible —solo el 3% del FOB
-        lo trae— y la región sale del domicilio fiscal del padrón. <b>Domicilio
-        fiscal no es lugar de cultivo.</b> Para ubicar producción sirve la aduana
-        de embarque; para ubicar al comprador, el padrón.</p>
+        proporción: en esta página la región sale del domicilio fiscal del
+        padrón, y <b>domicilio fiscal no es lugar de cultivo</b>. En las diez
+        semanas de {_XM['anio_en_curso']} que alimentan esta tabla el UBIGEO
+        del manifiesto llega vacío, así que no había con qué corregirlo.</p>
+        <p>Sí lo hay en los años anteriores: el mapa de producción de la
+        página «El origen de la cosecha» se arma con ese campo, que en
+        {_xdu[0]}–{_xdu[-1]} viene completo.</p>
       </div>
     </div>
   </div>

@@ -1599,6 +1599,20 @@ page(f"""
              ["l", "r", "r", "r", "l"], cls="tight")}
       <p class="sub">«Semanas» son archivos de manifiesto, no semanas del
       calendario: un embarque de diciembre aparece en un archivo de enero.</p>
+      <div class="note warn">
+        <span class="h">Este total no coincide con el oficial, y por cuánto</span>
+        <p>MIDAGRI publica <b>US$ 15,013 MM</b> para {_XA} y aquí sale
+        <b>US$ {nf(_xfob/1e6)} MM</b>, un
+        <b>{100*(_xfob/1e6 - 15013)/15013:.0f}% más</b>. Del archivo ya se
+        apartó lo que estaba mal —US$ 2,085 MM de líneas que SUNAT repite y
+        US$ 175 MM a precios que el producto no aguanta, café a US$ 657 el
+        kilo— y la diferencia sigue. Apunta a dos cosas sin medir: que la
+        serie se ancle en el embarque y la oficial en la regularización, y que
+        el universo de partidas no sea el mismo. <b>Hasta cerrar eso el nivel
+        no es comparable con la cifra oficial</b>; lo que sí sostiene la
+        medición es la estructura —qué productos, a qué destinos, desde qué
+        territorio y en qué meses—.</p>
+      </div>
     </div>
     <div>
       <h3 class="rule">Qué sale, en {_XA}</h3>
@@ -1612,15 +1626,10 @@ page(f"""
     </div>
   </div>
 
-  <h3 class="rule">A dónde va, en {_XA}</h3>
-  {table([[_xpais(p), f'{v/1e6:,.0f}', f'{100*v/_xfob:.1f}%']
-          for p, v in _xdest[:8]],
-         ["Destino", "FOB MM", "% del total"] * 1,
-         ["l", "r", "r"], cls="tight")}
-  <p class="sub">Estados Unidos y Países Bajos reciben el
-  {100*(_xdest[0][1]+_xdest[1][1])/_xfob:.0f}% entre los dos, y Países Bajos es
-  puerta de entrada a Europa antes que consumidor final: Rotterdam
-  redistribuye. Manifiestos de SUNAT bajo la Ley 27806, último embarque
+  <p class="sub">A dónde va, en {_XA}:
+  {", ".join(f"{_xpais(p)} {100*v/_xfob:.1f}%" for p, v in _xdest[:6])}.
+  Países Bajos es puerta de entrada a Europa antes que consumidor final:
+  Rotterdam redistribuye. Manifiestos de SUNAT bajo la Ley 27806, último embarque
   {_XM['ultimo_registro']}, frontera de completitud
   {_XR['frontera_completitud']}. Quedan fuera del recorte de cinco años
   US$ {nf(_XM['fuera_de_rango']['ventana_anterior']['fob']/1e6)} MM de

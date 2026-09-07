@@ -39,7 +39,10 @@ import sys
 import pandas as pd
 
 PROC = "data/exportaciones/processed"
-ENTRADA = os.path.join(PROC, "operaciones.csv")
+# El archivo depurado, no el crudo: el crudo trae la misma serie
+# repetida y precios que el producto no aguanta. Ver
+# `build_export_depurar.py`, que deja constancia de lo apartado.
+ENTRADA = os.path.join(PROC, "operaciones_limpias.csv")
 SALIDA = os.path.join(PROC, "panel.json")
 MERCADO = os.path.join(PROC, "mercado.json")   # de donde sale la frontera
 REZAGO_RESPALDO = 31   # solo si el agregado todavia no corrio
@@ -69,7 +72,7 @@ def por_fob(pares):
 
 def main():
     if not os.path.exists(ENTRADA):
-        sys.exit("falta " + ENTRADA + ": corre build_export_historico.py")
+        sys.exit("falta " + ENTRADA + ": corre build_export_depurar.py")
     # El archivo tiene 30 columnas y el panel usa once. Leer las diecinueve
     # restantes —descripcion, productor, agente de aduana, declaracion— cuesta
     # gigabytes que la maquina no tiene, y ninguna entra en el cubo. Las que

@@ -2935,6 +2935,24 @@ function pintarExportacion() {
      yoy ? "contra " + yoy.anios[0] + ", solo meses cerrados" : ""],
   ].map(function (k) { return kpi(esc(k[0]), k[1], k[2]); }).join("");
 
+  // El total no coincide con el oficial y hay que decirlo donde se lee la
+  // cifra, no en una nota al pie: es la diferencia entre publicar una
+  // medición y publicarla como si fuera la estadística del país.
+  var _ofi = 15013, _a = "2025";
+  var _nuestro = EXPM.por_anio[_a] ? EXPM.por_anio[_a].fob / 1e6 : 0;
+  document.getElementById("expAviso").innerHTML = _nuestro ?
+    "<span class='h'>Este total no coincide con el oficial, y por cuánto</span>" +
+    "MIDAGRI publica <b>US$ 15,013 MM</b> de agroexportación para " + _a +
+    " y aquí sale <b>" + usd(_nuestro * 1e6) + "</b>, un <b>" +
+    nf(100 * (_nuestro - _ofi) / _ofi, 0) + "% más</b>. Del archivo ya se " +
+    "apartó lo que estaba mal —líneas que SUNAT repite y precios que el " +
+    "producto no aguanta— y la diferencia sigue: apunta a que la serie se " +
+    "ancle en la fecha de embarque y la oficial en la de regularización, y a " +
+    "que el universo de partidas no sea el mismo. <b>Hasta cerrar eso el " +
+    "nivel no es comparable con la cifra oficial</b>; lo que sí sostiene la " +
+    "medición es la estructura: qué productos, a qué destinos, desde qué " +
+    "territorio y en qué meses." : "";
+
   expSerie(document.getElementById("expSerie"), EXPM.anios_pedidos);
   document.getElementById("expSerieNota").innerHTML =
     "El asterisco marca el año que no está completo. El último embarque " +

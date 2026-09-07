@@ -61,7 +61,10 @@ import numpy as np
 import pandas as pd
 
 PROC = "data/exportaciones/processed"
-ENTRADA = os.path.join(PROC, "operaciones.csv")
+# El archivo depurado, no el crudo: el crudo trae la misma serie
+# repetida y precios que el producto no aguanta. Ver
+# `build_export_depurar.py`, que deja constancia de lo apartado.
+ENTRADA = os.path.join(PROC, "operaciones_limpias.csv")
 SALIDA = os.path.join(PROC, "exportadores.json")
 MERCADO = os.path.join(PROC, "mercado.json")
 ANOMALIAS = os.path.join(PROC, "anomalias.json")
@@ -125,7 +128,7 @@ def top(sub, col, n=8):
 
 def main():
     if not os.path.exists(ENTRADA):
-        sys.exit("falta " + ENTRADA + ": corre build_export_historico.py")
+        sys.exit("falta " + ENTRADA + ": corre build_export_depurar.py")
     d = pd.read_csv(ENTRADA, encoding="utf-8-sig", usecols=list(COLS),
                     dtype=COLS, low_memory=False)
     d = d[d.fob_usd >= 0].copy()

@@ -2,9 +2,16 @@
 """Abre el dashboard en un navegador real y comprueba que no esté roto.
 
 Un `200` del servidor no dice nada sobre si la página se ve: un error de
-JavaScript la deja en blanco y el servidor ni se entera. Esto recorre las diez
-vistas, recorre las 24 fichas departamentales, ejerce los filtros del mapa,
-prueba los tres estados del tema y falla ante cualquier error de consola.
+JavaScript la deja en blanco y el servidor ni se entera. Esto recorre las
+vistas una por una, recorre las 24 fichas departamentales, ejerce los filtros
+del mapa, prueba los tres estados del tema y falla ante cualquier error de
+consola.
+
+Lo que comprueba de los dos modulos de aduanas no es que dibujen, sino las
+reglas que los gobiernan: que un ano sin descargar no aparezca como US$ 0 del
+lado importador, y del lado exportador que el tramo que todavia regulariza
+vaya marcado, que el corte territorial no se extienda a los anos en que SUNAT
+dejo de llenar el ubigeo, y que nada de lo ya medido se anualice.
 
 Así se detectó que `Infinity` en el JSON del mapa —que Python escribe sin
 protestar y `JSON.parse` rechaza— dejaba el atlas sin dibujar.
@@ -32,6 +39,7 @@ VISTAS = [
     ("#productos", "#tProductos tbody tr", "Productos"),
     ("#comercio", "#tExportadores tbody tr", "Comercio"),
     ("#importacion", "#tImpCat tbody tr", "Importación"),
+    ("#exportacion", "#tExpEmpresas tbody tr", "Exportación"),
     ("#estacionalidad", ".cal tbody tr", "Estacionalidad"),
     ("#logistica", "#tLogistica tbody tr", "Logística"),
     ("#expansion", "#tHubs tbody tr", "Expansión"),
@@ -797,6 +805,193 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  declara el monto reservado por la Ley 29733: ok")
+
+
+    # ------------------------------------------------------- exportacion --
+    # La vista exportadora no se comprueba porque dibuje, sino por las cuatro
+    # reglas que la gobiernan, que son las mismas que gobiernan el dato:
+    #
+    #   1. Abre en el ultimo ano completo. El ano en curso, de titular, invita
+    #      a compararlo con anos enteros.
+    #   2. El tramo que todavia regulariza va marcado y declarado. Una serie
+    #      que termina en una caida invita a leer una caida.
+    #   3. El corte territorial no se extiende a los anos en que SUNAT dejo de
+    #      llenar el ubigeo.
+    #   4. Nada se anualiza: el selector de periodo del encabezado manda sobre
+    #      las vistas de diez semanas y no sobre esta, que trae anos medidos.
+    print("\nexportacion · cinco anos medidos")
+    pg.evaluate("() => location.hash = '#exportacion'")
+    pg.wait_for_selector("#tExpEmpresas tbody tr", timeout=25000)
+
+    # El JSON es la referencia: lo que la pantalla dice tiene que salir de ahi
+    # y no de una constante escrita en el JavaScript.
+    XM = pg.evaluate("""async () => {
+        const r = await fetch('/data/exportaciones/mercado.json');
+        return await r.json(); }""")
+    anio_curso = XM["anio_en_curso"]
+    completos = [a for a in XM["anios_con_dato"]
+                 if a != anio_curso and XM["cobertura_semanas"].get(a, 0) >= 45]
+    esperado = completos[-1]
+
+    sel_anio = pg.eval_on_selector("#expAnio", "s => s.value")
+    print(f"  abre en {sel_anio} · ultimo completo {esperado} · "
+          f"en curso {anio_curso}")
+    if sel_anio != esperado:
+        print("  LA VISTA NO ABRE EN EL ULTIMO ANO COMPLETO")
+        ok = False
+    opciones = pg.eval_on_selector_all("#expAnio option",
+                                       "o => o.map(x => x.textContent)")
+    if not any(o.strip() == anio_curso + " YTD" for o in opciones):
+        print("  EL ANO EN CURSO NO ARRASTRA SU YTD EN EL SELECTOR")
+        ok = False
+    else:
+        print("  el ano en curso arrastra su YTD: ok")
+
+    # El KPI sale del JSON, no de otro lado.
+    kpi_fob = usd_a_num(pg.eval_on_selector("#expKpis > div .v", "e => e.textContent"))
+    fob_json = XM["por_anio"][esperado]["fob"]
+    if abs(kpi_fob - fob_json) / fob_json > 0.01:
+        print(f"  EL KPI NO COINCIDE CON EL JSON: {kpi_fob:,.0f} vs {fob_json:,.0f}")
+        ok = False
+    else:
+        print("  el KPI de FOB sale del agregado: ok")
+
+    # --- regla 2: el tramo incompleto, marcado y dicho ---------------------
+    barras = pg.eval_on_selector_all("#expSerie .sb", """f => f.map(x => ({
+        a: x.querySelector('b').textContent.trim(),
+        parcial: x.classList.contains('parcial'),
+        px: Math.round(x.querySelector('i').getBoundingClientRect().height)}))""")
+    parciales = [x["a"] for x in barras if x["parcial"]]
+    print(f"  serie: {len(barras)} anos · parcial {parciales}")
+    if not any(anio_curso in a for a in parciales):
+        print("  EL ANO EN CURSO NO SE MARCA COMO PARCIAL EN LA SERIE")
+        ok = False
+    for bar in barras:
+        if bar["a"].endswith("*") and bar["a"].rstrip("*") in completos:
+            print(f"  UN ANO COMPLETO APARECE MARCADO: {bar['a']}")
+            ok = False
+
+    # La altura tiene que seguir al valor. Con la etiqueta del ano dentro de
+    # la caja, el porcentaje se calculaba sobre un alto que ya estaba ocupado
+    # y todo lo que pasara del 77% topaba igual: dos anos distintos se
+    # dibujaban iguales. Se comprueba el orden, no el pixel.
+    porc = [(x["a"].rstrip("*"), x["px"]) for x in barras]
+    valores = {a: XM["por_anio"][a]["fob"] for a in XM["por_anio"]}
+    # La comparacion va en los dos sentidos. Mirar solo uno dejaba pasar el
+    # caso que importa: dos anos altos topando contra el mismo maximo, que es
+    # como se veia el defecto —2024 y 2025 dibujados iguales—.
+    desorden = []
+    for i, x in enumerate(porc):
+        for y in porc[i + 1:]:
+            if x[0] not in valores or y[0] not in valores:
+                continue
+            vx, vy = valores[x[0]], valores[y[0]]
+            # Diferencias de menos del 3% pueden empatar por redondeo a pixel.
+            if abs(vx - vy) / max(vx, vy) < 0.03:
+                continue
+            # El empate es la forma que tenia el defecto: dos anos que se
+            # diferencian en un 19% dibujados con el mismo alto, porque los
+            # dos topaban contra el maximo. Comparar solo «mayor que» no lo
+            # veia —ningun estricto dispara cuando los dos lados son iguales—.
+            if abs(x[1] - y[1]) <= 1 or (vx > vy) != (x[1] > y[1]):
+                desorden.append((x, y))
+    if desorden:
+        print(f"  LAS BARRAS NO SIGUEN AL VALOR: {desorden[:2]}")
+        ok = False
+    else:
+        print("  la altura de cada barra sigue a su FOB: ok")
+
+    nota = pg.text_content("#expSerieNota") or ""
+    frontera = XM["rezago"]["frontera_completitud"]
+    if frontera not in nota:
+        print("  LA SERIE NO DECLARA LA FRONTERA DE COMPLETITUD")
+        ok = False
+    elif "rezago" not in nota:
+        print("  LA SERIE NO EXPLICA QUE LO ULTIMO ES REZAGO Y NO CAIDA")
+        ok = False
+    else:
+        print(f"  declara la frontera {frontera} y el rezago: ok")
+
+    # --- regla 3: el territorio, solo donde hay ubigeo ---------------------
+    usados = XM["departamentos"]["anios_usados"]
+    et_dep = pg.text_content("#expDepEt") or ""
+    nota_dep = pg.text_content("#expDepNota") or ""
+    print(f"  territorio sobre {usados[0]}-{usados[-1]}")
+    if usados[0] not in et_dep or usados[-1] not in et_dep:
+        print("  EL CORTE TERRITORIAL NO DECLARA SOBRE QUE ANOS SE CALCULA")
+        ok = False
+    if anio_curso in et_dep:
+        print("  EL CORTE TERRITORIAL SE EXTIENDE AL ANO SIN UBIGEO")
+        ok = False
+    apaga = any(t in nota_dep for t in ("dejando de llenar", "apagando",
+                                        "se está apagando"))
+    if "domicilio fiscal" not in nota_dep or not apaga:
+        print("  LA NOTA NO ADVIERTE QUE EL UBIGEO NO ES DOMICILIO FISCAL "
+              "NI QUE SE ESTA APAGANDO")
+        ok = False
+    else:
+        print("  advierte que el ubigeo apunta al fundo y que se apaga: ok")
+
+    # --- el conteo de destinos es un conteo ---------------------------------
+    # `paises` viaja recortado a los diez mayores, asi que su largo no es el
+    # numero de destinos. Cuando lo era, toda la tabla decia «10 destinos».
+    destinos = pg.eval_on_selector_all(
+        "#tExpEmpresas tbody tr td:nth-child(4) .sub2",
+        "f => f.map(x => parseInt(x.textContent))")
+    if destinos and max(destinos) <= 10:
+        print(f"  EL CONTEO DE DESTINOS TOPA EN {max(destinos)}: "
+              "esta contando una lista recortada")
+        ok = False
+    else:
+        print(f"  destinos por empresa: hasta {max(destinos)}: ok")
+
+    # --- regla 4: aqui no se anualiza --------------------------------------
+    # El selector del encabezado multiplica las cifras de las vistas que miden
+    # diez semanas. Esta trae anos medidos y tiene que ignorarlo: si al pasar
+    # a «Anual» el FOB se mueve, alguien esta extrapolando lo ya medido.
+    antes = pg.eval_on_selector("#expKpis > div .v", "e => e.textContent")
+    botones = pg.eval_on_selector_all(".periodo button",
+                                      "b => b.map(x => x.textContent.trim())")
+    if "Anual" in botones:
+        pg.click(".periodo button:has-text('Anual')")
+        pg.wait_for_timeout(600)
+        pg.evaluate("() => location.hash = '#exportacion'")
+        pg.wait_for_timeout(600)
+        despues = pg.eval_on_selector("#expKpis > div .v", "e => e.textContent")
+        if antes != despues:
+            print(f"  EL PERIODO ANUALIZA UNA CIFRA YA MEDIDA: "
+                  f"{antes} -> {despues}")
+            ok = False
+        else:
+            print("  el selector de periodo no toca los anos medidos: ok")
+        if "Medido" in botones:
+            pg.click(".periodo button:has-text('Medido')")
+            pg.wait_for_timeout(400)
+
+    # --- cambiar de ano cambia la tabla ------------------------------------
+    fob_antes = pg.eval_on_selector("#tExpEmpresas tbody tr td:nth-child(2)",
+                                    "e => e.textContent")
+    pg.select_option("#expAnio", anio_curso)
+    pg.wait_for_timeout(700)
+    fob_curso = pg.eval_on_selector("#tExpEmpresas tbody tr td:nth-child(2)",
+                                    "e => e.textContent")
+    pie = pg.text_content("#expAnioPie") or ""
+    if fob_antes == fob_curso:
+        print("  CAMBIAR DE ANO NO CAMBIA LA TABLA")
+        ok = False
+    elif "regularizando" not in pie:
+        print("  EL ANO EN CURSO NO AVISA QUE SIGUE REGULARIZANDO")
+        ok = False
+    else:
+        print("  al ano en curso: la tabla cambia y el pie avisa: ok")
+
+    # --- lo reservado por la Ley 29733, dicho ------------------------------
+    pie_nota = pg.text_content("#expNota") or ""
+    if "29733" not in pie_nota:
+        print("  NO SE DECLARA LO RESERVADO POR LA LEY 29733")
+        ok = False
+    else:
+        print("  declara lo que queda fuera por proteccion de datos: ok")
 
     # La vista de importacion vive de la fila desplegable: si el detalle no
     # cambia al pulsar otra categoria, la tabla es un adorno. Y las dos

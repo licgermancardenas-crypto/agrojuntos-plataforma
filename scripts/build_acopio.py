@@ -192,6 +192,23 @@ def main():
                     for _, r in g.head(8).iterrows()],
         }
 
+    # ------------------------------- la carga fuera de los territorios --
+    # Los 57 territorios se detectaron sobre la densidad de mercado de
+    # insumos. La demanda exportadora no cae en el mismo sitio: la mitad
+    # queda fuera. No significa que estén mal trazados —dentro hay 8,308
+    # dólares exportados por hectárea y fuera 4,856, así que capturan lo
+    # denso— sino que hay un mercado grande al que no llegan.
+    #
+    # Se intentó agrupar los huérfanos para proponer territorios nuevos y no
+    # se puede con este método: los distritos se alinean a lo largo de la
+    # costa y un DBSCAN por cercanía los encadena en un solo bloque de 322.
+    # Se listan por valor, que es lo que permite decidir uno por uno.
+    huerf = j[j.cluster.isna()].copy() if "cluster" in j.columns else j.iloc[:0]
+    if len(huerf):
+        huerf = huerf.sort_values("fob", ascending=False)
+        huerf.to_csv("out/acopio_huerfanos.csv", index=False,
+                     encoding="utf-8-sig")
+
     # ------------------------------------------------- lo que lee la web --
     sin_hub = j[j.hub.isna()]
     # Un JSON chico con lo que las dos salidas muestran: el detalle por
@@ -240,6 +257,20 @@ def main():
                          .sort_values("fob_export_mm", ascending=False).head(15).iterrows()]
                         if ter is not None else []),
         "senasa": pack,
+        "huerfanos": {
+            "motivo": "distritos con embarque que no caen en ninguno de los "
+                      "57 territorios de venta, trazados sobre la densidad "
+                      "del mercado de insumos y no sobre la exportación",
+            "distritos": int(len(huerf)),
+            "fob": float(huerf.fob.sum()) if len(huerf) else 0.0,
+            "pct": round(100 * huerf.fob.sum() / j.fob.sum(), 1) if len(huerf) else 0,
+            "top": [{"n": str(r.dist).title(), "dep": str(r.dep),
+                     "fob": float(r.fob), "empresas": int(r.empresas),
+                     "hub": str(r.hub) if pd.notna(r.hub) else "",
+                     "horas": (float(r.horas_al_hub)
+                               if pd.notna(r.horas_al_hub) else None)}
+                    for _, r in huerf.head(12).iterrows()],
+        },
         "sin_lista_senasa": por_prod,
         "senasa_cobertura": (_js.load(io.open("out/senasa_cobertura.json",
                                               encoding="utf-8"))

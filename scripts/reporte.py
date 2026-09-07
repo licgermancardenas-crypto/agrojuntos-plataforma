@@ -2037,11 +2037,9 @@ page(f"""
               for h in _ac_h[:4]],
              ["Centro", "2 h · MM", "4 h · MM", "6 h · MM", "Distritos"],
              ["l", "r", "r", "r", "r"], cls="tight")}
-      <p class="sub">La pregunta de inventario no es cuánto mercado hay sino
-      cuánto se alcanza: {_ac_h[2]['hub']} pasa de
-      {_ac_h[2]['fob_2h_mm']:,.0f} a {_ac_h[2]['fob_6h_mm']:,.0f} MM al abrir
-      el radio de dos a seis horas, así que lo que vale depende del
-      compromiso de entrega que se ofrezca.</p>
+      <p class="sub">No es cuánto mercado hay sino cuánto se alcanza:
+      {_ac_h[2]['hub']} pasa de {_ac_h[2]['fob_2h_mm']:,.0f} a
+      {_ac_h[2]['fob_6h_mm']:,.0f} MM entre dos y seis horas.</p>
     </div>
     <div>
       <h3 class="rule">Los distritos que más embarcan</h3>
@@ -2060,12 +2058,17 @@ page(f"""
   <h3 class="rule">Territorio por territorio, contra la cartera que ya existe</h3>
   {table([[t["n"][:32], f'{t["fob"]/1e6:,.0f}', nf(t["empresas_export"]),
            nf(t["cartera"]), nf(t["importadores"]), f'{t["horas"]:.1f} h']
-          for t in _ac_t[:5]],
+          for t in _ac_t[:4]],
          ["Territorio", "FOB export MM", "Exportadores", "En cartera",
           "Importadores", "Al centro"],
          ["l", "r", "r", "r", "r", "r"], cls="tight")}
   <p class="sub">«Importadores» son los de insumos vistos en aduanas: donde hay
-  carga y no los hay, el canal está libre.</p>
+  carga y no los hay, el canal está libre. Y hay más carga fuera que dentro:
+  <b>{usd(_AC["huerfanos"]["fob"])} en {_AC["huerfanos"]["distritos"]}
+  distritos ({_AC["huerfanos"]["pct"]:.0f}%)</b> no caen en ningún territorio,
+  porque los 57 se trazaron sobre la densidad del mercado de insumos, donde la
+  exportación no se concentra. Los mayores son
+  {", ".join(x["n"] for x in _AC["huerfanos"]["top"][:4])}.</p>
 
   <div class="note brass" style="margin-top:6px">
     <span class="h">Quién tiene planta, y quién no la usa para exportar</span>

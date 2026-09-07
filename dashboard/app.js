@@ -3092,7 +3092,14 @@ function pintarAcopio() {
       " distritos no tienen centro que los sirva</b> —" +
       sc.mayores.slice(0, 2).map(function (x) {
         return esc(x.n) + " son " + usd(x.fob); }).join(", ") +
-      "—: no es carga cero, es carga fuera de alcance.";
+      "—: no es carga cero, es carga fuera de alcance. Y hay otra brecha, " +
+      "más grande: <b>" + usd(A.huerfanos.fob) + " en " +
+      A.huerfanos.distritos + " distritos (" + nf(A.huerfanos.pct, 0) +
+      "%)</b> no caen en ninguno de los 57 territorios de venta, que se " +
+      "trazaron sobre la densidad del mercado de insumos —donde la " +
+      "exportación no se concentra—. Los mayores son " +
+      A.huerfanos.top.slice(0, 4).map(function (x) {
+        return esc(x.n); }).join(", ") + ".";
 
     tabla(document.getElementById("tAcopioDist"), [
       { k: "n", t: "Distrito", l: 1, f: function (r) {

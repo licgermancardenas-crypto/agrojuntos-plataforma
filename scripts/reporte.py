@@ -12,6 +12,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import unicodedata
 from datetime import date
 

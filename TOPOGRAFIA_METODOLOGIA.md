@@ -501,3 +501,79 @@ acopio → altitud        (cota y piso de cada capa)
 
 `altitud` necesita el agregado exportador, la capa de acopio y los centros;
 `pipeline.py` lo declara y lo hace cumplir.
+
+---
+
+## Cómo se resume esto en el README
+
+El texto que el README traía sobre esta capa, conservado aquí para que la
+explicación viva en un solo sitio:
+
+
+El proyecto bajaba teselas de elevación para sombrear los mapas y las usaba
+solo de fondo. Ahora la cota entra en las cuentas, y cambia dos.
+
+**El tiempo de viaje.** El ruteo declaraba su velocidad «before surface and
+terrain» y el terreno nunca entraba: un camión cargado subiendo tres mil metros
+contaba igual que uno en llano. Con la pendiente medida sobre una ventana de un
+kilómetro de carretera, el promedio nacional pasa de 1.81 a 2.05 horas al centro
+provincial, el costo de una visita sube 12.4% y **el mercado a menos de dos horas
+cae de 76.2% a 67.3%**. El reparto es lo que importa: Huancavelica +27.4%,
+Ayacucho +26.8%, Junín +25.5%, contra Ica +2.9% y Lambayeque +4.2%. La sierra
+pagaba una cuarta parte de su tiempo de viaje sin que ninguna cifra lo dijera,
+así que toda comparación anterior entre una región andina y una costeña
+—costo de servir, sectores bajo dos horas, orden de apertura de centros—
+favorecía a la sierra sin motivo.
+
+**Dónde está cada negocio.** El FOB de exportación sale 75.4% de chala, bajo los
+500 m: agroexportación de valle costero irrigado. El mercado de insumos vive en
+otra parte —quechua, suni y puna suman US$ 205 MM y **75,336 clientes, el 48% del
+padrón**, contra 22,644 en chala—. Son dos negocios distintos y el inventario
+colocado siguiendo el FOB exportador queda lejos de la mitad de los compradores.
+
+La banda de altura de cada producto se **mide** sobre el embarque, no se cita de
+un manual: café con mediana de 1,331 m y p90 de 1,953, cacao 483, arándano 290,
+uva 354. Que el café caiga en su banda conocida es una validación independiente
+de que el ubigeo del manifiesto apunta al fundo y no al domicilio fiscal.
+
+**La red vigente son ocho centros con promesa diferenciada**: Chiclayo, Pisco,
+Bellavista, Juliaca, Satipo y Tarma —los que elige la cobertura máxima— más
+**Huamachuco** y **Sicuani**, que entraron por decisión y no por algoritmo. La
+promesa es de **cuatro horas en costa y seis en sierra y selva**, y con ella
+cubre el 64.4% del mercado —contra 49.4% cuando la vara era única de cuatro
+horas y 26.1% si se exigieran dos en todas partes—.
+
+La vara diferenciada no es un ablandamiento: es lo que el terreno obliga. La
+sierra paga una cuarta parte más de su tiempo de viaje por el desnivel, así que
+prometer lo mismo en los dos sitios significa incumplir en uno. Por región:
+costa 64% de su mercado dentro de cuatro horas, sierra 67% y selva alta
+77% dentro de seis; la selva baja se queda en 45% y es el hueco que
+ninguna vara arregla, porque ahí el problema es que no hay carretera. El motivo del
+séptimo está medido: Sánchez Carrión y Pataz es el mayor territorio del país
+—US$ 33.6 MM, 9,114 clientes, el 69% de su mercado sobre los 3,000 m— y no lo
+sirve nadie a dos horas; el mejor centro posible, su propia capital, alcanza el
+22% de ese mercado a esa vara y el 63% a cuatro. Con vara de dos horas
+Huamachuco es el candidato número 14 para el séptimo almacén; con vara de
+cuatro es el primero del país. La vara cambia el ranking entero, así que la
+promesa se declara en `build_hubs.py` y viaja en `red_elegida.json` en vez de
+quedar implícita en el código. Sánchez Carrión pasa a responder a Huamachuco y
+su cartera alcanzada sube de 93 a 120 de sus 133 empresas.
+
+**Los centros de distribución se movieron.** Estaban elegidos con el reloj en
+llano y por eso Otuzco —a 2,675 m— cubría Virú y Chao, que están a 61 y 532 m y
+son los dos distritos de mayor embarque del país: el 20.2% del FOB exportador
+quedaba asignado a un centro 1,500 m por encima de su carga. Rehecha la elección
+sobre el grafo con pendiente, **la mitad de los seis cambia** —Otuzco, Jauja y
+Picota salen; Bellavista, Juliaca y Tarma entran— y Otuzco se cae de los doce
+candidatos. Los tres que salen son los tres que vivían de una cuesta que el
+modelo contaba como llano.
+
+Detrás de eso: 314 distritos cambian de centro (US$ 9,009 MM, el 32% del FOB
+situado), el FOB a menos de dos horas de un centro cae de 42.3% a 31.6%, la
+cobertura del mercado de insumos con seis centros baja de 26.2% a 23.1%, y Virú
+entra por su cuenta en el puesto 8: deja de ser territorio servido desde arriba y
+pasa a ser sitio donde poner un centro. La carga cuyo centro está más de 1,500 m
+por encima cae del 20.2% al 3.1%.
+
+El detalle está en [`TOPOGRAFIA_METODOLOGIA.md`](TOPOGRAFIA_METODOLOGIA.md).
+

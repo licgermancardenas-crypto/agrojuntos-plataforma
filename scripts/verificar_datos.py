@@ -16,6 +16,7 @@ Es exactamente el trabajo que conviene que haga una máquina en cada push.
 Uso:
     python scripts/verificar_datos.py
 """
+import glob
 import io
 import json
 import os
@@ -102,11 +103,13 @@ def coherencia():
 def documentacion():
     """Las cifras del README, contra los datos de los que salen."""
     print("\nlas cifras de la documentación, contra los datos")
+    # Todos los documentos de la raíz y no una lista escrita a mano: al partir
+    # el README en cuatro metodologías, las cifras se mudaron de archivo y esta
+    # comprobación empezó a fallar por buscarlas donde ya no estaban. Con el
+    # glob, una cifra vale esté donde esté escrita, que es lo que importa.
     txt = ""
-    for doc in ("README.md", "AGROEXPORTACION_METODOLOGIA.md"):
-        p = os.path.join(RAIZ, doc)
-        if os.path.exists(p):
-            txt += io.open(p, encoding="utf-8").read()
+    for p in sorted(glob.glob(os.path.join(RAIZ, "*.md"))):
+        txt += io.open(p, encoding="utf-8").read()
     exp = carga("exportaciones/mercado.json")
     imp = carga("importaciones/mercado.json")
     aco = carga("acopio.json")

@@ -2001,6 +2001,260 @@ page(f"""
 """, "Parte VI · Centros de distribución")
 
 
+# ------------------------------------------------ la red que se decidio ----
+# La pagina anterior es la curva del algoritmo: que compra cada centro segun
+# el radio que se acepte. Esta es otra cosa y por eso va aparte: la red que se
+# eligio, con los dos centros que no salieron de la optimizacion sino de mirar
+# un caso, y con la promesa de servicio que la acompana. Confundirlas seria
+# presentar una decision comercial como un resultado tecnico.
+_REDJ = _json.load(open("out/red_elegida.json", encoding="utf-8"))
+_CAN = _json.load(open("out/canal.json", encoding="utf-8"))
+_ALT = _json.load(open("out/altitud.json", encoding="utf-8"))
+_RUT = pd.read_csv("out/ruteo_departamento.csv", encoding="utf-8-sig")
+
+_por_dec = [c for c in _REDJ["centros"] if c["por"] == "decision"]
+_reg = {r["region"]: r for r in _REDJ["por_region"]}
+_RED_ROWS = [[c["hub"], c["provincia"], c["region"],
+              "por decisión" if c["por"] == "decision" else "por cobertura"]
+             for c in _REDJ["centros"]]
+_vara = " · ".join("%.0f h en %s" % (v, k.lower())
+                   for k, v in sorted(_REDJ["promesa_h"].items(),
+                                      key=lambda x: x[1]))
+page(f"""
+  <span class="kicker">Parte VI · La red que se decidió</span>
+  <h2 class="title">Ocho centros y <em>dos promesas</em></h2>
+  <p class="deck">La cobertura máxima es un cálculo; la red es una decisión.
+     Seis centros salen del algoritmo con vara de dos horas; Huamachuco y
+     Sicuani entraron por otra razón, y la promesa de servicio dejó de ser un
+     número único porque el terreno no se reparte parejo.</p>
+
+  <div class="kpis">
+    <div><span class="v">{len(_REDJ["centros"])}</span><span class="l">centros, {len(_por_dec)} de ellos<br>puestos por decisión</span></div>
+    <div><span class="v">{_REDJ["sam_cubierto_promesa_pct"]:.0f}%</span><span class="l">del mercado dentro<br>de la promesa</span></div>
+    <div><span class="v">{_REDJ["sam_cubierto_2h_pct"]:.0f}%</span><span class="l">si se exigieran dos<br>horas en todas partes</span></div>
+    <div><span class="v">{_reg["SIERRA"]["pct"]:.0f}%</span><span class="l">de la sierra, dentro<br>de sus seis horas</span></div>
+  </div>
+
+  <h3 class="rule">Los ocho centros, y cómo entró cada uno</h3>
+  {table(_RED_ROWS, ["Centro", "Provincia", "Región", "Cómo entró"],
+         ["l","l","l","l"])}
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <div class="note">
+        <span class="h">Por qué Huamachuco</span>
+        <p>Sánchez Carrión y Pataz es el mayor territorio del país —US$ 33.6 MM,
+        9,114 clientes— y está alto: el 69% de su mercado por encima de los
+        3,000 m. <b>No lo sirve nadie a dos horas.</b> El mejor centro posible
+        es su propia capital y alcanza el 22% de ese mercado a esa vara y el 63%
+        a cuatro. Con vara de dos horas Huamachuco es el candidato número 14
+        para el séptimo almacén; con vara de cuatro es el primero del país.</p>
+      </div>
+      <div class="note" style="margin-top:6px">
+        <span class="h">Por qué Sicuani, y por qué no Urubamba</span>
+        <p>De los puntos de venta que le tocaban a Juliaca, 435 quedaban fuera de
+        su propia promesa: el altiplano tenía los clientes y no tenía cómo
+        abastecerlos. Una docena de candidatos rescata entre 166 y 203, todos en
+        el mismo hueco, así que el ranking por clientes no decide. Decide la
+        distancia del candidato a la red que ya existe: <b>un satélite se
+        reabastece de una casa madre</b>. Urubamba compra 400 clientes más y
+        está a 5.7 h de todo; Sicuani está a 3.3 h y se abastece de Juliaca.</p>
+      </div>
+    </div>
+    <div>
+      <div class="note brass">
+        <span class="h">La promesa diferenciada</span>
+        <p>Cuatro horas en costa y seis en sierra y selva. No es un
+        ablandamiento: la sierra paga una cuarta parte más de su tiempo de viaje
+        por el desnivel, así que prometer lo mismo en los dos sitios significa
+        incumplir en uno. Con los mismos ocho centros y sin abrir nada, la
+        cobertura pasa de 49.4% a <b>{_REDJ["sam_cubierto_promesa_pct"]:.1f}%</b>
+        —costa {_reg["COSTA"]["pct"]:.0f}% de sus US$ {_reg["COSTA"]["sam_mm"]:,.0f} MM,
+        sierra {_reg["SIERRA"]["pct"]:.0f}% de {_reg["SIERRA"]["sam_mm"]:,.0f} MM,
+        selva alta {_reg["SELVA ALTA"]["pct"]:.0f}%—.</p>
+        <p>La <b>selva baja se queda en {_reg["SELVA BAJA"]["pct"]:.0f}%</b> y es
+        el hueco que ninguna vara arregla: ahí el problema no es la promesa sino
+        que no hay carretera.</p>
+      </div>
+      <div class="note" style="margin-top:6px">
+        <span class="h">Lo que no se arregla abriendo</span>
+        <p>Encadenando ocho satélites nacionales, los 257 puntos huérfanos del
+        sur se quedan donde estaban: el sur no compite por plata. Y obligando al
+        algoritmo a resolverlo, no encuentra un candidato del altiplano que
+        pueda abastecerse: lo que falta ahí es un almacén con su propia línea.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte VI · La red que se decidió")
+
+
+# ---------------------------------------------------- el terreno y la cota -
+_peor = _RUT.dropna(subset=["horas_llano"]).copy()
+_peor["mas"] = 100 * (_peor.horas_real / _peor.horas_llano - 1)
+_peor = _peor.sort_values("mas", ascending=False)
+_TER_ROWS = [[cap(r["dep"]), f'{r["alt_m"]:,.0f} m', f'{r["horas_llano"]:.2f} h',
+              f'{r["horas_real"]:.2f} h', f'+{r["mas"]:.0f}%']
+             for _, r in pd.concat([_peor.head(5), _peor.tail(3)]).iterrows()]
+_ban = [b for b in _ALT["bandas"] if b["fob_mm"] > 900][:7]
+_BAN_ROWS = [[b["familia"], f'US$ {b["fob_mm"]:,.0f} MM', f'{b["p10"]:,.0f} m',
+              f'{b["p50"]:,.0f} m', f'{b["p90"]:,.0f} m'] for b in _ban]
+_pisos = sorted(_ALT["sectores"]["por_piso"], key=lambda x: -x["sam_mm"])
+_PISO_ROWS = [[p["piso"], f'{p["sectores"]:,}', f'US$ {p["sam_mm"]:,.1f} MM',
+               f'{p["clientes"]:,}'] for p in _pisos]
+_sierra_cli = sum(p["clientes"] for p in _pisos
+                  if p["piso"] in ("quechua", "suni", "puna"))
+_tot_cli = sum(p["clientes"] for p in _pisos)
+_chala_fob = [d for d in _ALT["distritos"]["por_piso"]
+              if d["piso"] == "chala"][0]
+page(f"""
+  <span class="kicker">Parte VI · El relieve entra en la cuenta</span>
+  <h2 class="title">La sierra pagaba una cuarta parte de su viaje
+     <em>y ninguna cifra lo decía</em></h2>
+  <p class="deck">El proyecto bajaba teselas de elevación para sombrear los
+     mapas y las usaba solo de fondo. Leídas como dato corrigen dos cosas: el
+     tiempo de viaje, que ignoraba el desnivel, y la pregunta de qué se puede
+     sembrar —y por lo tanto vender— en cada sitio.</p>
+
+  <div class="kpis">
+    <div><span class="v">11 m</span><span class="l">error mediano de la cota<br>contra 20 altitudes publicadas</span></div>
+    <div><span class="v">2.05 h</span><span class="l">al centro provincial<br>con el desnivel contado</span></div>
+    <div><span class="v">1.81 h</span><span class="l">lo que decía esta<br>plataforma hasta ayer</span></div>
+    <div><span class="v">67.3%</span><span class="l">del mercado a menos de<br>dos horas, antes 76.2%</span></div>
+  </div>
+
+  <h3 class="rule">Lo que agrega el terreno, por región</h3>
+  {table(_TER_ROWS,
+         ["Región", "Cota media", "En llano", "Con terreno", "Más"],
+         ["l","r","r","r","r"])}
+  <p class="sub">El promedio nacional sube 13% y el reparto es lo que importa:
+  toda comparación anterior entre una región andina y una costeña —costo de
+  servir, sectores bajo dos horas, orden de apertura— la favorecía sin motivo.
+  La pendiente no se mide entre nodos del mapa vial sino sobre una ventana de un
+  kilómetro de carretera: a 300 m por píxel, un tramo corto en ladera hereda el
+  gradiente del cerro y no el de la vía, y medida así inflaba el grafo un 47%.</p>
+
+""", "Parte VI · El relieve entra en la cuenta")
+
+page(f"""
+  <span class="kicker">Parte VI · Los pisos ecológicos</span>
+  <h2 class="title">El dinero exportador y los clientes
+     <em>no están a la misma altura</em></h2>
+  <p class="deck">Con la cota de cada sector y de cada distrito con embarque, la
+     misma pregunta se contesta dos veces y da distinto: dónde sale el FOB y
+     dónde vive quien compra insumos.</p>
+
+  <div class="two">
+    <div>
+      <h3 class="rule">El mercado de insumos, por piso</h3>
+      {table(_PISO_ROWS, ["Piso", "Sectores", "Mercado", "Clientes"],
+             ["l","r","r","r"])}
+      <p class="sub">El FOB de exportación sale <b>{_chala_fob["pct"]:.0f}% de
+      chala</b>, bajo los 500 m: agroexportación de valle costero irrigado. El
+      padrón de compradores está en otra parte —quechua, suni y puna suman
+      <b>{_sierra_cli:,} clientes, el {100*_sierra_cli/_tot_cli:.0f}%</b>—. Son
+      dos negocios distintos: el exportador es concentrado, costero y de ticket
+      grande; el de sierra es disperso, de ticket chico y de muchos. Inventario
+      colocado siguiendo el FOB queda lejos de la mitad de los compradores.</p>
+    </div>
+    <div>
+      <h3 class="rule">La banda de cada producto</h3>
+      {table(_BAN_ROWS, ["Producto", "FOB", "p10", "Mediana", "p90"],
+             ["l","r","r","r","r"])}
+      <div class="note">
+        <span class="h">Medida sobre el embarque, no citada de un manual</span>
+        <p>Cada línea del manifiesto cruzada con la cota del distrito que
+        declara, sobre los años en que el ubigeo viene lleno. Que el café salga
+        con mediana de
+        {[b for b in _ban if b["familia"].startswith("Caf")][0]["p50"]:,.0f} m
+        —su banda conocida— es una comprobación independiente de que ese campo
+        apunta al fundo y no a la oficina: si apuntara a la oficina, el café
+        tendría la cota de Lima.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte VI · Los pisos ecológicos")
+
+
+# ------------------------------------------------------- la red de canal ---
+_CANV = _CAN["viabilidad"]
+_REP_ROWS = [[r["hub"], f'{r["puntos"]:,}', f'{r["del_padron"]:,}',
+              f'{r["pct_en_promesa"]:.0f}%', f'{r["horas_mediana"]:.1f} h',
+              f'{r["clientes"]:,}'] for r in _CAN["reparto"]]
+# Tres varas en papel y las cinco en el sitio: la pagina no da para mas y lo
+# que la tabla tiene que mostrar es la forma de la curva, no cada escalon.
+_VIA_ROWS = [[f'US$ {c["margen_min"]:,}', f'{c["puntos"]:,}',
+              f'{c["clientes"]:,}'] for c in _CANV["curva"][:3]]
+_ABRE = [a for a in _CAN["apertura"][:5]]
+_ABR_ROWS = [[str(a["k"]), a["nombre"][:38],
+              "poblado" if a["clase"] == "pueblo" else
+              ("padrón" if a["clase"] == "canal" else "comercio"),
+              a["dep"][:18], f'{a["clientes_nuevos"]:,}']
+             for a in _ABRE]
+page(f"""
+  <span class="kicker">Parte VI · La red de canal</span>
+  <h2 class="title">El almacén no le vende al agricultor:
+     <em>le vende a quien sí</em></h2>
+  <p class="deck">En el mayor territorio del país hay 9,114 clientes y 133
+     empresas formales: un almacén propio atiende al 1.5% de ese mercado. Esta
+     capa mide quién le vende al resto, y no inventa la red porque ya existe.</p>
+
+  <div class="kpis">
+    <div><span class="v">{_CAN["con_canal"]["pct"]:.0f}%</span><span class="l">de los clientes tiene un<br>comercio a 45 minutos</span></div>
+    <div><span class="v">{_CAN["con_sitio"]["pct"]:.0f}%</span><span class="l">tiene algún sitio<br>donde abrir</span></div>
+    <div><span class="v">{_CAN["sin_candidato"]["pct"]:.1f}%</span><span class="l">no tiene ni tienda<br>ni pueblo cerca</span></div>
+    <div><span class="v">{_CAN["cadena_completa"]["pct"]:.0f}%</span><span class="l">tiene la cadena completa:<br>tienda cerca y abastecida</span></div>
+  </div>
+
+  <div class="two" style="margin-top:4px">
+    <div>
+      <h3 class="rule">Quién resurte a quién</h3>
+      {table(_REP_ROWS,
+             ["Centro", "Puntos", "Del padrón", "En promesa", "Mediana",
+              "Clientes"], ["l","r","r","r","r","r"])}
+      <p class="sub">El cruce da vuelta al mapa: Pisco resurte 1,476 puntos que
+      llegan a 7,470 clientes —costa densa, muchas tiendas sobre la misma
+      gente— y Juliaca 287 que llegan a 13,998. La cadena vale lo que valga su
+      tramo más débil.</p>
+    </div>
+    <div>
+      <h3 class="rule">Los primeros ocho a captar o abrir</h3>
+      {table(_ABR_ROWS, ["#", "Punto", "Qué es", "Dónde", "Clientes nuevos"],
+             ["r","l","l","l","r"])}
+      <p class="sub">Los pueblos salen del Directorio Nacional de Centros
+      Poblados del INEI: 94,922 censados, 24,591 con coordenada tras cruzarlos
+      con OpenStreetMap. Los que no pegaron no se inventan.</p>
+    </div>
+  </div>
+
+  <h3 class="rule">Si el punto es negocio</h3>
+  <div class="two">
+    <div>
+      {table(_VIA_ROWS,
+             ["Margen al año, mínimo", "Puntos que lo superan",
+              "Clientes detrás"], ["l","r","r"])}
+    </div>
+    <div>
+      <div class="note brass">
+        <span class="h">La cifra incómoda</span>
+        <p>Repartido el mercado —cada sector al punto más cercano, sin contar a
+        nadie dos veces— <b>{_CANV["puntos_con_mercado"]:,} de
+        {_CANV["puntos_que_venden"]:,} puntos tienen mercado propio</b>. Con la
+        economía unitaria de la propia empresa —penetración
+        {100*_CANV["penetracion"]:.1f}%, margen bruto
+        {100*_CANV["margen_bruto"]:.0f}%— <b>el mayor deja
+        US$ {_CANV["escenarios"][1]["margen_mayor"]:,.0f} al año</b> y solo
+        cinco pasan de US$ 10,000.</p>
+        <p>Ese margen es lo que capturaría AgroJuntos a través del punto, no lo
+        que vende la tienda. Y el piso de viabilidad es una decisión comercial:
+        por eso aquí va la curva y no un veredicto.</p>
+      </div>
+    </div>
+  </div>
+""", "Parte VI · La red de canal")
+
+
+
+
 # ------------------------------------------- dónde está la carga de verdad --
 # El reparto exportador de las páginas anteriores sitúa a cada empresa por su
 # domicilio fiscal. Esta lo hace por el ubigeo del manifiesto, que apunta al

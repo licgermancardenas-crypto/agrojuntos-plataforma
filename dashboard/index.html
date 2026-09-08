@@ -524,9 +524,10 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="b">
       <p>Horas reales de manejo desde cada sector productivo hasta su centro
       de provincia, calculadas sobre 88,962 vías de OpenStreetMap con
-      velocidad por tipo de camino y superficie. La columna
-      <b>línea recta</b> es lo que daba el cálculo anterior, que ignoraba la
-      carretera.</p>
+      velocidad por tipo de camino, superficie <b>y pendiente</b>, medida
+      sobre el relieve. La columna <b>del terreno</b> es cuánto de esa hora
+      pone el desnivel; la de <b>línea recta</b>, lo que daba el cálculo
+      anterior al ruteo, que ignoraba la carretera.</p>
     </div>
     <div class="tw"><table id="tLogistica"></table></div>
   </div>
@@ -540,6 +541,21 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="card">
       <div class="h"><h3>Lo que corrigió el ruteo real</h3></div>
       <div class="b" id="logNota"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>El mercado por piso ecológico</h3>
+      <span class="eyebrow">cota muestreada del relieve</span></div>
+    <div class="b">
+      <div class="grid2">
+        <div class="sub-card"><div class="eyebrow">Dónde está el mercado de
+          insumos</div><div class="barras compact" id="altSam"></div></div>
+        <div class="sub-card"><div class="eyebrow">Dónde sale el FOB
+          exportador</div><div class="barras compact" id="altFob"></div></div>
+      </div>
+      <div class="tw" style="margin-top:18px"><table id="tAltBanda"></table></div>
+      <p class="sub" id="altNota"></p>
     </div>
   </div>
 

@@ -41,7 +41,13 @@ def slug(s):
 
 
 # ------------------------------------------------------------------ grafo --
-G, coords, arbol = grafo_vial.construir()
+# El grafo ya lleva la pendiente, y con ella dejo de ser simetrico: el tiempo
+# de bajar del centro al valle no es el de subir. Aqui se mide el sentido de
+# la entrega —del centro hacia la celda de demanda—, que es el viaje que el
+# almacen hace todos los dias, y por eso `directed=True` y la matriz directa.
+g = grafo_vial.construir()
+coords, arbol = g.coords, g.arbol
+G = g.csr()
 
 
 def snap(lons, lats):
@@ -79,7 +85,7 @@ print(f"candidatos: {len(cand)} ciudades capitales con mercado relevante",
 print("ruteando desde cada candidato...", flush=True)
 T = np.full((len(cand), len(dem)), np.inf)
 for i, src in enumerate(cand_idx):
-    d = dijkstra(G, indices=int(src), directed=False)
+    d = dijkstra(G, indices=int(src), directed=True)
     T[i] = d[dem_idx]
     if (i + 1) % 10 == 0:
         print(f"  {i+1}/{len(cand)}", flush=True)

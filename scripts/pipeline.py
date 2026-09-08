@@ -89,6 +89,13 @@ ETAPAS = [
      ["out/acopio.json", "out/acopio_distrito.csv", "out/acopio_hub.csv"],
      "sitúa la carga donde se produce y la cruza con los centros"),
 
+    ("altitud", "build_altitud.py",
+     [EXP + "operaciones_limpias.csv", "out/acopio.json",
+      "out/acopio_distrito.csv", "out/modelo_v2_sector.csv",
+      "out/hubs_cobertura.csv"],
+     ["out/altitud.json", "out/altitud_sector.csv", "out/altitud_distrito.csv"],
+     "la cota y el piso ecológico de cada capa"),
+
     ("reporte", "reporte.py",
      [IMP + "mercado.json", EXP + "mercado.json", "out/acopio.json"],
      ["out/reporte_agrojuntos.html"], "arma el informe y lo imprime"),

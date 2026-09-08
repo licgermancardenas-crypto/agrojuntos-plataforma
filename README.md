@@ -29,9 +29,12 @@ construye.
 | Importación de insumos, anualizada | US$ 1,313 MM CIF |
 | Sectores estadísticos georreferenciados | 7,036 |
 
-El SAM está a distancia razonable: **74.6% a menos de dos horas** de un centro
-provincial, medido por ruteo sobre la red vial. La demanda se concentra:
-**45% entre setiembre y diciembre**.
+El SAM está a distancia razonable: **67.3% a menos de dos horas** de un centro
+provincial, ruteado sobre la red vial y con la pendiente contada. Sin contar el
+desnivel daba 76.2%, que es la cifra que este documento publicó hasta ahora: la
+diferencia son nueve puntos de mercado que estaban más lejos de lo que decíamos,
+casi todos en la sierra. La demanda se concentra: **45% entre setiembre y
+diciembre**.
 
 ---
 
@@ -74,7 +77,10 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 |---|---|
 | `datos/mercado/modelo_v3_departamento.csv` | Modelo final: mercado, clientes, logística, estacionalidad y score por región |
 | `datos/territorio/sectores_2024.csv` | Los 7,036 sectores con UBIGEO, hectáreas y centroide |
-| `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial |
+| `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial con pendiente, ida y vuelta por separado |
+| `datos/topografia/altitud_sector.csv` | Cota y piso ecológico de los 7,036 sectores |
+| `datos/topografia/altitud_distrito.csv` | Cota, piso y desnivel al centro de los 580 distritos con embarque |
+| `datos/topografia/altitud.json` | Mercado y FOB por piso, y la banda de altura medida de cada producto |
 | `datos/estacionalidad/estacionalidad_region.csv` | Demanda mes a mes, mes pico y concentración |
 | `datos/empresas/empresas_agro_activas.csv` | Empresas con RUC, razón social, clase y distrito |
 | `datos/comercio/comercio_importadores.csv` | Quién importa fertilizante y agroquímico, con valor FOB y distrito |
@@ -202,11 +208,17 @@ distribuyen entre los 7,036 sectores en proporción a sus hectáreas. Sirve para
 priorizar territorio, no para cotizar a un productor concreto.
 
 **Los tiempos de viaje se rutean sobre la red vial** de OpenStreetMap: 88,962
-vías, 5.2 millones de nodos. La velocidad de cada tramo es su clase de vía
-ajustada por superficie y limitada por la velocidad máxima señalizada. No modela
-congestión ni cierres estacionales, y 143 de los 7,036 sectores quedan fuera del
-grafo por no tener vía mapeada cerca. `logistica_sector.csv` conserva la
-estimación geodésica previa para contraste.
+vías, 5.2 millones de puntos de geometría que se contraen a 345,807 nodos de
+decisión. La velocidad de cada tramo es su clase de vía ajustada por superficie,
+limitada por la velocidad máxima señalizada y **corregida por la pendiente**,
+medida sobre el relieve en una ventana de un kilómetro de carretera. Con
+pendiente el grafo deja de ser simétrico —subir no cuesta lo que bajar—, así que
+el viaje redondo es la suma de las dos mitades y no el doble de la ida. El
+detalle está en [`TOPOGRAFIA_METODOLOGIA.md`](TOPOGRAFIA_METODOLOGIA.md).
+
+No modela congestión ni cierres estacionales, y 144 de los 7,036 sectores quedan
+fuera del grafo por no tener vía mapeada cerca. `logistica_sector.csv` conserva
+la estimación geodésica previa para contraste.
 
 **Los datos de aduanas del eje general cubren diez semanas**, de junio a agosto
 de 2026. Las dos subcategorías que corren sobre el histórico acumulado son la
@@ -855,6 +867,43 @@ uva son US$ 4,892 MM en 105 distritos y las hortalizas frescas del espárrago
 1,178 MM en 138. Cada uno con su salvedad, porque la partida agrupa más de lo
 que el nombre sugiere: la de uva junta fresca y pasas, y la del espárrago lo
 mete con otras hortalizas frescas sin manera de separarlos.
+
+## El relieve, como dato y no como dibujo
+
+El proyecto bajaba teselas de elevación para sombrear los mapas y las usaba
+solo de fondo. Ahora la cota entra en las cuentas, y cambia dos.
+
+**El tiempo de viaje.** El ruteo declaraba su velocidad «before surface and
+terrain» y el terreno nunca entraba: un camión cargado subiendo tres mil metros
+contaba igual que uno en llano. Con la pendiente medida sobre una ventana de un
+kilómetro de carretera, el promedio nacional pasa de 1.81 a 2.05 horas al centro
+provincial, el costo de una visita sube 12.4% y **el mercado a menos de dos horas
+cae de 76.2% a 67.3%**. El reparto es lo que importa: Huancavelica +27.4%,
+Ayacucho +26.8%, Junín +25.5%, contra Ica +2.9% y Lambayeque +4.2%. La sierra
+pagaba una cuarta parte de su tiempo de viaje sin que ninguna cifra lo dijera,
+así que toda comparación anterior entre una región andina y una costeña
+—costo de servir, sectores bajo dos horas, orden de apertura de centros—
+favorecía a la sierra sin motivo.
+
+**Dónde está cada negocio.** El FOB de exportación sale 75.4% de chala, bajo los
+500 m: agroexportación de valle costero irrigado. El mercado de insumos vive en
+otra parte —quechua, suni y puna suman US$ 205 MM y **75,336 clientes, el 48% del
+padrón**, contra 22,644 en chala—. Son dos negocios distintos y el inventario
+colocado siguiendo el FOB exportador queda lejos de la mitad de los compradores.
+
+La banda de altura de cada producto se **mide** sobre el embarque, no se cita de
+un manual: café con mediana de 1,331 m y p90 de 1,953, cacao 483, arándano 290,
+uva 354. Que el café caiga en su banda conocida es una validación independiente
+de que el ubigeo del manifiesto apunta al fundo y no al domicilio fiscal.
+
+Queda una consecuencia sin ejecutar: **los seis centros de distribución se
+eligieron con el reloj en llano**, y por eso Otuzco —a 2,675 m— quedó cubriendo
+Virú y Chao, que están a 61 y 532 m y son los dos distritos de mayor embarque del
+país. El 20.2% del FOB exportador está asignado a un centro que se sitúa más de
+1,500 m por encima de su carga. Rehacer la elección mueve los centros, los 57
+territorios y toda cifra que cuelgue de ellos: es decisión de negocio.
+
+El detalle está en [`TOPOGRAFIA_METODOLOGIA.md`](TOPOGRAFIA_METODOLOGIA.md).
 
 ## Sobre los datos crudos de aduanas
 

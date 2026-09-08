@@ -2491,13 +2491,25 @@ function pintarComercio(D, E, W) {
 
 /* ------------------------------------------------------------- logistica -- */
 function vistaLogistica() {
+  pintarPisos();
   cargar("logistica").then(function (D) {
     tabla(document.getElementById("tLogistica"), [
       { k: "n", t: "Departamento", l: 1, f: function (r) {
           return "<b>" + esc(r.n) + "</b>"; } },
       { k: "sam", t: "Mercado", f: function (r) { return usd(r.sam); } },
+      { k: "alt", t: "Cota", f: function (r) {
+          return r.alt === null || r.alt === undefined
+            ? "—" : nf(r.alt) + " m"; } },
       { k: "real", t: "Horas reales", f: function (r) {
           return r.real === null ? "—" : nf(r.real, 1) + " h"; } },
+      /* Lo que agrega el desnivel. Va con signo y en color porque el número
+         que importa no es la hora sino cuánto de ella estaba sin contar: la
+         sierra pagaba una cuarta parte de su viaje y la costa casi nada. */
+      { k: "terr", t: "Del terreno", f: function (r) {
+          if (r.terr === null || r.terr === undefined) return "—";
+          return "<span class='delta " + (r.terr > 0.15 ? "peor" : "") +
+            "' title='" + esc(nf(r.pct_terr, 1) + "% mas que en llano") +
+            "'>+" + nf(r.terr, 2) + " h</span>"; } },
       { k: "proxy", t: "Línea recta", cls: "faint", f: function (r) {
           return r.proxy === null ? "—" : nf(r.proxy, 1) + " h"; } },
       { k: "dif", t: "Diferencia", f: function (r) {
@@ -2535,7 +2547,36 @@ function vistaLogistica() {
     var sin = D.deps.filter(function (r) { return r.sin_puerto > 20; })
       .sort(function (a, b) { return b.sin_puerto - a.sin_puerto; });
 
+    /* El desnivel, dicho con nombres. Sin esto la columna «del terreno» es
+       una cifra más; con esto es el aviso de que las comparaciones entre una
+       región andina y una costeña que se hicieron antes están sesgadas. */
+    /* El porcentaje viene calculado del origen. Sacarlo aquí dividiendo dos
+       cifras ya redondeadas a un decimal convertía un +26% en un +33%. */
+    var sube = D.deps.filter(function (r) {
+      return r.pct_terr !== null && r.pct_terr !== undefined;
+    }).map(function (r) {
+      return {n: r.n, alt: r.alt, pct: r.pct_terr};
+    }).sort(function (a, b) { return b.pct - a.pct; });
+
     document.getElementById("logNota").innerHTML =
+      (sube.length
+        ? "<div class='note'><span class='h'>La pendiente entra en la " +
+          "cuenta</span>Hasta hace poco la hora de viaje salía de la clase " +
+          "de vía y su superficie: un camión cargado subiendo tres mil " +
+          "metros contaba igual que uno en llano. Ahora cada tramo lleva su " +
+          "desnivel, medido sobre el relieve. El promedio nacional sube 13% " +
+          "y el reparto es lo que importa: <b>" +
+          sube.slice(0, 3).map(function (r) {
+            return esc(r.n) + " +" + nf(r.pct, 0) + "%";
+          }).join(", ") + "</b> contra <b>" +
+          sube.slice(-2).map(function (r) {
+            return esc(r.n) + " +" + nf(r.pct, 0) + "%";
+          }).join(" y ") + "</b>. La sierra pagaba una cuarta parte de su " +
+          "tiempo de viaje sin que ninguna cifra lo dijera, así que toda " +
+          "comparación anterior entre una región andina y una costeña " +
+          "—costo de servir, sectores bajo dos horas, orden de apertura— " +
+          "favorecía a la sierra sin motivo.</div>"
+        : "") +
       "<p>Medir la distancia en línea recta parecía inofensivo y no lo era. " +
       "Al rutear sobre la carretera real, " +
       (rescata.length
@@ -2556,6 +2597,73 @@ function vistaLogistica() {
           "Cualquier operación allí depende de vía fluvial o aérea.</div>"
         : "");
   }).catch(fallo);
+}
+
+
+/* ------------------------------------------------- el mercado por piso -- */
+/* Los dos negocios de esta plataforma no viven a la misma altura, y sin la
+   cota no había manera de verlo: el FOB exportador sale de valle costero
+   irrigado y el padrón de compradores de insumos está en la sierra. Un
+   inventario colocado siguiendo el dinero de exportación queda lejos de la
+   mitad de los clientes, que es una decisión de capital tomada al revés.
+
+   La banda de cada producto se mide sobre el embarque —el FOB de cada línea
+   del manifiesto contra la cota del distrito que declara— y no se cita de un
+   manual de agronomía. Que el café salga en su banda conocida es, de paso, la
+   comprobación de que el ubigeo apunta al fundo y no a la oficina. */
+function pintarPisos() {
+  var caja = document.getElementById("altSam");
+  if (!caja) return;
+  cargar("altitud").then(function (A) {
+    var sam = A.sectores.por_piso.slice().sort(function (a, b) {
+      return b.sam_mm - a.sam_mm; });
+    var fob = A.distritos.por_piso.slice().sort(function (a, b) {
+      return b.fob_mm - a.fob_mm; });
+
+    barras(caja, sam.map(function (r) {
+      return {n: r.piso, v: r.sam_mm,
+              t: usd(r.sam_mm * 1e6) + " · " + nf(r.clientes) + " clientes"};
+    }));
+    barras(document.getElementById("altFob"), fob.map(function (r) {
+      return {n: r.piso, v: r.fob_mm, t: usd(r.fob_mm * 1e6)};
+    }));
+
+    tabla(document.getElementById("tAltBanda"), [
+      { k: "familia", t: "Producto", l: 1, f: function (r) {
+          return "<b>" + esc(r.familia) + "</b><span class='sub2'>" +
+            nf(r.distritos) + " distritos</span>"; } },
+      { k: "fob_mm", t: "FOB embarcado", f: function (r) {
+          return usd(r.fob_mm * 1e6); } },
+      { k: "p10", t: "p10", f: function (r) { return nf(r.p10) + " m"; } },
+      { k: "p50", t: "Mediana", f: function (r) {
+          return "<b>" + nf(r.p50) + " m</b>"; } },
+      { k: "p90", t: "p90", f: function (r) { return nf(r.p90) + " m"; } },
+    ], A.bandas, { sort: "fob_mm" });
+
+    var sierra = sam.filter(function (r) {
+      return ["quechua", "suni", "puna"].indexOf(r.piso) >= 0; });
+    var mmS = sierra.reduce(function (a, r) { return a + r.sam_mm; }, 0);
+    var cliS = sierra.reduce(function (a, r) { return a + r.clientes; }, 0);
+    var cliT = sam.reduce(function (a, r) { return a + r.clientes; }, 0);
+    var chala = sam.filter(function (r) { return r.piso === "chala"; })[0];
+    var fobChala = fob.filter(function (r) { return r.piso === "chala"; })[0];
+
+    document.getElementById("altNota").innerHTML =
+      "El FOB de exportación sale <b>" + pct(fobChala ? fobChala.pct : 0, 1) +
+      " de chala</b>, bajo los 500 m: agroexportación de valle costero " +
+      "irrigado. El mercado de insumos vive en otra parte —quechua, suni y " +
+      "puna suman <b>" + usd(mmS * 1e6) + " y " + nf(cliS) + " clientes, el " +
+      pct(100 * cliS / cliT, 0) + " del padrón</b>, contra " +
+      nf(chala ? chala.clientes : 0) + " en chala—. Son dos negocios " +
+      "distintos: el exportador es concentrado, costero y de ticket grande; " +
+      "el de sierra es disperso, de ticket chico y de muchos. " +
+      "La cota sale del relieve a " + esc(A.fuente.split("zoom")[1] || "") +
+      ", con error mediano de " + A.validacion.error_mediano_m + " m contra " +
+      "veinte altitudes publicadas: sirve para separar pisos y no para " +
+      "afirmar la cota de una parcela. La banda de cada producto se mide " +
+      "sobre el embarque de " + A.anios_embarque.join(", ") + ", que son los " +
+      "años en que el manifiesto trae el ubigeo lleno.";
+  }).catch(function () { caja.innerHTML = ""; });
 }
 
 /* ---------------------------------------------------------------- metodo -- */

@@ -1,0 +1,448 @@
+{
+ "generado": "2026-09-07T22:13:48",
+ "fuente": "Terrarium (AWS elevation-tiles-prod) zoom 9, ~299 m/px",
+ "validacion": {
+  "motivo": "cota muestreada contra 20 altitudes publicadas de plaza",
+  "error_mediano_m": 11,
+  "error_p90_m": 37,
+  "peor_caso": "Cusco, 66 m"
+ },
+ "anios_embarque": [
+  "2022",
+  "2023",
+  "2024"
+ ],
+ "sectores": {
+  "total": 7036,
+  "sin_cota": 0,
+  "por_piso": [
+   {
+    "piso": "chala",
+    "sectores": 897,
+    "ha": 1156731,
+    "sam_mm": 103.6,
+    "clientes": 22644
+   },
+   {
+    "piso": "quechua",
+    "sectores": 1634,
+    "ha": 2013545,
+    "sam_mm": 86.3,
+    "clientes": 28447
+   },
+   {
+    "piso": "suni",
+    "sectores": 1562,
+    "ha": 1965411,
+    "sam_mm": 77.0,
+    "clientes": 31256
+   },
+   {
+    "piso": "yunga",
+    "sectores": 577,
+    "ha": 828713,
+    "sam_mm": 54.7,
+    "clientes": 13374
+   },
+   {
+    "piso": "ceja de selva",
+    "sectores": 498,
+    "ha": 1366776,
+    "sam_mm": 54.0,
+    "clientes": 18665
+   },
+   {
+    "piso": "selva alta",
+    "sectores": 308,
+    "ha": 1245377,
+    "sam_mm": 51.8,
+    "clientes": 14978
+   },
+   {
+    "piso": "selva baja",
+    "sectores": 425,
+    "ha": 2204638,
+    "sam_mm": 42.9,
+    "clientes": 11881
+   },
+   {
+    "piso": "puna",
+    "sectores": 1135,
+    "ha": 868454,
+    "sam_mm": 42.0,
+    "clientes": 15633
+   }
+  ]
+ },
+ "distritos": {
+  "total": 580,
+  "por_piso": [
+   {
+    "piso": "chala",
+    "distritos": 190,
+    "fob_mm": 21259.3,
+    "pct": 75.4
+   },
+   {
+    "piso": "yunga",
+    "distritos": 77,
+    "fob_mm": 3227.0,
+    "pct": 11.4
+   },
+   {
+    "piso": "ceja de selva",
+    "distritos": 59,
+    "fob_mm": 2370.1,
+    "pct": 8.4
+   },
+   {
+    "piso": "quechua",
+    "distritos": 103,
+    "fob_mm": 582.1,
+    "pct": 2.1
+   },
+   {
+    "piso": "selva alta",
+    "distritos": 26,
+    "fob_mm": 382.4,
+    "pct": 1.4
+   },
+   {
+    "piso": "selva baja",
+    "distritos": 28,
+    "fob_mm": 199.7,
+    "pct": 0.7
+   },
+   {
+    "piso": "puna",
+    "distritos": 46,
+    "fob_mm": 96.9,
+    "pct": 0.3
+   },
+   {
+    "piso": "suni",
+    "distritos": 51,
+    "fob_mm": 72.3,
+    "pct": 0.3
+   }
+  ]
+ },
+ "bandas": [
+  {
+   "familia": "Arándano, fresa y otras bayas",
+   "fob_mm": 5473.4,
+   "p10": 61.3,
+   "p50": 289.9,
+   "p90": 531.9,
+   "distritos": 172
+  },
+  {
+   "familia": "Uva",
+   "fob_mm": 4892.0,
+   "p10": 99.7,
+   "p50": 354.4,
+   "p90": 432.1,
+   "distritos": 105
+  },
+  {
+   "familia": "Palta, mango, dátil y piña",
+   "fob_mm": 4061.0,
+   "p10": 61.3,
+   "p50": 105.5,
+   "p90": 498.5,
+   "distritos": 275
+  },
+  {
+   "familia": "Café",
+   "fob_mm": 3167.1,
+   "p10": 33.0,
+   "p50": 1330.9,
+   "p90": 1953.2,
+   "distritos": 137
+  },
+  {
+   "familia": "Hortalizas preparadas",
+   "fob_mm": 1255.5,
+   "p10": 18.4,
+   "p50": 70.1,
+   "p90": 1336.4,
+   "distritos": 89
+  },
+  {
+   "familia": "Hortalizas frescas (espárrago y otras)",
+   "fob_mm": 1178.0,
+   "p10": 34.0,
+   "p50": 116.5,
+   "p90": 515.6,
+   "distritos": 138
+  },
+  {
+   "familia": "Cacao en grano",
+   "fob_mm": 1154.2,
+   "p10": 122.4,
+   "p50": 483.5,
+   "p90": 1212.8,
+   "distritos": 105
+  },
+  {
+   "familia": "Cítricos",
+   "fob_mm": 907.1,
+   "p10": 73.0,
+   "p50": 404.2,
+   "p90": 497.2,
+   "distritos": 101
+  },
+  {
+   "familia": "Frutas congeladas",
+   "fob_mm": 867.1,
+   "p10": 33.0,
+   "p50": 73.0,
+   "p90": 158.8,
+   "distritos": 118
+  },
+  {
+   "familia": "Pimienta y ají",
+   "fob_mm": 486.3,
+   "p10": 57.4,
+   "p50": 237.7,
+   "p90": 396.9,
+   "distritos": 94
+  },
+  {
+   "familia": "Cebolla y ajo",
+   "fob_mm": 434.5,
+   "p10": 94.7,
+   "p50": 396.9,
+   "p90": 1206.7,
+   "distritos": 103
+  },
+  {
+   "familia": "Manteca de cacao",
+   "fob_mm": 402.4,
+   "p10": 34.3,
+   "p50": 34.3,
+   "p90": 404.2,
+   "distritos": 53
+  },
+  {
+   "familia": "Banano y plátano",
+   "fob_mm": 348.8,
+   "p10": 67.8,
+   "p50": 105.8,
+   "p90": 125.6,
+   "distritos": 61
+  },
+  {
+   "familia": "Frutas preparadas",
+   "fob_mm": 308.4,
+   "p10": 70.1,
+   "p50": 248.7,
+   "p90": 449.4,
+   "distritos": 88
+  },
+  {
+   "familia": "Jengibre, cúrcuma y especias",
+   "fob_mm": 306.6,
+   "p10": 640.0,
+   "p50": 1040.6,
+   "p90": 1466.7,
+   "distritos": 116
+  },
+  {
+   "familia": "Jugos de fruta",
+   "fob_mm": 282.0,
+   "p10": 16.2,
+   "p50": 94.7,
+   "p90": 158.8,
+   "distritos": 70
+  },
+  {
+   "familia": "Conservas en vinagre",
+   "fob_mm": 262.5,
+   "p10": 18.4,
+   "p50": 70.1,
+   "p90": 1336.4,
+   "distritos": 43
+  },
+  {
+   "familia": "Semillas para siembra",
+   "fob_mm": 232.4,
+   "p10": 103.0,
+   "p50": 146.4,
+   "p90": 396.9,
+   "distritos": 50
+  },
+  {
+   "familia": "Preparaciones alimenticias",
+   "fob_mm": 232.1,
+   "p10": 49.1,
+   "p50": 76.8,
+   "p90": 122.4,
+   "distritos": 78
+  },
+  {
+   "familia": "Hortalizas congeladas",
+   "fob_mm": 208.5,
+   "p10": 18.4,
+   "p50": 158.8,
+   "p90": 637.2,
+   "distritos": 88
+  },
+  {
+   "familia": "Chocolate",
+   "fob_mm": 204.1,
+   "p10": 14.0,
+   "p50": 34.3,
+   "p90": 125.7,
+   "distritos": 93
+  },
+  {
+   "familia": "Legumbres secas",
+   "fob_mm": 202.2,
+   "p10": 19.4,
+   "p50": 76.8,
+   "p90": 850.4,
+   "distritos": 110
+  },
+  {
+   "familia": "Salsas y condimentos",
+   "fob_mm": 162.2,
+   "p10": 16.2,
+   "p50": 70.1,
+   "p90": 430.7,
+   "distritos": 80
+  },
+  {
+   "familia": "Algarroba y otros frutos",
+   "fob_mm": 140.1,
+   "p10": 446.6,
+   "p50": 1007.4,
+   "p90": 2326.1,
+   "distritos": 71
+  },
+  {
+   "familia": "Cacao en polvo",
+   "fob_mm": 124.0,
+   "p10": 34.3,
+   "p50": 34.3,
+   "p90": 840.8,
+   "distritos": 64
+  },
+  {
+   "familia": "Pasta de cacao",
+   "fob_mm": 121.3,
+   "p10": 34.3,
+   "p50": 34.3,
+   "p90": 430.7,
+   "distritos": 58
+  },
+  {
+   "familia": "Legumbres frescas",
+   "fob_mm": 112.5,
+   "p10": 313.9,
+   "p50": 2714.7,
+   "p90": 2714.7,
+   "distritos": 47
+  },
+  {
+   "familia": "Coco y castaña",
+   "fob_mm": 105.1,
+   "p10": 115.8,
+   "p50": 243.0,
+   "p90": 2510.4,
+   "distritos": 48
+  },
+  {
+   "familia": "Tomate preparado",
+   "fob_mm": 93.2,
+   "p10": 594.8,
+   "p50": 594.8,
+   "p90": 594.8,
+   "distritos": 8
+  },
+  {
+   "familia": "Plantas para perfumería",
+   "fob_mm": 83.0,
+   "p10": 66.0,
+   "p50": 540.6,
+   "p90": 1489.5,
+   "distritos": 142
+  },
+  {
+   "familia": "Sopas y caldos",
+   "fob_mm": 51.7,
+   "p10": 14.0,
+   "p50": 153.2,
+   "p90": 153.2,
+   "distritos": 41
+  }
+ ],
+ "hubs": [
+  {
+   "hub": "Pisco",
+   "alt_m": 20.0,
+   "piso": "chala",
+   "distritos": 238,
+   "alt_carga_p50": 389.6,
+   "alt_carga_p90": 604.3,
+   "desnivel_p90": 584.3,
+   "alt_max": 4917.6,
+   "fob_mm": 11759.8
+  },
+  {
+   "hub": "Chiclayo",
+   "alt_m": 32.9,
+   "piso": "chala",
+   "distritos": 103,
+   "alt_carga_p50": 116.2,
+   "alt_carga_p90": 1952.2,
+   "desnivel_p90": 1919.3,
+   "alt_max": 3187.1,
+   "fob_mm": 7614.3
+  },
+  {
+   "hub": "Otuzco",
+   "alt_m": 2674.7,
+   "piso": "quechua",
+   "distritos": 68,
+   "alt_carga_p50": 110.5,
+   "alt_carga_p90": 634.0,
+   "desnivel_p90": -2040.6,
+   "alt_max": 4701.3,
+   "fob_mm": 5466.5
+  },
+  {
+   "hub": "Satipo",
+   "alt_m": 626.6,
+   "piso": "selva alta",
+   "distritos": 18,
+   "alt_carga_p50": 1063.2,
+   "alt_carga_p90": 1457.4,
+   "desnivel_p90": 830.8,
+   "alt_max": 2145.8,
+   "fob_mm": 677.0
+  },
+  {
+   "hub": "Picota",
+   "alt_m": 221.9,
+   "piso": "selva baja",
+   "distritos": 45,
+   "alt_carga_p50": 908.9,
+   "alt_carga_p90": 1875.5,
+   "desnivel_p90": 1653.6,
+   "alt_max": 2612.6,
+   "fob_mm": 417.9
+  },
+  {
+   "hub": "Jauja",
+   "alt_m": 3385.6,
+   "piso": "quechua",
+   "distritos": 72,
+   "alt_carga_p50": 2280.6,
+   "alt_carga_p90": 4140.2,
+   "desnivel_p90": 754.6,
+   "alt_max": 4802.9,
+   "fob_mm": 306.7
+  }
+ ]
+}

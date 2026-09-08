@@ -5,48 +5,49 @@ This replaces the geodesic proxy with routing on the actual road graph: 88,962
 ways across the 25 departments, each edge weighted by the time a loaded
 delivery vehicle would take on it.
 
-Speed model. Peru's road reality is not captured by road class alone — a
-"secondary" road can be asphalt on the coast and a rutted track in the sierra —
-so the speed of every segment is the road class adjusted by its surface, and
-capped by the posted limit where OSM records one. Two thirds of the network
-carries a surface tag and a third a maxspeed tag.
+El grafo, el modelo de velocidad y la pendiente los arma `grafo_vial.py`, que
+es el mismo módulo que usa la elección de centros: clase de vía por superficie,
+topada por el límite señalizado, corregida por la pendiente medida sobre una
+ventana de 1 km de carretera.
+
+Terreno. Durante meses este archivo declaró la velocidad como «free-flow km/h
+for a loaded light truck, before surface and terrain» y el terreno nunca entró:
+un camión cargado subiendo tres mil metros contaba igual que uno en llano, y
+media plataforma —horas al centro, costo de la visita, orden de apertura de
+centros— colgaba de esa cuenta.
+
+Eso obliga a un cambio de fondo: **con pendiente el grafo deja de ser
+simétrico**. Subir de Virú a Otuzco no cuesta lo mismo que bajar, así que el
+ruteo se corre en los dos sentidos —ida del sector al centro, vuelta del centro
+al sector— y el costo del viaje es la suma de las dos, no el doble de una. La
+diferencia entre las dos mitades es, además, un dato en sí: dice de qué lado
+del desnivel está el problema.
 
 Algorithm. The question "how far is each sector from a hub" is answered for the
 whole country in one pass: a virtual source is joined to every hub at zero cost
 and a single Dijkstra then labels every node in the graph with the time to its
-nearest hub. Two passes — provincial capitals, and maritime ports — instead of
-seven thousand separate routings.
+nearest hub. Con el grafo asimétrico se corre además sobre el grafo traspuesto,
+que es el truco estándar para contestar «cuánto tarda cada nodo en llegar al
+hub» en vez de «cuánto tarda el hub en llegar al nodo». Dos destinos —capitales
+provinciales y puertos marítimos— por dos sentidos, y una corrida más en llano
+para poder medir cuánto pesa el terreno.
 """
-import glob
-import json
+import os
 import re
+import sys
 import unicodedata
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 from pyproj import Geod
-from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import dijkstra
-from scipy.spatial import cKDTree
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import grafo_vial                                            # noqa: E402
+from cota import muestrear                                    # noqa: E402
 
 GEOD = Geod(ellps="WGS84")
-
-# Free-flow km/h for a loaded light truck, before surface and terrain.
-VEL_CLASE = {
-    "motorway": 90, "motorway_link": 60, "trunk": 75, "trunk_link": 50,
-    "primary": 60, "primary_link": 40, "secondary": 50, "secondary_link": 35,
-    "tertiary": 40, "tertiary_link": 30,
-}
-# Multiplier by surface. Unpaved roads in the Andes are the binding constraint
-# on rural delivery far more than road classification is.
-FACTOR_SUP = {
-    "asphalt": 1.00, "paved": 1.00, "concrete": 0.95, "paving_stones": 0.85,
-    "compacted": 0.70, "gravel": 0.60, "fine_gravel": 0.65, "unpaved": 0.55,
-    "ground": 0.45, "dirt": 0.45, "earth": 0.45, "sand": 0.35, "mud": 0.30,
-}
-FACTOR_SUP_DEF = 0.80          # untagged: most are partly improved
-DEC = 6                        # coordinate rounding for node identity
 
 
 def slug(s):
@@ -62,71 +63,16 @@ def key(s):
     return FIX.get(slug(s), slug(s))
 
 
-def parse_maxspeed(v):
-    m = re.match(r"(\d+)", str(v))
-    return int(m.group(1)) if m else None
-
-
 # ---------------------------------------------------------------- graph ----
-print("leyendo red vial...", flush=True)
-nodos = {}          # (lon, lat) -> index
-orig, dest, peso = [], [], []
-n_vias = 0
-
-for f in sorted(glob.glob("data/vial/PE-*.json")):
-    for e in json.load(open(f, encoding="utf-8"))["elements"]:
-        g = e.get("geometry")
-        if not g or len(g) < 2:
-            continue
-        t = e.get("tags", {})
-        clase = t.get("highway", "tertiary")
-        v = VEL_CLASE.get(clase, 35)
-        v *= FACTOR_SUP.get(t.get("surface", ""), FACTOR_SUP_DEF)
-        ms = parse_maxspeed(t.get("maxspeed", ""))
-        if ms:
-            v = min(v, ms)
-        v = max(v, 8.0)                      # nothing crawls below this
-        n_vias += 1
-
-        pts = [(round(p["lon"], DEC), round(p["lat"], DEC)) for p in g]
-        idx = []
-        for p in pts:
-            i = nodos.get(p)
-            if i is None:
-                i = len(nodos)
-                nodos[p] = i
-            idx.append(i)
-        lons = np.array([p[0] for p in pts])
-        lats = np.array([p[1] for p in pts])
-        _, _, d = GEOD.inv(lons[:-1], lats[:-1], lons[1:], lats[1:])
-        horas = (d / 1000.0) / v
-        for a, b, h in zip(idx[:-1], idx[1:], horas):
-            if a == b:
-                continue
-            orig.append(a); dest.append(b); peso.append(h)
-            orig.append(b); dest.append(a); peso.append(h)
-
-N = len(nodos)
-print(f"  vias {n_vias:,} | nodos {N:,} | aristas {len(orig)//2:,}", flush=True)
-
-coords = np.zeros((N, 2))
-for (lon, lat), i in nodos.items():
-    coords[i] = (lon, lat)
-arbol = cKDTree(coords)
-
-
-def construir(fuentes_idx):
-    """Graph plus a virtual source joined to every hub at zero cost."""
-    o = np.array(orig + [N] * len(fuentes_idx), dtype=np.int32)
-    d = np.array(dest + list(fuentes_idx), dtype=np.int32)
-    w = np.array(peso + [0.0] * len(fuentes_idx), dtype=np.float64)
-    return csr_matrix((w, (o, d)), shape=(N + 1, N + 1))
-
-
-def snap(lons, lats):
-    _, idx = arbol.query(np.column_stack([lons, lats]))
-    return idx
-
+# El grafo lo arma `grafo_vial.py`, que es el mismo que usa la selección de
+# centros: si el ruteo midiera la pendiente de una forma y la elección de
+# almacenes de otra, las dos mitades de la misma decisión dejarían de hablar
+# entre sí. Este archivo tuvo su propia copia durante una tarde y esa tarde
+# alcanzó para que las dos versiones ya no coincidieran.
+print("armando el grafo vial...", flush=True)
+g = grafo_vial.construir()
+coords, N = g.coords, g.N
+snap = g.snap
 
 # --------------------------------------------------------------- hubs -----
 sec = pd.read_csv("out/modelo_v2_sector.csv", encoding="utf-8-sig")
@@ -147,18 +93,38 @@ _, _, d_snap = GEOD.inv(sec.lon.values, sec.lat.values,
 sec["km_a_via"] = d_snap / 1000.0
 
 # --------------------------------------------------------------- routing --
-print("ruteando a capitales provinciales...", flush=True)
-t_cap = dijkstra(construir(cap_idx), indices=N, directed=False)[:N]
-print("ruteando a puertos maritimos...", flush=True)
-t_pue = dijkstra(construir(puerto_idx), indices=N, directed=False)[:N]
+# `directed=True` no es un detalle: con pendiente el grafo dejó de ser
+# simétrico, y `directed=False` haría a scipy recorrer cada arista en los dos
+# sentidos por el peso que encuentre, que es justamente la cuenta que se quiso
+# dejar atrás.
+def rutear(fuentes, nombre):
+    print("ruteando %s..." % nombre, flush=True)
+    ida = dijkstra(g.csr(hacia=True, fuentes=fuentes),
+                   indices=N, directed=True)[:N]
+    vuelta = dijkstra(g.csr(hacia=False, fuentes=fuentes),
+                      indices=N, directed=True)[:N]
+    return ida, vuelta
 
-sec["horas_capital_real"] = t_cap[sec_idx]
-sec["horas_puerto_real"] = t_pue[sec_idx]
+
+print("ruteando en llano, para medir cuanto pesa el terreno...", flush=True)
+cap_llano = dijkstra(g.csr(llano=True, hacia=True, fuentes=cap_idx),
+                     indices=N, directed=True)[:N]
+
+cap_ida, cap_vuelta = rutear(cap_idx, "a capitales provinciales")
+pue_ida, pue_vuelta = rutear(puerto_idx, "a puertos maritimos")
+
+sec["horas_capital_real"] = cap_ida[sec_idx]
+sec["horas_capital_vuelta"] = cap_vuelta[sec_idx]
+sec["horas_capital_llano"] = cap_llano[sec_idx]
+sec["horas_puerto_real"] = pue_ida[sec_idx]
+sec["horas_puerto_vuelta"] = pue_vuelta[sec_idx]
+sec["alt_m"] = muestrear(sec.lon.values, sec.lat.values)
 
 # A sector whose nearest road is far off is not truly served by that road;
 # add the off-road leg at a slow speed rather than pretending it is zero.
-sec["horas_capital_real"] += sec["km_a_via"] / 15.0
-sec["horas_puerto_real"] += sec["km_a_via"] / 15.0
+for c in ("horas_capital_real", "horas_capital_vuelta", "horas_capital_llano",
+          "horas_puerto_real", "horas_puerto_vuelta"):
+    sec[c] += sec["km_a_via"] / 15.0
 
 alcanzables = np.isfinite(sec["horas_capital_real"])
 sin_puerto = ~np.isfinite(sec["horas_puerto_real"])
@@ -174,15 +140,21 @@ sec = sec.rename(columns={"horas_capital": "horas_capital_proxy",
                           "horas_puerto": "horas_puerto_proxy"})
 
 COSTO_HORA = 18.0
-sec["costo_viaje_real"] = 2 * sec["horas_capital_real"] * COSTO_HORA
+# El viaje redondo ya no es el doble de la ida: subir y bajar cuestan distinto,
+# así que se suman las dos mitades medidas.
+sec["horas_ida_vuelta"] = sec["horas_capital_real"] + sec["horas_capital_vuelta"]
+sec["costo_viaje_real"] = sec["horas_ida_vuelta"] * COSTO_HORA
+sec["horas_terreno"] = sec["horas_capital_real"] - sec["horas_capital_llano"]
 sec["accesible_real"] = pd.cut(
     sec["horas_capital_real"], [-0.01, 1, 2, 4, 8, 1e9],
     labels=["<1 h", "1-2 h", "2-4 h", "4-8 h", ">8 h"])
 
 cols = ["cod_se", "dep", "prov", "dist", "sector", "region_nat", "lat", "lon",
-        "ha_agricola", "s_ha_cosechada", "s_clientes_sam", "s_sam_usd",
-        "km_a_via", "horas_capital_real", "horas_capital_proxy",
-        "horas_puerto_real", "horas_puerto_proxy", "puerto_maritimo",
+        "alt_m", "ha_agricola", "s_ha_cosechada", "s_clientes_sam", "s_sam_usd",
+        "km_a_via", "horas_capital_real", "horas_capital_vuelta",
+        "horas_capital_llano", "horas_terreno", "horas_ida_vuelta",
+        "horas_capital_proxy", "horas_puerto_real", "horas_puerto_vuelta",
+        "horas_puerto_proxy", "puerto_maritimo",
         "costo_viaje_real", "accesible_real"]
 sec[cols].to_csv("out/ruteo_sector.csv", index=False, encoding="utf-8-sig")
 
@@ -192,10 +164,43 @@ print("=" * 74)
 print("RUTEO REAL SOBRE LA RED VIAL")
 print("=" * 74)
 print(f"snap medio del sector a la via : {sec.km_a_via.median():.1f} km")
-print(f"horas a capital  · ruteo real  : "
+print(f"horas a capital  · con terreno : "
       f"{np.average(ok.horas_capital_real, weights=ok.ha_agricola):.2f} h")
+print(f"horas a capital  · en llano    : "
+      f"{np.average(ok.horas_capital_llano, weights=ok.ha_agricola):.2f} h"
+      f"   (lo que decia esta plataforma hasta ahora)")
 print(f"horas a capital  · proxy       : "
       f"{np.average(ok.horas_capital_proxy, weights=ok.ha_agricola):.2f} h")
+print(f"vuelta desde la capital        : "
+      f"{np.average(ok.horas_capital_vuelta, weights=ok.ha_agricola):.2f} h"
+      f"   (la asimetria del desnivel)")
+
+# Lo que el terreno agrega no se reparte parejo, y ahi esta el interes: la
+# media nacional se mueve poco y hay regiones que se mueven mucho.
+peor = (ok.assign(pen=ok.horas_terreno)
+          .groupby("dep")
+          .apply(lambda g: pd.Series({
+              "mas_h": np.average(g.pen, weights=g.ha_agricola),
+              # El porcentaje se saca de las dos medias publicadas y no del
+              # promedio de los porcentajes de cada sector: es la cuenta que
+              # el lector puede rehacer con la tabla a la vista, y es la misma
+              # que sirve el sitio. Dos definiciones del mismo numero acaban
+              # discrepando en la tercera pantalla que lo muestra.
+              "pct": 100 * (np.average(g.horas_capital_real,
+                                       weights=g.ha_agricola)
+                            / np.average(g.horas_capital_llano,
+                                         weights=g.ha_agricola) - 1),
+              "alt": np.average(g.alt_m.fillna(0), weights=g.ha_agricola),
+          }), include_groups=False)
+          .sort_values("pct", ascending=False))
+print()
+print("--- LO QUE AGREGA EL TERRENO, POR REGION ---")
+print("  %-16s %9s %8s %9s" % ("region", "cota med", "mas h", "mas %"))
+for d, r in peor.head(8).iterrows():
+    print("  %-16s %9.0f %8.2f %8.1f%%" % (d, r.alt, r.mas_h, r.pct))
+print("  ...")
+for d, r in peor.tail(3).iterrows():
+    print("  %-16s %9.0f %8.2f %8.1f%%" % (d, r.alt, r.mas_h, r.pct))
 _okp = ok[np.isfinite(ok.horas_puerto_real)]
 print(f"horas a puerto   · ruteo real  : "
       f"{np.average(_okp.horas_puerto_real, weights=_okp.ha_agricola):.2f} h"
@@ -214,6 +219,9 @@ for i, r in acc.iterrows():
 dep = (ok.groupby("dep")
        .apply(lambda g: pd.Series({
            "horas_real": np.average(g.horas_capital_real, weights=g.ha_agricola),
+           "horas_llano": np.average(g.horas_capital_llano, weights=g.ha_agricola),
+           "horas_vuelta": np.average(g.horas_capital_vuelta, weights=g.ha_agricola),
+           "alt_m": np.average(g.alt_m.fillna(0), weights=g.ha_agricola),
            "horas_proxy": np.average(g.horas_capital_proxy, weights=g.ha_agricola),
            "puerto_real": (np.average(gp.horas_puerto_real, weights=gp.ha_agricola)
                            if len(gp := g[np.isfinite(g.horas_puerto_real)]) else np.nan),

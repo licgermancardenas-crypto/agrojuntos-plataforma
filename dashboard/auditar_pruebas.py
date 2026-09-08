@@ -87,6 +87,12 @@ CASOS = [
      "la mitad exportadora de Comercio vuelve a anualizarse"),
     ("ficha_origen_sin_salvedad", "DOMICILIO FISCAL",
      "la ficha presenta el ubigeo del manifiesto como domicilio fiscal"),
+    # Sexta tanda: el relieve, que hasta ahora era fondo de mapa y ahora entra
+    # en el tiempo de viaje y en donde vive cada negocio.
+    ("terreno_plano", "EL TERRENO NO APORTA NADA",
+     "el desnivel deja de contar en el tiempo de viaje"),
+    ("banda_al_nivel_del_mar", "EL CAFE SALE A",
+     "cada producto sale a la altura del puerto y no del fundo"),
 ]
 
 

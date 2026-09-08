@@ -268,6 +268,40 @@ MUTACIONES = {
         120);
     })();""",
 
+    # El terreno vuelve a no contar: la columna dice que el desnivel no agrega
+    # nada, que es la cuenta que la plataforma hizo durante meses.
+    # Ojo con la forma: una version anterior de esta mutacion pedia el JSON
+    # con `fetch` desde dentro del propio reemplazo de `fetch`, se llamaba a
+    # si misma sin fin y dejaba la pagina colgada. La suite fallaba —por no
+    # poder pintar la tabla— y la auditoria la daba por vacua, que es la
+    # confusion que estas mutaciones existen para evitar.
+    "terreno_plano": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('logistica.json') < 0) return r;
+        const d = await r.clone().json();
+        d.deps.forEach(x => { x.terr = 0; x.pct_terr = 0; x.llano = x.real; });
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
+    # El cruce entre el embarque y la cota se rompe: cada producto sale a la
+    # altura del puerto, que es lo que pasaria si el ubigeo apuntara a la
+    # oficina del exportador y no al fundo.
+    "banda_al_nivel_del_mar": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('altitud.json') < 0) return r;
+        const d = await r.clone().json();
+        d.bandas.forEach(b => { b.p10 = 5; b.p50 = 30; b.p90 = 120; });
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
 }
 
 
@@ -1509,6 +1543,129 @@ with sync_playwright() as pw:
             ok = False
         else:
             print("  quien no exporta no estrena bloque de embarques: ok")
+
+    # ------------------------------- logistica · el terreno entra en la cuenta -
+    # La hora de viaje salia de la clase de via y su superficie, y el terreno
+    # nunca entraba. Lo que se comprueba no es que la columna exista, sino tres
+    # reglas que el dato tiene que cumplir y que un cruce mal hecho romperia
+    # sin que nada se vea raro:
+    #
+    #   El terreno solo puede sumar. Si en alguna region restara, se estaria
+    #   cobrando la subida como bajada.
+    #   Pesa mucho mas en la sierra que en la costa. Si diera parejo, la
+    #   pendiente se estaria promediando donde no debe.
+    #   La pantalla dice ambas cosas, porque la comparacion entre una region
+    #   andina y una costeña que se hizo antes esta sesgada y callarlo deja al
+    #   lector con la conclusion vieja.
+    print("")
+    print("logistica · la pendiente en la cuenta")
+    pg.evaluate("() => location.hash = '#logistica'")
+    pg.wait_for_selector("#tLogistica tbody tr td", timeout=25000)
+    pg.wait_for_timeout(600)
+    LG = pg.evaluate("""async () => {
+        const r = await fetch('/data/logistica.json'); return await r.json(); }""")
+    cabs = [h.strip() for h in pg.eval_on_selector_all(
+        "#tLogistica thead th", "e => e.map(x => x.textContent)")]
+    if "Del terreno" not in cabs or "Cota" not in cabs:
+        print("  LA TABLA NO DECLARA NI LA COTA NI LO QUE APORTA EL TERRENO")
+        ok = False
+    else:
+        print("  la tabla declara cota y aporte del terreno: ok")
+
+    resta = [d["n"] for d in LG["deps"]
+             if d.get("terr") is not None and d["terr"] < 0]
+    if resta:
+        print("  EL TERRENO RESTA HORAS EN %s: la subida se cobra como bajada"
+              % resta[:3])
+        ok = False
+    else:
+        print("  el terreno solo suma, en las %d regiones: ok" % len(LG["deps"]))
+
+    alto = [d for d in LG["deps"] if d.get("alt", 0) >= 2000
+            and d.get("pct_terr") is not None]
+    bajo = [d for d in LG["deps"] if d.get("alt", 0) < 700
+            and d.get("pct_terr") is not None]
+    if alto and bajo:
+        ma = sum(d["pct_terr"] for d in alto) / len(alto)
+        mb = sum(d["pct_terr"] for d in bajo) / len(bajo)
+        print("  sierra +%.1f%% · costa y llano +%.1f%%" % (ma, mb))
+        # Dos condiciones y no una. Comparar solo sierra contra costa deja
+        # pasar el caso en que el terreno no aporte en ninguna parte: cero
+        # tampoco es mayor que cero, y la comprobacion daba «ok» sobre una
+        # tabla que habia vuelto al reloj en llano.
+        if ma < 5.0:
+            print("  EL TERRENO NO APORTA NADA EN LA SIERRA (+%.1f%%): "
+                  "la hora volvio a ser la del llano" % ma)
+            ok = False
+        elif ma < mb * 2:
+            print("  EL TERRENO PESA IGUAL ARRIBA QUE ABAJO: "
+                  "la pendiente se esta promediando donde no debe")
+            ok = False
+        else:
+            print("  la pendiente pesa donde hay pendiente: ok")
+
+    nota_log = " ".join((pg.text_content("#logNota") or "").split())
+    if "pendiente" not in nota_log or "sierra" not in nota_log:
+        print("  LA NOTA NO AVISA QUE LAS COMPARACIONES ANTERIORES ESTABAN "
+              "SESGADAS")
+        ok = False
+    else:
+        print("  la nota declara el sesgo de las cifras anteriores: ok")
+
+    # --------------------------------- los pisos, y la banda de cada producto -
+    # El bloque existe para una decision concreta —donde poner inventario— y
+    # descansa en que los dos negocios no viven a la misma altura. Se comprueba
+    # contra el dato, no contra si mismo.
+    #
+    # Y una prueba que vale por todo el cruce: el cafe. Su banda medida tiene
+    # que caer en ladera. Si el join entre el embarque y la cota se rompiera,
+    # o si el ubigeo del manifiesto apuntara a la oficina y no al fundo, el
+    # cafe apareceria al nivel del mar —donde estan las oficinas de Lima— y
+    # ninguna comprobacion de forma lo notaria.
+    print("")
+    print("los pisos ecologicos")
+    AL = pg.evaluate("""async () => {
+        const r = await fetch('/data/altitud.json'); return await r.json(); }""")
+    barras_sam = len(pg.query_selector_all("#altSam .bar"))
+    filas_b = len(pg.query_selector_all("#tAltBanda tbody tr"))
+    print("  %d pisos con mercado · %d productos con banda medida"
+          % (barras_sam, filas_b))
+    if barras_sam < 5 or filas_b < 10:
+        print("  EL BLOQUE DE PISOS NO CARGA")
+        ok = False
+
+    cafe = [b for b in AL["bandas"] if b["familia"].lower().startswith("caf")]
+    if not cafe:
+        print("  NO HAY BANDA MEDIDA PARA EL CAFE")
+        ok = False
+    elif not (900 <= cafe[0]["p50"] <= 2200):
+        print("  EL CAFE SALE A %d m: el cruce entre el embarque y la cota "
+              "esta roto" % cafe[0]["p50"])
+        ok = False
+    else:
+        print("  el cafe cae en su banda conocida (%d m de mediana): ok"
+              % cafe[0]["p50"])
+
+    # El dinero exportador y los clientes no estan en el mismo piso: es el
+    # hallazgo del bloque y tiene que seguir siendo cierto en el dato.
+    sam = {r["piso"]: r for r in AL["sectores"]["por_piso"]}
+    fob = {r["piso"]: r for r in AL["distritos"]["por_piso"]}
+    sierra = sum(sam[p]["clientes"] for p in ("quechua", "suni", "puna")
+                 if p in sam)
+    todos = sum(r["clientes"] for r in AL["sectores"]["por_piso"])
+    print("  chala: %.1f%% del FOB · la sierra: %.0f%% de los clientes"
+          % (fob.get("chala", {}).get("pct", 0), 100 * sierra / todos))
+    nota_alt = " ".join((pg.text_content("#altNota") or "").split())
+    if str(int(round(100 * sierra / todos))) not in nota_alt:
+        print("  LA NOTA NO DICE DONDE ESTA EL PADRON DE CLIENTES")
+        ok = False
+    else:
+        print("  la nota separa los dos negocios: ok")
+    if "error mediano" not in nota_alt and "no para afirmar la cota" not in nota_alt:
+        print("  EL BLOQUE NO DECLARA EL ERROR DE LA COTA")
+        ok = False
+    else:
+        print("  declara con cuanto error se muestreo la cota: ok")
 
 
     # ------------------------------------------------------- acopio ------

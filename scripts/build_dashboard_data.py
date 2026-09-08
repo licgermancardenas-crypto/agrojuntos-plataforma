@@ -384,10 +384,36 @@ guardar("departamentos.json", {"meses": MESES, "semanas": SEM_COMEX,
 # -------------------------------------------------------------- logistica -
 # El ruteo real corrige al proxy en un sentido que cambia decisiones: hay
 # departamentos que la línea recta daba por perdidos y la carretera rescata.
+#
+# Y desde que el grafo lleva pendiente, la hora medida incluye el desnivel. Se
+# manda también la versión en llano —la que esta pantalla mostró hasta ahora—
+# porque el cambio no es parejo: la sierra pagaba una cuarta parte de su
+# tiempo de viaje sin que ninguna cifra lo dijera y la costa casi nada, así
+# que toda comparación entre una región andina y una costeña estaba sesgada.
+# La cifra que el README publica en su primera tabla —cuánto del mercado está a
+# menos de dos horas— sale de aquí y no de una cuenta a mano: se desfasó una
+# vez, al entrar la pendiente, y `verificar_datos.py` la compara en cada push.
+_rs = pd.read_csv("out/ruteo_sector.csv", encoding="utf-8-sig")
+_rs = _rs[np.isfinite(_rs["horas_capital_real"])]
+_sam = _rs["s_sam_usd"].sum()
+_b2 = 100 * _rs.loc[_rs.horas_capital_real <= 2, "s_sam_usd"].sum() / _sam
+_b2l = 100 * _rs.loc[_rs.horas_capital_llano <= 2, "s_sam_usd"].sum() / _sam
+
 guardar("logistica.json", {
+    "meta": {"sam_bajo_2h": num(_b2, 1), "sam_bajo_2h_llano": num(_b2l, 1),
+             "sectores_sin_grafo": int(7036 - len(_rs))},
     "deps": [{
         "n": cap(r["dep"]),
         "real": num(r["horas_real"]), "proxy": num(r["horas_proxy"]),
+        "llano": num(r["horas_llano"]), "vuelta": num(r["horas_vuelta"]),
+        "alt": int(round(r["alt_m"])),
+        # Calculados aquí y no en el navegador: `num` redondea a un decimal y
+        # una división entre dos cifras ya redondeadas convertía un +26% en un
+        # +33%. La pantalla no tiene por qué rehacer una cuenta que aquí sale
+        # exacta.
+        "terr": num(r["horas_real"] - r["horas_llano"], 2),
+        "pct_terr": num(100 * (r["horas_real"] / r["horas_llano"] - 1), 1)
+        if r["horas_llano"] else None,
         "dif": num(r["dif"]),
         "puerto": num(r["puerto_real"]),
         "sin_puerto": num(r["pct_sin_puerto"]),

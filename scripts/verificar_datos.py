@@ -110,7 +110,8 @@ def documentacion():
     exp = carga("exportaciones/mercado.json")
     imp = carga("importaciones/mercado.json")
     aco = carga("acopio.json")
-    if not (exp and imp and aco and txt):
+    log = carga("logistica.json")
+    if not (exp and imp and aco and log and txt):
         return
     mil = lambda v: "{:,}".format(int(round(v)))          # noqa: E731
     esperadas = [
@@ -124,6 +125,14 @@ def documentacion():
         ("plantas certificadas", str(aco["senasa"]["empacadoras"])),
         ("plantas sin embarque propio", str(aco["senasa"]["sin_embarque_propio"])),
         ("distritos huérfanos", str(aco["huerfanos"]["distritos"])),
+        # La accesibilidad se movió nueve puntos al entrar la pendiente en el
+        # ruteo, y el README tenía la cifra vieja. Las dos van juntas: la de
+        # hoy y la de antes, porque el documento explica el cambio.
+        ("mercado bajo 2 h", "%.1f%%" % log["meta"]["sam_bajo_2h"]),
+        ("mercado bajo 2 h, sin pendiente",
+         "%.1f%%" % log["meta"]["sam_bajo_2h_llano"]),
+        ("sectores fuera del grafo vial",
+         str(log["meta"]["sectores_sin_grafo"])),
     ]
     for que, valor in esperadas:
         if valor in txt:

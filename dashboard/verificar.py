@@ -1131,6 +1131,13 @@ with sync_playwright() as pw:
     # primera fila no es la mayor, la pagina miente donde mas se la lee.
     pg.evaluate("() => location.hash = '#comercio'")
     pg.wait_for_selector("#tImportadores tbody tr td", timeout=25000)
+    # La tabla se lee un momento despues de pintarse y no en el instante. La
+    # auditoria lo destapo: el defecto que desordena el ranking lo reintroduce
+    # un temporizador cada 300 ms, asi que leer la tabla recien pintada la
+    # encontraba todavia en orden y esta comprobacion cantaba «ok» sobre una
+    # pagina rota —la cazaba otra, por casualidad—. Una prueba que depende de
+    # llegar tarde o temprano no es una prueba.
+    pg.wait_for_timeout(900)
     for tid, col in (("tImportadores", 3), ("tExportadores", 2)):
         vals = [usd_a_num(t) for t in pg.eval_on_selector_all(
             "#" + tid + " tbody tr td:nth-child(" + str(col) + ")",

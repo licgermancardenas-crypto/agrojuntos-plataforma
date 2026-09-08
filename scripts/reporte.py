@@ -3048,8 +3048,17 @@ cmd = [CHROME, "--headless", "--disable-gpu", "--no-pdf-header-footer",
        "--run-all-compositor-stages-before-draw", "--virtual-time-budget=90000",
        f"--print-to-pdf={dst}", f"file:///{src}"]
 # 74 sheets, 24 of them full-page vector plates: Chrome needs the room.
+_antes = os.path.getmtime(OUT_PDF) if os.path.exists(OUT_PDF) else 0
 r = subprocess.run(cmd, capture_output=True, text=True, timeout=2400)
-if os.path.exists(OUT_PDF):
+# Que el archivo exista no significa que se haya impreso: el de la corrida
+# anterior sigue ahí. Con `os.path.exists` a secas, una impresión fallida
+# —Chrome se queda sin memoria y se va sin escribir— pasaba por buena, copiaba
+# el PDF viejo al repositorio y anunciaba «publicado». Lo que prueba que se
+# imprimió es que sea más nuevo que el HTML del que sale.
+_ok = (os.path.exists(OUT_PDF)
+       and os.path.getmtime(OUT_PDF) > _antes
+       and os.path.getmtime(OUT_PDF) >= os.path.getmtime(OUT_HTML))
+if _ok:
     print(f"PDF   {os.path.getsize(OUT_PDF)/1e6:.2f} MB  ->  {OUT_PDF}")
     # El PDF publicado se copia aqui y no a mano: un informe que se actualiza
     # en out/ y se olvida en el repositorio es la misma averia que dejaba al
@@ -3061,4 +3070,8 @@ if os.path.exists(OUT_PDF):
         shutil.copyfile(OUT_PDF, pub)
         print(f"      publicado en {pub}")
 else:
-    print("FALLO:", (r.stderr or "")[-900:])
+    print("FALLO: el PDF no se volvió a escribir. El de out/ es de una corrida "
+          "anterior y NO se publicó, para no dejar en el repositorio un "
+          "informe que no corresponde a estos datos.")
+    print((r.stderr or "")[-900:])
+    sys.exit(1)

@@ -157,7 +157,12 @@ ETAPAS = [
      "los JSON que sirve el sitio"),
 
     ("reporte", "reporte.py",
-     [IMP + "mercado.json", EXP + "mercado.json", "out/acopio.json"],
+     # Declara los cuatro que empezó a leer al incorporar las páginas nuevas.
+     # Sin ellos figuraba «al día» con un PDF armado media hora antes que los
+     # datos que muestra: el mismo defecto que tenía `mapa-geo`, y van dos.
+     [IMP + "mercado.json", EXP + "mercado.json", "out/acopio.json",
+      "out/red_elegida.json", "out/canal.json", "out/altitud.json",
+      "out/ruteo_departamento.csv", "out/cartera_territorio.csv"],
      ["out/reporte_agrojuntos.html"], "arma el informe y lo imprime"),
 ]
 

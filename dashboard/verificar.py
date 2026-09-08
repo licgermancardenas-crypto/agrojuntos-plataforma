@@ -1671,6 +1671,31 @@ with sync_playwright() as pw:
     else:
         print("  declara el radio y la salvedad de la fuente: ok")
 
+    # La cadena completa no puede superar a una de sus mitades: si el numero
+    # de clientes con tienda cerca Y centro dentro de la promesa fuera mayor
+    # que el de clientes con tienda cerca, el cruce estaria sumando en vez de
+    # intersecando.
+    if CAN["cadena_completa"]["pct"] > CAN["con_canal"]["pct"]:
+        print("  LA CADENA COMPLETA SUPERA A LA COBERTURA DE TIENDAS: "
+              "el cruce con los centros suma en vez de intersecar")
+        ok = False
+    else:
+        print("  la cadena completa (%.1f%%) cabe dentro de la cobertura de "
+              "tiendas (%.1f%%): ok"
+              % (CAN["cadena_completa"]["pct"], CAN["con_canal"]["pct"]))
+
+    # Y los clientes detras de un centro son la union de los que alcanzan sus
+    # puntos: sumando alcances que se solapan, un solo centro salia con mas
+    # clientes que el pais entero.
+    peor = max(CAN["reparto"], key=lambda r: r["clientes"])
+    if peor["clientes"] > CAN["clientes"]:
+        print("  UN CENTRO TIENE MAS CLIENTES QUE EL PAIS (%s): se estan "
+              "sumando alcances solapados" % peor["hub"])
+        ok = False
+    else:
+        print("  el centro de mayor alcance (%s, %s clientes) cabe en el "
+              "padron: ok" % (peor["hub"], f"{peor['clientes']:,}"))
+
     # Un punto de captacion no vale lo mismo si ya existe que si hay que
     # abrirlo. La tabla tiene que decir cual es cual.
     clases = set(pg.eval_on_selector_all(

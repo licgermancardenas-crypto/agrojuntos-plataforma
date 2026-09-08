@@ -145,6 +145,8 @@ def documentacion():
         ("clientes sin ningún punto", "{:,}".format(
             can["sin_candidato"]["clientes"])),
         ("puntos del padrón", "{:,}".format(can["candidatos"]["canal"])),
+        ("clientes con la cadena completa",
+         "{:,}".format(can["cadena_completa"]["clientes"])),
     ]
     for que, valor in esperadas:
         if valor in txt:

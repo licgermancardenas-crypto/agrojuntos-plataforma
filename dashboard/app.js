@@ -2011,6 +2011,11 @@ function pintarCanal() {
           nf(C.sin_candidato.clientes) + " clientes: ahí hay que abrir") +
       kpi(nf(cand.canal + cand.comercio), "puntos que ya existen",
           nf(cand.canal) + " del padrón · " + nf(cand.comercio) + " de OSM") +
+      /* La cadena vale lo que valga su tramo más débil. Una tienda con
+         clientes al lado pero a nueve horas de su almacén no está servida, y
+         contarla entera es el error que este número evita. */
+      kpi(pct(C.cadena_completa.pct, 1), "con la cadena completa",
+          "tienda cerca Y su centro dentro de la promesa") +
       "</div>" +
       '<div class="grid2" style="margin-top:16px">' +
       '<div class="sub-card"><div class="eyebrow">Orden de captación: los ' +
@@ -2018,6 +2023,9 @@ function pintarCanal() {
       '<div class="tw"><table id="tCanal"></table></div></div>' +
       '<div class="sub-card"><div class="eyebrow">Territorios sin canal</div>' +
       '<div class="tw"><table id="tCanalTer"></table></div></div></div>' +
+      '<div class="sub-card" style="margin-top:16px">' +
+      '<div class="eyebrow">Quién resurte a quién · del centro a la tienda' +
+      "</div><div class='tw'><table id='tCanalHub'></table></div></div>" +
       '<p class="sub">' +
       "Dos límites del dato, antes de leer ninguna cifra. <b>La ubicación del " +
       "padrón es el distrito, no la esquina</b>: SUNAT publica el domicilio " +
@@ -2052,6 +2060,21 @@ function pintarCanal() {
           return "<span class='delta " + (r.pct < 25 ? "peor" : "") + "'>" +
             pct(r.pct, 0) + "</span>"; } },
     ], mal.slice(0, 8), { sort: "pct", asc: true });
+
+    tabla(document.getElementById("tCanalHub"), [
+      { k: "hub", t: "Centro", l: 1, f: function (r) {
+          return "<b>" + esc(r.hub) + "</b>"; } },
+      { k: "puntos", t: "Puntos que resurte", f: function (r) {
+          return nf(r.puntos) + "<span class='sub2'>" + nf(r.del_padron) +
+            " del padrón</span>"; } },
+      { k: "pct_en_promesa", t: "Dentro de la promesa", f: function (r) {
+          return "<span class='delta " + (r.pct_en_promesa < 50 ? "peor" : "") +
+            "'>" + pct(r.pct_en_promesa, 0) + "</span>"; } },
+      { k: "horas_mediana", t: "Horas, mediana", f: function (r) {
+          return nf(r.horas_mediana, 1) + " h"; } },
+      { k: "clientes", t: "Clientes detrás", f: function (r) {
+          return nf(r.clientes); } },
+    ], C.reparto, { sort: "puntos" });
   }).catch(function () { caja.innerHTML = ""; });
 }
 

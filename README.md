@@ -906,6 +906,38 @@ Chiclayo tiene el 82% de sus clientes con canal cerca y **Sánchez Carrión el
 20%** —1,813 de sus 9,115—. El territorio más grande del país es también el
 peor servido en las dos capas.
 
+### Quién resurte a quién
+
+La cadena tiene dos tramos y hasta aquí solo se medía el de abajo. El de arriba
+—del almacén a la tienda— sale de la asignación de centros y en el sentido del
+camión de reparto, no del cliente.
+
+| centro | puntos que resurte | del padrón | dentro de la promesa | horas, mediana | clientes detrás |
+|---|---|---|---|---|---|
+| Pisco | 1496 | 129 | 84% | 3.0 h | 7,680 |
+| Huamachuco | 477 | 70 | 60% | 3.0 h | 7,122 |
+| Juliaca | 466 | 95 | 7% | 5.7 h | 19,130 |
+| Tarma | 307 | 52 | 61% | 2.0 h | 9,527 |
+| Chiclayo | 230 | 133 | 61% | 3.0 h | 16,452 |
+| Bellavista | 100 | 79 | 64% | 3.2 h | 6,866 |
+| Satipo | 21 | 21 | 100% | 1.4 h | 3,451 |
+
+**El 61% de los puntos está dentro de la promesa de cuatro horas de su centro**;
+el resto no. Y el cruce da vuelta al mapa: Pisco resurte 1,496 puntos que llegan
+a 7,680 clientes —costa densa, muchas tiendas sobre la misma gente— y Juliaca
+resurte 466 que llegan a 19,130, con **solo el 7% dentro de la promesa** y una
+mediana de 5.7 horas. El centro con más clientes detrás de su canal es
+justamente el que no puede resurtirlo.
+
+Huamachuco, el centro que se puso por decisión, entra como el segundo en número
+de puntos: 477, de los cuales 70 son del padrón.
+
+De ahí sale la cifra que cuenta, porque **la cadena vale lo que valga su tramo
+más débil**: clientes con tienda a 45 minutos *y* cuya tienda está además dentro
+de la promesa de su centro son **44,451 (28.9%)**, contra el 45.2% que tiene
+tienda cerca sin mirar cómo se abastece. Diecisiete puntos de cobertura se
+evaporan al exigir que el eslabón de arriba también cierre.
+
 **Dos límites del dato, dichos.** La ubicación del padrón es el distrito y no la
 esquina: SUNAT publica el domicilio fiscal y aquí se lleva al centroide agrícola
 del distrito, lo que alcanza para un radio de 45 minutos y no para decidir un

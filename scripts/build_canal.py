@@ -294,10 +294,86 @@ for _, r in por_ter.head(6).iterrows():
           % (("%s · %s" % (r.dep, r.provincias))[:32],
              f"{r.clientes:,.0f}", f"{r.con_canal:,.0f}", r.pct))
 
+# ------------------------------------------------- quién resurte a quién ---
+# La cadena tiene dos tramos y hasta aquí solo se medía el de abajo. El de
+# arriba —del almacén a la tienda— sale de la asignación de centros, y en el
+# sentido correcto: `horas_al_hub` se calculó del centro hacia la celda, que
+# es el viaje del camión de reparto y no el del cliente.
+#
+# Importa porque una tienda a nueve horas de su almacén no está servida
+# aunque tenga clientes al lado: la cadena vale lo que valga su tramo más
+# débil, y contarla entera como cobertura es el error que este cruce evita.
+R_HUB = 5
+asg = leer("out/hubs_asignacion.csv", dtype={"h3": str}).set_index("h3")
+cand["h3_hub"] = [h3.latlng_to_cell(a, b, R_HUB)
+                  for a, b in zip(cand["lat"], cand["lon"])]
+_j = asg.reindex(cand["h3_hub"])
+cand["hub"] = _j["hub"].values
+cand["horas_reparto"] = pd.to_numeric(_j["horas_al_hub"].values,
+                                      errors="coerce")
+cand.loc[~np.isfinite(cand["horas_reparto"]), "horas_reparto"] = np.nan
+PROMESA = float(json.load(io.open("out/red_elegida.json",
+                                  encoding="utf-8"))["promesa_h"])
+cand["reparto_en_promesa"] = cand["horas_reparto"] <= PROMESA
+
+vende = cand.clase.isin(("canal", "comercio"))
+print()
+print("el tramo de arriba: del centro a la tienda")
+print("  %d de %d puntos que ya venden tienen centro asignado"
+      % (int(vende.sum() - cand.loc[vende, "hub"].isna().sum()),
+         int(vende.sum())))
+print("  dentro de la promesa de %.0f h: %d (%.0f%%)"
+      % (PROMESA, int(cand.loc[vende, "reparto_en_promesa"].sum()),
+         100 * cand.loc[vende, "reparto_en_promesa"].mean()))
+
+# La cobertura de verdad: clientes cuya tienda está, además, dentro de la
+# promesa de su propio centro. Es la cadena completa y no una de sus mitades.
+en_cadena = np.zeros(len(sec), dtype=bool)
+for (idx, t), cl, ok_rep in zip(alcance, cand.clase, cand.reparto_en_promesa):
+    if cl in ("canal", "comercio") and ok_rep:
+        en_cadena[idx[t <= RADIO_BASE]] = True
+print("  clientes con la cadena completa —tienda a %d min y su centro a "
+      "%.0f h—: %s (%.1f%%)"
+      % (int(RADIO_BASE * 60), PROMESA, f"{CLI[en_cadena].sum():,.0f}",
+         100 * CLI[en_cadena].sum() / CLI.sum()))
+
+# Los clientes de un centro son la UNION de los que alcanzan sus puntos, no la
+# suma: dos tiendas de la misma calle llegan a la misma gente, y sumando sus
+# alcances Pisco salia con 376,695 clientes en un pais que tiene 153,984.
+_por_hub = {}
+for j, (idx, t) in enumerate(alcance):
+    if cand.clase.iat[j] not in ("canal", "comercio"):
+        continue
+    h = cand.hub.iat[j]
+    if not isinstance(h, str):
+        continue
+    _por_hub.setdefault(h, np.zeros(len(sec), dtype=bool))
+    _por_hub[h][idx[t <= RADIO_BASE]] = True
+
+hub_res = (cand[vende].groupby("hub")
+           .apply(lambda x: pd.Series({
+               "puntos": len(x),
+               "del_padron": int((x.clase == "canal").sum()),
+               "en_promesa": int(x.reparto_en_promesa.sum()),
+               "horas_mediana": float(x.horas_reparto.median())}),
+                  include_groups=False)
+           .reset_index().sort_values("puntos", ascending=False))
+hub_res["clientes"] = [float(CLI[_por_hub[h]].sum()) if h in _por_hub else 0.0
+                       for h in hub_res.hub]
+hub_res["pct_en_promesa"] = 100 * hub_res.en_promesa / hub_res.puntos
+hub_res.to_csv("out/canal_hub.csv", index=False, encoding="utf-8-sig")
+print()
+print("  %-12s %7s %8s %11s %9s %11s"
+      % ("centro", "puntos", "padrón", "en promesa", "h mediana", "clientes"))
+for _, r in hub_res.iterrows():
+    print("  %-12s %7d %8d %9.0f%%  %9.1f %11s"
+          % (r.hub, r.puntos, r.del_padron, r.pct_en_promesa,
+             r.horas_mediana, f"{r.clientes:,.0f}"))
+
 # --------------------------------------------------------------- salida ----
 cand["elegido"] = [j in sel for j in range(len(cand))]
 cols = ["dep", "nombre", "tipo", "clase", "lat", "lon", "sectores_1h",
-        "elegido"] + [c for c in cand.columns
+        "hub", "horas_reparto", "reparto_en_promesa", "elegido"] + [c for c in cand.columns
                       if c.startswith(("clientes_", "sam_"))]
 cand[cols].to_csv("out/canal_punto.csv", index=False, encoding="utf-8-sig")
 
@@ -318,6 +394,18 @@ salida = {
                   "pct": round(100 * CLI[en_todos].sum() / CLI.sum(), 1)},
     "sin_candidato": {"clientes": int(round(CLI[sin_nadie].sum())),
                       "pct": round(100 * CLI[sin_nadie].sum() / CLI.sum(), 1)},
+    "cadena_completa": {
+        "motivo": ("clientes con tienda a %d min cuya tienda esta ademas "
+                   "dentro de la promesa de su centro" % int(RADIO_BASE * 60)),
+        "clientes": int(round(CLI[en_cadena].sum())),
+        "pct": round(100 * CLI[en_cadena].sum() / CLI.sum(), 1)},
+    "reparto": [{"hub": r.hub, "puntos": int(r.puntos),
+                 "del_padron": int(r.del_padron),
+                 "en_promesa": int(r.en_promesa),
+                 "pct_en_promesa": round(float(r.pct_en_promesa), 1),
+                 "horas_mediana": round(float(r.horas_mediana), 2),
+                 "clientes": int(round(r.clientes))}
+                for _, r in hub_res.iterrows()],
     "territorios": [{"cluster": int(r.cluster), "dep": r.dep,
                      "provincias": r.provincias, "rank": int(r["rank"]),
                      "clientes": int(round(r.clientes)),

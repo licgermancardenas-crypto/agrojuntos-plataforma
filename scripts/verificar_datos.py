@@ -144,6 +144,8 @@ def documentacion():
         ("clientes con canal cerca", "{:,}".format(can["con_canal"]["clientes"])),
         ("clientes sin ningún punto", "{:,}".format(
             can["sin_candidato"]["clientes"])),
+        ("clientes con algún sitio donde abrir",
+         "{:,}".format(can["con_sitio"]["clientes"])),
         ("puntos del padrón", "{:,}".format(can["candidatos"]["canal"])),
         ("clientes con la cadena completa",
          "{:,}".format(can["cadena_completa"]["clientes"])),

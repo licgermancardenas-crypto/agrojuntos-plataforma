@@ -111,12 +111,27 @@ print("demanda: %s clientes en %s sectores · US$ %.0f MM"
 # ------------------------------------------------------------ candidatos ---
 pro = leer("out/osm_prospectos.csv")
 pro = pro[pro["lat"].notna() & pro["lon"].notna()].copy()
-_nom = pro["nombre"].fillna("").str.lower()
-_es_fundo = _nom.str.startswith(NO_ES_PUEBLO)
-pro["clase"] = np.where(pro["tipo"].isin(TIPOS_PUNTO), "comercio",
-                        np.where(pro["tipo"].isin(TIPOS_PUEBLO) & ~_es_fundo,
-                                 "pueblo", ""))
+pro["clase"] = np.where(pro["tipo"].isin(TIPOS_PUNTO), "comercio", "")
 osm = pro[pro["clase"] != ""][["dep", "nombre", "tipo", "clase", "lat", "lon"]]
+
+# Los pueblos ya no salen de adivinar en OSM —de sus 873 «hamlets», 851 eran
+# fundos con nombre— sino del padrón del INEI cruzado con OSM por
+# `build_ccpp.py`: 94,922 centros poblados censados, de los que 24,591 tienen
+# coordenada. Los que no la tienen no se inventan; quedan contados aparte.
+#
+# El piso de población es un filtro declarado y no una verdad: por debajo de
+# 200 habitantes un punto de venta no tiene a quién venderle, y dejarlos entrar
+# llenaba la lista de aperturas de caseríos de tres casas. Se puede mover.
+POB_MIN = 200
+ccpp = leer("out/ccpp.csv", dtype={"ubigeo": str})
+con_xy = ccpp[ccpp.lat.notna() & (ccpp.poblacion >= POB_MIN)]
+pueblos = pd.DataFrame({
+    "dep": con_xy["distrito"], "nombre": con_xy["nombre"],
+    "tipo": "ccpp:inei", "clase": "pueblo",
+    "lat": con_xy["lat"], "lon": con_xy["lon"]})
+print("centros poblados del INEI: %s censados, %s con coordenada, %s sobre "
+      "%d habitantes" % (f"{len(ccpp):,}", f"{int(ccpp.lat.notna().sum()):,}",
+                         f"{len(pueblos):,}", POB_MIN))
 
 # El canal formal: empresas del padrón cuya clase es «canal». Se ubican en el
 # centroide agrícola de su distrito, que es lo que hay —ver la salvedad de la
@@ -141,7 +156,7 @@ padron = pd.DataFrame({"dep": emp["dep"], "nombre": emp["razon_social"],
                        "tipo": "padron:canal", "clase": "canal",
                        "lat": emp["lat"], "lon": emp["lon"]})
 
-cand = pd.concat([padron, osm], ignore_index=True)
+cand = pd.concat([padron, osm, pueblos], ignore_index=True)
 cand_idx = g.snap(cand.lon.values, cand.lat.values)
 print("candidatos: %d del padrón, %d comercios de OSM y %d centros poblados"
       % (int((cand.clase == "canal").sum()),
@@ -232,9 +247,11 @@ for k in range(K_MAX):
 # conclusión:
 #
 #   lo que cubren los 40 elegidos    la lista de prioridad
-#   lo que cubre el canal entero     lo que ya existe, sin hacer nada
-#   lo que no cubre NINGÚN candidato el hueco estructural: ahí no hay a quién
-#                                    captar y hay que abrir o no llegar
+#   lo que alcanza un comercio       lo que ya existe, sin hacer nada
+#   lo que alcanza algún candidato   dónde se PUEDE llegar: incluye pueblos
+#                                    del padrón donde no hay comercio todavía
+#   lo que no alcanza ninguno        el hueco estructural: ni tienda ni pueblo
+#                                    a 45 minutos, y ahí no hay qué abrir
 en_todos = np.zeros(len(sec), dtype=bool)
 for idx in dentro:
     en_todos[idx] = True
@@ -245,12 +262,14 @@ print("las tres cifras que no son la misma")
 print("  los %d puntos elegidos cubren      %s clientes (%.1f%%)"
       % (len(sel), f"{CLI[cubierto].sum():,.0f}",
          100 * CLI[cubierto].sum() / CLI.sum()))
-print("  el canal entero (%d candidatos)   %s clientes (%.1f%%)"
-      % (len(cand), f"{CLI[en_todos].sum():,.0f}",
+print("  con algún sitio donde abrir      %s clientes (%.1f%%)"
+      % (f"{CLI[en_todos].sum():,.0f}",
          100 * CLI[en_todos].sum() / CLI.sum()))
-print("  sin ningún candidato a %d min     %s clientes (%.1f%%)  <- hay que abrir"
-      % (int(RADIO_BASE * 60), f"{CLI[sin_nadie].sum():,.0f}",
+print("  sin nada: ni tienda ni pueblo    %s clientes (%.1f%%)"
+      % (f"{CLI[sin_nadie].sum():,.0f}",
          100 * CLI[sin_nadie].sum() / CLI.sum()))
+print("  —el segundo incluye pueblos donde todavía no hay comercio: es dónde")
+print("   se PUEDE abrir, no dónde ya se vende—")
 
 # ------------------------------------------------ por territorio de venta --
 # El territorio se asigna por celda H3 y no por el `cluster` que trae
@@ -476,10 +495,19 @@ salida = {
                    for c in ("canal", "comercio", "pueblo")},
     "cobertura_actual": actual,
     "apertura": curva,
-    "con_canal": {"clientes": int(round(CLI[en_todos].sum())),
-                  "pct": round(100 * CLI[en_todos].sum() / CLI.sum(), 1)},
-    "sin_candidato": {"clientes": int(round(CLI[sin_nadie].sum())),
-                      "pct": round(100 * CLI[sin_nadie].sum() / CLI.sum(), 1)},
+    "con_sitio": {
+        "motivo": ("clientes con algun candidato a 45 min, incluidos los "
+                   "pueblos del padron del INEI donde todavia no hay comercio"),
+        "clientes": int(round(CLI[en_todos].sum())),
+        "pct": round(100 * CLI[en_todos].sum() / CLI.sum(), 1)},
+    "con_canal": {
+        "motivo": "clientes con un comercio ya existente a 45 min",
+        "clientes": int(round(sum(actual[i]["clientes"] for i in [1]))),
+        "pct": actual[1]["pct"]},
+    "sin_candidato": {
+        "motivo": "ni comercio ni pueblo del padron a 45 min: ahi no hay que abrir sino llegar de otra forma",
+        "clientes": int(round(CLI[sin_nadie].sum())),
+        "pct": round(100 * CLI[sin_nadie].sum() / CLI.sum(), 1)},
     "cadena_completa": {
         "motivo": ("clientes con tienda a %d min cuya tienda esta ademas "
                    "dentro de la promesa de su centro, que son 4 h en costa "

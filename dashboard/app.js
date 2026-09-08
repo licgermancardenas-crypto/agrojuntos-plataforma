@@ -2028,11 +2028,17 @@ function pintarCanal() {
       "quién le vende al que no es empresa · radio de " + C.radio_base_min +
       " minutos</span></div><div class='b'>" +
       '<div class="kpis">' +
-      kpi(pct(C.con_canal.pct, 1), "clientes con canal cerca",
+      /* Tener tienda cerca y tener dónde ponerla no son lo mismo, y hasta
+         que el padrón del INEI entró como candidato no se podían separar:
+         con solo los comercios de OSM, «sin punto cerca» era el 54.8% y eso
+         medía lo que OSM no mapea, no lo que falta. */
+      kpi(pct(C.con_canal.pct, 1), "clientes con un comercio cerca",
           nf(C.con_canal.clientes) + " de " + nf(C.clientes)) +
-      kpi(pct(C.sin_candidato.pct, 1), "sin ningún punto a " +
-          C.radio_base_min + " min",
-          nf(C.sin_candidato.clientes) + " clientes: ahí hay que abrir") +
+      kpi(pct(C.con_sitio.pct, 1), "con algún sitio donde abrir",
+          "sumando los pueblos del padrón sin comercio") +
+      kpi(pct(C.sin_candidato.pct, 1), "sin nada a " + C.radio_base_min +
+          " min", nf(C.sin_candidato.clientes) + " clientes: ni tienda ni " +
+          "pueblo, ahí no hay qué abrir") +
       kpi(nf(cand.canal + cand.comercio), "puntos que ya existen",
           nf(cand.canal) + " del padrón · " + nf(cand.comercio) + " de OSM") +
       /* La cadena vale lo que valga su tramo más débil. Una tienda con
@@ -2081,9 +2087,13 @@ function pintarCanal() {
       "alcanza para un radio de 45 minutos y no para decidir un local. Y " +
       "<b>que OpenStreetMap no mapee una tienda no significa que no exista</b>: " +
       "su cobertura en la sierra rural es pobre, así que el " +
-      pct(C.sin_candidato.pct, 1) + " sin punto cerca es un techo —cuánto no " +
-      "se puede demostrar que esté cubierto— y no una medición de abandono. " +
-      "La capa del padrón existe justamente para acotar eso.</p></div>";
+      pct(100 - C.con_canal.pct, 1) + " sin comercio conocido es un techo " +
+      "—cuánto no se puede demostrar que esté cubierto— y no una medición de " +
+      "abandono. Los pueblos, en cambio, salen del padrón del INEI: " +
+      nf(C.candidatos.pueblo) + " centros poblados censados con más de 200 " +
+      "habitantes y con coordenada, de los 94,922 que el censo lista. Los " +
+      "que el padrón tiene y nadie mapeó no se inventan: quedan contados " +
+      "aparte, sin coordenada.</p></div>";
 
     tabla(document.getElementById("tCanal"), [
       { k: "k", t: "#", f: function (r) { return r.k; } },

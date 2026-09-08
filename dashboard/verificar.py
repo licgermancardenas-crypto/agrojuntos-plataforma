@@ -1749,12 +1749,23 @@ with sync_playwright() as pw:
     print("  %s clientes · %.1f%% con canal a %d min · %.1f%% sin ninguno"
           % (f"{CAN['clientes']:,}", CAN["con_canal"]["pct"],
              CAN["radio_base_min"], CAN["sin_candidato"]["pct"]))
-    suma = CAN["con_canal"]["pct"] + CAN["sin_candidato"]["pct"]
-    if abs(suma - 100) > 0.3:
-        print("  LAS DOS MITADES DEL CANAL NO SUMAN CIEN (%.1f)" % suma)
+    # Tres cifras encajadas: quien tiene comercio cerca es un subconjunto de
+    # quien tiene algun sitio donde abrir, y lo que sobra de eso es el hueco.
+    # Si el orden se rompiera, se estarian contando pueblos como si ya fueran
+    # tiendas —que es la confusion que el padron del INEI vino a deshacer—.
+    if not (CAN["con_canal"]["pct"] <= CAN["con_sitio"]["pct"]):
+        print("  MAS CLIENTES CON TIENDA QUE CON SITIO DONDE ABRIR: "
+              "un pueblo se esta contando como comercio")
+        ok = False
+    elif abs(CAN["con_sitio"]["pct"] + CAN["sin_candidato"]["pct"] - 100) > 0.3:
+        print("  CON SITIO Y SIN NADA NO SUMAN CIEN (%.1f)"
+              % (CAN["con_sitio"]["pct"] + CAN["sin_candidato"]["pct"]))
         ok = False
     else:
-        print("  con canal y sin canal se reparten el padron entero: ok")
+        print("  comercio (%.1f%%) cabe en sitio donde abrir (%.1f%%) y el "
+              "resto es el hueco (%.1f%%): ok"
+              % (CAN["con_canal"]["pct"], CAN["con_sitio"]["pct"],
+                 CAN["sin_candidato"]["pct"]))
 
     caja = " ".join((pg.text_content("#redCanal") or "").split())
     if str(CAN["radio_base_min"]) not in caja:

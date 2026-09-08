@@ -1,0 +1,11 @@
+{
+ "generado": "2026-09-08T16:20:22",
+ "fuente": "INEI, Directorio Nacional de Centros Poblados (censo 2017), 26 archivos por departamento; coordenadas de OpenStreetMap cruzadas por nombre dentro del distrito",
+ "centros": 94922,
+ "distritos": 1874,
+ "poblacion": 29381884,
+ "con_coordenada": 24591,
+ "pct_con_coordenada": 25.9,
+ "pct_poblacion_con_coordenada": 41.5,
+ "advertencia": "los que no pegaron quedan sin lat/lon a proposito: ponerles el centroide de su distrito seria inventar un pueblo donde no lo hay"
+}

@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-08T15:57:42",
+ "generado": "2026-09-08T16:24:17",
  "motivo": "la red de centros dice dónde poner inventario; esta dice quién le vende al agricultor que no es empresa formal",
  "radios_min": [
   30,
@@ -18,7 +18,7 @@
  "candidatos": {
   "canal": 612,
   "comercio": 2658,
-  "pueblo": 22
+  "pueblo": 6197
  },
  "cobertura_actual": [
   {
@@ -67,27 +67,27 @@
   },
   {
    "k": 3,
-   "nombre": "CORPORACIÓN AGROINDUSTRIAL SEMILLERISTA HERMANOS DIAL S.A.C.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "JUNIN",
-   "lat": -12.04792,
-   "lon": -75.25368,
-   "clientes_nuevos": 2244,
-   "clientes_acum": 8613,
-   "pct_acum": 5.59
+   "nombre": "LOS LIBERTADORES",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "MAZAMARI",
+   "lat": -11.31437,
+   "lon": -74.54496,
+   "clientes_nuevos": 2325,
+   "clientes_acum": 8694,
+   "pct_acum": 5.65
   },
   {
    "k": 4,
-   "nombre": "AGROSERVICIOS LA CASA DEL CAMPESINO S.R.L.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "JUNIN",
-   "lat": -11.19604,
-   "lon": -74.61806,
-   "clientes_nuevos": 1916,
-   "clientes_acum": 10529,
-   "pct_acum": 6.84
+   "nombre": "SAN LUIS DE YAICO",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "MITO",
+   "lat": -11.91104,
+   "lon": -75.36151,
+   "clientes_nuevos": 2322,
+   "clientes_acum": 11017,
+   "pct_acum": 7.15
   },
   {
    "k": 5,
@@ -98,35 +98,71 @@
    "lat": -13.45985,
    "lon": -72.14848,
    "clientes_nuevos": 1899,
-   "clientes_acum": 12428,
-   "pct_acum": 8.07
+   "clientes_acum": 12916,
+   "pct_acum": 8.39
   },
   {
    "k": 6,
-   "nombre": "COMERCIAL DISTRIBUIDORA AGROPEZ SOCIEDAD COMERCIAL DE RESPON",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "PUNO",
-   "lat": -16.11892,
-   "lon": -69.61076,
-   "clientes_nuevos": 1741,
-   "clientes_acum": 14169,
-   "pct_acum": 9.2
+   "nombre": "SANTIAGO",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "PILCUYO",
+   "lat": -16.16339,
+   "lon": -69.53979,
+   "clientes_nuevos": 1876,
+   "clientes_acum": 14792,
+   "pct_acum": 9.61
   },
   {
    "k": 7,
-   "nombre": "AGROCOMERCIAL LEYDI & NAISHA E.I.R.L.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "LA LIBERTAD",
-   "lat": -7.73154,
-   "lon": -79.29556,
-   "clientes_nuevos": 1625,
-   "clientes_acum": 15794,
-   "pct_acum": 10.26
+   "nombre": "CAREAGA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "CHOCOPE",
+   "lat": -7.8046,
+   "lon": -79.19584,
+   "clientes_nuevos": 1835,
+   "clientes_acum": 16627,
+   "pct_acum": 10.8
   },
   {
    "k": 8,
+   "nombre": "EL DORADO",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "YUYAPICHIS",
+   "lat": -9.8109,
+   "lon": -75.01331,
+   "clientes_nuevos": 1785,
+   "clientes_acum": 18412,
+   "pct_acum": 11.96
+  },
+  {
+   "k": 9,
+   "nombre": "PAMPA DE OCAS",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "SAN ANDRÉS",
+   "lat": -13.72676,
+   "lon": -76.15747,
+   "clientes_nuevos": 1726,
+   "clientes_acum": 20139,
+   "pct_acum": 13.08
+  },
+  {
+   "k": 10,
+   "nombre": "Ferreteria William",
+   "clase": "comercio",
+   "tipo": "hardware",
+   "dep": "LA LIBERTAD",
+   "lat": -7.15609,
+   "lon": -79.44443,
+   "clientes_nuevos": 1525,
+   "clientes_acum": 21664,
+   "pct_acum": 14.07
+  },
+  {
+   "k": 11,
    "nombre": "MECANICO",
    "clase": "comercio",
    "tipo": "agricultural_engines",
@@ -134,83 +170,95 @@
    "lat": -18.0488,
    "lon": -70.25824,
    "clientes_nuevos": 1524,
-   "clientes_acum": 17318,
-   "pct_acum": 11.25
-  },
-  {
-   "k": 9,
-   "nombre": "Ferreteria William",
-   "clase": "comercio",
-   "tipo": "hardware",
-   "dep": "LA LIBERTAD",
-   "lat": -7.15609,
-   "lon": -79.44443,
-   "clientes_nuevos": 1468,
-   "clientes_acum": 18785,
-   "pct_acum": 12.2
-  },
-  {
-   "k": 10,
-   "nombre": "AGROVETERINARIA PISCO S.R.L.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "ICA",
-   "lat": -13.70126,
-   "lon": -76.17995,
-   "clientes_nuevos": 1458,
-   "clientes_acum": 20243,
-   "pct_acum": 13.15
-  },
-  {
-   "k": 11,
-   "nombre": "ASOCIACION DE PRODUCTORES SEMILLERISTAS Y SERVICIOS MULTIPLE",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "PUNO",
-   "lat": -14.91774,
-   "lon": -70.58911,
-   "clientes_nuevos": 1274,
-   "clientes_acum": 21517,
-   "pct_acum": 13.97
+   "clientes_acum": 23188,
+   "pct_acum": 15.06
   },
   {
    "k": 12,
-   "nombre": "Ferretería Los Ángeles",
-   "clase": "comercio",
-   "tipo": "trade",
-   "dep": "LA LIBERTAD",
-   "lat": -8.4082,
-   "lon": -78.81518,
-   "clientes_nuevos": 1210,
-   "clientes_acum": 22727,
-   "pct_acum": 14.76
+   "nombre": "GUITARRANI",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "DESAGUADERO",
+   "lat": -16.58957,
+   "lon": -69.07302,
+   "clientes_nuevos": 1481,
+   "clientes_acum": 24669,
+   "pct_acum": 16.02
   },
   {
    "k": 13,
-   "nombre": "Clínica Veterinaria MaskVet",
-   "clase": "comercio",
-   "tipo": "yes",
-   "dep": "PIURA",
-   "lat": -5.18501,
-   "lon": -80.63323,
-   "clientes_nuevos": 1187,
-   "clientes_acum": 23914,
-   "pct_acum": 15.53
+   "nombre": "ASILLO",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "ASILLO",
+   "lat": -14.78659,
+   "lon": -70.354,
+   "clientes_nuevos": 1438,
+   "clientes_acum": 26107,
+   "pct_acum": 16.95
   },
   {
    "k": 14,
-   "nombre": "Ferretería LED",
-   "clase": "comercio",
-   "tipo": "hardware",
-   "dep": "ICA",
-   "lat": -14.07922,
-   "lon": -75.72645,
-   "clientes_nuevos": 1065,
-   "clientes_acum": 24979,
-   "pct_acum": 16.22
+   "nombre": "SIMBILA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "CATACAOS",
+   "lat": -5.24627,
+   "lon": -80.65017,
+   "clientes_nuevos": 1252,
+   "clientes_acum": 27359,
+   "pct_acum": 17.77
   },
   {
    "k": 15,
+   "nombre": "COMBAPATA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "COMBAPATA",
+   "lat": -14.10159,
+   "lon": -71.42963,
+   "clientes_nuevos": 1237,
+   "clientes_acum": 28596,
+   "pct_acum": 18.57
+  },
+  {
+   "k": 16,
+   "nombre": "ZONA PATRIA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "PERENÉ",
+   "lat": -10.89051,
+   "lon": -75.16426,
+   "clientes_nuevos": 1216,
+   "clientes_acum": 29813,
+   "pct_acum": 19.36
+  },
+  {
+   "k": 17,
+   "nombre": "HUACA LARGA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "VIRÚ",
+   "lat": -8.44153,
+   "lon": -78.76366,
+   "clientes_nuevos": 1173,
+   "clientes_acum": 30985,
+   "pct_acum": 20.12
+  },
+  {
+   "k": 18,
+   "nombre": "PUERTO SUNGARO",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "PUERTO INCA",
+   "lat": -9.371,
+   "lon": -75.03423,
+   "clientes_nuevos": 1140,
+   "clientes_acum": 32126,
+   "pct_acum": 20.86
+  },
+  {
+   "k": 19,
    "nombre": "Agro. El olivar",
    "clase": "comercio",
    "tipo": "veterinary",
@@ -218,68 +266,20 @@
    "lat": -11.01505,
    "lon": -77.6029,
    "clientes_nuevos": 1021,
-   "clientes_acum": 26000,
-   "pct_acum": 16.88
-  },
-  {
-   "k": 16,
-   "nombre": "Agroveterinaria \"Sur Andino\"",
-   "clase": "comercio",
-   "tipo": "agrarian",
-   "dep": "CUSCO",
-   "lat": -14.21808,
-   "lon": -71.43108,
-   "clientes_nuevos": 982,
-   "clientes_acum": 26982,
-   "pct_acum": 17.52
-  },
-  {
-   "k": 17,
-   "nombre": "ASOCIACION DE PRODUCTORES AGROPECUARIOS Y SEMILLERISTAS LA P",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "LA LIBERTAD",
-   "lat": -7.81196,
-   "lon": -78.01877,
-   "clientes_nuevos": 965,
-   "clientes_acum": 27947,
-   "pct_acum": 18.15
-  },
-  {
-   "k": 18,
-   "nombre": "AGRO COMERCIALIZADORA E INVERSIONES NUCAR S.A.C.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "SAN MARTIN",
-   "lat": -6.02113,
-   "lon": -77.28344,
-   "clientes_nuevos": 914,
-   "clientes_acum": 28861,
-   "pct_acum": 18.74
-  },
-  {
-   "k": 19,
-   "nombre": "Ferreteria Rosales",
-   "clase": "comercio",
-   "tipo": "hardware",
-   "dep": "JUNIN",
-   "lat": -11.41774,
-   "lon": -75.68826,
-   "clientes_nuevos": 846,
-   "clientes_acum": 29707,
-   "pct_acum": 19.29
+   "clientes_acum": 33147,
+   "pct_acum": 21.53
   },
   {
    "k": 20,
-   "nombre": "AGROCOMERCIALIZADORA FENIX DEL SUR U & M SOCIEDAD ANONIMA CE",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "PUNO",
-   "lat": -16.27985,
-   "lon": -69.0862,
-   "clientes_nuevos": 844,
-   "clientes_acum": 30551,
-   "pct_acum": 19.84
+   "nombre": "PUCAYACU",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "TOCACHE",
+   "lat": -8.19136,
+   "lon": -76.55254,
+   "clientes_nuevos": 992,
+   "clientes_acum": 34138,
+   "pct_acum": 22.17
   },
   {
    "k": 21,
@@ -289,24 +289,144 @@
    "dep": "JUNIN",
    "lat": -10.98928,
    "lon": -74.83262,
-   "clientes_nuevos": 805,
-   "clientes_acum": 31356,
-   "pct_acum": 20.36
+   "clientes_nuevos": 972,
+   "clientes_acum": 35110,
+   "pct_acum": 22.8
   },
   {
    "k": 22,
-   "nombre": "AGRO SERVICIOS HERNANDEZ E.I.R.L.",
+   "nombre": "ASOCIACION DE PRODUCTORES AGROPECUARIOS Y SEMILLERISTAS LA P",
    "clase": "canal",
    "tipo": "padron:canal",
-   "dep": "LAMBAYEQUE",
-   "lat": -6.14812,
-   "lon": -79.69034,
-   "clientes_nuevos": 781,
-   "clientes_acum": 32137,
-   "pct_acum": 20.87
+   "dep": "LA LIBERTAD",
+   "lat": -7.81196,
+   "lon": -78.01877,
+   "clientes_nuevos": 965,
+   "clientes_acum": 36075,
+   "pct_acum": 23.43
   },
   {
    "k": 23,
+   "nombre": "RIO CODO",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "CODO DEL POZUZO",
+   "lat": -9.6888,
+   "lon": -75.50314,
+   "clientes_nuevos": 953,
+   "clientes_acum": 37028,
+   "pct_acum": 24.05
+  },
+  {
+   "k": 24,
+   "nombre": "HUATASANI",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "HUATASANI",
+   "lat": -15.05962,
+   "lon": -69.8014,
+   "clientes_nuevos": 938,
+   "clientes_acum": 37966,
+   "pct_acum": 24.66
+  },
+  {
+   "k": 25,
+   "nombre": "AYAVIRI",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "AYAVIRI",
+   "lat": -14.88184,
+   "lon": -70.59001,
+   "clientes_nuevos": 933,
+   "clientes_acum": 38899,
+   "pct_acum": 25.26
+  },
+  {
+   "k": 26,
+   "nombre": "AGRO COMERCIALIZADORA E INVERSIONES NUCAR S.A.C.",
+   "clase": "canal",
+   "tipo": "padron:canal",
+   "dep": "SAN MARTIN",
+   "lat": -6.02113,
+   "lon": -77.28344,
+   "clientes_nuevos": 914,
+   "clientes_acum": 39813,
+   "pct_acum": 25.86
+  },
+  {
+   "k": 27,
+   "nombre": "LUJARAJA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "SANTIAGO",
+   "lat": -14.14678,
+   "lon": -75.71583,
+   "clientes_nuevos": 893,
+   "clientes_acum": 40706,
+   "pct_acum": 26.44
+  },
+  {
+   "k": 28,
+   "nombre": "APURLEC",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "MOTUPE",
+   "lat": -6.25984,
+   "lon": -79.73111,
+   "clientes_nuevos": 889,
+   "clientes_acum": 41596,
+   "pct_acum": 27.01
+  },
+  {
+   "k": 29,
+   "nombre": "LAS MONICAS",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "TAMBO GRANDE",
+   "lat": -4.93015,
+   "lon": -80.28469,
+   "clientes_nuevos": 839,
+   "clientes_acum": 42434,
+   "pct_acum": 27.56
+  },
+  {
+   "k": 30,
+   "nombre": "ACOBAMBA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "ACOBAMBA",
+   "lat": -11.35293,
+   "lon": -75.65927,
+   "clientes_nuevos": 833,
+   "clientes_acum": 43267,
+   "pct_acum": 28.1
+  },
+  {
+   "k": 31,
+   "nombre": "HUAMBUTIO",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "LUCRE",
+   "lat": -13.58357,
+   "lon": -71.71447,
+   "clientes_nuevos": 807,
+   "clientes_acum": 44074,
+   "pct_acum": 28.62
+  },
+  {
+   "k": 32,
+   "nombre": "SAN MIGUEL DE SEMUYA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "HONORIA",
+   "lat": -8.75452,
+   "lon": -74.79594,
+   "clientes_nuevos": 796,
+   "clientes_acum": 44870,
+   "pct_acum": 29.14
+  },
+  {
+   "k": 33,
    "nombre": "Shalon",
    "clase": "comercio",
    "tipo": "hardware",
@@ -314,47 +434,23 @@
    "lat": -16.34802,
    "lon": -72.1888,
    "clientes_nuevos": 779,
-   "clientes_acum": 32916,
-   "pct_acum": 21.38
+   "clientes_acum": 45649,
+   "pct_acum": 29.65
   },
   {
-   "k": 24,
-   "nombre": "A construir",
-   "clase": "comercio",
-   "tipo": "hardware",
-   "dep": "CUSCO",
-   "lat": -13.59135,
-   "lon": -71.78757,
-   "clientes_nuevos": 776,
-   "clientes_acum": 33692,
-   "pct_acum": 21.88
+   "k": 34,
+   "nombre": "BELLAVISTA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "BELLAVISTA",
+   "lat": -7.05544,
+   "lon": -76.58819,
+   "clientes_nuevos": 777,
+   "clientes_acum": 46427,
+   "pct_acum": 30.15
   },
   {
-   "k": 25,
-   "nombre": "AGROSERVICIOS AMAZONICOS E.I.R.L.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "SAN MARTIN",
-   "lat": -8.2552,
-   "lon": -76.52506,
-   "clientes_nuevos": 775,
-   "clientes_acum": 34467,
-   "pct_acum": 22.38
-  },
-  {
-   "k": 26,
-   "nombre": "AGROSERVICIOS DEL HUALLAGA E.I.R.L.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "SAN MARTIN",
-   "lat": -6.99984,
-   "lon": -76.58721,
-   "clientes_nuevos": 746,
-   "clientes_acum": 35213,
-   "pct_acum": 22.87
-  },
-  {
-   "k": 27,
+   "k": 35,
    "nombre": "AGROPECUARIA & AGROVETERINARIA EL CORRAL E.I.R.L.",
    "clase": "canal",
    "tipo": "padron:canal",
@@ -362,35 +458,35 @@
    "lat": -6.46627,
    "lon": -76.43876,
    "clientes_nuevos": 731,
-   "clientes_acum": 35944,
-   "pct_acum": 23.34
+   "clientes_acum": 47158,
+   "pct_acum": 30.63
   },
   {
-   "k": 28,
-   "nombre": "Vivero El Huerto",
-   "clase": "comercio",
-   "tipo": "plant_nursery",
-   "dep": "PIURA",
-   "lat": -4.90813,
-   "lon": -80.34229,
-   "clientes_nuevos": 701,
-   "clientes_acum": 36645,
-   "pct_acum": 23.8
+   "k": 36,
+   "nombre": "COPORAQUE",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "COPORAQUE",
+   "lat": -14.80074,
+   "lon": -71.53179,
+   "clientes_nuevos": 723,
+   "clientes_acum": 47881,
+   "pct_acum": 31.09
   },
   {
-   "k": 29,
-   "nombre": "La Económica",
-   "clase": "comercio",
-   "tipo": "hardware",
-   "dep": "JUNIN",
-   "lat": -11.12363,
-   "lon": -75.35536,
-   "clientes_nuevos": 699,
-   "clientes_acum": 37345,
-   "pct_acum": 24.25
+   "k": 37,
+   "nombre": "SANTA ISABEL DE NEGUACHI",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "PUERTO BERMÚDEZ",
+   "lat": -10.4104,
+   "lon": -74.79088,
+   "clientes_nuevos": 697,
+   "clientes_acum": 48578,
+   "pct_acum": 31.55
   },
   {
-   "k": 30,
+   "k": 38,
    "nombre": "AGROVETERINARIA SAN JUAN S.R.L.",
    "clase": "canal",
    "tipo": "padron:canal",
@@ -398,11 +494,11 @@
    "lat": -16.57236,
    "lon": -71.83153,
    "clientes_nuevos": 696,
-   "clientes_acum": 38041,
-   "pct_acum": 24.7
+   "clientes_acum": 49274,
+   "pct_acum": 32.0
   },
   {
-   "k": 31,
+   "k": 39,
    "nombre": "Ferretería Checa",
    "clase": "comercio",
    "tipo": "hardware",
@@ -410,125 +506,36 @@
    "lat": -15.63941,
    "lon": -70.34717,
    "clientes_nuevos": 686,
-   "clientes_acum": 38727,
-   "pct_acum": 25.15
-  },
-  {
-   "k": 32,
-   "nombre": "AGRO VETERINARIA EL MOLINO E.I.R.L.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "UCAYALI",
-   "lat": -8.50459,
-   "lon": -74.82642,
-   "clientes_nuevos": 667,
-   "clientes_acum": 39395,
-   "pct_acum": 25.58
-  },
-  {
-   "k": 33,
-   "nombre": "Vivero Costa Verde",
-   "clase": "comercio",
-   "tipo": "plant_nursery",
-   "dep": "LIMA",
-   "lat": -11.47972,
-   "lon": -77.20704,
-   "clientes_nuevos": 653,
-   "clientes_acum": 40048,
-   "pct_acum": 26.01
-  },
-  {
-   "k": 34,
-   "nombre": "Veterinaria & Spa Canino",
-   "clase": "comercio",
-   "tipo": "veterinary",
-   "dep": "ANCASH",
-   "lat": -9.12653,
-   "lon": -78.51941,
-   "clientes_nuevos": 628,
-   "clientes_acum": 40675,
-   "pct_acum": 26.42
-  },
-  {
-   "k": 35,
-   "nombre": "AGROVETERINARIA IZQUIERDO E.I.R.L.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "TUMBES",
-   "lat": -3.54902,
-   "lon": -80.42293,
-   "clientes_nuevos": 593,
-   "clientes_acum": 41268,
-   "pct_acum": 26.8
-  },
-  {
-   "k": 36,
-   "nombre": "AGROVETERINARIA Y REPRESENTACIONES SANTIAGO ALTAMIRANO EIRL",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "CAJAMARCA",
-   "lat": -6.56393,
-   "lon": -78.64512,
-   "clientes_nuevos": 582,
-   "clientes_acum": 41850,
-   "pct_acum": 27.18
-  },
-  {
-   "k": 37,
-   "nombre": "AGROSERVICIOS TINCO E.I.R.L.",
-   "clase": "canal",
-   "tipo": "padron:canal",
-   "dep": "LIMA",
-   "lat": -13.04848,
-   "lon": -76.42218,
-   "clientes_nuevos": 578,
-   "clientes_acum": 42429,
-   "pct_acum": 27.55
-  },
-  {
-   "k": 38,
-   "nombre": "Sodimac",
-   "clase": "comercio",
-   "tipo": "doityourself",
-   "dep": "CAJAMARCA",
-   "lat": -7.15148,
-   "lon": -78.5056,
-   "clientes_nuevos": 551,
-   "clientes_acum": 42980,
-   "pct_acum": 27.91
-  },
-  {
-   "k": 39,
-   "nombre": "Ferretex",
-   "clase": "comercio",
-   "tipo": "hardware",
-   "dep": "PUNO",
-   "lat": -14.91432,
-   "lon": -69.86479,
-   "clientes_nuevos": 550,
-   "clientes_acum": 43530,
-   "pct_acum": 28.27
+   "clientes_acum": 49960,
+   "pct_acum": 32.45
   },
   {
    "k": 40,
-   "nombre": "Lopez",
-   "clase": "comercio",
-   "tipo": "hardware",
-   "dep": "LA LIBERTAD",
-   "lat": -7.98092,
-   "lon": -78.54828,
-   "clientes_nuevos": 550,
-   "clientes_acum": 44080,
-   "pct_acum": 28.63
+   "nombre": "TRIGOPAMPA",
+   "clase": "pueblo",
+   "tipo": "ccpp:inei",
+   "dep": "CUTERVO",
+   "lat": -6.52309,
+   "lon": -78.78389,
+   "clientes_nuevos": 660,
+   "clientes_acum": 50621,
+   "pct_acum": 32.87
   }
  ],
+ "con_sitio": {
+  "motivo": "clientes con algun candidato a 45 min, incluidos los pueblos del padron del INEI donde todavia no hay comercio",
+  "clientes": 143466,
+  "pct": 93.2
+ },
  "con_canal": {
-  "clientes": 69560,
-  "pct": 45.2
+  "motivo": "clientes con un comercio ya existente a 45 min",
+  "clientes": 68840,
+  "pct": 44.7
  },
  "sin_candidato": {
-  "clientes": 84424,
-  "pct": 54.8
+  "motivo": "ni comercio ni pueblo del padron a 45 min: ahi no hay que abrir sino llegar de otra forma",
+  "clientes": 10518,
+  "pct": 6.8
  },
  "cadena_completa": {
   "motivo": "clientes con tienda a 45 min cuya tienda esta ademas dentro de la promesa de su centro, que son 4 h en costa y 6 en sierra y selva",
@@ -779,9 +786,9 @@
    "provincias": "Sanchez Carrion, Pataz",
    "rank": 1,
    "clientes": 9115,
-   "con_canal": 1813,
-   "cubiertos": 1514,
-   "pct": 19.9
+   "con_canal": 8844,
+   "cubiertos": 965,
+   "pct": 97.0
   },
   {
    "cluster": 4,
@@ -789,9 +796,9 @@
    "provincias": "Chiclayo, Lambayeque",
    "rank": 2,
    "clientes": 7263,
-   "con_canal": 5951,
-   "cubiertos": 5243,
-   "pct": 81.9
+   "con_canal": 7263,
+   "cubiertos": 5320,
+   "pct": 100.0
   },
   {
    "cluster": 17,
@@ -799,9 +806,9 @@
    "provincias": "Ayabaca, Huancabamba",
    "rank": 3,
    "clientes": 6340,
-   "con_canal": 3389,
-   "cubiertos": 1532,
-   "pct": 53.5
+   "con_canal": 6237,
+   "cubiertos": 1743,
+   "pct": 98.4
   },
   {
    "cluster": 8,
@@ -809,9 +816,9 @@
    "provincias": "Picota, Lamas",
    "rank": 4,
    "clientes": 5225,
-   "con_canal": 3572,
-   "cubiertos": 1978,
-   "pct": 68.4
+   "con_canal": 5125,
+   "cubiertos": 1919,
+   "pct": 98.1
   },
   {
    "cluster": 5,
@@ -819,9 +826,9 @@
    "provincias": "Satipo, Chanchamayo",
    "rank": 5,
    "clientes": 8185,
-   "con_canal": 4047,
-   "cubiertos": 3321,
-   "pct": 49.4
+   "con_canal": 7873,
+   "cubiertos": 4492,
+   "pct": 96.2
   },
   {
    "cluster": 18,
@@ -829,9 +836,9 @@
    "provincias": "Jauja, Huancayo",
    "rank": 6,
    "clientes": 4544,
-   "con_canal": 3234,
-   "cubiertos": 2878,
-   "pct": 71.2
+   "con_canal": 4459,
+   "cubiertos": 2896,
+   "pct": 98.1
   },
   {
    "cluster": 1,
@@ -839,9 +846,9 @@
    "provincias": "Pisco, Chincha",
    "rank": 7,
    "clientes": 1836,
-   "con_canal": 1804,
-   "cubiertos": 1707,
-   "pct": 98.3
+   "con_canal": 1836,
+   "cubiertos": 1725,
+   "pct": 100.0
   },
   {
    "cluster": 9,
@@ -849,9 +856,9 @@
    "provincias": "Anta, Paucartambo",
    "rank": 8,
    "clientes": 5943,
-   "con_canal": 4120,
-   "cubiertos": 3180,
-   "pct": 69.3
+   "con_canal": 5861,
+   "cubiertos": 3385,
+   "pct": 98.6
   },
   {
    "cluster": 2,
@@ -859,9 +866,9 @@
    "provincias": "Ascope, Trujillo",
    "rank": 9,
    "clientes": 1833,
-   "con_canal": 1710,
-   "cubiertos": 1429,
-   "pct": 93.2
+   "con_canal": 1833,
+   "cubiertos": 1659,
+   "pct": 100.0
   },
   {
    "cluster": 23,
@@ -869,9 +876,9 @@
    "provincias": "Huanuco, Ambo",
    "rank": 10,
    "clientes": 2293,
-   "con_canal": 684,
+   "con_canal": 2071,
    "cubiertos": 0,
-   "pct": 29.8
+   "pct": 90.3
   },
   {
    "cluster": 10,
@@ -879,9 +886,9 @@
    "provincias": "Huaura, Barranca",
    "rank": 11,
    "clientes": 1244,
-   "con_canal": 1106,
+   "con_canal": 1244,
    "cubiertos": 979,
-   "pct": 88.9
+   "pct": 100.0
   },
   {
    "cluster": 28,
@@ -889,9 +896,9 @@
    "provincias": "Azangaro, Puno",
    "rank": 12,
    "clientes": 3584,
-   "con_canal": 3049,
-   "cubiertos": 2862,
-   "pct": 85.1
+   "con_canal": 3584,
+   "cubiertos": 3179,
+   "pct": 100.0
   },
   {
    "cluster": 6,
@@ -899,9 +906,9 @@
    "provincias": "Ica",
    "rank": 13,
    "clientes": 803,
-   "con_canal": 772,
+   "con_canal": 803,
    "cubiertos": 748,
-   "pct": 96.1
+   "pct": 100.0
   },
   {
    "cluster": 20,
@@ -909,9 +916,9 @@
    "provincias": "Chucuito, El Collao",
    "rank": 14,
    "clientes": 3160,
-   "con_canal": 1889,
-   "cubiertos": 1889,
-   "pct": 59.8
+   "con_canal": 3160,
+   "cubiertos": 2677,
+   "pct": 100.0
   },
   {
    "cluster": 7,
@@ -919,9 +926,9 @@
    "provincias": "Tumbes, Zarumilla",
    "rank": 15,
    "clientes": 727,
-   "con_canal": 688,
-   "cubiertos": 582,
-   "pct": 94.7
+   "con_canal": 700,
+   "cubiertos": 0,
+   "pct": 96.4
   },
   {
    "cluster": 12,
@@ -939,9 +946,9 @@
    "provincias": "Utcubamba, Bagua",
    "rank": 17,
    "clientes": 1186,
-   "con_canal": 278,
+   "con_canal": 1186,
    "cubiertos": 0,
-   "pct": 23.4
+   "pct": 100.0
   },
   {
    "cluster": 19,
@@ -949,9 +956,9 @@
    "provincias": "Puerto Inca, Coronel Portillo",
    "rank": 18,
    "clientes": 1051,
-   "con_canal": 167,
-   "cubiertos": 89,
-   "pct": 15.9
+   "con_canal": 1051,
+   "cubiertos": 804,
+   "pct": 100.0
   },
   {
    "cluster": 31,
@@ -959,9 +966,9 @@
    "provincias": "Leoncio Prado, Huamalies",
    "rank": 19,
    "clientes": 996,
-   "con_canal": 809,
+   "con_canal": 996,
    "cubiertos": 0,
-   "pct": 81.2
+   "pct": 100.0
   },
   {
    "cluster": 13,
@@ -970,7 +977,7 @@
    "rank": 20,
    "clientes": 564,
    "con_canal": 544,
-   "cubiertos": 487,
+   "cubiertos": 0,
    "pct": 96.5
   },
   {
@@ -989,9 +996,9 @@
    "provincias": "Puerto Inca",
    "rank": 22,
    "clientes": 806,
-   "con_canal": 0,
-   "cubiertos": 0,
-   "pct": 0.0
+   "con_canal": 806,
+   "cubiertos": 537,
+   "pct": 100.0
   },
   {
    "cluster": 15,
@@ -1009,9 +1016,9 @@
    "provincias": "Nasca",
    "rank": 24,
    "clientes": 303,
-   "con_canal": 74,
+   "con_canal": 303,
    "cubiertos": 0,
-   "pct": 24.3
+   "pct": 100.0
   },
   {
    "cluster": 24,
@@ -1020,7 +1027,7 @@
    "rank": 25,
    "clientes": 454,
    "con_canal": 454,
-   "cubiertos": 454,
+   "cubiertos": 0,
    "pct": 100.0
   },
   {
@@ -1029,9 +1036,9 @@
    "provincias": "Chota, Cutervo",
    "rank": 26,
    "clientes": 1154,
-   "con_canal": 478,
-   "cubiertos": 380,
-   "pct": 41.4
+   "con_canal": 1154,
+   "cubiertos": 369,
+   "pct": 100.0
   },
   {
    "cluster": 37,
@@ -1039,9 +1046,9 @@
    "provincias": "Caylloma",
    "rank": 27,
    "clientes": 389,
-   "con_canal": 0,
+   "con_canal": 279,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 71.8
   },
   {
    "cluster": 25,
@@ -1049,9 +1056,9 @@
    "provincias": "Castilla, Condesuyos",
    "rank": 28,
    "clientes": 384,
-   "con_canal": 137,
+   "con_canal": 368,
    "cubiertos": 0,
-   "pct": 35.7
+   "pct": 95.9
   },
   {
    "cluster": 16,
@@ -1059,9 +1066,9 @@
    "provincias": "Oxapampa",
    "rank": 29,
    "clientes": 632,
-   "con_canal": 513,
+   "con_canal": 632,
    "cubiertos": 0,
-   "pct": 81.2
+   "pct": 100.0
   },
   {
    "cluster": 32,
@@ -1089,9 +1096,9 @@
    "provincias": "San Ignacio, Jaen",
    "rank": 32,
    "clientes": 812,
-   "con_canal": 87,
+   "con_canal": 697,
    "cubiertos": 0,
-   "pct": 10.7
+   "pct": 85.9
   },
   {
    "cluster": 40,
@@ -1099,9 +1106,9 @@
    "provincias": "Cajamarca, Celendin",
    "rank": 33,
    "clientes": 728,
-   "con_canal": 427,
-   "cubiertos": 380,
-   "pct": 58.6
+   "con_canal": 728,
+   "cubiertos": 0,
+   "pct": 100.0
   },
   {
    "cluster": 34,
@@ -1109,9 +1116,9 @@
    "provincias": "Camana",
    "rank": 34,
    "clientes": 239,
-   "con_canal": 217,
+   "con_canal": 239,
    "cubiertos": 0,
-   "pct": 90.5
+   "pct": 100.0
   },
   {
    "cluster": 35,
@@ -1119,9 +1126,9 @@
    "provincias": "Huarochiri",
    "rank": 35,
    "clientes": 250,
-   "con_canal": 34,
+   "con_canal": 170,
    "cubiertos": 0,
-   "pct": 13.5
+   "pct": 68.1
   },
   {
    "cluster": 29,
@@ -1129,9 +1136,9 @@
    "provincias": "La Union",
    "rank": 36,
    "clientes": 228,
-   "con_canal": 0,
+   "con_canal": 171,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 75.0
   },
   {
    "cluster": 39,
@@ -1139,9 +1146,9 @@
    "provincias": "Azangaro, Melgar",
    "rank": 37,
    "clientes": 626,
-   "con_canal": 319,
-   "cubiertos": 94,
-   "pct": 50.9
+   "con_canal": 626,
+   "cubiertos": 626,
+   "pct": 100.0
   },
   {
    "cluster": 26,
@@ -1149,9 +1156,9 @@
    "provincias": "Huancayo",
    "rank": 38,
    "clientes": 326,
-   "con_canal": 0,
+   "con_canal": 141,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 43.2
   },
   {
    "cluster": 55,
@@ -1159,9 +1166,9 @@
    "provincias": "Arequipa",
    "rank": 39,
    "clientes": 178,
-   "con_canal": 148,
+   "con_canal": 178,
    "cubiertos": 148,
-   "pct": 82.9
+   "pct": 100.0
   },
   {
    "cluster": 43,
@@ -1169,9 +1176,9 @@
    "provincias": "Palpa, Nasca",
    "rank": 40,
    "clientes": 122,
-   "con_canal": 112,
+   "con_canal": 122,
    "cubiertos": 0,
-   "pct": 91.6
+   "pct": 100.0
   },
   {
    "cluster": 36,
@@ -1179,9 +1186,9 @@
    "provincias": "Cutervo, Chota",
    "rank": 41,
    "clientes": 491,
-   "con_canal": 75,
+   "con_canal": 491,
    "cubiertos": 0,
-   "pct": 15.2
+   "pct": 100.0
   },
   {
    "cluster": 46,
@@ -1189,9 +1196,9 @@
    "provincias": "Acobamba, Churcampa",
    "rank": 42,
    "clientes": 217,
-   "con_canal": 0,
+   "con_canal": 217,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 100.0
   },
   {
    "cluster": 54,
@@ -1199,9 +1206,9 @@
    "provincias": "Moho",
    "rank": 43,
    "clientes": 490,
-   "con_canal": 0,
+   "con_canal": 490,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 100.0
   },
   {
    "cluster": 42,
@@ -1209,9 +1216,9 @@
    "provincias": "Pasco, Junin",
    "rank": 44,
    "clientes": 296,
-   "con_canal": 0,
+   "con_canal": 189,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 63.7
   },
   {
    "cluster": 44,
@@ -1219,9 +1226,9 @@
    "provincias": "Cangallo, Huamanga",
    "rank": 45,
    "clientes": 250,
-   "con_canal": 193,
+   "con_canal": 250,
    "cubiertos": 0,
-   "pct": 77.3
+   "pct": 100.0
   },
   {
    "cluster": 56,
@@ -1229,9 +1236,9 @@
    "provincias": "Huaura, Huaral",
    "rank": 46,
    "clientes": 159,
-   "con_canal": 0,
+   "con_canal": 73,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 46.1
   },
   {
    "cluster": 30,
@@ -1239,9 +1246,9 @@
    "provincias": "Padre Abad",
    "rank": 47,
    "clientes": 156,
-   "con_canal": 80,
-   "cubiertos": 80,
-   "pct": 51.4
+   "con_canal": 156,
+   "cubiertos": 0,
+   "pct": 100.0
   },
   {
    "cluster": 45,
@@ -1249,9 +1256,9 @@
    "provincias": "San Marcos, Celendin",
    "rank": 48,
    "clientes": 412,
-   "con_canal": 47,
+   "con_canal": 412,
    "cubiertos": 0,
-   "pct": 11.3
+   "pct": 100.0
   },
   {
    "cluster": 53,
@@ -1259,9 +1266,9 @@
    "provincias": "Celendin",
    "rank": 49,
    "clientes": 388,
-   "con_canal": 0,
+   "con_canal": 388,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 100.0
   },
   {
    "cluster": 49,
@@ -1269,9 +1276,9 @@
    "provincias": "Cajatambo",
    "rank": 50,
    "clientes": 131,
-   "con_canal": 0,
+   "con_canal": 131,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 100.0
   },
   {
    "cluster": 52,
@@ -1279,9 +1286,9 @@
    "provincias": "San Ignacio",
    "rank": 51,
    "clientes": 336,
-   "con_canal": 0,
+   "con_canal": 336,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 100.0
   },
   {
    "cluster": 27,
@@ -1289,9 +1296,9 @@
    "provincias": "Tayacaja",
    "rank": 52,
    "clientes": 151,
-   "con_canal": 0,
+   "con_canal": 112,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 74.4
   },
   {
    "cluster": 57,
@@ -1299,9 +1306,9 @@
    "provincias": "Lamas, San Martin",
    "rank": 53,
    "clientes": 127,
-   "con_canal": 49,
+   "con_canal": 127,
    "cubiertos": 0,
-   "pct": 38.9
+   "pct": 100.0
   },
   {
    "cluster": 47,
@@ -1309,9 +1316,9 @@
    "provincias": "Gran Chimu",
    "rank": 54,
    "clientes": 142,
-   "con_canal": 0,
+   "con_canal": 87,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 61.0
   },
   {
    "cluster": 51,
@@ -1319,9 +1326,9 @@
    "provincias": "San Miguel, San Pablo",
    "rank": 55,
    "clientes": 290,
-   "con_canal": 45,
+   "con_canal": 241,
    "cubiertos": 0,
-   "pct": 15.5
+   "pct": 83.1
   },
   {
    "cluster": 38,
@@ -1330,7 +1337,7 @@
    "rank": 56,
    "clientes": 108,
    "con_canal": 108,
-   "cubiertos": 51,
+   "cubiertos": 0,
    "pct": 100.0
   },
   {
@@ -1339,9 +1346,9 @@
    "provincias": "San Miguel, Santa Cruz",
    "rank": 57,
    "clientes": 287,
-   "con_canal": 0,
+   "con_canal": 227,
    "cubiertos": 0,
-   "pct": 0.0
+   "pct": 79.0
   }
  ]
 }

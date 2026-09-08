@@ -126,8 +126,11 @@ ETAPAS = [
      ["out/altitud.json", "out/altitud_sector.csv", "out/altitud_distrito.csv"],
      "la cota y el piso ecológico de cada capa"),
 
+    ("ccpp", "build_ccpp.py", ["data/inei/dpto01.xlsx"],
+     ["out/ccpp.csv", "out/ccpp.json"],
+     "el padrón de centros poblados del INEI, con coordenadas de OSM"),
     ("canal", "build_canal.py",
-     ["out/ruteo_sector.csv", "out/osm_prospectos.csv",
+     ["out/ruteo_sector.csv", "out/osm_prospectos.csv", "out/ccpp.csv",
       "out/empresas_agro_activas.csv", "out/clusters_celda.csv",
       "out/red_elegida.json"],
      ["out/canal.json", "out/canal_punto.csv", "out/canal_territorio.csv"],

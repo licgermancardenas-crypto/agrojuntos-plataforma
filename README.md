@@ -889,13 +889,14 @@ El radio no es el del almacén: al almacén va un camión, a la tienda va el
 agricultor. Se miden 30, 45 y 60 minutos sobre la red vial con pendiente y en el
 sentido correcto —del sector a la tienda, que es el viaje que hace el cliente—.
 
-Tres cifras que es fácil confundir, y confundirlas cambia la conclusión:
+Cuatro cifras que es fácil confundir, y confundirlas cambia la conclusión:
 
 | a 45 minutos | clientes | |
 |---|---|---|
-| los 40 puntos de mayor captación | 44,080 | 28.6% |
-| **el canal entero, sin hacer nada** | **69,560** | **45.2%** |
-| **sin ningún punto cerca** | **84,424** | **54.8%** |
+| los 40 puntos de mayor captación | 50,621 | 32.9% |
+| **con un comercio ya existente** | **68,840** | **44.7%** |
+| **con algún sitio donde abrir** —sumando pueblos del padrón— | **143,466** | **93.2%** |
+| **sin nada: ni tienda ni pueblo** | **10,518** | **6.8%** |
 
 Los cuarenta mejores puntos capturan dos tercios de lo que alcanzan los 3,270
 que existen: el canal está concentrado y una lista corta de acuerdos comerciales
@@ -984,13 +985,43 @@ del proyecto sobre el mercado, no la participación del comerciante. Y el piso
 de viabilidad no lo fija la plataforma —es una decisión comercial—: por eso se
 publica la curva y no un veredicto.
 
-**Dos límites del dato, dichos.** La ubicación del padrón es el distrito y no la
-esquina: SUNAT publica el domicilio fiscal y aquí se lleva al centroide agrícola
-del distrito, lo que alcanza para un radio de 45 minutos y no para decidir un
-local. Y que OpenStreetMap no mapee una tienda no significa que no exista: su
-cobertura en la sierra rural es pobre, así que el 54.8% sin punto cerca es un
-**techo** —cuánto no se puede demostrar que esté cubierto— y no una medición de
-abandono. La capa del padrón, que no depende de OSM, existe para acotar eso.
+### Dónde abrir donde no hay nadie
+
+La pregunta quedó abierta hasta que entró el padrón. `build_ccpp.py` cruza dos
+fuentes que solas no alcanzan: el **Directorio Nacional de Centros Poblados del
+INEI** (censo 2017, 26 archivos por departamento) sabe qué pueblos existen,
+cuánta gente vive en cada uno y a qué altura, pero **no publica coordenadas**;
+**OpenStreetMap** tiene la coordenada de cada pueblo que alguien mapeó, pero no
+sabe cuáles faltan. Se cruzan por nombre dentro del mismo distrito.
+
+El resultado más útil no es la lista sino **la medida de lo que falta**:
+
+| | centros poblados | |
+|---|---|---|
+| en el padrón del INEI | 94,922 | |
+| **con coordenada tras el cruce** | **24,591** | **25.9%** |
+| población que vive en esos | | **41.5% de la censada en centros poblados** |
+
+Y sube con el tamaño: 17% de los caseríos de menos de 50 habitantes, 73% de los
+pueblos de mil a cinco mil. Los que no pegaron **no se inventan** —ponerles el
+centroide de su distrito sería inventar un pueblo donde no lo hay—: quedan en
+`datos/poblacion/ccpp.csv` con su población y sin coordenada, que sirve para
+contar lo que falta.
+
+Con esos pueblos como candidatos, la lista de aperturas deja de ser solo
+comercios existentes y el hueco se reduce a su tamaño real: de los 84,424
+clientes «sin punto cerca» que daba la medición anterior, **10,518 no tienen ni
+tienda ni pueblo a 45 minutos**. Ahí no hay dónde abrir; hay que llegar de otra
+forma o no llegar.
+
+**Dos límites del dato, dichos.** La ubicación del padrón de SUNAT es el
+distrito y no la esquina: alcanza para un radio de 45 minutos y no para decidir
+un local. Y que OpenStreetMap no mapee una tienda no significa que no exista: su
+cobertura en la sierra rural es pobre, así que el 55.3% sin comercio conocido
+es un **techo** —cuánto no se puede demostrar que esté cubierto— y no una
+medición de abandono. Los pueblos, en cambio, ya no dependen de OSM para
+existir: dependen de él solo para tener coordenada, y cuánto pesa eso está
+medido arriba.
 
 ## El relieve, como dato y no como dibujo
 

@@ -112,7 +112,8 @@ def documentacion():
     aco = carga("acopio.json")
     log = carga("logistica.json")
     red = carga("red.json")
-    if not (exp and imp and aco and log and red and txt):
+    can = carga("canal.json")
+    if not (exp and imp and aco and log and red and can and txt):
         return
     mil = lambda v: "{:,}".format(int(round(v)))          # noqa: E731
     esperadas = [
@@ -140,6 +141,10 @@ def documentacion():
         ("centros de la red", str(len(red["centros"]))),
         ("cobertura en promesa", "%.1f%%" % red["sam_cubierto_promesa_pct"]),
         ("cobertura a 2 h", "%.1f%%" % red["sam_cubierto_2h_pct"]),
+        ("clientes con canal cerca", "{:,}".format(can["con_canal"]["clientes"])),
+        ("clientes sin ningún punto", "{:,}".format(
+            can["sin_candidato"]["clientes"])),
+        ("puntos del padrón", "{:,}".format(can["candidatos"]["canal"])),
     ]
     for que, valor in esperadas:
         if valor in txt:

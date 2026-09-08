@@ -305,6 +305,15 @@ MUTACIONES = {
       };
     })();""",
 
+    # La pantalla deja de advertir que la cobertura de OSM es un techo y no
+    # una medicion: el 54.8% «sin punto cerca» se lee como abandono medido.
+    "canal_sin_salvedad": "(() => {" + _MUT_BASE + """
+      setInterval(() => {
+        textos('#redCanal', 'es un techo', 'es una medicion');
+        textos('#redCanal', 'OpenStreetMap', 'el catastro');
+      }, 120);
+    })();""",
+
     "banda_al_nivel_del_mar": """(() => {
       const orig = window.fetch;
       window.fetch = async function (u, o) {
@@ -1626,6 +1635,63 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  la nota declara el sesgo de las cifras anteriores: ok")
+
+
+    # ---------------------------------------------- la red de canal ---------
+    # El almacen no le vende al agricultor: en el mayor territorio hay 9,114
+    # clientes y 133 empresas formales. Esta capa dice quien si, y descansa en
+    # tres cifras que es facil confundir —lo que cubren los elegidos, lo que
+    # cubre el canal entero, y lo que no cubre nadie—. Confundirlas cambia la
+    # conclusion, asi que se comprueba que la pantalla muestre las tres y que
+    # sumen lo que tienen que sumar.
+    print("")
+    print("la red de canal")
+    CAN = json.load(io.open(os.path.join("data", "canal.json"),
+                            encoding="utf-8"))
+    pg.evaluate("() => location.hash = '#expansion'")
+    pg.wait_for_selector("#tCanal tbody tr td", timeout=25000)
+    pg.wait_for_timeout(400)
+    print("  %s clientes · %.1f%% con canal a %d min · %.1f%% sin ninguno"
+          % (f"{CAN['clientes']:,}", CAN["con_canal"]["pct"],
+             CAN["radio_base_min"], CAN["sin_candidato"]["pct"]))
+    suma = CAN["con_canal"]["pct"] + CAN["sin_candidato"]["pct"]
+    if abs(suma - 100) > 0.3:
+        print("  LAS DOS MITADES DEL CANAL NO SUMAN CIEN (%.1f)" % suma)
+        ok = False
+    else:
+        print("  con canal y sin canal se reparten el padron entero: ok")
+
+    caja = " ".join((pg.text_content("#redCanal") or "").split())
+    if str(CAN["radio_base_min"]) not in caja:
+        print("  LA PANTALLA NO DECLARA EL RADIO DEL CANAL")
+        ok = False
+    elif "techo" not in caja or "OpenStreetMap" not in caja:
+        print("  NO SE DECLARA QUE LA COBERTURA DE OSM ES UN TECHO")
+        ok = False
+    else:
+        print("  declara el radio y la salvedad de la fuente: ok")
+
+    # Un punto de captacion no vale lo mismo si ya existe que si hay que
+    # abrirlo. La tabla tiene que decir cual es cual.
+    clases = set(pg.eval_on_selector_all(
+        "#tCanal tbody tr td:nth-child(3)",
+        "f => f.map(x => x.textContent.trim())"))
+    if not clases or clases == {""}:
+        print("  LA TABLA DE CAPTACION NO DICE QUE ES CADA PUNTO")
+        ok = False
+    else:
+        print("  distingue de que clase es cada punto (%s): ok"
+              % ", ".join(sorted(clases)))
+
+    # El orden de apertura es por clientes nuevos y tiene que ser decreciente:
+    # si no lo fuera, no seria un orden de prioridad sino una lista.
+    nuevos = [usd_a_num(t.replace(",", "")) for t in pg.eval_on_selector_all(
+        "#tCanal tbody tr td:nth-child(4)", "f => f.map(x => x.textContent)")]
+    if nuevos != sorted(nuevos, reverse=True):
+        print("  EL ORDEN DE CAPTACION NO ESTA POR CLIENTES NUEVOS")
+        ok = False
+    else:
+        print("  el orden de captacion cae con cada punto: ok")
 
     # --------------------------------- los pisos, y la banda de cada producto -
     # El bloque existe para una decision concreta —donde poner inventario— y

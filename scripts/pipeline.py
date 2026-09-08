@@ -126,6 +126,13 @@ ETAPAS = [
      ["out/altitud.json", "out/altitud_sector.csv", "out/altitud_distrito.csv"],
      "la cota y el piso ecológico de cada capa"),
 
+    ("canal", "build_canal.py",
+     ["out/ruteo_sector.csv", "out/osm_prospectos.csv",
+      "out/empresas_agro_activas.csv", "out/clusters_celda.csv",
+      "out/red_elegida.json"],
+     ["out/canal.json", "out/canal_punto.csv", "out/canal_territorio.csv"],
+     "quién le vende al cliente que el almacén no alcanza"),
+
     ("mapa-geo", "build_mapa_geo.py",
      # Lee tambien los centros y su asignacion: con la lista corta quedaba
      # «al dia» dibujando la red anterior mientras el resto del sitio ya

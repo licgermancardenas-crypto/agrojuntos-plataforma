@@ -95,6 +95,8 @@ CASOS = [
      "cada producto sale a la altura del puerto y no del fundo"),
     ("red_sin_decision", "NO DISTINGUE LOS CENTROS PUESTOS POR DECISION",
      "el centro puesto por decisión se presenta como elegido por el algoritmo"),
+    ("canal_sin_salvedad", "COBERTURA DE OSM ES UN TECHO",
+     "el techo de lo que OSM mapea se presenta como abandono medido"),
 ]
 
 

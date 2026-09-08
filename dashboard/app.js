@@ -1980,6 +1980,81 @@ function pintarRed() {
   }).catch(function () { caja.innerHTML = ""; });
 }
 
+
+/* ------------------------------------------------------------- el canal -- */
+/* La red de centros dice dónde poner inventario. No dice quién le vende al
+   agricultor: en el mayor territorio del país hay 9,114 clientes y 133
+   empresas formales, así que el almacén —aunque esté en Huamachuco— atiende
+   al 1.5% de ese mercado.
+
+   Esta capa no inventa la red: el canal ya existe. Lo que hace falta es saber
+   a cuántos alcanza, cuáles quedan fuera y dónde no hay a quién captar. Las
+   tres cifras son distintas y confundirlas cambia la conclusión, así que se
+   muestran las tres. */
+function pintarCanal() {
+  var caja = document.getElementById("redCanal");
+  if (!caja) return;
+  cargar("canal").then(function (C) {
+    var cand = C.candidatos;
+    var mal = C.territorios.slice().sort(function (a, b) {
+      return a.pct - b.pct; }).filter(function (t) { return t.clientes > 500; });
+
+    caja.innerHTML =
+      '<div class="h"><h3>La red de canal</h3><span class="eyebrow">' +
+      "quién le vende al que no es empresa · radio de " + C.radio_base_min +
+      " minutos</span></div><div class='b'>" +
+      '<div class="kpis">' +
+      kpi(pct(C.con_canal.pct, 1), "clientes con canal cerca",
+          nf(C.con_canal.clientes) + " de " + nf(C.clientes)) +
+      kpi(pct(C.sin_candidato.pct, 1), "sin ningún punto a " +
+          C.radio_base_min + " min",
+          nf(C.sin_candidato.clientes) + " clientes: ahí hay que abrir") +
+      kpi(nf(cand.canal + cand.comercio), "puntos que ya existen",
+          nf(cand.canal) + " del padrón · " + nf(cand.comercio) + " de OSM") +
+      "</div>" +
+      '<div class="grid2" style="margin-top:16px">' +
+      '<div class="sub-card"><div class="eyebrow">Orden de captación: los ' +
+      'doce que más clientes suman</div>' +
+      '<div class="tw"><table id="tCanal"></table></div></div>' +
+      '<div class="sub-card"><div class="eyebrow">Territorios sin canal</div>' +
+      '<div class="tw"><table id="tCanalTer"></table></div></div></div>' +
+      '<p class="sub">' +
+      "Dos límites del dato, antes de leer ninguna cifra. <b>La ubicación del " +
+      "padrón es el distrito, no la esquina</b>: SUNAT publica el domicilio " +
+      "fiscal y aquí se lleva al centroide agrícola del distrito, lo que " +
+      "alcanza para un radio de 45 minutos y no para decidir un local. Y " +
+      "<b>que OpenStreetMap no mapee una tienda no significa que no exista</b>: " +
+      "su cobertura en la sierra rural es pobre, así que el " +
+      pct(C.sin_candidato.pct, 1) + " sin punto cerca es un techo —cuánto no " +
+      "se puede demostrar que esté cubierto— y no una medición de abandono. " +
+      "La capa del padrón existe justamente para acotar eso.</p></div>";
+
+    tabla(document.getElementById("tCanal"), [
+      { k: "k", t: "#", f: function (r) { return r.k; } },
+      { k: "nombre", t: "Punto", l: 1, f: function (r) {
+          return "<b>" + esc(r.nombre) + "</b><span class='sub2'>" +
+            esc(r.dep) + "</span>"; } },
+      { k: "clase", t: "Qué es", l: 1, f: function (r) {
+          return "<span class='tag'>" +
+            (r.clase === "canal" ? "padrón" :
+             r.clase === "comercio" ? "comercio" : "poblado") + "</span>"; } },
+      { k: "clientes_nuevos", t: "Clientes nuevos", f: function (r) {
+          return nf(r.clientes_nuevos); } },
+    ], C.apertura.slice(0, 12), { sort: "k", asc: true });
+
+    tabla(document.getElementById("tCanalTer"), [
+      { k: "provincias", t: "Territorio", l: 1, f: function (r) {
+          return "<b>" + esc(r.provincias) + "</b><span class='sub2'>" +
+            esc(r.dep) + "</span>"; } },
+      { k: "clientes", t: "Clientes", f: function (r) {
+          return nf(r.clientes); } },
+      { k: "pct", t: "Con canal", f: function (r) {
+          return "<span class='delta " + (r.pct < 25 ? "peor" : "") + "'>" +
+            pct(r.pct, 0) + "</span>"; } },
+    ], mal.slice(0, 8), { sort: "pct", asc: true });
+  }).catch(function () { caja.innerHTML = ""; });
+}
+
 /* ------------------------------------------------------------ expansión -- */
 function vistaExpansion(D) {
   var umbral = 2;
@@ -2030,6 +2105,7 @@ function vistaExpansion(D) {
        decidió. Separarlas importa: la promesa de servicio es una decisión
        comercial y con otra vara el ranking de ciudades cambia entero. */
     pintarRed();
+    pintarCanal();
 
     tabla(document.getElementById("tSom"), [
       { k: "e", t: "Escenario", l: true, f: function (r) { return esc(r.e); } },

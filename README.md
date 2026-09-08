@@ -871,6 +871,49 @@ uva son US$ 4,892 MM en 105 distritos y las hortalizas frescas del espárrago
 que el nombre sugiere: la de uva junta fresca y pasas, y la del espárrago lo
 mete con otras hortalizas frescas sin manera de separarlos.
 
+## La red de canal
+
+La red de centros contesta dónde poner inventario. No contesta quién le vende al
+agricultor: en Sánchez Carrión y Pataz hay 9,114 clientes y 133 empresas
+formales, así que un almacén propio —aunque esté en Huamachuco— atiende al 1.5%
+de ese mercado y el resto no se toca sin un punto de venta local.
+
+`build_canal.py` arma esa capa, y no inventa la red: **el canal ya existe**. Los
+candidatos son de tres clases, porque cuestan cosas distintas: **612
+empresas del padrón con clase «canal»** —distribuidores y minoristas de insumos
+con RUC, captarlos es un acuerdo comercial—, **2,658 comercios mapeados en
+OpenStreetMap** —ferreterías, agroveterinarias, tiendas agrícolas— y los centros
+poblados sin comercio conocido, donde llegar significa abrir algo.
+
+El radio no es el del almacén: al almacén va un camión, a la tienda va el
+agricultor. Se miden 30, 45 y 60 minutos sobre la red vial con pendiente y en el
+sentido correcto —del sector a la tienda, que es el viaje que hace el cliente—.
+
+Tres cifras que es fácil confundir, y confundirlas cambia la conclusión:
+
+| a 45 minutos | clientes | |
+|---|---|---|
+| los 40 puntos de mayor captación | 44,080 | 28.6% |
+| **el canal entero, sin hacer nada** | **69,560** | **45.2%** |
+| **sin ningún punto cerca** | **84,424** | **54.8%** |
+
+Los cuarenta mejores puntos capturan dos tercios de lo que alcanzan los 3,270
+que existen: el canal está concentrado y una lista corta de acuerdos comerciales
+rinde casi tanto como la red completa.
+
+Por territorio el reparto es desigual y sigue la misma línea que todo lo demás:
+Chiclayo tiene el 82% de sus clientes con canal cerca y **Sánchez Carrión el
+20%** —1,813 de sus 9,115—. El territorio más grande del país es también el
+peor servido en las dos capas.
+
+**Dos límites del dato, dichos.** La ubicación del padrón es el distrito y no la
+esquina: SUNAT publica el domicilio fiscal y aquí se lleva al centroide agrícola
+del distrito, lo que alcanza para un radio de 45 minutos y no para decidir un
+local. Y que OpenStreetMap no mapee una tienda no significa que no exista: su
+cobertura en la sierra rural es pobre, así que el 54.8% sin punto cerca es un
+**techo** —cuánto no se puede demostrar que esté cubierto— y no una medición de
+abandono. La capa del padrón, que no depende de OSM, existe para acotar eso.
+
 ## El relieve, como dato y no como dibujo
 
 El proyecto bajaba teselas de elevación para sombrear los mapas y las usaba

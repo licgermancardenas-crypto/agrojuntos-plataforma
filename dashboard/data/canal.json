@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-08T11:38:07",
+ "generado": "2026-09-08T15:57:42",
  "motivo": "la red de centros dice dónde poner inventario; esta dice quién le vende al agricultor que no es empresa formal",
  "radios_min": [
   30,
@@ -534,6 +534,169 @@
   "motivo": "clientes con tienda a 45 min cuya tienda esta ademas dentro de la promesa de su centro, que son 4 h en costa y 6 en sierra y selva",
   "clientes": 53247,
   "pct": 34.6
+ },
+ "viabilidad": {
+  "motivo": "mercado exclusivo de cada punto —cada sector va al punto mas cercano, no se cuenta dos veces— llevado a venta y margen con la economia unitaria de build_som.py",
+  "salvedad": "el margen es lo que capturaria AgroJuntos a traves del punto en el escenario base, no lo que vende la tienda: la penetracion del 1.5% es la del proyecto sobre el mercado y no la participacion del comerciante",
+  "puntos_con_mercado": 517,
+  "puntos_que_venden": 3270,
+  "sam_exclusivo_mm": 240.3,
+  "escenarios": [
+   {
+    "e": "Conservador",
+    "pen": 0.005,
+    "margen_mayor": 5087.0
+   },
+   {
+    "e": "Base",
+    "pen": 0.015,
+    "margen_mayor": 15260.0
+   },
+   {
+    "e": "Agresivo",
+    "pen": 0.03,
+    "margen_mayor": 30520.0
+   }
+  ],
+  "penetracion": 0.015,
+  "margen_bruto": 0.21,
+  "curva": [
+   {
+    "margen_min": 2500,
+    "puntos": 95,
+    "clientes": 41372
+   },
+   {
+    "margen_min": 5000,
+    "puntos": 32,
+    "clientes": 20705
+   },
+   {
+    "margen_min": 10000,
+    "puntos": 5,
+    "clientes": 4972
+   },
+   {
+    "margen_min": 25000,
+    "puntos": 0,
+    "clientes": 0
+   },
+   {
+    "margen_min": 50000,
+    "puntos": 0,
+    "clientes": 0
+   }
+  ],
+  "top": [
+   {
+    "nombre": "AGROSERVICIOS LA CASA DEL CAMPESINO S.R.L.",
+    "dep": "JUNIN",
+    "clase": "canal",
+    "hub": "Satipo",
+    "clientes": 1657,
+    "sam": 4844499.39,
+    "margen": 15260.17
+   },
+   {
+    "nombre": "Promart",
+    "dep": "ICA",
+    "clase": "comercio",
+    "hub": "Pisco",
+    "clientes": 653,
+    "sam": 4804896.13,
+    "margen": 15135.42
+   },
+   {
+    "nombre": "AGROCOMERCIAL LEYDI & NAISHA E.I.R.L.",
+    "dep": "LA LIBERTAD",
+    "clase": "canal",
+    "hub": "Chiclayo",
+    "clientes": 986,
+    "sam": 3780730.09,
+    "margen": 11909.3
+   },
+   {
+    "nombre": "AGROSERVICIOS AMAZONICOS E.I.R.L.",
+    "dep": "SAN MARTIN",
+    "clase": "canal",
+    "hub": "Bellavista",
+    "clientes": 775,
+    "sam": 3558568.49,
+    "margen": 11209.49
+   },
+   {
+    "nombre": "ASOCIACION DE PRODUCTORES AGROPECUARIOS Y SEMILLERISTAS LA P",
+    "dep": "LA LIBERTAD",
+    "clase": "canal",
+    "hub": "Huamachuco",
+    "clientes": 902,
+    "sam": 3457609.87,
+    "margen": 10891.47
+   },
+   {
+    "nombre": "AGROSERVICIOS ORO VERDE SOCIEDAD ANONIMA CERRADA - AGROSERVI",
+    "dep": "JUNIN",
+    "clase": "canal",
+    "hub": "Satipo",
+    "clientes": 1064,
+    "sam": 3109802.09,
+    "margen": 9795.88
+   },
+   {
+    "nombre": "INSUMOS AGRICOLAS J & K S.R.L.",
+    "dep": "LAMBAYEQUE",
+    "clase": "canal",
+    "hub": "Chiclayo",
+    "clientes": 662,
+    "sam": 2947194.33,
+    "margen": 9283.66
+   },
+   {
+    "nombre": "AGROSERVICIOS JHUNIOR HC S.R.L.",
+    "dep": "LAMBAYEQUE",
+    "clase": "canal",
+    "hub": "Chiclayo",
+    "clientes": 638,
+    "sam": 2840395.26,
+    "margen": 8947.25
+   },
+   {
+    "nombre": "Vet House",
+    "dep": "ICA",
+    "clase": "comercio",
+    "hub": "Pisco",
+    "clientes": 367,
+    "sam": 2697979.93,
+    "margen": 8498.64
+   },
+   {
+    "nombre": "La Pradera",
+    "dep": "TACNA",
+    "clase": "comercio",
+    "hub": "",
+    "clientes": 728,
+    "sam": 2398653.36,
+    "margen": 7555.76
+   },
+   {
+    "nombre": "AGRO DISTRIBUIDOR SAN FRANCISCO SOCIEDAD COMERCIAL DE RESPON",
+    "dep": "LAMBAYEQUE",
+    "clase": "canal",
+    "hub": "Chiclayo",
+    "clientes": 511,
+    "sam": 2274523.95,
+    "margen": 7164.75
+   },
+   {
+    "nombre": "COMERCIAL DISTRIBUIDORA AGROPEZ SOCIEDAD COMERCIAL DE RESPON",
+    "dep": "PUNO",
+    "clase": "canal",
+    "hub": "Juliaca",
+    "clientes": 1342,
+    "sam": 2253265.98,
+    "margen": 7097.79
+   }
+  ]
  },
  "reparto": [
   {

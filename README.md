@@ -952,6 +952,38 @@ tienda cerca sin mirar cómo se abastece. Con la vara única de cuatro horas era
 48,139: la promesa diferenciada sumó 5,108 clientes sin abrir nada, que es más
 de lo que compró Sicuani.
 
+### Si un punto es negocio
+
+El canal medido en clientes no alcanza para proponer nada: nadie toma una línea
+nueva porque tenga gente cerca. Puesto en plata, con el reparto hecho —cada
+sector va al punto que le queda más cerca, o se contaría a la misma gente dos
+veces— y con la economía unitaria que la propia empresa midió sobre su libro de
+ventas: penetración base 1.5% y margen bruto 21%.
+
+**517 de los 3,270 puntos tienen mercado propio**; el resto cae dentro del
+radio de otro más cercano. Entre esos 517 se reparten **US$ 240.3 MM**, la
+mitad del mercado nacional.
+
+| margen al año, mínimo | puntos que lo superan | clientes detrás |
+|---|---|---|
+| US$ 2,500 | 95 | 41,372 |
+| US$ 5,000 | 32 | 20,705 |
+| US$ 10,000 | 5 | 4,972 |
+| US$ 25,000 | 0 | 0 |
+| US$ 50,000 | 0 | 0 |
+
+**El mayor punto del país deja US$ 15,260 al año** en el escenario base, y solo
+cinco pasan de US$ 10,000. Esa es la cifra que hay que mirar antes de diseñar
+una red de canal propia: a esta penetración, ningún punto sostiene por sí solo
+una operación dedicada.
+
+Con una salvedad que cambia la lectura y por eso viaja en la pantalla: **ese
+margen es lo que capturaría AgroJuntos a través del punto, no lo que vende la
+tienda**. La tienda ya le vende a esos agricultores; el 1.5% es la penetración
+del proyecto sobre el mercado, no la participación del comerciante. Y el piso
+de viabilidad no lo fija la plataforma —es una decisión comercial—: por eso se
+publica la curva y no un veredicto.
+
 **Dos límites del dato, dichos.** La ubicación del padrón es el distrito y no la
 esquina: SUNAT publica el domicilio fiscal y aquí se lleva al centroide agrícola
 del distrito, lo que alcanza para un radio de 45 minutos y no para decidir un

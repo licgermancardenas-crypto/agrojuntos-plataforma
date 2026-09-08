@@ -1791,6 +1791,40 @@ with sync_playwright() as pw:
         print("  el centro de mayor alcance (%s, %s clientes) cabe en el "
               "padron: ok" % (peor["hub"], f"{peor['clientes']:,}"))
 
+    # El canal medido en plata. Dos invariantes y una salvedad:
+    #
+    #   El mercado exclusivo no puede pasar del mercado del pais. Si lo
+    #   pasara, se estarian sumando alcances que se pisan —dos tiendas de la
+    #   misma calle llegan a la misma gente— que es el error que el reparto
+    #   por cercania existe para evitar.
+    #   La curva de pisos tiene que caer: cuanto mas alta la vara, menos
+    #   puntos la superan.
+    #   Y la pantalla tiene que decir que ese margen es lo que capturaria el
+    #   proyecto y no lo que vende la tienda, porque leido al reves convierte
+    #   una lista de socios en una lista de negocios ajenos.
+    V = CAN["viabilidad"]
+    print("  %s de %s puntos con mercado propio · US$ %.1f MM repartidos"
+          % (f"{V['puntos_con_mercado']:,}", f"{V['puntos_que_venden']:,}",
+             V["sam_exclusivo_mm"]))
+    if V["sam_exclusivo_mm"] * 1e6 > 1.01 * 502.7e6:
+        print("  EL MERCADO EXCLUSIVO SUPERA AL DEL PAIS: los alcances se "
+              "estan sumando en vez de repartirse")
+        ok = False
+    else:
+        print("  el mercado repartido cabe en el del pais: ok")
+    _p = [c["puntos"] for c in V["curva"]]
+    if _p != sorted(_p, reverse=True):
+        print("  LA CURVA DE VIABILIDAD NO CAE AL SUBIR LA VARA: %s" % _p)
+        ok = False
+    else:
+        print("  cuanto mas alta la vara, menos puntos la pasan (%s): ok"
+              % " > ".join(str(x) for x in _p))
+    if "no lo que vende la tienda" not in caja:
+        print("  LA PANTALLA NO ACLARA DE QUIEN ES ESE MARGEN")
+        ok = False
+    else:
+        print("  aclara que el margen es del proyecto y no del comerciante: ok")
+
     # Un punto de captacion no vale lo mismo si ya existe que si hay que
     # abrirlo. La tabla tiene que decir cual es cual.
     clases = set(pg.eval_on_selector_all(

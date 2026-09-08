@@ -2019,6 +2019,7 @@ function pintarCanal() {
   if (!caja) return;
   cargar("canal").then(function (C) {
     var cand = C.candidatos;
+    var V = C.viabilidad;
     var mal = C.territorios.slice().sort(function (a, b) {
       return a.pct - b.pct; }).filter(function (t) { return t.clientes > 500; });
 
@@ -2049,6 +2050,30 @@ function pintarCanal() {
       '<div class="sub-card" style="margin-top:16px">' +
       '<div class="eyebrow">Quién resurte a quién · del centro a la tienda' +
       "</div><div class='tw'><table id='tCanalHub'></table></div></div>" +
+      /* El canal medido en clientes no alcanza para proponer nada: nadie toma
+         una línea porque tenga gente cerca. Esto lo pone en plata, con la
+         economía unitaria que la propia empresa midió sobre su libro de
+         ventas, y con el reparto hecho —el mercado de cada punto es el que
+         nadie más tiene más cerca, o se contaría a la misma gente dos veces—. */
+      '<div class="sub-card" style="margin-top:16px">' +
+      '<div class="eyebrow">Si el punto es negocio · mercado exclusivo y ' +
+      "margen en el escenario base</div>" +
+      '<div class="kpis" style="margin-top:10px">' +
+      kpi(nf(V.puntos_con_mercado), "puntos con mercado propio",
+          "de " + nf(V.puntos_que_venden) + "; el resto cae dentro del radio " +
+          "de otro más cercano") +
+      kpi(usd(V.sam_exclusivo_mm * 1e6), "mercado repartido entre ellos",
+          "sin contar a nadie dos veces") +
+      kpi(usd(V.escenarios[1].margen_mayor), "margen del mayor punto",
+          "al año, escenario base") +
+      "</div>" +
+      '<div class="tw" style="margin-top:12px"><table id="tCanalViab"></table>' +
+      "</div>" +
+      '<p class="sub">' + esc(V.salvedad) + ". Por eso el piso de viabilidad " +
+      "no lo fija esta pantalla: la tabla muestra cuántos puntos quedan sobre " +
+      "cada vara para que la elija quien decide. Con la penetración base, " +
+      "ningún punto del país pasa de " +
+      usd(V.escenarios[1].margen_mayor) + " al año.</p></div>" +
       '<p class="sub">' +
       "Dos límites del dato, antes de leer ninguna cifra. <b>La ubicación del " +
       "padrón es el distrito, no la esquina</b>: SUNAT publica el domicilio " +
@@ -2098,6 +2123,17 @@ function pintarCanal() {
       { k: "clientes", t: "Clientes detrás", f: function (r) {
           return nf(r.clientes); } },
     ], C.reparto, { sort: "puntos" });
+
+    tabla(document.getElementById("tCanalViab"), [
+      /* Sin abreviar: `usd` redondea y un umbral de 2,500 salía como «US$ 3
+         mil», que en una tabla de varas es decir otra vara. */
+      { k: "margen_min", t: "Margen al año, mínimo", l: 1, f: function (r) {
+          return "<b>US$ " + nf(r.margen_min) + "</b>"; } },
+      { k: "puntos", t: "Puntos que lo superan", f: function (r) {
+          return nf(r.puntos); } },
+      { k: "clientes", t: "Clientes detrás", f: function (r) {
+          return nf(r.clientes); } },
+    ], V.curva, { sort: "margen_min", asc: true });
   }).catch(function () { caja.innerHTML = ""; });
 }
 

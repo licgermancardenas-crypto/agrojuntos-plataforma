@@ -519,14 +519,20 @@ for k, g in cul_d.sort_values("ha", ascending=False).groupby("dep"):
 exp_por_dep = top_por(ax_dp, "dep")
 exp_por_adu = top_por(ax_ap, "aduana")
 
+# La mitad exportadora de esta pantalla salía de aquí —la ventana de diez
+# semanas, anualizada— y ya no: la vista lee `exportaciones/mercado.json`, que
+# son cinco años medidos, con las familias de cada departamento y la mezcla de
+# cada aduana. Se quitan los campos en vez de dejarlos sin leer: un `fob_exp`
+# que nadie usa y que no coincide con lo que muestra la pantalla es una cifra
+# esperando que alguien la tome por buena.
+#
+# De la aduana sobrevive solo el diccionario —código, nombre y vía—, porque el
+# manifiesto trae el código y el agregado también: el nombre hay que sacarlo
+# de la Tabla 4 del Anexo 01 de SUNAT, y ese cruce vive aquí.
 guardar("productos.json", {
     "meta": {
-        "semanas": SEM,
         "ha": int(cul_n["ha_nac"].sum()),
         "cultivos": int(len(cul_n)),
-        "fob_exp": int(ax_p["fob_usd"].sum()),
-        "partidas": int(len(ax_p)),
-        "aduanas": int(len(ax_a)),
     },
     # --- lo que se cultiva -------------------------------------------------
     "cultivos": [{
@@ -535,26 +541,10 @@ guardar("productos.json", {
         "lider": r["dep_lider"], "pct": round(float(r["pct_lider"]), 1),
     } for _, r in cul_n.sort_values("ha_nac", ascending=False).head(60).iterrows()],
     "cult_dep": cult_por_dep,
-    # --- lo que se exporta -------------------------------------------------
-    "productos": [{
-        "p": str(r["partida4"]).zfill(4), "n": r["producto"],
-        "fob": int(r["fob_usd"]), "tn": int(round(r["kg"] / 1000)),
-        "emp": int(r["empresas"]), "dest": int(r["destinos"]),
-    } for _, r in ax_p.sort_values("fob_usd", ascending=False).head(40).iterrows()],
-    # --- por dónde sale ----------------------------------------------------
+    # --- cómo se llama cada aduana -----------------------------------------
     "aduanas": [{
-        "c": r["codigo"], "n": r["aduana"], "fob": int(r["fob_usd"]),
-        "tn": int(round(r["kg"] / 1000)), "emp": int(r["empresas"]),
-        "lider": r["producto_lider"], "pct": round(float(r["pct_lider"]), 1),
-        "via": r["via_principal"],
+        "c": r["codigo"], "n": r["aduana"], "via": r["via_principal"],
     } for _, r in ax_a.sort_values("fob_usd", ascending=False).iterrows()],
-    "exp_dep": [{
-        "n": r["dep"], "fob": int(r["fob_usd"]),
-        "tn": int(round(r["kg"] / 1000)), "emp": int(r["empresas"]),
-        "lider": r["producto_lider"], "pct": round(float(r["pct_lider"]), 1),
-    } for _, r in ax_d.sort_values("fob_usd", ascending=False).iterrows()],
-    "exp_por_dep": exp_por_dep,
-    "exp_por_adu": exp_por_adu,
 })
 
 

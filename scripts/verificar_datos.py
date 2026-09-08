@@ -147,6 +147,10 @@ def documentacion():
         ("puntos del padrón", "{:,}".format(can["candidatos"]["canal"])),
         ("clientes con la cadena completa",
          "{:,}".format(can["cadena_completa"]["clientes"])),
+        ("puntos con mercado propio",
+         "{:,}".format(can["viabilidad"]["puntos_con_mercado"])),
+        ("margen del mayor punto",
+         "{:,.0f}".format(can["viabilidad"]["escenarios"][1]["margen_mayor"])),
     ]
     for que, valor in esperadas:
         if valor in txt:

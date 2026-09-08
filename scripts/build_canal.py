@@ -374,10 +374,91 @@ for _, r in hub_res.iterrows():
           % (r.hub, r.puntos, r.del_padron, r.pct_en_promesa,
              r.horas_mediana, f"{r.clientes:,.0f}"))
 
+# --------------------------------------------- si el punto es un negocio ---
+# Hasta aquí el canal estaba medido en clientes y no en plata, y con eso no se
+# puede proponer nada: nadie toma una línea nueva porque tenga gente cerca,
+# sino porque le deja algo.
+#
+# El reparto es la parte que hay que hacer bien. El alcance de dos tiendas de
+# la misma calle es casi el mismo mercado, así que sumar los alcances cuenta a
+# la misma gente varias veces —el mismo error que ya se corrigió al totalizar
+# por centro—. Aquí cada sector va al punto que le queda más cerca en tiempo,
+# y lo que se le atribuye a cada uno es su mercado **exclusivo**: la suma de
+# todos vuelve a dar el total del país.
+print()
+print("lo que movería cada punto")
+mejor_t = np.full(len(sec), np.inf)
+mejor_j = np.full(len(sec), -1, dtype=int)
+for j, (idx, t) in enumerate(alcance):
+    if cand.clase.iat[j] not in ("canal", "comercio"):
+        continue
+    m = t <= RADIO_BASE
+    ii, tt = idx[m], t[m]
+    gana = tt < mejor_t[ii]
+    mejor_t[ii[gana]] = tt[gana]
+    mejor_j[ii[gana]] = j
+
+cand["sam_exclusivo"] = 0.0
+cand["clientes_exclusivos"] = 0.0
+for j in np.unique(mejor_j[mejor_j >= 0]):
+    m = mejor_j == j
+    cand.iat[int(j), cand.columns.get_loc("sam_exclusivo")] = float(SAM[m].sum())
+    cand.iat[int(j), cand.columns.get_loc("clientes_exclusivos")] = float(CLI[m].sum())
+
+# La economía unitaria no se inventa aquí: sale de `build_som.py`, que la midió
+# sobre el libro de ventas de la propia empresa —margen bruto del 21%— y de sus
+# tres escenarios de penetración. Usar otros números haría que dos pantallas
+# del mismo sitio dijeran cosas distintas del mismo negocio.
+som = leer("out/som_escenarios.csv")
+base = som[som.escenario == "Base"].iloc[0]
+PEN = float(base.penetracion)
+MARGEN = float(base.margen_usd) / float(base.ventas_usd)
+cand["venta_base"] = cand["sam_exclusivo"] * PEN
+cand["margen_base"] = cand["venta_base"] * MARGEN
+print("  penetración base %.1f%% · margen bruto %.0f%% (de build_som.py)"
+      % (100 * PEN, 100 * MARGEN))
+print("  OJO: eso es lo que capturaría AGROJUNTOS a través del punto, no lo")
+print("  que vende la tienda. La tienda ya le vende a esos agricultores; la")
+print("  penetración del 1.5% es la del proyecto sobre el mercado, no la")
+print("  participación del comerciante.")
+
+vende_i = cand.index[vende]
+con_mercado = cand.loc[vende_i, "sam_exclusivo"] > 0
+print("  %d de %d puntos tienen mercado exclusivo; los demás quedan dentro "
+      "del radio de otro más cercano" % (int(con_mercado.sum()), len(vende_i)))
+print("  el mercado exclusivo suma US$ %.1f MM de los %.1f MM del país"
+      % (cand.loc[vende_i, "sam_exclusivo"].sum() / 1e6, SAM.sum() / 1e6))
+
+# El piso de viabilidad es una decisión comercial y no un dato: no se fija
+# aquí. Se publica la curva para que quien decida vea el precio de cada vara.
+PISOS = [2500, 5000, 10000, 25000, 50000]
+curva_piso = []
+print()
+print("  %-14s %8s %12s" % ("margen/año", "puntos", "clientes"))
+for u in PISOS:
+    m = cand.loc[vende_i, "margen_base"] >= u
+    curva_piso.append({"margen_min": u, "puntos": int(m.sum()),
+                       "clientes": int(round(
+                           cand.loc[vende_i, "clientes_exclusivos"][m].sum()))})
+    print("  US$ %-10s %8d %12s"
+          % ("{:,}".format(u), m.sum(),
+             "{:,.0f}".format(cand.loc[vende_i, "clientes_exclusivos"][m].sum())))
+
+top_v = (cand.loc[vende_i].sort_values("margen_base", ascending=False).head(12))
+print()
+print("  los doce de mayor margen")
+print("  %-34s %-9s %10s %10s" % ("punto", "clase", "clientes", "margen/año"))
+for _, r in top_v.iterrows():
+    print("  %-34s %-9s %10s %10s"
+          % (str(r["nombre"])[:34], r["clase"],
+             "{:,.0f}".format(r["clientes_exclusivos"]),
+             "US$ {:,.0f}".format(r["margen_base"])))
+
 # --------------------------------------------------------------- salida ----
 cand["elegido"] = [j in sel for j in range(len(cand))]
 cols = ["dep", "nombre", "tipo", "clase", "lat", "lon", "sectores_1h",
-        "hub", "horas_reparto", "reparto_en_promesa", "elegido"] + [c for c in cand.columns
+        "hub", "horas_reparto", "reparto_en_promesa", "sam_exclusivo",
+        "clientes_exclusivos", "venta_base", "margen_base", "elegido"] + [c for c in cand.columns
                       if c.startswith(("clientes_", "sam_"))]
 cand[cols].to_csv("out/canal_punto.csv", index=False, encoding="utf-8-sig")
 
@@ -405,6 +486,35 @@ salida = {
                    "y 6 en sierra y selva" % int(RADIO_BASE * 60)),
         "clientes": int(round(CLI[en_cadena].sum())),
         "pct": round(100 * CLI[en_cadena].sum() / CLI.sum(), 1)},
+    "viabilidad": {
+        "motivo": ("mercado exclusivo de cada punto —cada sector va al punto "
+                   "mas cercano, no se cuenta dos veces— llevado a venta y "
+                   "margen con la economia unitaria de build_som.py"),
+        "salvedad": ("el margen es lo que capturaria AgroJuntos a traves del "
+                     "punto en el escenario base, no lo que vende la tienda: "
+                     "la penetracion del 1.5% es la del proyecto sobre el "
+                     "mercado y no la participacion del comerciante"),
+        "puntos_con_mercado": int(con_mercado.sum()),
+        "puntos_que_venden": int(len(vende_i)),
+        "sam_exclusivo_mm": round(float(
+            cand.loc[vende_i, "sam_exclusivo"].sum()) / 1e6, 1),
+        "escenarios": [{"e": str(r.escenario),
+                        "pen": round(float(r.penetracion), 4),
+                        "margen_mayor": round(float(
+                            cand.loc[vende_i, "sam_exclusivo"].max()
+                            * float(r.penetracion) * MARGEN), 0)}
+                       for _, r in som.iterrows()],
+        "penetracion": round(PEN, 4),
+        "margen_bruto": round(MARGEN, 4),
+        "curva": curva_piso,
+        "top": [{"nombre": str(r["nombre"])[:60], "dep": str(r["dep"]),
+                 "clase": r["clase"], "hub": (r["hub"] if isinstance(r["hub"], str)
+                                              else ""),
+                 "clientes": int(round(r["clientes_exclusivos"])),
+                 "sam": round(float(r["sam_exclusivo"]), 2),
+                 "margen": round(float(r["margen_base"]), 2)}
+                for _, r in top_v.iterrows()],
+    },
     "reparto": [{"hub": r.hub, "puntos": int(r.puntos),
                  "del_padron": int(r.del_padron),
                  "en_promesa": int(r.en_promesa),

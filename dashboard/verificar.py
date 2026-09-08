@@ -307,6 +307,20 @@ MUTACIONES = {
 
     # La pantalla deja de advertir que la cobertura de OSM es un techo y no
     # una medicion: el 54.8% «sin punto cerca» se lee como abandono medido.
+    # La vista de productos vuelve a comer de la ventana de diez semanas: el
+    # FOB del año cerrado se reemplaza por la ventana anualizada.
+    "productos_anualiza": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('exportaciones/mercado.json') < 0) return r;
+        const d = await r.clone().json();
+        Object.keys(d.por_anio).forEach(a => { d.por_anio[a].fob *= 0.21; });
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
     "canal_sin_salvedad": "(() => {" + _MUT_BASE + """
       setInterval(() => {
         textos('#redCanal', 'es un techo', 'es una medicion');
@@ -1641,6 +1655,82 @@ with sync_playwright() as pw:
     else:
         print("  la nota declara el sesgo de las cifras anteriores: ok")
 
+
+
+    # -------------------------------------- productos · dos fuentes, un ojo --
+    # Esta pantalla pone una al lado de la otra la hectárea de MIDAGRI y el
+    # dólar embarcado de SUNAT. La mitad exportadora salía de la ventana de
+    # diez semanas anualizada y ahora son cinco años medidos, lo que obliga a
+    # comprobar tres cosas que un cruce mal hecho rompería sin que se note:
+    #
+    #   Que las cifras salgan del agregado y no de la ventana.
+    #   Que el selector de periodo no las mueva, porque ya están medidas.
+    #   Que el corte por departamento declare hasta dónde llega: el ubigeo del
+    #   manifiesto se apaga en 2025 y extender el mapa a los años sin él sería
+    #   dibujar la caída del registro y no la de la producción.
+    print("")
+    print("productos · la hectárea y el embarque")
+    EX2 = json.load(io.open(os.path.join("data", "exportaciones",
+                                         "mercado.json"), encoding="utf-8"))
+    pg.evaluate("() => location.hash = '#productos'")
+    pg.wait_for_selector("#tAduanas tbody tr td", timeout=25000)
+    pg.wait_for_timeout(500)
+    _cerr = [a for a in EX2["anios_con_dato"]
+             if a < EX2["anio_en_curso"]][-1]
+    _kpi = usd_a_num(pg.eval_on_selector("#proKpis > div:nth-child(3) .v",
+                                         "e => e.textContent"))
+    _esp = EX2["por_anio"][_cerr]["fob"]
+    print("  agroexportación %s: pantalla %s · agregado %s"
+          % (_cerr, f"{_kpi:,.0f}", f"{_esp:,.0f}"))
+    if abs(_kpi - _esp) / _esp > 0.01:
+        print("  EL FOB DE PRODUCTOS NO SALE DEL AGREGADO MEDIDO")
+        ok = False
+    else:
+        print("  el KPI exportador es el año cerrado del agregado: ok")
+
+    # La familia mayor de la tabla tiene que ser la del agregado: si la tabla
+    # siguiera comiendo de la ventana de diez semanas, el orden sería otro.
+    _prim = pg.eval_on_selector("#tProductos tbody tr:first-child td",
+                                "e => e.textContent")
+    if EX2["familias"][0]["n"][:12] not in _prim:
+        print("  LA TABLA DE PRODUCTOS NO ESTA ORDENADA POR EL AGREGADO: «%s»"
+              % _prim[:40])
+        ok = False
+    else:
+        print("  la primera familia coincide con el agregado (%s): ok"
+              % EX2["familias"][0]["n"][:24])
+
+    _antes = pg.eval_on_selector("#proKpis > div:nth-child(3) .v",
+                                 "e => e.textContent")
+    pg.click('.periodo button:has-text("Medido")')
+    pg.wait_for_timeout(600)
+    _desp = pg.eval_on_selector("#proKpis > div:nth-child(3) .v",
+                                "e => e.textContent")
+    if _antes != _desp:
+        print("  EL PERIODO ANUALIZA UNA CIFRA MEDIDA EN PRODUCTOS: %s -> %s"
+              % (_antes, _desp))
+        ok = False
+    else:
+        print("  el selector de periodo no toca lo ya medido: ok")
+
+    # El corte por departamento, con su año de corte declarado.
+    pg.select_option("#fProDep", "Ica")
+    pg.wait_for_timeout(800)
+    _nd = " ".join((pg.text_content("#proExpNota") or "").split())
+    _anter = EX2["departamentos"]["anios_usados"]
+    if _anter[-1] not in _nd or "ubigeo" not in _nd:
+        print("  EL CORTE POR DEPARTAMENTO NO DICE HASTA CUANDO LLEGA")
+        ok = False
+    else:
+        print("  el corte por departamento declara su límite (%s) y su fuente: ok"
+              % ", ".join(_anter))
+    _bar = pg.eval_on_selector_all("#proExpDep .bar",
+                                   "b => b.map(x => x.textContent)")
+    if not _bar or "Uva" not in _bar[0]:
+        print("  ICA NO SALE COMO UVA: el corte por departamento no es el medido")
+        ok = False
+    else:
+        print("  Ica sale como uva, que es lo que embarca: ok")
 
     # ---------------------------------------------- la red de canal ---------
     # El almacen no le vende al agricultor: en el mayor territorio hay 9,114

@@ -2959,24 +2959,50 @@ function vistaMetodo() {
    departamento, qué producto se exporta y por qué aduana sale. Las dos
    primeras vienen de fuentes distintas —MIDAGRI para la tierra, SUNAT para el
    embarque— y no se suman entre sí: una mide hectáreas, la otra dólares FOB. */
+/* Dos fuentes que miden cosas distintas y no se suman: la superficie es de
+   MIDAGRI —hectáreas cosechadas— y el embarque es de SUNAT —dólares FOB—. Lo
+   que cambió es de dónde sale el embarque: era la ventana de diez semanas
+   anualizada, y son cinco años medidos.
+
+   El corte por departamento del embarque no llega hasta 2026 sino hasta 2024,
+   porque es el último año en que SUNAT llenó el ubigeo del manifiesto; y ese
+   ubigeo apunta al fundo, no al domicilio fiscal, que es justamente lo que lo
+   hace comparable con la hectárea de al lado. Las dos salvedades viajan a la
+   vista, porque una cifra sin su salvedad viaja más rápido que la salvedad. */
 function vistaProductos() {
-  cargar("productos").then(function (D) {
-    REPINTAR.productos = function () { pintarProductos(D); };
-    pintarProductos(D);
-  }).catch(fallo);
+  Promise.all([cargar("productos"), cargar("exportaciones/mercado")])
+    .then(function (r) {
+      REPINTAR.productos = function () { pintarProductos(r[0], r[1]); };
+      pintarProductos(r[0], r[1]);
+    }).catch(fallo);
 }
 
-function pintarProductos(D) {
-    var m = D.meta, SEM = m.semanas, anual = pFactor(SEM);
+function pintarProductos(D, E) {
+    var m = D.meta;
     var dep = "";                       // "" = todo el país
+    var anios = E.anios_con_dato;
+    var cerrado = anios.filter(function (a) {
+      return a < E.anio_en_curso; }).pop();
+    var rango = anios[0] + "–" + anios[anios.length - 1];
+    var aduNom = {};                    // código -> nombre y vía
+    D.aduanas.forEach(function (a) { aduNom[a.c] = a; });
+    var aduMed = E.aduanas.map(function (a) {
+      var i = aduNom[a.n] || {};
+      return {c: a.n, n: i.n || a.n, via: i.via || "—", fob: a.fob,
+              tn: Math.round(a.kg / 1000), emp: a.empresas,
+              mezcla: a.mezcla || []};
+    });
+    var depMed = {};
+    E.departamentos.lista.forEach(function (x) { depMed[x.n] = x; });
+    var anTer = E.departamentos.anios_usados;
 
     document.getElementById("proKpis").innerHTML = [
       [nf(m.ha), "hectáreas cosechadas", "en " + nf(m.cultivos) + " cultivos"],
       [D.cultivos[0].n, "mayor superficie", nf(D.cultivos[0].ha) + " ha"],
-      [pFob(m.fob_exp, SEM), "agroexportación " + pSuf(SEM),
-       usd(m.fob_exp) + " medidos en " + SEM + " semanas"],
-      [D.aduanas[0].n, "principal salida", pct(100 * D.aduanas[0].fob /
-       m.fob_exp, 0) + " del FOB"],
+      [usd(E.por_anio[cerrado].fob), "agroexportación " + cerrado,
+       "año cerrado, medido sin extrapolar"],
+      [aduMed[0].n, "principal salida",
+       pct(100 * aduMed[0].fob / E.total.fob, 0) + " del FOB de " + rango],
     ].map(function (k) {
       return "<div><span class='v'>" + esc(k[0]) + "</span><span class='l'>" +
         k[1] + "</span><span class='s'>" + esc(k[2]) + "</span></div>";
@@ -3007,31 +3033,37 @@ function pintarProductos(D) {
             return { n: c.n, v: c.ha, t: nf(c.ha) + " ha" }; }));
       }
 
-      var ex = dep ? (D.exp_por_dep[dep] || []) : null;
+      var fila = dep ? depMed[dep.toUpperCase()] : null;
+      var ex = fila ? fila.familias : null;
       titE.textContent = dep ? "Qué exporta " + dep : "Qué se exporta del país";
-      var fuente = ex || D.productos.slice(0, 6).map(function (p) {
-        return { n: p.n, v: p.fob, tn: p.tn }; });
+      var fuente = ex || E.familias.slice(0, 8).map(function (f) {
+        return { n: f.n, v: f.fob }; });
       if (!fuente.length) {
         document.getElementById("proExpDep").innerHTML =
-          "<p class='sub'>Sin agroexportación registrada en las " +
-          m.semanas + " semanas publicadas.</p>";
+          "<p class='sub'>Sin agroexportación con ubigeo en " +
+          anTer.join(", ") + ".</p>";
       } else {
         barras(document.getElementById("proExpDep"),
           fuente.map(function (p) {
-            return { n: p.n, v: p.v, t: usd(p.v * anual) }; }));
+            return { n: p.n, v: p.v, t: usd(p.v) }; }));
       }
 
-      var fila = D.exp_dep.filter(function (r) { return r.n === dep; })[0];
       document.getElementById("proExpNota").innerHTML = dep
         ? (fila
-            ? "<b>" + nf(fila.emp) + "</b> empresas exportan desde " + esc(dep) +
-              ", " + usd(fila.fob * anual) + " al año. La ubicación es el " +
-              "domicilio fiscal declarado ante SUNAT, no necesariamente donde " +
-              "está el fundo."
-            : "Ninguna empresa con domicilio fiscal en " + esc(dep) +
-              " registra agroexportación en el periodo.")
+            ? "<b>" + nf(fila.empresas) + "</b> empresas embarcaron desde " +
+              esc(dep) + ": " + usd(fila.fob) + " en " + anTer.join(", ") +
+              ", medidos y no anualizados. El origen es el <b>ubigeo del " +
+              "manifiesto</b>, que apunta al fundo y no al domicilio fiscal " +
+              "—por eso se puede mirar al lado de la hectárea—, y el corte se " +
+              "detiene en " + anTer[anTer.length - 1] + " porque es el último " +
+              "año en que SUNAT llenó ese campo."
+            : "Ninguna operación con ubigeo de " + esc(dep) +
+              " en " + anTer.join(", ") + ".")
         : "La superficie es de MIDAGRI y el FOB de SUNAT: miden cosas " +
-          "distintas —hectáreas y dólares embarcados— y no se suman entre sí.";
+          "distintas —hectáreas cosechadas y dólares embarcados— y no se " +
+          "suman entre sí. El embarque son " + rango + " medidos; el corte " +
+          "por departamento se limita a " + anTer.join(", ") + ", que son los " +
+          "años con ubigeo en el manifiesto.";
 
       var tot = cult
         ? cult.reduce(function (a, c) { return a + c.ha; }, 0) : m.ha;
@@ -3072,17 +3104,19 @@ function pintarProductos(D) {
     pintarDep();
 
     /* ---- qué se exporta ---- */
+    /* Familias y no partidas: el agregado de cinco años trabaja por familia,
+       que es la unidad con la que se decide una línea de producto. La partida
+       vive en el panel exportador, para quien la necesite. */
     tabla(document.getElementById("tProductos"), [
       { k: "n", t: "Producto", l: 1, f: function (r) {
-          return "<b>" + esc(r.n) + "</b><span class='sub2'>partida " +
-            r.p + "</span>"; } },
-      { k: "fob", t: "FOB " + pSuf(SEM), f: function (r) {
-          return pFob(r.fob, SEM); } },
-      { k: "tn", t: "Toneladas " + pSuf(SEM), f: function (r) {
-          return pNum(r.tn, SEM); } },
-      { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
-      { k: "dest", t: "Destinos", f: function (r) { return nf(r.dest); } },
-    ], D.productos, { sort: "fob" });
+          return "<b>" + esc(r.n) + "</b>"; } },
+      { k: "fob", t: "FOB " + rango, f: function (r) { return usd(r.fob); } },
+      { k: "kg", t: "Toneladas", f: function (r) {
+          return nf(Math.round(r.kg / 1000)); } },
+      { k: "empresas", t: "Empresas", f: function (r) {
+          return nf(r.empresas); } },
+      { k: "pct", t: "% del FOB", f: function (r) { return pct(r.pct, 1); } },
+    ], E.familias, { sort: "fob" });
 
     /* ---- por dónde sale ---- */
     tabla(document.getElementById("tAduanas"), [
@@ -3091,15 +3125,15 @@ function pintarProductos(D) {
             r.c + "</span>"; } },
       { k: "via", t: "Vía", l: 1, f: function (r) {
           return "<span class='tag'>" + esc(r.via) + "</span>"; } },
-      { k: "fob", t: "FOB " + pSuf(SEM), f: function (r) {
-          return pFob(r.fob, SEM); } },
-      { k: "tn", t: "Toneladas " + pSuf(SEM), f: function (r) {
-          return pNum(r.tn, SEM); } },
+      { k: "fob", t: "FOB " + rango, f: function (r) { return usd(r.fob); } },
+      { k: "tn", t: "Toneladas", f: function (r) { return nf(r.tn); } },
       { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
       { k: "lider", t: "Producto principal", l: 1, f: function (r) {
-          return esc(r.lider) + "<span class='sub2'>" + pct(r.pct, 1) +
-            " de su FOB</span>"; } },
-    ], D.aduanas, { sort: "fob" });
+          var p = r.mezcla[0];
+          if (!p) return "—";
+          return esc(p.n) + "<span class='sub2'>" +
+            pct(100 * p.v / r.fob, 1) + " de su FOB</span>"; } },
+    ], aduMed, { sort: "fob" });
 
     /* La mezcla de producto de cada aduana explica por qué existe: Paita es
        café, Pisco es uva. Se despliega al pulsar la fila. */
@@ -3108,30 +3142,38 @@ function pintarProductos(D) {
       var tr = ev.target.closest("tbody tr");
       if (!tr) return;
       var nombre = (tr.querySelector("td.l b") || {}).textContent;
-      var a = D.aduanas.filter(function (x) { return x.n === nombre; })[0];
+      var a = aduMed.filter(function (x) { return x.n === nombre; })[0];
       if (!a) return;
-      var mezcla = D.exp_por_adu[a.n] || [];
+      var mezcla = a.mezcla || [];
       document.getElementById("proAduDet").innerHTML =
         "<div class='eyebrow'>Mezcla de producto · " + esc(a.n) + "</div>" +
         "<div class='barras compact' id='proMez'></div>";
       barras(document.getElementById("proMez"), mezcla.map(function (p) {
-        return { n: p.n, v: p.v, t: usd(p.v * anual) }; }));
+        return { n: p.n, v: p.v, t: usd(p.v) }; }));
     };
 
+    /* La salvedad que esta nota traía —que el reparto por departamento usaba
+       el domicilio fiscal porque en 2026 el ubigeo viene vacío— dejó de
+       aplicar: la pantalla ya no se alimenta de las diez semanas de 2026 sino
+       del agregado, y el agregado se limita a los años en que el campo viene
+       lleno. La salvedad que queda es la contraria y hay que decirla igual:
+       el corte territorial se detiene en 2024. */
     document.getElementById("proNota").innerHTML =
       "Superficie cosechada del anuario de producción agrícola de MIDAGRI " +
       "(2023); agroexportación de los microdatos de manifiestos de SUNAT bajo " +
-      "la Ley 27806, anualizando " + m.semanas + " semanas. La aduana de " +
-      "salida sale del campo <span class='mono'>CADU</span> del manifiesto y " +
-      "se nombra con la Tabla 4 del Anexo 01 de SUNAT; el código 370 " +
+      "la Ley 27806, <b>" + rango + " medidos y sin anualizar</b>. La aduana " +
+      "de salida sale del campo <span class='mono'>CADU</span> del manifiesto " +
+      "y se nombra con la Tabla 4 del Anexo 01 de SUNAT; el código 370 " +
       "corresponde a Chancay, habilitada el 21 de octubre de 2024 y todavía " +
-      "ausente de ese anexo. El reparto por departamento de <i>esta</i> " +
-      "pantalla usa el domicilio fiscal del exportador, porque en las diez " +
-      "semanas de 2026 que la alimentan el ubigeo del manifiesto viene vacío " +
-      "en el 97% del FOB. Eso vale para 2026 y no para antes: en 2022–2024 " +
-      "el campo viene lleno en el 100% del FOB y apunta al lugar de " +
-      "producción, no a la oficina. El corte territorial bueno está en " +
-      "<a href='#exportacion'>Exportación</a>, sobre esos años.";
+      "ausente de ese anexo. " +
+      "El reparto por departamento se limita a <b>" + anTer.join(", ") +
+      "</b>: son los años en que SUNAT llena el ubigeo del manifiesto —el " +
+      "100% del FOB— y ese campo apunta al lugar de producción y no a la " +
+      "oficina, que es lo que permite mirarlo junto a la hectárea. Desde 2025 " +
+      "el campo se apaga y el corte no se extiende: extenderlo sería dibujar " +
+      "el mapa de la caída del registro, no el de la producción. " +
+      "Las dos mitades de esta pantalla no se suman entre sí: una mide " +
+      "hectáreas y la otra dólares embarcados.";
 }
 
 

@@ -284,6 +284,20 @@ def main():
         t = float(pm.sum())
         dep_perfil[str(c)] = [round(100 * float(pm.get("%02d" % k, 0.0)) / t, 2)
                               if t > 0 else 0.0 for k in range(1, 13)]
+    # Que exporta cada departamento. Hasta ahora el corte territorial daba el
+    # total y el calendario, y para saber QUE sale de cada region habia que
+    # mirar la ventana de diez semanas, que es otra medicion y de otro
+    # periodo. Cinco familias alcanzan: en el 80% de los departamentos las
+    # cinco primeras son mas del 95% del FOB.
+    dep_fam = {}
+    for c, g in d_ubi.groupby("dep", observed=True):
+        ff = (g.groupby("familia", observed=True)
+                .agg(v=("fob_usd", "sum"), tn=("peso_neto_kg", "sum"))
+                .sort_values("v", ascending=False).head(5))
+        dep_fam[str(c)] = [{"n": str(i), "v": round(float(r.v), 2),
+                            "tn": int(round(float(r.tn) / 1000))}
+                           for i, r in ff.iterrows()]
+
     # Dos cifras que no son la misma: lo que esos anios exportaron y lo que de
     # eso quedo ubicado. Ni siquiera un ano al 100% lo trae entero.
     fob_anios = float(d[d.anio.isin(anios_ubi)].fob_usd.sum()) if anios_ubi else 0.0
@@ -364,7 +378,20 @@ def main():
                       "pct": round(100 * r.fob / tot, 2)}
                      for p, r in dest.head(30).iterrows()],
         "vias": top(d, "via", 10),
-        "aduanas": top(d, "aduana", 18),
+        # La aduana con su mezcla, y no solo su total. La vista de productos
+        # explicaba por que existe cada aduana —Paita es cafe, Pisco es uva—
+        # con la ventana de diez semanas, que es otra medicion; con esto la
+        # explicacion sale del mismo periodo que la cifra que acompana.
+        "aduanas": [{
+            "n": str(c),
+            "fob": round(float(g.fob_usd.sum()), 2),
+            "kg": round(float(g.peso_neto_kg.sum()), 1),
+            "empresas": int(g.ruc.nunique()),
+            "mezcla": [{"n": str(i), "v": round(float(v), 2)} for i, v in
+                       g.groupby("familia", observed=True).fob_usd.sum()
+                        .nlargest(6).items()],
+        } for c, g in sorted(d.groupby("aduana", observed=True),
+                             key=lambda x: -x[1].fob_usd.sum())[:18]],
         "departamentos": {
             "motivo": "ubigeo declarado en el manifiesto, que apunta al lugar "
                       "de produccion y no al domicilio fiscal: contra el "
@@ -389,6 +416,7 @@ def main():
                        "pct": round(100 * float(r.fob) / fob_ubi, 2)
                        if fob_ubi > 0 else 0.0,
                        "perfil": dep_perfil.get(str(c), []),
+                       "familias": dep_fam.get(str(c), []),
                        "meses": dep_mes.get(str(c), {})}
                       for c, r in dep.iterrows()],
         },

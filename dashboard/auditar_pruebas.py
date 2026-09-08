@@ -97,6 +97,8 @@ CASOS = [
      "el centro puesto por decisión se presenta como elegido por el algoritmo"),
     ("canal_sin_salvedad", "COBERTURA DE OSM ES UN TECHO",
      "el techo de lo que OSM mapea se presenta como abandono medido"),
+    ("productos_anualiza", "NO SALE DEL AGREGADO MEDIDO",
+     "la vista de productos vuelve a comer de la ventana de diez semanas"),
 ]
 
 

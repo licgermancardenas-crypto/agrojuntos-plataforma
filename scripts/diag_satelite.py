@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Qué compraría un octavo centro en el sur, y si hace falta.
+"""Cuántos centros haría falta para cerrar el sur, y si conviene.
 
 El cruce del canal con los centros dejó un agujero con nombre: **Juliaca
 resurte 466 puntos de venta, detrás de los cuales hay 19,130 clientes, y solo
@@ -7,8 +7,23 @@ el 7% de esos puntos está dentro de la promesa de cuatro horas** —mediana de
 5.7 h—. Es el centro con más gente detrás de su canal y el que peor puede
 abastecerlo. El altiplano tiene los clientes y no tiene cómo llegarles.
 
-Esto mide qué pasaría al abrir un centro más, candidato por candidato, sin
-mover ninguno de los siete que ya se decidieron. Tres cosas por candidato:
+La primera corrida de esto contestó una pregunta más chica —qué compraría UN
+centro más— y su respuesta fue Sicuani, que ya está en la red. Lo que quedó
+abierto es lo otro: de los 435 puntos huérfanos, Sicuani rescató 199 y quedan
+236. Así que ahora mide dos cosas.
+
+**Cuántos centros harían falta.** Una cadena de satélites, uno tras otro, cada
+uno elegido por lo que suma y sujeto a poder abastecerse: se exige que esté
+dentro de la promesa de la red que ya existe en ese momento —incluidos los
+satélites anteriores, que a su vez pueden ser casa madre del siguiente—. La
+curva dice dónde deja de pagar.
+
+**Qué pasaría con otra cadencia.** Abrir no es la única salida: la otra es
+prometer distinto. Con los mismos centros, cuántos puntos entran si la promesa
+fuera de cinco, seis u ocho horas. Es la comparación que hay que tener delante
+antes de firmar un alquiler, y no se puede hacer sin ponerlas juntas.
+
+Por candidato se miden tres cosas:
 
   puntos que entran     cuántos puntos de venta pasan a estar dentro de la
                         promesa de alguien
@@ -184,66 +199,146 @@ print("     %s clientes con la cadena completa · US$ %.0f MM de mercado "
       "dentro de la promesa" % (f"{base_cli:,.0f}", base_sam / 1e6))
 
 # ------------------------------------------------- qué compra el octavo ----
+def gana(t_ref, extra=None):
+    """Puntos dentro de la promesa y clientes con la cadena completa, para la
+    red vigente más `extra`."""
+    t = t_ref if extra is None else np.minimum(t_ref, T[extra][pos.clip(min=0)])
+    t = np.where(vivo, t, np.inf)
+    ok = t <= PROMESA
+    return ok, clientes_cadena(ok), t
+
+
 print()
-print("qué compraría un octavo centro", flush=True)
+print("qué compraría un centro más, uno por uno", flush=True)
 filas = []
 for i in range(len(cand)):
     if i in sel_actual:
         continue
-    t_nuevo = np.minimum(t_actual, T[i][pos.clip(min=0)])
-    t_nuevo[~vivo] = np.inf
-    nuevo = t_nuevo <= PROMESA
-    if nuevo.sum() == hoy.sum():
+    nuevo_ok, cli, _ = gana(t_actual, i)
+    if nuevo_ok.sum() == hoy.sum():
         continue
-    cli = clientes_cadena(nuevo)
     sam = W[((T[sel_actual + [i]]) <= PROMESA).any(axis=0)].sum()
     filas.append({
         "candidato": str(cand.loc[i, "PROVINCIA"]).title(),
         "region": str(cand.loc[i, "DEPARTAM"]).title(),
-        "puntos_nuevos": int(nuevo.sum() - hoy.sum()),
+        "puntos_nuevos": int(nuevo_ok.sum() - hoy.sum()),
         "clientes_cadena": int(round(cli)),
         "clientes_nuevos": int(round(cli - base_cli)),
         "sam_mm": round(sam / 1e6, 1),
         "sam_nuevo_mm": round((sam - base_sam) / 1e6, 1),
-        "rescata_juliaca": int((huerf_jul & nuevo).sum()),
+        "rescata_juliaca": int((huerf_jul & nuevo_ok).sum()),
     })
 
 res = pd.DataFrame(filas).sort_values("clientes_nuevos", ascending=False)
-
-# El propio abasto del candidato: horas desde cada centro vigente hasta la
-# celda del candidato. Si no cae en la grilla, no se inventa.
 cap_h3 = [h3.latlng_to_cell(la, lo, R_HUB)
           for la, lo in zip(cand["lat"], cand["lon"])]
 h_madre = {}
 for i, c in enumerate(cap_h3):
-    p = idx_celda.get(c, -1)
+    q = idx_celda.get(c, -1)
     h_madre[str(cand.loc[i, "PROVINCIA"]).title()] = (
-        float(T[sel_actual, p].min()) if p >= 0 else float("nan"))
+        float(T[sel_actual, q].min()) if q >= 0 else float("nan"))
 res["h_a_la_red"] = res["candidato"].map(h_madre)
-
 res.to_csv("out/diag_satelite.csv", index=False, encoding="utf-8-sig")
-print("  %-18s %-10s %7s %10s %8s %10s %10s"
-      % ("candidato", "región", "puntos", "clientes", "SAM +MM",
-         "de Juliaca", "h a la red"))
-for _, r in res.head(12).iterrows():
-    print("  %-18s %-10s %+7d %+10s %+8.1f %10d %10s"
+print("  %-18s %-10s %7s %10s %10s %10s"
+      % ("candidato", "región", "puntos", "clientes", "de Juliaca", "h a la red"))
+for _, r in res.head(6).iterrows():
+    print("  %-18s %-10s %+7d %+10s %10d %10s"
           % (r.candidato[:18], r.region[:10], r.puntos_nuevos,
-             f"{r.clientes_nuevos:,}", r.sam_nuevo_mm, r.rescata_juliaca,
+             f"{r.clientes_nuevos:,}", r.rescata_juliaca,
              "—" if not np.isfinite(r.h_a_la_red) else "%.1f" % r.h_a_la_red))
 
-# Un satélite se abastece de la casa madre; si el candidato está fuera de la
-# promesa de todos los centros, lo que hace falta ahí es otro almacén y no un
-# satélite, y cuesta otra cosa. La distinción no la puede hacer el ranking.
-sat = res[res.h_a_la_red <= PROMESA]
+# ------------------------------------ cuántos harían falta para cerrarlo ---
+# Cada satélite tiene que poder abastecerse de la red que existe cuando se
+# abre —incluidos los satélites anteriores—, o no es un satélite.
 print()
-print("los que pueden funcionar como satélite —a menos de %.0f h de la red—"
-      % PROMESA)
-if not len(sat):
-    print("  ninguno: todo lo que arregla el sur está fuera de la promesa")
-for _, r in sat.head(5).iterrows():
-    print("  %-18s %-10s %+7d puntos  %+9s clientes  a %.1f h de la red"
-          % (r.candidato[:18], r.region[:10], r.puntos_nuevos,
-             f"{r.clientes_nuevos:,}", r.h_a_la_red))
+print("la cadena de satélites: cuántos harían falta", flush=True)
+t_red = t_actual.copy()
+en_red = list(sel_actual)
+celda_cand = np.array([idx_celda.get(c, -1) for c in cap_h3])
+curva = []
+for paso in range(1, 9):
+    mejor, mejor_v, mejor_ok = None, 0, None
+    for i in range(len(cand)):
+        if i in en_red or celda_cand[i] < 0:
+            continue
+        # ¿puede abastecerse? el candidato tiene que estar dentro de la
+        # promesa de alguno de los centros ya abiertos
+        if T[en_red, celda_cand[i]].min() > PROMESA:
+            continue
+        ok, cli, _ = gana(t_red, i)
+        if cli > mejor_v:
+            mejor, mejor_v, mejor_ok = i, cli, ok
+    if mejor is None:
+        print("  no queda ningún candidato que pueda abastecerse: la cadena "
+              "se corta aquí")
+        break
+    _, _, t_red = gana(t_red, mejor)
+    en_red.append(mejor)
+    nom = str(cand.loc[mejor, "PROVINCIA"]).title()
+    dentro = t_red <= PROMESA
+    curva.append({"paso": paso, "centro": nom,
+                  "region": str(cand.loc[mejor, "DEPARTAM"]).title(),
+                  "puntos": int(dentro.sum()),
+                  "clientes_cadena": int(round(mejor_v)),
+                  "huerf_jul": int((huerf_jul & ~dentro).sum())})
+    print("  %d. %-18s %-10s  %5d puntos en promesa · %s clientes · "
+          "quedan %d huérfanos del sur"
+          % (paso, nom[:18], str(cand.loc[mejor, "DEPARTAM"])[:10],
+             dentro.sum(), f"{mejor_v:,.0f}", curva[-1]["huerf_jul"]))
+    if curva[-1]["huerf_jul"] == 0:
+        break
+
+# ------------------------------------- el sur, obligando a que se resuelva -
+# El greedy anterior es nacional y por eso nunca baja al sur: ocho satélites
+# después, los huérfanos del altiplano siguen siendo los mismos. No es un
+# defecto del algoritmo, es la respuesta —el sur no compite por plata— y hay
+# que verla antes de decidir si se lo atiende igual.
+#
+# Esta segunda pasada cambia el objetivo: en vez de clientes nacionales,
+# maximiza puntos rescatados del sur, y solo mira candidatos del sur. Dice el
+# precio de cerrarlo, que es lo que se estaba preguntando.
+SUR = {"PUNO", "CUSCO", "AREQUIPA", "MOQUEGUA", "TACNA", "APURIMAC"}
+print()
+print("obligando a cerrar el sur: solo candidatos del altiplano", flush=True)
+t_sur = t_actual.copy()
+en_sur = list(sel_actual)
+for paso in range(1, 9):
+    mejor, mejor_v, mejor_t = None, 0, None
+    for i in range(len(cand)):
+        if i in en_sur or celda_cand[i] < 0:
+            continue
+        if str(cand.loc[i, "DEPARTAM"]).upper() not in SUR:
+            continue
+        if T[en_sur, celda_cand[i]].min() > PROMESA:
+            continue
+        t = np.where(vivo, np.minimum(t_sur, T[i][pos.clip(min=0)]), np.inf)
+        v = int((huerf_jul & (t <= PROMESA)).sum())
+        if v > mejor_v:
+            mejor, mejor_v, mejor_t = i, v, t
+    if mejor is None:
+        print("  no queda candidato del sur que pueda abastecerse: para "
+              "cerrar lo que falta habría que abrir fuera de promesa, que ya "
+              "no es un satélite")
+        break
+    t_sur = mejor_t
+    en_sur.append(mejor)
+    quedan = int((huerf_jul & (t_sur > PROMESA)).sum())
+    print("  %d. %-18s %-10s rescata %3d · quedan %3d · cadena %s clientes"
+          % (paso, str(cand.loc[mejor, "PROVINCIA"]).title()[:18],
+             str(cand.loc[mejor, "DEPARTAM"])[:10], mejor_v, quedan,
+             f"{clientes_cadena(t_sur <= PROMESA):,.0f}"))
+    if quedan == 0:
+        break
+
+# --------------------------------------------- la otra salida: la cadencia -
+print()
+print("la alternativa: los mismos centros con otra promesa")
+print("  %8s %9s %12s %14s" % ("promesa", "puntos", "% de puntos", "clientes cadena"))
+for h in (4.0, 5.0, 6.0, 8.0, 12.0):
+    ok = np.where(vivo, t_actual, np.inf) <= h
+    print("  %6.0f h %9d %11.0f%% %14s"
+          % (h, ok.sum(), 100 * ok.sum() / vivo.sum(),
+             f"{clientes_cadena(ok):,.0f}"))
 
 print()
 print("out/diag_satelite.csv")

@@ -375,6 +375,50 @@ se le deja elegir de cero, propone otra red entera —Chiclayo, Tarma, Tarapoto,
 Chincha Alta, Sicuani, Huamachuco…— que cubre más pero mueve los seis centros ya
 decididos. Se conservaron los seis y se sumó el séptimo.
 
+### Y el sur no se cierra abriendo
+
+Puesto Sicuani, quedaban 257 puntos de venta del altiplano fuera de la promesa
+de su centro. La pregunta siguiente era cuántos centros más harían falta, y la
+respuesta tiene dos partes y las dos importan.
+
+**El greedy nacional nunca baja al sur.** Encadenando satélites —cada uno
+obligado a estar dentro de la promesa de la red que existe cuando se abre, que
+es lo que distingue un satélite de un almacén— los ocho mejores son Virú, Santa,
+Sullana, Ambo, Cajamarca, Cutervo, Rioja y Huánuco. Suman 56,647 clientes a la
+cadena completa **y dejan los 257 huérfanos del sur exactamente donde estaban**.
+No es un defecto del algoritmo: es la respuesta. El sur no compite por plata.
+
+**Y obligándolo a resolver el sur, no puede.** Restringiendo los candidatos al
+altiplano y cambiando el objetivo a rescatar esos 257 puntos, el diagnóstico se
+detiene en el primer paso: *no queda ningún candidato del sur que pueda
+abastecerse dentro de la promesa*. Lo que falta ahí no es un satélite —no hay
+casa madre a menos de cuatro horas— sino un almacén con su propia línea, que es
+otra decisión y otro costo.
+
+### La salida barata: prometer distinto
+
+Con **los mismos ocho centros**, sin abrir nada:
+
+| promesa | puntos en promesa | | clientes con cadena completa |
+|---|---|---|---|
+| 4 h | 2,147 | 69% | 48,252 |
+| 5 h | 2,417 | 78% | 51,438 |
+| **6 h** | **2,601** | **84%** | **56,938** |
+| 8 h | 2,937 | 95% | 63,680 |
+| 12 h | 3,092 | 100% | 68,075 |
+
+Pasar de cuatro a seis horas compra **8,686 clientes con cero inversión**, que es
+prácticamente lo mismo que compran los ocho satélites de la cadena nacional
+(56,938 contra 56,647). Ocho alquileres, ocho administraciones y ocho
+inventarios, o una frase distinta en la promesa comercial.
+
+Eso no significa que seis horas sea la respuesta: significa que **la vara es la
+palanca más barata que tiene esta red**, y que la comparación hay que tenerla
+delante antes de firmar cualquier alquiler. Lo que la plataforma no puede
+decidir es si el cliente costeño acepta lo mismo que el andino —una promesa
+diferenciada por piso, cuatro horas en costa y seis en sierra, es lo que hace la
+distribución real y lo que el dato sugiere—.
+
 ### Y los territorios detrás
 
 Los 57 territorios de venta se trazan sobre la densidad del mercado, no sobre

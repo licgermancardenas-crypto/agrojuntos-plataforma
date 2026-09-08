@@ -1014,6 +1014,35 @@ clientes «sin punto cerca» que daba la medición anterior, **10,518 no tienen 
 tienda ni pueblo a 45 minutos**. Ahí no hay dónde abrir; hay que llegar de otra
 forma o no llegar.
 
+### Y el hueco no es lo que parecía
+
+Los 10,518 clientes sin tienda ni pueblo cerca invitaban a una explicación
+cómoda: donde no hay carretera no hay nada. **El dato la desmiente**, y vale
+decirlo porque la hipótesis era nuestra.
+
+De esos 10,518, **31 están en sectores sin ruta vial a un puerto marítimo**. Los
+otros 10,487 tienen camino y no tienen a quién comprarle: dos tercios están en
+sierra —quechua 2,568 clientes, puna 2,366, suni 1,668— y los departamentos que
+más aportan son Junín, Cusco y Lambayeque, no la selva. **El hueco es de
+comercio, no de acceso.**
+
+El caso más grande tiene nombre y ya había aparecido antes por otro lado:
+**Olmos**, 1,270 clientes en tres sectores, a 1.8 horas de su capital
+provincial, con el 76% de ellos sin nada cerca. Es tierra nueva de irrigación
+—el mismo distrito que embarca US$ 1,541 MM sin caer en ningún territorio de
+venta—: hay campo y no hay pueblo todavía.
+
+Y la selva baja, la otra mitad de la sospecha, resulta bien servida por abajo:
+**el 40% de sus clientes tiene un comercio a 45 minutos y solo el 2% no tiene ni
+tienda ni pueblo**. Su problema es la distancia al almacén —45% dentro de la
+promesa— y no la ausencia de canal.
+
+Una salvedad sobre el descarte, porque sin ella no vale: quedarse sin ruta vial
+a un puerto es raro en todo el país —105 sectores de 6,892, el 0.5% de los
+clientes—, así que nunca iba a explicar diez mil personas. Lo que el cruce
+descarta con seguridad es que el hueco esté hecho de sitios incomunicados; lo
+que no puede es medir grados de mal camino.
+
 **Dos límites del dato, dichos.** La ubicación del padrón de SUNAT es el
 distrito y no la esquina: alcanza para un radio de 45 minutos y no para decidir
 un local. Y que OpenStreetMap no mapee una tienda no significa que no exista: su

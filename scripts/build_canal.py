@@ -474,6 +474,19 @@ for _, r in top_v.iterrows():
              "US$ {:,.0f}".format(r["margen_base"])))
 
 # --------------------------------------------------------------- salida ----
+# El estado de cada sector, para poder mirarlo despues sin rehacer el grafo:
+# quien tiene comercio cerca, quien tiene algun sitio donde abrir y quien no
+# tiene nada. El hueco es una lista de sitios concretos y no un porcentaje.
+sec_out = sec[["cod_se", "dep", "prov", "dist", "region_nat", "lat", "lon",
+               "horas_capital_real", "horas_puerto_real"]].copy()
+sec_out["clientes"] = CLI
+sec_out["sam_usd"] = SAM
+sec_out["con_comercio"] = en
+sec_out["con_sitio"] = en_todos
+sec_out["sin_nada"] = sin_nadie
+sec_out["cubierto_greedy"] = cubierto
+sec_out.to_csv("out/canal_sector.csv", index=False, encoding="utf-8-sig")
+
 cand["elegido"] = [j in sel for j in range(len(cand))]
 cols = ["dep", "nombre", "tipo", "clase", "lat", "lon", "sectores_1h",
         "hub", "horas_reparto", "reparto_en_promesa", "sam_exclusivo",

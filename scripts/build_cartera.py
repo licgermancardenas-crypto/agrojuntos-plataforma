@@ -123,8 +123,13 @@ emp["territorio"] = emp["territorio"].fillna("Fuera de territorio")
 dentro = (emp["cluster"] >= 0).sum()
 print(f"dentro de alguno de los {len(ter)} territorios: {dentro:,}"
       f" ({100*dentro/len(emp):.1f}%)")
+# La promesa dejó de ser un número: son cuatro horas en costa y seis en sierra
+# y selva, y cada celda trae la suya en `cubierto_promesa`. Aquí solo se cuenta.
 _red = json.load(io.open("out/red_elegida.json", encoding="utf-8"))
-print(f"dentro de la promesa de {_red['promesa_h']:.0f} h: "
+_vara = ", ".join("%.0f h en %s" % (v, k.lower())
+                  for k, v in sorted(_red["promesa_h"].items(),
+                                     key=lambda x: x[1]))
+print(f"dentro de la promesa ({_vara}): "
       f"{emp['cubierto_promesa'].sum():,.0f}"
       f" ({100*emp['cubierto_promesa'].mean():.1f}%)")
 print(f"a menos de dos horas de un centro: {emp['cubierto_2h'].sum():,.0f}"

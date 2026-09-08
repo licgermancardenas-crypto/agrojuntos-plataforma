@@ -312,9 +312,13 @@ cand["hub"] = _j["hub"].values
 cand["horas_reparto"] = pd.to_numeric(_j["horas_al_hub"].values,
                                       errors="coerce")
 cand.loc[~np.isfinite(cand["horas_reparto"]), "horas_reparto"] = np.nan
-PROMESA = float(json.load(io.open("out/red_elegida.json",
-                                  encoding="utf-8"))["promesa_h"])
-cand["reparto_en_promesa"] = cand["horas_reparto"] <= PROMESA
+# La promesa dejó de ser un número único: son cuatro horas en costa y seis en
+# sierra y selva, y cada celda trae la suya. Leerla de la celda y no de una
+# constante es lo que hace que este archivo no tenga que saber la regla.
+cand["promesa_h"] = pd.to_numeric(_j["promesa_h"].values, errors="coerce")
+_red = json.load(io.open("out/red_elegida.json", encoding="utf-8"))
+PROMESA = _red["promesa_def_h"]
+cand["reparto_en_promesa"] = cand["horas_reparto"] <= cand["promesa_h"]
 
 vende = cand.clase.isin(("canal", "comercio"))
 print()
@@ -322,8 +326,8 @@ print("el tramo de arriba: del centro a la tienda")
 print("  %d de %d puntos que ya venden tienen centro asignado"
       % (int(vende.sum() - cand.loc[vende, "hub"].isna().sum()),
          int(vende.sum())))
-print("  dentro de la promesa de %.0f h: %d (%.0f%%)"
-      % (PROMESA, int(cand.loc[vende, "reparto_en_promesa"].sum()),
+print("  dentro de su promesa —4 h en costa, 6 en sierra y selva—: %d (%.0f%%)"
+      % (int(cand.loc[vende, "reparto_en_promesa"].sum()),
          100 * cand.loc[vende, "reparto_en_promesa"].mean()))
 
 # La cobertura de verdad: clientes cuya tienda está, además, dentro de la
@@ -332,9 +336,9 @@ en_cadena = np.zeros(len(sec), dtype=bool)
 for (idx, t), cl, ok_rep in zip(alcance, cand.clase, cand.reparto_en_promesa):
     if cl in ("canal", "comercio") and ok_rep:
         en_cadena[idx[t <= RADIO_BASE]] = True
-print("  clientes con la cadena completa —tienda a %d min y su centro a "
-      "%.0f h—: %s (%.1f%%)"
-      % (int(RADIO_BASE * 60), PROMESA, f"{CLI[en_cadena].sum():,.0f}",
+print("  clientes con la cadena completa —tienda a %d min y su centro dentro "
+      "de la promesa—: %s (%.1f%%)"
+      % (int(RADIO_BASE * 60), f"{CLI[en_cadena].sum():,.0f}",
          100 * CLI[en_cadena].sum() / CLI.sum()))
 
 # Los clientes de un centro son la UNION de los que alcanzan sus puntos, no la
@@ -385,6 +389,7 @@ salida = {
     "radios_min": [int(r * 60) for r in RADIOS],
     "radio_base_min": int(RADIO_BASE * 60),
     "promesa_centros_h": red["promesa_h"],
+    "promesa_centros_def_h": red["promesa_def_h"],
     "clientes": int(round(CLI.sum())),
     "candidatos": {c: int((cand.clase == c).sum())
                    for c in ("canal", "comercio", "pueblo")},
@@ -396,7 +401,8 @@ salida = {
                       "pct": round(100 * CLI[sin_nadie].sum() / CLI.sum(), 1)},
     "cadena_completa": {
         "motivo": ("clientes con tienda a %d min cuya tienda esta ademas "
-                   "dentro de la promesa de su centro" % int(RADIO_BASE * 60)),
+                   "dentro de la promesa de su centro, que son 4 h en costa "
+                   "y 6 en sierra y selva" % int(RADIO_BASE * 60)),
         "clientes": int(round(CLI[en_cadena].sum())),
         "pct": round(100 * CLI[en_cadena].sum() / CLI.sum(), 1)},
     "reparto": [{"hub": r.hub, "puntos": int(r.puntos),

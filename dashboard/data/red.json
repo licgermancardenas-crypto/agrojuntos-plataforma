@@ -1,7 +1,13 @@
 {
- "generado": "2026-09-08T10:40:40",
- "motivo": "La red es una decisión y no el resultado del algoritmo: son los 6 centros que elige la cobertura máxima con vara de 2 horas, más Huamachuco, Sicuani, con una promesa de servicio de 4 horas.",
- "promesa_h": 4.0,
+ "generado": "2026-09-08T11:34:49",
+ "motivo": "La red es una decisión y no el resultado del algoritmo: son los 6 centros que elige la cobertura máxima con vara de 2 horas, más Huamachuco, Sicuani. La promesa de servicio tampoco es un número único: 4 h en costa, 6 h en sierra, 6 h en selva alta, 6 h en selva baja, porque el terreno no se reparte parejo y prometer lo mismo en los dos sitios significa incumplir en uno.",
+ "promesa_h": {
+  "COSTA": 4.0,
+  "SIERRA": 6.0,
+  "SELVA ALTA": 6.0,
+  "SELVA BAJA": 6.0
+ },
+ "promesa_def_h": 6.0,
  "centros": [
   {
    "hub": "Chiclayo",
@@ -68,6 +74,32 @@
    "por": "decision"
   }
  ],
- "sam_cubierto_promesa_pct": 49.37,
- "sam_cubierto_2h_pct": 26.05
+ "sam_cubierto_promesa_pct": 64.41,
+ "sam_cubierto_2h_pct": 26.05,
+ "por_region": [
+  {
+   "region": "COSTA",
+   "promesa_h": 4.0,
+   "sam_mm": 145.7,
+   "pct": 63.7
+  },
+  {
+   "region": "SELVA ALTA",
+   "promesa_h": 6.0,
+   "sam_mm": 73.7,
+   "pct": 77.2
+  },
+  {
+   "region": "SELVA BAJA",
+   "promesa_h": 6.0,
+   "sam_mm": 69.0,
+   "pct": 44.8
+  },
+  {
+   "region": "SIERRA",
+   "promesa_h": 6.0,
+   "sam_mm": 214.2,
+   "pct": 66.8
+  }
+ ]
 }

@@ -337,8 +337,13 @@ with sync_playwright() as pw:
     # ninguno y sí está el chromium que trae playwright. La diferencia se
     # elige por entorno para que el mismo archivo sirva en los dos sitios.
     _nav = os.environ.get("NAVEGADOR", "chrome")
-    b = (pw.chromium.launch() if _nav == "chromium"
-         else pw.chromium.launch(channel=_nav))
+    # La máquina de desarrollo tiene 3.6 GB y el pipeline deja poco libre: sin
+    # estos tres interruptores la suite muere a mitad de camino por falta de
+    # memoria, y una corrida muerta se confunde con una prueba que falla.
+    # Ninguno cambia lo que la página hace, solo lo que el navegador reserva.
+    _ARGS = ["--disable-dev-shm-usage", "--disable-extensions", "--disable-gpu"]
+    b = (pw.chromium.launch(args=_ARGS) if _nav == "chromium"
+         else pw.chromium.launch(channel=_nav, args=_ARGS))
     pg = b.new_page(viewport={"width": 1500, "height": 1000})
     _mut = os.environ.get("MUTAR", "")
     if _mut:
@@ -1793,8 +1798,13 @@ with sync_playwright() as pw:
     RED = json.load(io.open(os.path.join("data", "red.json"), encoding="utf-8"))
     filas = pg.eval_on_selector_all(
         "#tRed tbody tr", "f => f.map(r => r.textContent)")
-    print("  %d centros · promesa de %.0f h · cubre %.1f%%"
-          % (len(RED["centros"]), RED["promesa_h"],
+    # La promesa es un criterio y no un numero: cuatro horas en costa y seis
+    # en sierra y selva. Se comprueba que la pantalla muestre las dos, porque
+    # ensenar solo una haria parecer que media red incumple.
+    horas = sorted(set(RED["promesa_h"].values()))
+    print("  %d centros · promesa de %s · cubre %.1f%%"
+          % (len(RED["centros"]),
+             " y ".join("%.0f h" % h for h in horas),
              RED["sam_cubierto_promesa_pct"]))
     if len(filas) != len(RED["centros"]):
         print("  LA TABLA DE LA RED NO LISTA LOS %d CENTROS"
@@ -1815,11 +1825,13 @@ with sync_playwright() as pw:
               % (len(por_dec), ", ".join(c["hub"] for c in por_dec)))
 
     nota_red = " ".join((pg.text_content("#redElegida") or "").split())
-    if str(int(RED["promesa_h"])) not in nota_red or "decisión" not in nota_red:
-        print("  LA PANTALLA NO DECLARA LA PROMESA DE SERVICIO")
+    falta = [h for h in horas if ("%.0f h" % h) not in nota_red]
+    if falta or "decisión" not in nota_red:
+        print("  LA PANTALLA NO DECLARA LA PROMESA DE SERVICIO ENTERA "
+              "(falta %s)" % falta)
         ok = False
     else:
-        print("  declara la promesa y que es una decisión: ok")
+        print("  declara las dos varas de la promesa y que es una decisión: ok")
 
     # La cobertura tiene que crecer con la vara. Si la de dos horas fuera mayor
     # que la de la promesa, el cruce estaría invertido.

@@ -419,6 +419,38 @@ decidir es si el cliente costeño acepta lo mismo que el andino —una promesa
 diferenciada por piso, cuatro horas en costa y seis en sierra, es lo que hace la
 distribución real y lo que el dato sugiere—.
 
+### La promesa dejó de ser un número
+
+La comparación de arriba se tomó: la promesa vigente es de **cuatro horas en
+costa y seis en sierra y selva**, declarada en `build_hubs.py` junto a la red.
+
+No es un ablandamiento, es lo que el terreno obliga. La sierra paga una cuarta
+parte más de su tiempo de viaje por el desnivel —está medido más arriba— así que
+prometer lo mismo en los dos sitios significa incumplir en uno. La distribución
+real hace exactamente esto: al valle costero se llega en la mañana, a la
+provincia andina se va con ruta programada.
+
+| región | promesa | mercado | dentro |
+|---|---|---|---|
+| costa | 4 h | US$ 145.7 MM | 64% |
+| sierra | 6 h | US$ 214.2 MM | 67% |
+| selva alta | 6 h | US$ 73.7 MM | 77% |
+| selva baja | 6 h | US$ 69.0 MM | 45% |
+
+La cobertura del mercado pasa de **49.4% a 64.4%** sin abrir un solo almacén, y
+la cadena completa —cliente con tienda cerca y tienda abastecida dentro de la
+promesa— de 48,139 a **53,247 clientes**. Es más de lo que compró Sicuani, que
+costaba un alquiler.
+
+El agujero del sur se cierra por donde no se veía: **Juliaca pasa del 10% al
+62%** de sus puntos dentro de promesa. No porque llegue más rápido —sigue a 4.4
+horas de mediana— sino porque lo que se le exige ahora es lo que su geografía
+permite.
+
+Lo que la vara no arregla, dicho: la **selva baja se queda en 45%**, la más
+baja de las cuatro. Ahí el problema no es la promesa sino que no hay carretera,
+y eso no lo cambia ninguna decisión comercial.
+
 ### Y los territorios detrás
 
 Los 57 territorios de venta se trazan sobre la densidad del mercado, no sobre

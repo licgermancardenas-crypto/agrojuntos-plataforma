@@ -59,7 +59,26 @@ K_MAX = 12                      # centros a evaluar
 RED_BASE_K = 6                  # los que elige el greedy con vara de 2 h
 RED_BASE_UMBRAL = 2.0
 RED_EXTRA = ["Huamachuco", "Sicuani"]   # por decision, no por el algoritmo
-PROMESA_H = 4.0                 # la vara con la que se promete el servicio
+# La promesa no es un número sino un criterio, y esa es la segunda decisión
+# comercial que este archivo declara. Cuatro horas en costa y seis en sierra y
+# selva, porque el terreno no se reparte parejo y prometer lo mismo en los dos
+# sitios significa incumplir en uno.
+#
+# Sale de una medición y no de una intuición. Con vara única de cuatro horas
+# quedaban 257 puntos de venta del altiplano fuera de la promesa de su centro,
+# y `diag_satelite.py` mostró que ese hueco no se cierra abriendo: encadenando
+# ocho satélites nacionales los 257 se quedan donde estaban —el sur no compite
+# por plata— y obligando al algoritmo a resolver el sur no encuentra ni un
+# candidato que pueda abastecerse dentro de la promesa. En cambio pasar de
+# cuatro a seis horas compra 8,686 clientes con cero inversión, casi lo mismo
+# que los ocho almacenes.
+#
+# La vara es la palanca más barata que tiene esta red. Diferenciarla es lo que
+# hace la distribución real: al valle costero se llega en la mañana y a la
+# provincia andina se va con ruta programada.
+PROMESA_H = {"COSTA": 4.0, "SIERRA": 6.0, "SELVA ALTA": 6.0,
+             "SELVA BAJA": 6.0}
+PROMESA_DEF = 6.0               # lo que no se pueda clasificar, por el lado caro
 
 # El segundo agregado, Sicuani, sale del cruce del canal con los centros y no
 # de la cobertura de mercado. El problema que resuelve: de los 3,097 puntos de
@@ -198,20 +217,35 @@ dem_out["horas_al_hub"] = sub[mejor_hub, np.arange(len(dem))]
 # es la de cuatro. Publicar solo una obligaria a rehacer la comparacion a mano
 # cada vez que alguien pregunte cuanto cambio.
 dem_out["cubierto_2h"] = dem_out["horas_al_hub"] <= 2.0
-dem_out["cubierto_promesa"] = dem_out["horas_al_hub"] <= PROMESA_H
+dem_out["promesa_h"] = (dem_out["region_nat"].map(PROMESA_H)
+                        .fillna(PROMESA_DEF))
+dem_out["cubierto_promesa"] = dem_out["horas_al_hub"] <= dem_out["promesa_h"]
 dem_out.to_csv("out/hubs_asignacion.csv", index=False, encoding="utf-8-sig")
 
 cub2 = W[dem_out["cubierto_2h"].values].sum() / SAM_TOTAL
 cubp = W[dem_out["cubierto_promesa"].values].sum() / SAM_TOTAL
+por_region = (dem_out.assign(sam=W)
+              .groupby("region_nat")
+              .apply(lambda x: pd.Series({
+                  "promesa_h": float(x.promesa_h.iloc[0]),
+                  "sam_mm": x.sam.sum() / 1e6,
+                  "pct": 100 * x.loc[x.cubierto_promesa, "sam"].sum()
+                  / x.sam.sum()}), include_groups=False)
+              .reset_index())
 red = {
     "generado": pd.Timestamp.now().strftime("%Y-%m-%dT%H:%M:%S"),
     "motivo": ("La red es una decisión y no el resultado del algoritmo: son "
                "los %d centros que elige la cobertura máxima con vara de "
-               "%.0f horas, más %s, con una promesa de servicio de %.0f "
-               "horas."
+               "%.0f horas, más %s. La promesa de servicio tampoco es un "
+               "número único: %s, porque el terreno no se reparte parejo y "
+               "prometer lo mismo en los dos sitios significa incumplir en "
+               "uno."
                % (RED_BASE_K, RED_BASE_UMBRAL, ", ".join(RED_EXTRA),
-                  PROMESA_H)),
+                  ", ".join("%.0f h en %s" % (v, k.lower())
+                            for k, v in sorted(PROMESA_H.items(),
+                                               key=lambda x: x[1])))),
     "promesa_h": PROMESA_H,
+    "promesa_def_h": PROMESA_DEF,
     "centros": [{"hub": r.hub, "provincia": r.provincia, "region": r.region,
                  "lat": r.lat, "lon": r.lon, "por": "algoritmo"}
                 for _, r in base.iterrows()]
@@ -223,13 +257,22 @@ red = {
                   for n, i in zip(RED_EXTRA, sel[RED_BASE_K:])],
     "sam_cubierto_promesa_pct": round(100 * cubp, 2),
     "sam_cubierto_2h_pct": round(100 * cub2, 2),
+    "por_region": [{"region": r.region_nat, "promesa_h": r.promesa_h,
+                    "sam_mm": round(float(r.sam_mm), 1),
+                    "pct": round(float(r.pct), 1)}
+                   for _, r in por_region.iterrows()],
 }
 with io.open("out/red_elegida.json", "w", encoding="utf-8") as fh:
     json.dump(red, fh, ensure_ascii=False, indent=1)
 print()
 print("la red elegida: %s" % " · ".join(nombres))
-print("  promesa de %.0f h: cubre el %.1f%% del mercado"
-      % (PROMESA_H, 100 * cubp))
+print("  promesa diferenciada (%s): cubre el %.1f%% del mercado"
+      % (", ".join("%.0f h %s" % (v, k.lower())
+                   for k, v in sorted(PROMESA_H.items(), key=lambda x: x[1])),
+         100 * cubp))
+for _, r in por_region.iterrows():
+    print("    %-12s %.0f h · US$ %6.1f MM · %.1f%% dentro"
+          % (r.region_nat, r.promesa_h, r.sam_mm, r.pct))
 print("  con vara de 2 h  : cubre el %.1f%%" % (100 * cub2))
 
 print()

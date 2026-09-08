@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-08T10:43:13",
+ "generado": "2026-09-08T11:38:07",
  "motivo": "la red de centros dice dónde poner inventario; esta dice quién le vende al agricultor que no es empresa formal",
  "radios_min": [
   30,
@@ -7,7 +7,13 @@
   60
  ],
  "radio_base_min": 45,
- "promesa_centros_h": 4.0,
+ "promesa_centros_h": {
+  "COSTA": 4.0,
+  "SIERRA": 6.0,
+  "SELVA ALTA": 6.0,
+  "SELVA BAJA": 6.0
+ },
+ "promesa_centros_def_h": 6.0,
  "clientes": 153984,
  "candidatos": {
   "canal": 612,
@@ -525,16 +531,16 @@
   "pct": 54.8
  },
  "cadena_completa": {
-  "motivo": "clientes con tienda a 45 min cuya tienda esta ademas dentro de la promesa de su centro",
-  "clientes": 48139,
-  "pct": 31.3
+  "motivo": "clientes con tienda a 45 min cuya tienda esta ademas dentro de la promesa de su centro, que son 4 h en costa y 6 en sierra y selva",
+  "clientes": 53247,
+  "pct": 34.6
  },
  "reparto": [
   {
    "hub": "Pisco",
    "puntos": 1476,
    "del_padron": 127,
-   "en_promesa": 1251,
+   "en_promesa": 1252,
    "pct_en_promesa": 84.8,
    "horas_mediana": 3.05,
    "clientes": 7470
@@ -543,8 +549,8 @@
    "hub": "Huamachuco",
    "puntos": 477,
    "del_padron": 70,
-   "en_promesa": 285,
-   "pct_en_promesa": 59.7,
+   "en_promesa": 292,
+   "pct_en_promesa": 61.2,
    "horas_mediana": 2.97,
    "clientes": 7122
   },
@@ -552,8 +558,8 @@
    "hub": "Tarma",
    "puntos": 307,
    "del_padron": 52,
-   "en_promesa": 187,
-   "pct_en_promesa": 60.9,
+   "en_promesa": 238,
+   "pct_en_promesa": 77.5,
    "horas_mediana": 1.99,
    "clientes": 9527
   },
@@ -561,8 +567,8 @@
    "hub": "Juliaca",
    "puntos": 287,
    "del_padron": 76,
-   "en_promesa": 30,
-   "pct_en_promesa": 10.5,
+   "en_promesa": 179,
+   "pct_en_promesa": 62.4,
    "horas_mediana": 4.44,
    "clientes": 13998
   },
@@ -570,8 +576,8 @@
    "hub": "Chiclayo",
    "puntos": 230,
    "del_padron": 133,
-   "en_promesa": 141,
-   "pct_en_promesa": 61.3,
+   "en_promesa": 191,
+   "pct_en_promesa": 83.0,
    "horas_mediana": 3.01,
    "clientes": 16452
   },
@@ -579,8 +585,8 @@
    "hub": "Sicuani",
    "puntos": 199,
    "del_padron": 21,
-   "en_promesa": 168,
-   "pct_en_promesa": 84.4,
+   "en_promesa": 171,
+   "pct_en_promesa": 85.9,
    "horas_mediana": 2.81,
    "clientes": 5342
   },
@@ -588,8 +594,8 @@
    "hub": "Bellavista",
    "puntos": 100,
    "del_padron": 79,
-   "en_promesa": 64,
-   "pct_en_promesa": 64.0,
+   "en_promesa": 93,
+   "pct_en_promesa": 93.0,
    "horas_mediana": 3.18,
    "clientes": 6866
   },

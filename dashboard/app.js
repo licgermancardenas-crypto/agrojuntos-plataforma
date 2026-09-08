@@ -1951,23 +1951,46 @@ function pintarRed() {
   if (!caja) return;
   cargar("red").then(function (R) {
     var dec = R.centros.filter(function (c) { return c.por === "decision"; });
+    /* La promesa dejó de ser un número: son cuatro horas en costa y seis en
+       sierra y selva. Mostrar solo una haría que media red pareciera
+       incumplir, que es justamente lo que la diferenciación evita. */
+    var pr = R.promesa_h;
+    var horas = Object.keys(pr).map(function (k) { return pr[k]; })
+      .filter(function (v, i, a) { return a.indexOf(v) === i; })
+      .sort(function (a, b) { return a - b; });
+    var etiqueta = horas.map(function (h) {
+      var reg = Object.keys(pr).filter(function (k) { return pr[k] === h; })
+        .map(function (k) { return k.toLowerCase(); });
+      /* «sierra y selva alta y selva baja» se lee mal; la coma hasta el
+         penúltimo es lo que hace legible una enumeración de tres. */
+      var lista = reg.length < 2 ? reg[0]
+        : reg.slice(0, -1).join(", ") + " y " + reg[reg.length - 1];
+      return nf(h) + " h en " + lista;
+    }).join(" · ");
+
     caja.innerHTML =
       '<div class="h"><h3>La red elegida</h3><span class="eyebrow">' +
-      R.centros.length + " centros · promesa de " + nf(R.promesa_h) +
-      " horas</span></div><div class='b'>" +
+      R.centros.length + " centros · promesa de " + esc(etiqueta) +
+      "</span></div><div class='b'>" +
       '<div class="kpis">' +
       kpi(nf(R.centros.length), "centros", dec.length +
           (dec.length === 1 ? " por decisión" : " por decisión")) +
       kpi(pct(R.sam_cubierto_promesa_pct, 1), "del mercado en promesa",
-          "dentro de " + nf(R.promesa_h) + " horas") +
+          esc(etiqueta)) +
       kpi(pct(R.sam_cubierto_2h_pct, 1), "a menos de dos horas",
           "la vara anterior") +
       "</div>" +
       '<div class="tw" style="margin-top:14px"><table id="tRed"></table></div>' +
       '<p class="sub">' + esc(R.motivo) + " La cobertura no la decide el " +
-      "número de centros sino la vara: los mismos siete cubren " +
-      pct(R.sam_cubierto_promesa_pct, 1) + " a cuatro horas y " +
-      pct(R.sam_cubierto_2h_pct, 1) + " a dos.</p></div>";
+      "número de centros sino la vara: los mismos " + R.centros.length +
+      " cubren " + pct(R.sam_cubierto_promesa_pct, 1) +
+      " con la promesa vigente y " + pct(R.sam_cubierto_2h_pct, 1) +
+      " si se exigieran dos horas en todas partes." +
+      (R.por_region || []).map(function (x) {
+        return " " + esc(x.region.toLowerCase()) + ": " + pct(x.pct, 0) +
+          " de sus " + usd(x.sam_mm * 1e6) + " dentro de " + nf(x.promesa_h) +
+          " h.";
+      }).join("") + "</p></div>";
 
     tabla(document.getElementById("tRed"), [
       { k: "hub", t: "Centro", l: 1, f: function (r) {

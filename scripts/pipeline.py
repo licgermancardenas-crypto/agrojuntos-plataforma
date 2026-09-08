@@ -40,6 +40,36 @@ ETAPAS = [
     ("descarga", "acumular_aduanas.py", [], ["data/aduanas_hist/manifiesto.json"],
      "baja de SUNAT las semanas que falten"),
 
+    # --- la cadena geografica ------------------------------------------------
+    # Estaba fuera del orquestador y no debia estarlo: cuando la pendiente
+    # entro en el ruteo hubo que reconstruir a mano —grep mediante— que las
+    # horas alimentan la grilla H3, la grilla alimenta la eleccion de centros y
+    # los territorios, y los territorios alimentan la carga de acopio. Cada uno
+    # de esos pasos es una etapa con entradas y salidas declaradas; declararlas
+    # aqui es lo unico que impide volver a reconstruirlo de memoria.
+    ("vial", "build_vial_compacto.py", [],
+     ["data/vial/compacto/PE-LIM.npz"],
+     "convierte la red vial de Overpass a arreglos, una vez por bajada"),
+    ("ruteo", "build_ruteo.py",
+     ["data/vial/compacto/PE-LIM.npz", "out/modelo_v2_sector.csv"],
+     ["out/ruteo_sector.csv", "out/ruteo_departamento.csv"],
+     "horas y costo al centro y al puerto, con pendiente"),
+    ("h3", "build_h3.py", ["out/ruteo_sector.csv"],
+     ["out/h3_r5.csv", "out/h3_r6.csv"],
+     "agrega la demanda en la grilla hexagonal"),
+    ("hubs", "build_hubs.py",
+     ["out/h3_r5.csv", "out/ruteo_sector.csv", "data/vial/compacto/PE-LIM.npz"],
+     ["out/hubs_cobertura.csv", "out/hubs_asignacion.csv"],
+     "elige donde poner los centros, por cobertura maxima"),
+    ("clusters", "build_clusters.py", ["out/h3_r6.csv"],
+     ["out/clusters_territorio.csv", "out/clusters_celda.csv"],
+     "traza los territorios de venta sobre la densidad del mercado"),
+    ("cartera", "build_cartera.py",
+     ["out/clusters_celda.csv", "out/hubs_asignacion.csv",
+      "out/ruteo_sector.csv"],
+     ["out/cartera_territorio.csv", "out/cartera_empresa.csv"],
+     "que cartera cae en cada territorio y a que centro responde"),
+
     ("import-historico", "build_import_historico.py",
      ["data/aduanas_hist/manifiesto.json"], [IMP + "operaciones.csv"],
      "extrae las líneas de insumo de cada ZIP"),
@@ -95,6 +125,17 @@ ETAPAS = [
       "out/hubs_cobertura.csv"],
      ["out/altitud.json", "out/altitud_sector.csv", "out/altitud_distrito.csv"],
      "la cota y el piso ecológico de cada capa"),
+
+    ("mapa-geo", "build_mapa_geo.py",
+     ["out/clusters_territorio.csv", "out/clusters_celda.csv",
+      "out/ruteo_sector.csv"],
+     ["out/mapa_geo.json", "out/mapa_capas.json"],
+     "el atlas geoespacial que baja el navegador"),
+    ("dashboard", "build_dashboard_data.py",
+     ["out/ruteo_departamento.csv", "out/clusters_territorio.csv",
+      "out/cartera_territorio.csv", "out/hubs_asignacion.csv"],
+     ["../dashboard/data/resumen.json", "../dashboard/data/logistica.json"],
+     "los JSON que sirve el sitio"),
 
     ("reporte", "reporte.py",
      [IMP + "mercado.json", EXP + "mercado.json", "out/acopio.json"],

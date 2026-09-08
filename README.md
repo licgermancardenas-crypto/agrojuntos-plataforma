@@ -77,6 +77,9 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 |---|---|
 | `datos/mercado/modelo_v3_departamento.csv` | Modelo final: mercado, clientes, logística, estacionalidad y score por región |
 | `datos/territorio/sectores_2024.csv` | Los 7,036 sectores con UBIGEO, hectáreas y centroide |
+| `datos/territorio/clusters_territorio.csv` | Los 57 territorios de venta, con extensión, cartera y horas al centro |
+| `datos/territorio/cartera_territorio.csv` | Qué cartera cae en cada territorio y a qué centro responde |
+| `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
 | `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial con pendiente, ida y vuelta por separado |
 | `datos/topografia/altitud_sector.csv` | Cota y piso ecológico de los 7,036 sectores |
 | `datos/topografia/altitud_distrito.csv` | Cota, piso y desnivel al centro de los 580 distritos con embarque |
@@ -92,7 +95,7 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/exportaciones/exportadores_min.json` | El recorte de 1.25 MB que consume el dashboard, del archivo de 7.8 MB |
 | `datos/acopio/acopio_distrito.csv` | Los 580 distritos que embarcan, con producto líder, mes pico, centro que los sirve y horas |
 | `datos/acopio/acopio_hub.csv` | Cuánta carga alcanza cada centro candidato a 2, 4 y 6 horas |
-| `datos/acopio/acopio_huerfanos.csv` | Los 386 distritos con embarque que no caen en ningún territorio de venta |
+| `datos/acopio/acopio_huerfanos.csv` | Los 387 distritos con embarque que no caen en ningún territorio de venta |
 | `datos/acopio/senasa_exportadores.csv` | Establecimientos certificados por SENASA, cruzados con quien embarca |
 | `datos/geoespacial/h3_r5.csv` | 1,992 celdas hexagonales de ~292 km² con mercado, clientes y accesibilidad |
 | `datos/geoespacial/clusters_territorio.csv` | 57 territorios de venta detectados por densidad |
@@ -818,7 +821,7 @@ compromiso de entrega. Y 36 distritos con 1,948 MM no tienen centro que los
 sirva —Olmos solo son 1,541—: no es carga cero, es carga fuera de alcance.
 
 **La mitad de la carga cae fuera de los territorios de venta.** US$ 14,436 MM
-en 386 distritos, el 51%. No es que estén mal trazados —dentro se exportan
+en 387 distritos, el 51%. No es que estén mal trazados —dentro se exportan
 8,308 dólares por hectárea agrícola y fuera 4,856, así que capturan lo denso—
 sino que se detectaron sobre la densidad del mercado de insumos, y la demanda
 exportadora no se concentra en el mismo sitio. Se intentó agrupar los

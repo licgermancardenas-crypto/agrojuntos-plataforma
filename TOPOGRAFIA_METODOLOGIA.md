@@ -286,6 +286,39 @@ Lo que se mueve detrás:
 El séptimo centro sigue marcando el rendimiento decreciente, ahora con
 +2.7 puntos.
 
+### Y los territorios detrás
+
+Los 57 territorios de venta se trazan sobre la densidad del mercado, no sobre
+las horas, así que **siguen siendo los mismos 57 y en el mismo orden**: lo que
+cambia es cuánto cuesta recorrerlos. La hora media al centro provincial, pesada
+por mercado, pasa de 1.33 a 1.54 h, y el reparto vuelve a ser lo interesante
+—Tayacaja +1.25 h, Huancayo +0.89, Cutervo y Chota +0.58—. Los 48 que se
+recorren en una salida siguen siendo 48: ese criterio es de extensión en
+kilómetros y no de horas.
+
+Lo que sí se reordena es a qué centro responde cada territorio: **26 de los 45
+con centro asignado cambian**, el 52% del mercado atendido.
+
+| territorio | antes | hoy | h antes | h hoy |
+|---|---|---|---|---|
+| La Libertad · Sánchez Carrión, Pataz | Otuzco | Chiclayo | 2.1 | **6.5** |
+| San Martín · Picota, Lamas | Picota | Bellavista | 1.0 | 1.6 |
+| Junín · Jauja, Huancayo | Jauja | Tarma | 0.9 | 1.8 |
+| Cusco · Anta, Paucartambo | Pisco | Juliaca | **13.9** | 5.8 |
+| Puno · Azángaro, Puno | Pisco | Juliaca | **16.2** | 0.4 |
+| Puno · Chucuito, El Collao | Pisco | Juliaca | **17.7** | 2.0 |
+| Arequipa · Arequipa | Pisco | Juliaca | 11.6 | 4.4 |
+
+El cambio corta en dos direcciones y conviene no contar solo la mitad buena. El
+**sur** gana un centro propio: Puno y Arequipa dejan de estar nominalmente
+servidos desde Pisco a dieciséis horas y pasan a Juliaca a menos de cinco. La
+**sierra de La Libertad** pierde el suyo: Sánchez Carrión pasa de 2.1 h a 6.5,
+porque Otuzco existía como centro solo mientras subir esa cuesta era gratis.
+
+Efecto de borde: dos celdas H3 cambian de territorio al rehacer la grilla —los
+144 sectores sin vía cercana son uno más que antes—, y con ellas un distrito
+más queda fuera de todo territorio: los huérfanos pasan de 386 a 387.
+
 ---
 
 ## Orden de ejecución

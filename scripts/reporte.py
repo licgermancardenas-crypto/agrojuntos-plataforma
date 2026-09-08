@@ -2088,17 +2088,21 @@ page(f"""
   </div>
 """, "Parte VI · Dónde está la carga")
 
+# La promesa de servicio es una decision y se lee de donde se declara, no se
+# escribe aqui: si manana pasa a tres horas, este informe la sigue sola.
+_RED = _json.load(open("out/red_elegida.json", encoding="utf-8"))
+
 CAR_ROWS = [[int(r["rank"]), r["territorio"], nf(r["empresas"]),
              nf(r["agroindustria"]), int(r["exportadores"]),
              f'{r["sam_usd"]/1e6:,.1f}', f'{r["empresas_por_mm"]:.0f}',
              r["hub"] if isinstance(r["hub"], str) else "—",
-             f'{100*r["dentro_2h"]/r["empresas"]:.0f}%']
+             f'{100*r["dentro_promesa"]/r["empresas"]:.0f}%']
             for _, r in _car.head(10).iterrows()]
 CAR_FOOT = ["", f"{len(_car)} territorios con cartera", nf(CAR_EMP),
             nf(_car.agroindustria.sum()), int(_car.exportadores.sum()),
             f'{_car.sam_usd.sum()/1e6:,.1f}',
             f'{CAR_EMP/(_car.sam_usd.sum()/1e6):.0f}', "",
-            f'{100*_car.dentro_2h.sum()/CAR_EMP:.0f}%']
+            f'{100*_car.dentro_promesa.sum()/CAR_EMP:.0f}%']
 # El contraste se busca dentro de los diez que la tabla muestra: comparar el
 # primero contra un territorio marginal de una fila que el lector no tiene
 # delante convierte un hallazgo en un truco.
@@ -2117,17 +2121,18 @@ page(f"""
     <div><span class="v">{nf(CAR_UBI)}</span><span class="l">empresas del padrón<br>ubicadas sobre la grilla</span></div>
     <div><span class="v">{nf(CAR_EMP)}</span><span class="l">caen dentro de alguno<br>de los territorios</span></div>
     <div><span class="v">{len(_car)} de {len(_clu2)}</span><span class="l">territorios tienen<br>al menos una empresa</span></div>
-    <div><span class="v">{100*_car.dentro_2h.sum()/CAR_EMP:.0f}%</span><span class="l">de esa cartera está a menos<br>de dos horas de su centro</span></div>
+    <div><span class="v">{100*_car.dentro_promesa.sum()/CAR_EMP:.0f}%</span><span class="l">de esa cartera está dentro de<br>la promesa de {_RED["promesa_h"]:.0f} horas</span></div>
   </div>
 
   <h3 class="rule">Los diez territorios de mayor mercado, con su cartera</h3>
   {table(CAR_ROWS,
          ["#", "Territorio", "Empresas", "Agroind.", "Agroexp.", "SAM MM",
-          "Emp./MM", "Centro", "A &lt;2 h"],
+          "Emp./MM", "Centro", "En promesa"],
          ["r","l","r","r","r","r","r","l","r"], foot=CAR_FOOT)}
   <p class="sub"><b>Emp./MM:</b> empresas formales por millón de dólares de
   mercado atendible. <b>Centro:</b> el almacén que sirve a la mayor parte de esa
-  cartera. <b>A &lt;2 h:</b> qué parte de ella queda a menos de dos horas de él.</p>
+  cartera. <b>En promesa:</b> qué parte de ella queda dentro de las
+  {_RED["promesa_h"]:.0f} horas que la red promete.</p>
 
   <div class="two" style="margin-top:4px">
     <div>

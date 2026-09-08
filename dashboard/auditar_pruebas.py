@@ -93,6 +93,8 @@ CASOS = [
      "el desnivel deja de contar en el tiempo de viaje"),
     ("banda_al_nivel_del_mar", "EL CAFE SALE A",
      "cada producto sale a la altura del puerto y no del fundo"),
+    ("red_sin_decision", "NO DISTINGUE LOS CENTROS PUESTOS POR DECISION",
+     "el centro puesto por decisión se presenta como elegido por el algoritmo"),
 ]
 
 

@@ -10,6 +10,7 @@ optimiza para búsqueda: campos cortos, nombres de clave de una letra y un
 índice de texto ya normalizado —sin tildes ni mayúsculas— para que filtrar
 sobre veinte mil filas no requiera recorrerlas transformándolas.
 """
+import io
 import json
 import os
 import re
@@ -131,7 +132,8 @@ guardar("estacionalidad.json", {"meses": MESES, "regiones": cal})
 # El territorio dice dónde vender; el centro, desde dónde entregar. Sin las dos
 # cosas juntas la tabla obliga a cruzar a mano con la vista de expansión.
 car_ter = pd.read_csv("out/cartera_territorio.csv", encoding="utf-8-sig")
-CT = car_ter.set_index("cluster")[["hub", "dentro_2h"]].to_dict("index")
+CT = car_ter.set_index("cluster")[["hub", "dentro_2h",
+                                   "dentro_promesa"]].to_dict("index")
 guardar("territorios.json", [{
     "rank": int(r["rank"]), "dep": cap(r["dep"]), "prov": r["provincias"],
     "sam": int(r["sam_usd"]), "cli": int(r["clientes"]),
@@ -142,6 +144,10 @@ guardar("territorios.json", [{
     "horas": round(float(r["horas_capital"]), 1),
     "hub": CT.get(r["cluster"], {}).get("hub", "") or "",
     "d2h": int(CT.get(r["cluster"], {}).get("dentro_2h", 0) or 0),
+    # La cartera que el centro alcanza dentro de la promesa vigente. La de dos
+    # horas se conserva al lado: es la vara con la que se publicaron las
+    # cifras anteriores y sin ella el cambio no se puede leer.
+    "dpr": int(CT.get(r["cluster"], {}).get("dentro_promesa", 0) or 0),
 } for _, r in ter.iterrows()])
 
 # --------------------------------------------------------------- empresas -
@@ -398,6 +404,9 @@ _rs = _rs[np.isfinite(_rs["horas_capital_real"])]
 _sam = _rs["s_sam_usd"].sum()
 _b2 = 100 * _rs.loc[_rs.horas_capital_real <= 2, "s_sam_usd"].sum() / _sam
 _b2l = 100 * _rs.loc[_rs.horas_capital_llano <= 2, "s_sam_usd"].sum() / _sam
+
+_red = json.load(io.open("out/red_elegida.json", encoding="utf-8"))
+guardar("red.json", _red)
 
 guardar("logistica.json", {
     "meta": {"sam_bajo_2h": num(_b2, 1), "sam_bajo_2h_llano": num(_b2l, 1),

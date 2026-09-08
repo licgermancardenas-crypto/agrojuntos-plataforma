@@ -23,10 +23,13 @@ visitar cuando el vendedor está en el territorio, no para ubicar la producción
 Uso:
     python scripts/build_cartera.py
 """
+import io
+import json
 import re
 import unicodedata
 
 import h3
+
 import numpy as np
 import pandas as pd
 
@@ -86,8 +89,13 @@ emp["h3_clu"] = [h3.latlng_to_cell(a, b, R_CLU)
                  for a, b in zip(emp["lat"], emp["lon"])]
 
 # ------------------------------------------------------------ centro y zona -
+# La promesa de servicio vigente es de cuatro horas y viaja como columna
+# propia: `cubierto_2h` se conserva porque hay cifras publicadas con esa vara
+# y porque la comparacion entre las dos es justamente lo que hace legible el
+# cambio. La red y su promesa se declaran en `build_hubs.py`.
 hub = pd.read_csv("out/hubs_asignacion.csv", encoding="utf-8-sig",
-                  usecols=["h3", "hub", "horas_al_hub", "cubierto_2h"])
+                  usecols=["h3", "hub", "horas_al_hub", "cubierto_2h",
+                           "cubierto_promesa"])
 # Las celdas sin vía mapeada cerca quedan a distancia infinita del grafo. Es
 # «no se sabe», no «muy lejos»: promediado con el resto, un solo infinito se
 # come la media de todo un centro.
@@ -115,12 +123,17 @@ emp["territorio"] = emp["territorio"].fillna("Fuera de territorio")
 dentro = (emp["cluster"] >= 0).sum()
 print(f"dentro de alguno de los {len(ter)} territorios: {dentro:,}"
       f" ({100*dentro/len(emp):.1f}%)")
+_red = json.load(io.open("out/red_elegida.json", encoding="utf-8"))
+print(f"dentro de la promesa de {_red['promesa_h']:.0f} h: "
+      f"{emp['cubierto_promesa'].sum():,.0f}"
+      f" ({100*emp['cubierto_promesa'].mean():.1f}%)")
 print(f"a menos de dos horas de un centro: {emp['cubierto_2h'].sum():,.0f}"
       f" ({100*emp['cubierto_2h'].mean():.1f}%)")
 
 COLS = ["ruc", "razon_social", "clase", "dep", "provincia", "distrito",
         "ubigeo", "lat", "lon", "exporta", "importa", "cluster", "rank",
-        "territorio", "hub", "horas_al_hub", "cubierto_2h"]
+        "territorio", "hub", "horas_al_hub", "cubierto_2h",
+        "cubierto_promesa"]
 emp[COLS].to_csv("out/cartera_empresa.csv", index=False, encoding="utf-8-sig")
 
 
@@ -132,6 +145,7 @@ def resumen(g):
         "exportadores": int(g["exporta"].sum()),
         "importadores": int(g["importa"].sum()),
         "dentro_2h": int(g["cubierto_2h"].fillna(False).sum()),
+        "dentro_promesa": int(g["cubierto_promesa"].fillna(False).sum()),
         "horas_al_hub": g["horas_al_hub"].median(),
     })
 

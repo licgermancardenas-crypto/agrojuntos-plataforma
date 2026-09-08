@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-08T00:36:17",
+ "generado": "2026-09-08T00:50:28",
  "fuente": "Terrarium (AWS elevation-tiles-prod) zoom 9, ~299 m/px",
  "validacion": {
   "motivo": "cota muestreada contra 20 altitudes publicadas de plaza",
@@ -379,26 +379,37 @@
  ],
  "hubs": [
   {
-   "hub": "Chiclayo",
-   "alt_m": 32.9,
-   "piso": "chala",
-   "distritos": 170,
-   "alt_carga_p50": 115.5,
-   "alt_carga_p90": 1950.2,
-   "desnivel_p90": 1917.3,
-   "alt_max": 4197.2,
-   "fob_mm": 13130.5
-  },
-  {
    "hub": "Pisco",
    "alt_m": 20.0,
    "piso": "chala",
-   "distritos": 168,
+   "distritos": 165,
    "alt_carga_p50": 382.1,
    "alt_carga_p90": 498.1,
    "desnivel_p90": 478.2,
    "alt_max": 4701.3,
-   "fob_mm": 11011.9
+   "fob_mm": 11010.8
+  },
+  {
+   "hub": "Chiclayo",
+   "alt_m": 32.9,
+   "piso": "chala",
+   "distritos": 116,
+   "alt_carga_p50": 115.8,
+   "alt_carga_p90": 1951.7,
+   "desnivel_p90": 1918.8,
+   "alt_max": 2982.9,
+   "fob_mm": 8049.4
+  },
+  {
+   "hub": "Huamachuco",
+   "alt_m": 3190.3,
+   "piso": "quechua",
+   "distritos": 57,
+   "alt_carga_p50": 109.8,
+   "alt_carga_p90": 648.3,
+   "desnivel_p90": -2542.0,
+   "alt_max": 4220.6,
+   "fob_mm": 5082.1
   },
   {
    "hub": "Juliaca",

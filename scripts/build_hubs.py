@@ -18,6 +18,8 @@ Se corre un Dijkstra por candidato y solo se conservan los tiempos hacia los
 nodos de demanda: guardar la matriz completa contra 5.2 millones de nodos
 ocuparía gigabytes sin aportar nada.
 """
+import io
+import json
 import re
 import unicodedata
 
@@ -34,6 +36,30 @@ import grafo_vial
 
 UMBRALES = [2.0, 4.0, 6.0]      # horas
 K_MAX = 12                      # centros a evaluar
+
+# --- la red elegida --------------------------------------------------------
+# La cobertura maxima es un calculo; la red es una decision. Hasta ahora la
+# decision vivia implicita en dos numeros sueltos dentro del codigo de
+# asignacion —«escenario de 2 h y k=6»— de modo que cambiarla era editar una
+# linea sin dejar rastro de por que.
+#
+# La red vigente son los seis que elige el algoritmo con vara de dos horas MAS
+# Huamachuco, y la promesa de servicio es de cuatro horas. La razon esta
+# medida y no supuesta: Sanchez Carrion y Pataz son el mayor territorio del
+# pais —US$ 33.6 MM, el 6.7% del mercado nacional, 9,114 clientes, el 69% de
+# su mercado sobre los 3,000 m— y no lo sirve nadie a dos horas. El mejor
+# centro posible es su propia capital y alcanza el 22% de ese mercado a dos
+# horas y el 63% a cuatro. Con vara de dos horas Huamachuco es el candidato
+# numero 14 para el septimo almacen; con vara de cuatro es el primero del
+# pais, con +5.62 puntos de cobertura nacional.
+#
+# Que la vara cambie el ranking entero no es un defecto del metodo: es que la
+# promesa de servicio es una decision comercial y no un parametro tecnico.
+# Por eso se declara aqui, con su fecha y su motivo, y no se deduce.
+RED_BASE_K = 6                  # los que elige el greedy con vara de 2 h
+RED_BASE_UMBRAL = 2.0
+RED_EXTRA = ["Huamachuco"]      # agregados por decision, no por el algoritmo
+PROMESA_H = 4.0                 # la vara con la que se promete el servicio
 
 def slug(s):
     s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode()
@@ -129,17 +155,65 @@ res["marginal"] = res.groupby("umbral_h")["pct_sam"].diff().fillna(
     res["pct_sam"])
 res.to_csv("out/hubs_cobertura.csv", index=False, encoding="utf-8-sig")
 
-# asignación de cada celda al hub más cercano, para el escenario de 2 h y k=6
-u = 2.0
-sel = [int(cand[cand.CAPITAL.str.title() == r.hub].index[0])
-       for _, r in res[(res.umbral_h == u) & (res.k <= 6)].iterrows()]
+# --------------------------------------------------- asignacion a la red ---
+# Cada celda va a su centro mas cercano DE LA RED ELEGIDA, que no es lo mismo
+# que el mejor conjunto que el algoritmo encontraria con la vara de cuatro
+# horas: ese seria otro —Chiclayo, Tarma, Tarapoto, Chincha Alta, Sicuani,
+# Huamachuco...— y significaria mover los seis centros ya decididos. La red
+# vigente conserva los seis y suma el septimo, que es lo que se decidio.
+base = res[(res.umbral_h == RED_BASE_UMBRAL) & (res.k <= RED_BASE_K)]
+nombres = list(base.hub) + list(RED_EXTRA)
+sel = []
+for nom in nombres:
+    f = cand[cand.CAPITAL.str.title() == nom]
+    if not len(f):
+        sys.exit("el centro %r no esta entre los candidatos: revisa RED_EXTRA"
+                 % nom)
+    sel.append(int(f.index[0]))
+
 sub = T[sel]
 mejor_hub = np.argmin(sub, axis=0)
 dem_out = dem.copy()
-dem_out["hub"] = [res[(res.umbral_h == u)].iloc[i]["hub"] for i in mejor_hub]
+dem_out["hub"] = [nombres[i] for i in mejor_hub]
 dem_out["horas_al_hub"] = sub[mejor_hub, np.arange(len(dem))]
-dem_out["cubierto_2h"] = dem_out["horas_al_hub"] <= u
+# Las dos varas viajan juntas a proposito. La de dos horas es la que uso este
+# proyecto durante meses y hay cifras publicadas con ella; la promesa vigente
+# es la de cuatro. Publicar solo una obligaria a rehacer la comparacion a mano
+# cada vez que alguien pregunte cuanto cambio.
+dem_out["cubierto_2h"] = dem_out["horas_al_hub"] <= 2.0
+dem_out["cubierto_promesa"] = dem_out["horas_al_hub"] <= PROMESA_H
 dem_out.to_csv("out/hubs_asignacion.csv", index=False, encoding="utf-8-sig")
+
+cub2 = W[dem_out["cubierto_2h"].values].sum() / SAM_TOTAL
+cubp = W[dem_out["cubierto_promesa"].values].sum() / SAM_TOTAL
+red = {
+    "generado": pd.Timestamp.now().strftime("%Y-%m-%dT%H:%M:%S"),
+    "motivo": ("La red es una decisión y no el resultado del algoritmo: son "
+               "los %d centros que elige la cobertura máxima con vara de "
+               "%.0f horas, más %s, con una promesa de servicio de %.0f "
+               "horas."
+               % (RED_BASE_K, RED_BASE_UMBRAL, ", ".join(RED_EXTRA),
+                  PROMESA_H)),
+    "promesa_h": PROMESA_H,
+    "centros": [{"hub": r.hub, "provincia": r.provincia, "region": r.region,
+                 "lat": r.lat, "lon": r.lon, "por": "algoritmo"}
+                for _, r in base.iterrows()]
+               + [{"hub": n, "provincia": str(cand.loc[i, "PROVINCIA"]).title(),
+                   "region": str(cand.loc[i, "DEPARTAM"]).title(),
+                   "lat": round(float(cand.loc[i, "lat"]), 5),
+                   "lon": round(float(cand.loc[i, "lon"]), 5),
+                   "por": "decision"}
+                  for n, i in zip(RED_EXTRA, sel[RED_BASE_K:])],
+    "sam_cubierto_promesa_pct": round(100 * cubp, 2),
+    "sam_cubierto_2h_pct": round(100 * cub2, 2),
+}
+with io.open("out/red_elegida.json", "w", encoding="utf-8") as fh:
+    json.dump(red, fh, ensure_ascii=False, indent=1)
+print()
+print("la red elegida: %s" % " · ".join(nombres))
+print("  promesa de %.0f h: cubre el %.1f%% del mercado"
+      % (PROMESA_H, 100 * cubp))
+print("  con vara de 2 h  : cubre el %.1f%%" % (100 * cub2))
 
 print()
 print("=" * 74)

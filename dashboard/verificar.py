@@ -290,6 +290,21 @@ MUTACIONES = {
     # El cruce entre el embarque y la cota se rompe: cada producto sale a la
     # altura del puerto, que es lo que pasaria si el ubigeo apuntara a la
     # oficina del exportador y no al fundo.
+    # La pantalla deja de decir que el septimo centro entro por decision y no
+    # por cobertura: los dos se leen como si el algoritmo los hubiera elegido.
+    "red_sin_decision": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('red.json') < 0) return r;
+        const d = await r.clone().json();
+        d.centros.forEach(c => { c.por = 'algoritmo'; });
+        d.motivo = 'Los centros que elige la cobertura maxima.';
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
     "banda_al_nivel_del_mar": """(() => {
       const orig = window.fetch;
       window.fetch = async function (u, o) {
@@ -1666,6 +1681,83 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  declara con cuanto error se muestreo la cota: ok")
+
+    # ------------------------------------------- la red elegida y su promesa -
+    # La red no es el resultado del algoritmo: son los seis de cobertura máxima
+    # más Huamachuco, con promesa de cuatro horas. Es una decisión comercial y
+    # la pantalla tiene que decirlo, porque con otra vara el ranking de
+    # ciudades cambia entero —Huamachuco es el candidato 14 a dos horas y el
+    # primero del país a cuatro— y quien lea la tabla sin la vara a la vista
+    # sacará la conclusión contraria.
+    print("")
+    print("la red elegida")
+    pg.evaluate("() => location.hash = '#expansion'")
+    pg.wait_for_selector("#tRed tbody tr td", timeout=25000)
+    pg.wait_for_timeout(500)
+    # Se lee del disco y no con un `fetch` desde la pagina. La diferencia no
+    # es de estilo: una comprobacion que pide el dato por el mismo camino que
+    # la pagina compara la pantalla contra si misma, y cualquier defecto que
+    # toque ese camino la deja pasar. Aqui el contraste es contra el archivo
+    # publicado, que es lo que un tercero descargaria.
+    RED = json.load(io.open(os.path.join("data", "red.json"), encoding="utf-8"))
+    filas = pg.eval_on_selector_all(
+        "#tRed tbody tr", "f => f.map(r => r.textContent)")
+    print("  %d centros · promesa de %.0f h · cubre %.1f%%"
+          % (len(RED["centros"]), RED["promesa_h"],
+             RED["sam_cubierto_promesa_pct"]))
+    if len(filas) != len(RED["centros"]):
+        print("  LA TABLA DE LA RED NO LISTA LOS %d CENTROS"
+              % len(RED["centros"]))
+        ok = False
+    else:
+        print("  la tabla lista los %d centros: ok" % len(filas))
+
+    # Cuál entró por decisión y cuál por cobertura tiene que estar dicho: son
+    # dos clases de centro que no se defienden igual ante un tercero.
+    por_dec = [c for c in RED["centros"] if c["por"] == "decision"]
+    marcados = [f for f in filas if "decisión" in f]
+    if len(por_dec) != len(marcados):
+        print("  LA TABLA NO DISTINGUE LOS CENTROS PUESTOS POR DECISION")
+        ok = False
+    else:
+        print("  distingue los %d puestos por decisión (%s): ok"
+              % (len(por_dec), ", ".join(c["hub"] for c in por_dec)))
+
+    nota_red = " ".join((pg.text_content("#redElegida") or "").split())
+    if str(int(RED["promesa_h"])) not in nota_red or "decisión" not in nota_red:
+        print("  LA PANTALLA NO DECLARA LA PROMESA DE SERVICIO")
+        ok = False
+    else:
+        print("  declara la promesa y que es una decisión: ok")
+
+    # La cobertura tiene que crecer con la vara. Si la de dos horas fuera mayor
+    # que la de la promesa, el cruce estaría invertido.
+    if RED["sam_cubierto_2h_pct"] > RED["sam_cubierto_promesa_pct"]:
+        print("  LA COBERTURA A DOS HORAS SUPERA A LA DE CUATRO: vara invertida")
+        ok = False
+    else:
+        print("  la cobertura crece con la vara (%.1f%% -> %.1f%%): ok"
+              % (RED["sam_cubierto_2h_pct"], RED["sam_cubierto_promesa_pct"]))
+
+    # Y el territorio que motivó el séptimo centro: Sánchez Carrión y Pataz es
+    # el mayor del país y estaba a 6.5 h de Chiclayo. Si vuelve a quedar lejos,
+    # el centro no está haciendo lo que se decidió que hiciera.
+    TE = pg.evaluate("""async () => {
+        const r = await fetch('/data/territorios.json'); return await r.json(); }""")
+    mayor = sorted(TE, key=lambda t: -t.get("sam", 0))[0]
+    print("  territorio mayor: %s · %s · centro %s · %d de %d empresas "
+          "dentro de la promesa"
+          % (mayor.get("dep", ""), str(mayor.get("prov", ""))[:24],
+             mayor.get("hub", "—"), mayor.get("dpr", 0), mayor.get("emp", 0)))
+    if mayor.get("hub") != "Huamachuco":
+        print("  EL MAYOR TERRITORIO NO RESPONDE AL CENTRO QUE SE PUSO PARA EL")
+        ok = False
+    elif not mayor.get("dpr", 0) > mayor.get("d2h", 0):
+        print("  EL CENTRO NUEVO NO ALCANZA MAS CARTERA EN LA PROMESA QUE A 2 H")
+        ok = False
+    else:
+        print("  el mayor territorio responde a Huamachuco y su cartera "
+              "alcanzada crece de %d a %d: ok" % (mayor["d2h"], mayor["dpr"]))
 
 
     # ------------------------------------------------------- acopio ------

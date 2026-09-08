@@ -286,6 +286,57 @@ Lo que se mueve detrás:
 El séptimo centro sigue marcando el rendimiento decreciente, ahora con
 +2.7 puntos.
 
+### La red que se decidió
+
+Los seis que elige la cobertura máxima con vara de dos horas **más Huamachuco**,
+con una **promesa de servicio de cuatro horas**. El séptimo no salió del
+algoritmo: salió de mirar el caso de Sánchez Carrión y Pataz.
+
+Ese territorio es el mayor del país —US$ 33.6 MM, el 6.7% del mercado nacional,
+9,114 clientes, 434,680 ha— y está alto: cota mediana de 3,214 m, con el 69% de
+su mercado sobre los 3,000 m y 231 km de punta a punta, así que no se recorre en
+una salida. **No lo sirve nadie a dos horas.** El mejor centro posible es su
+propia capital y alcanza el 22% de su mercado a esa vara; a cuatro horas alcanza
+el 63%. Chiclayo, que era su centro asignado, llega al 0% a dos horas y al 2% a
+cuatro —9.5 h pesando cada celda por su mercado, contra las 6.5 h que mide la
+ficha al centroide: las dos cifras son ciertas y contestan preguntas distintas—.
+
+Y ahí está lo que decide: **con qué vara se mide cambia el ranking entero**.
+
+| séptimo centro | a 2 h | a 4 h |
+|---|---|---|
+| Morropón | +2.66 pp | — |
+| Virú | +2.66 pp | — |
+| **Huamachuco** | +1.90 pp *(puesto 14 de 123)* | **+5.62 pp *(puesto 1 de 123)*** |
+
+Con promesa de dos horas, Huamachuco es el decimocuarto sitio para el séptimo
+almacén y desaparece de cualquier lista corta. Con promesa de cuatro es el mejor
+del país. La promesa de servicio es una decisión comercial y no un parámetro
+técnico, así que **se declara** —en `build_hubs.py`, con su motivo, y en
+`out/red_elegida.json` con su fecha— en vez de quedar implícita en dos números
+sueltos dentro del código de asignación, que es donde estuvo hasta ahora
+(«escenario de 2 h y k=6»).
+
+Lo que la red vigente cubre:
+
+| | cobertura del mercado |
+|---|---|
+| siete centros, promesa de 4 h | **46.5%** |
+| los mismos siete, vara de 2 h | 25.0% |
+| los seis anteriores, vara de 2 h | 23.1% |
+
+Sánchez Carrión pasa a responder a Huamachuco, y su cartera alcanzada sube de 93
+a **120 de sus 133 empresas**. Lo que no cambia es la naturaleza del territorio:
+93 productores y 15 agroindustrias, 3.95 empresas por millón de mercado. El
+dinero está en muchos minifundios y no en empresas, así que el almacén es
+condición necesaria y no suficiente —sin red de canal, un centro en Huamachuco
+atiende a 133 clientes formales de un mercado de 9,114—.
+
+La alternativa que no se tomó, dicha: con vara de cuatro horas el algoritmo, si
+se le deja elegir de cero, propone otra red entera —Chiclayo, Tarma, Tarapoto,
+Chincha Alta, Sicuani, Huamachuco…— que cubre más pero mueve los seis centros ya
+decididos. Se conservaron los seis y se sumó el séptimo.
+
 ### Y los territorios detrás
 
 Los 57 territorios de venta se trazan sobre la densidad del mercado, no sobre

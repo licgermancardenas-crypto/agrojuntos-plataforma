@@ -288,7 +288,13 @@ function vistaTerritorios() {
       { k: "exp", t: "Agroexport.", f: function (r) { return nf(r.exp); } },
       { k: "hub", t: "Centro", l: true, f: function (r) {
           return r.hub ? esc(r.hub) : "—"; } },
-      { k: "d2h", t: "Cartera a <2 h", f: function (r) {
+      /* Dos columnas y no una. La promesa vigente es de cuatro horas, pero
+         las cifras anteriores de este proyecto se publicaron con vara de dos
+         y sin las dos al lado el cambio no se puede leer. */
+      { k: "dpr", t: "Cartera en promesa", f: function (r) {
+          return r.emp ? nf(r.dpr) + " · " +
+                 Math.round(100 * r.dpr / r.emp) + "%" : "—"; } },
+      { k: "d2h", t: "Cartera a <2 h", cls: "faint", f: function (r) {
           return r.emp ? nf(r.d2h) + " · " +
                  Math.round(100 * r.d2h / r.emp) + "%" : "—"; } },
       { k: "horas", t: "Horas capital", f: function (r) { return nf(r.horas, 1); } },
@@ -1932,6 +1938,48 @@ function vistaEstacionalidad() {
   }).catch(fallo);
 }
 
+
+/* --------------------------------------------------------- la red elegida -- */
+/* Los seis que elige el algoritmo con vara de dos horas, más Huamachuco, con
+   promesa de cuatro. El séptimo no salió de la optimización sino de mirar el
+   caso de Sánchez Carrión y Pataz: el mayor territorio del país no lo sirve
+   nadie a dos horas —el mejor centro posible alcanza el 22% de su mercado—,
+   y con vara de cuatro Huamachuco pasa de ser el candidato catorce a ser el
+   primero del país. */
+function pintarRed() {
+  var caja = document.getElementById("redElegida");
+  if (!caja) return;
+  cargar("red").then(function (R) {
+    var dec = R.centros.filter(function (c) { return c.por === "decision"; });
+    caja.innerHTML =
+      '<div class="h"><h3>La red elegida</h3><span class="eyebrow">' +
+      R.centros.length + " centros · promesa de " + nf(R.promesa_h) +
+      " horas</span></div><div class='b'>" +
+      '<div class="kpis">' +
+      kpi(nf(R.centros.length), "centros", dec.length +
+          (dec.length === 1 ? " por decisión" : " por decisión")) +
+      kpi(pct(R.sam_cubierto_promesa_pct, 1), "del mercado en promesa",
+          "dentro de " + nf(R.promesa_h) + " horas") +
+      kpi(pct(R.sam_cubierto_2h_pct, 1), "a menos de dos horas",
+          "la vara anterior") +
+      "</div>" +
+      '<div class="tw" style="margin-top:14px"><table id="tRed"></table></div>' +
+      '<p class="sub">' + esc(R.motivo) + " La cobertura no la decide el " +
+      "número de centros sino la vara: los mismos siete cubren " +
+      pct(R.sam_cubierto_promesa_pct, 1) + " a cuatro horas y " +
+      pct(R.sam_cubierto_2h_pct, 1) + " a dos.</p></div>";
+
+    tabla(document.getElementById("tRed"), [
+      { k: "hub", t: "Centro", l: 1, f: function (r) {
+          return "<b>" + esc(r.hub) + "</b><span class='sub2'>" +
+            esc(r.provincia) + " · " + esc(r.region) + "</span>"; } },
+      { k: "por", t: "Cómo entró", l: 1, f: function (r) {
+          return "<span class='tag'>" + (r.por === "decision"
+            ? "por decisión" : "por cobertura") + "</span>"; } },
+    ], R.centros, { sort: "hub", asc: true });
+  }).catch(function () { caja.innerHTML = ""; });
+}
+
 /* ------------------------------------------------------------ expansión -- */
 function vistaExpansion(D) {
   var umbral = 2;
@@ -1977,6 +2025,11 @@ function vistaExpansion(D) {
       "operación</b>, no el número de centros. O red de canal con " +
       "distribuidores locales, o pocos centros con rutas largas y entrega " +
       "programada.</div>";
+
+    /* La curva de arriba es lo que el algoritmo encuentra; esto es lo que se
+       decidió. Separarlas importa: la promesa de servicio es una decisión
+       comercial y con otra vara el ranking de ciudades cambia entero. */
+    pintarRed();
 
     tabla(document.getElementById("tSom"), [
       { k: "e", t: "Escenario", l: true, f: function (r) { return esc(r.e); } },

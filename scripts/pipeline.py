@@ -127,8 +127,13 @@ ETAPAS = [
      "la cota y el piso ecológico de cada capa"),
 
     ("mapa-geo", "build_mapa_geo.py",
+     # Lee tambien los centros y su asignacion: con la lista corta quedaba
+     # «al dia» dibujando la red anterior mientras el resto del sitio ya
+     # mostraba la nueva. Una etapa que declara de menos miente mejor que una
+     # que no se declara.
      ["out/clusters_territorio.csv", "out/clusters_celda.csv",
-      "out/ruteo_sector.csv"],
+      "out/ruteo_sector.csv", "out/hubs_cobertura.csv",
+      "out/hubs_asignacion.csv", "out/h3_r5.csv"],
      ["out/mapa_geo.json", "out/mapa_capas.json"],
      "el atlas geoespacial que baja el navegador"),
     ("dashboard", "build_dashboard_data.py",

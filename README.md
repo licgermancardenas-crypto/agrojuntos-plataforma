@@ -899,6 +899,20 @@ un manual: café con mediana de 1,331 m y p90 de 1,953, cacao 483, arándano 290
 uva 354. Que el café caiga en su banda conocida es una validación independiente
 de que el ubigeo del manifiesto apunta al fundo y no al domicilio fiscal.
 
+**La red vigente son siete centros con promesa de cuatro horas**: Chiclayo,
+Pisco, Bellavista, Juliaca, Satipo y Tarma —los que elige la cobertura máxima—
+más **Huamachuco**, que entró por decisión y no por algoritmo. Cubre el
+46.5% del mercado dentro de la promesa y el 25.0% a dos horas. El motivo del
+séptimo está medido: Sánchez Carrión y Pataz es el mayor territorio del país
+—US$ 33.6 MM, 9,114 clientes, el 69% de su mercado sobre los 3,000 m— y no lo
+sirve nadie a dos horas; el mejor centro posible, su propia capital, alcanza el
+22% de ese mercado a esa vara y el 63% a cuatro. Con vara de dos horas
+Huamachuco es el candidato número 14 para el séptimo almacén; con vara de
+cuatro es el primero del país. La vara cambia el ranking entero, así que la
+promesa se declara en `build_hubs.py` y viaja en `red_elegida.json` en vez de
+quedar implícita en el código. Sánchez Carrión pasa a responder a Huamachuco y
+su cartera alcanzada sube de 93 a 120 de sus 133 empresas.
+
 **Los centros de distribución se movieron.** Estaban elegidos con el reloj en
 llano y por eso Otuzco —a 2,675 m— cubría Virú y Chao, que están a 61 y 532 m y
 son los dos distritos de mayor embarque del país: el 20.2% del FOB exportador

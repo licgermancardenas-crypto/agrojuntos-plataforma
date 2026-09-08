@@ -1,0 +1,65 @@
+{
+ "generado": "2026-09-08T00:46:05",
+ "motivo": "La red es una decisión y no el resultado del algoritmo: son los 6 centros que elige la cobertura máxima con vara de 2 horas, más Huamachuco, con una promesa de servicio de 4 horas.",
+ "promesa_h": 4.0,
+ "centros": [
+  {
+   "hub": "Chiclayo",
+   "provincia": "Chiclayo",
+   "region": "Lambayeque",
+   "lat": -6.77369,
+   "lon": -79.83987,
+   "por": "algoritmo"
+  },
+  {
+   "hub": "Pisco",
+   "provincia": "Pisco",
+   "region": "Ica",
+   "lat": -13.71173,
+   "lon": -76.20448,
+   "por": "algoritmo"
+  },
+  {
+   "hub": "Bellavista",
+   "provincia": "Bellavista",
+   "region": "San Martin",
+   "lat": -7.05936,
+   "lon": -76.59079,
+   "por": "algoritmo"
+  },
+  {
+   "hub": "Juliaca",
+   "provincia": "San Roman",
+   "region": "Puno",
+   "lat": -15.49396,
+   "lon": -70.13582,
+   "por": "algoritmo"
+  },
+  {
+   "hub": "Satipo",
+   "provincia": "Satipo",
+   "region": "Junin",
+   "lat": -11.24928,
+   "lon": -74.6386,
+   "por": "algoritmo"
+  },
+  {
+   "hub": "Tarma",
+   "provincia": "Tarma",
+   "region": "Junin",
+   "lat": -11.42073,
+   "lon": -75.69104,
+   "por": "algoritmo"
+  },
+  {
+   "hub": "Huamachuco",
+   "provincia": "Sanchez Carrion",
+   "region": "La Libertad",
+   "lat": -7.81549,
+   "lon": -78.05275,
+   "por": "decision"
+  }
+ ],
+ "sam_cubierto_promesa_pct": 46.47,
+ "sam_cubierto_2h_pct": 25.02
+}

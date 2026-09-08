@@ -111,7 +111,8 @@ def documentacion():
     imp = carga("importaciones/mercado.json")
     aco = carga("acopio.json")
     log = carga("logistica.json")
-    if not (exp and imp and aco and log and txt):
+    red = carga("red.json")
+    if not (exp and imp and aco and log and red and txt):
         return
     mil = lambda v: "{:,}".format(int(round(v)))          # noqa: E731
     esperadas = [
@@ -133,6 +134,12 @@ def documentacion():
          "%.1f%%" % log["meta"]["sam_bajo_2h_llano"]),
         ("sectores fuera del grafo vial",
          str(log["meta"]["sectores_sin_grafo"])),
+        # La promesa de servicio es una decisión y la documentación la
+        # explica; si alguien la cambia en `build_hubs.py` sin tocar el texto,
+        # el README quedaría defendiendo una red que ya no existe.
+        ("centros de la red", str(len(red["centros"]))),
+        ("cobertura en promesa", "%.1f%%" % red["sam_cubierto_promesa_pct"]),
+        ("cobertura a 2 h", "%.1f%%" % red["sam_cubierto_2h_pct"]),
     ]
     for que, valor in esperadas:
         if valor in txt:

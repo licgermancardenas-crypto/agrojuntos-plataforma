@@ -896,12 +896,21 @@ un manual: café con mediana de 1,331 m y p90 de 1,953, cacao 483, arándano 290
 uva 354. Que el café caiga en su banda conocida es una validación independiente
 de que el ubigeo del manifiesto apunta al fundo y no al domicilio fiscal.
 
-Queda una consecuencia sin ejecutar: **los seis centros de distribución se
-eligieron con el reloj en llano**, y por eso Otuzco —a 2,675 m— quedó cubriendo
-Virú y Chao, que están a 61 y 532 m y son los dos distritos de mayor embarque del
-país. El 20.2% del FOB exportador está asignado a un centro que se sitúa más de
-1,500 m por encima de su carga. Rehacer la elección mueve los centros, los 57
-territorios y toda cifra que cuelgue de ellos: es decisión de negocio.
+**Los centros de distribución se movieron.** Estaban elegidos con el reloj en
+llano y por eso Otuzco —a 2,675 m— cubría Virú y Chao, que están a 61 y 532 m y
+son los dos distritos de mayor embarque del país: el 20.2% del FOB exportador
+quedaba asignado a un centro 1,500 m por encima de su carga. Rehecha la elección
+sobre el grafo con pendiente, **la mitad de los seis cambia** —Otuzco, Jauja y
+Picota salen; Bellavista, Juliaca y Tarma entran— y Otuzco se cae de los doce
+candidatos. Los tres que salen son los tres que vivían de una cuesta que el
+modelo contaba como llano.
+
+Detrás de eso: 314 distritos cambian de centro (US$ 9,009 MM, el 32% del FOB
+situado), el FOB a menos de dos horas de un centro cae de 42.3% a 31.6%, la
+cobertura del mercado de insumos con seis centros baja de 26.2% a 23.1%, y Virú
+entra por su cuenta en el puesto 8: deja de ser territorio servido desde arriba y
+pasa a ser sitio donde poner un centro. La carga cuyo centro está más de 1,500 m
+por encima cae del 20.2% al 3.1%.
 
 El detalle está en [`TOPOGRAFIA_METODOLOGIA.md`](TOPOGRAFIA_METODOLOGIA.md).
 

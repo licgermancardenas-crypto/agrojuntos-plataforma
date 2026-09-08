@@ -111,6 +111,8 @@ tendría la cota de Lima o de Chiclayo.
 
 ### El desnivel que sube cada centro
 
+Con los centros elegidos **antes** de corregir el reloj, la carga quedaba así:
+
 | centro | cota | carga p50 | carga p90 | desnivel |
 |---|---|---|---|---|
 | Pisco | 20 | 390 | 604 | +584 |
@@ -120,13 +122,27 @@ tendría la cota de Lima o de Chiclayo.
 | Picota | 222 | 909 | 1,876 | +1,654 |
 | Jauja | 3,386 | 2,281 | 4,140 | +755 |
 
-**El 20.2% del FOB exportador —US$ 5,304 MM— está asignado a un centro que se
-sitúa más de 1,500 m por encima de la carga.** Casi todo es Otuzco, a 2,675 m,
-cubriendo Virú (61 m) y Chao (532 m), los dos distritos de mayor embarque del
-país. El modelo de centros los eligió por cobertura de clientes agrícolas y con
-el reloj en llano: Otuzco alcanzaba la costa en dos horas.
+**El 20.2% del FOB exportador —US$ 5,304 MM— estaba asignado a un centro que se
+situaba más de 1,500 m por encima de la carga.** Casi todo era Otuzco, a
+2,675 m, cubriendo Virú (61 m) y Chao (532 m), los dos distritos de mayor
+embarque del país. El modelo de centros los eligió por cobertura de clientes
+agrícolas y con el reloj en llano: Otuzco alcanzaba la costa en dos horas.
 
-Eso es exactamente lo que la corrección de pendiente pone a prueba.
+Con la pendiente contada, **Otuzco se cae de los doce candidatos**. Los centros
+quedan así:
+
+| centro | cota | carga p50 | carga p90 | desnivel | FOB MM |
+|---|---|---|---|---|---|
+| Chiclayo | 33 | 116 | 1,950 | +1,917 | 13,130 |
+| Pisco | 20 | 382 | 498 | +478 | 11,012 |
+| Juliaca | 3,845 | 1,343 | 2,700 | −1,145 | 795 |
+| Satipo | 627 | 1,090 | 1,454 | +827 | 581 |
+| Tarma | 3,061 | 1,862 | 4,115 | +1,054 | 380 |
+| Bellavista | 318 | 544 | 1,207 | +889 | 344 |
+
+La carga cuyo centro está más de 1,500 m por encima **cae del 20.2% al 3.1%**
+—lo que queda es Juliaca sirviendo valles más bajos, que es geografía del
+altiplano y no un error de elección—.
 
 ---
 
@@ -239,11 +255,36 @@ decisión, hablando idiomas distintos. Durante una tarde hubo dos
 implementaciones de la contracción del grafo —una en cada archivo— y ya habían
 empezado a separarse.
 
-Consecuencia pendiente: **la elección de centros sigue siendo la que se hizo
-con el reloj en llano**. Rehacerla es correr `build_hubs.py`, y eso cambia los
-seis centros, los 57 territorios, la capa de acopio y toda cifra publicada que
-cuelgue de ellos. Es una decisión de negocio, no de código, y por eso no se
-hizo de oficio.
+### Qué pasó al rehacer la elección de centros
+
+`build_hubs.py` se corrió sobre el grafo con pendiente. **La mitad de los seis
+centros cambia.**
+
+| # | con el reloj en llano | con pendiente |
+|---|---|---|
+| 1 | Chiclayo, Lambayeque | Chiclayo, Lambayeque |
+| 2 | Pisco, Ica | Pisco, Ica |
+| 3 | **Otuzco, La Libertad** | **Bellavista, San Martín** |
+| 4 | **Picota, San Martín** | **Juliaca, Puno** |
+| 5 | Satipo, Junín | Satipo, Junín |
+| 6 | **Jauja, Junín** | **Tarma, Junín** |
+
+Los tres que salen son los tres que vivían de una cuesta gratis: Otuzco a
+2,675 m «alcanzaba» la costa de La Libertad, Jauja a 3,386 m el valle del
+Mantaro, Picota el Huallaga. Los que entran están más abajo o mejor conectados.
+
+Lo que se mueve detrás:
+
+- **314 distritos cambian de centro**, US$ 9,009 MM, el 32% del FOB situado.
+  Virú pasa de estar a 1.9 h de Otuzco a 4.0 h de Chiclayo; Chao, de 2.1 a 4.2.
+- El FOB de exportación **a menos de dos horas de un centro cae de 42.3% a
+  31.6%**. No es que la red haya empeorado: nunca cubrió el 42.3%.
+- La cobertura del mercado de insumos con seis centros baja de 26.2% a 23.1%.
+- Virú aparece por su cuenta en el puesto 8: deja de ser territorio servido
+  desde arriba y pasa a ser sitio donde poner un centro.
+
+El séptimo centro sigue marcando el rendimiento decreciente, ahora con
++2.7 puntos.
 
 ---
 

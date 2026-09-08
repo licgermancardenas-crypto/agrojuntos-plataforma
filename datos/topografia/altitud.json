@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-07T22:13:48",
+ "generado": "2026-09-07T23:51:09",
  "fuente": "Terrarium (AWS elevation-tiles-prod) zoom 9, ~299 m/px",
  "validacion": {
   "motivo": "cota muestreada contra 20 altitudes publicadas de plaza",
@@ -379,70 +379,70 @@
  ],
  "hubs": [
   {
-   "hub": "Pisco",
-   "alt_m": 20.0,
-   "piso": "chala",
-   "distritos": 238,
-   "alt_carga_p50": 389.6,
-   "alt_carga_p90": 604.3,
-   "desnivel_p90": 584.3,
-   "alt_max": 4917.6,
-   "fob_mm": 11759.8
-  },
-  {
    "hub": "Chiclayo",
    "alt_m": 32.9,
    "piso": "chala",
-   "distritos": 103,
-   "alt_carga_p50": 116.2,
-   "alt_carga_p90": 1952.2,
-   "desnivel_p90": 1919.3,
-   "alt_max": 3187.1,
-   "fob_mm": 7614.3
+   "distritos": 170,
+   "alt_carga_p50": 115.5,
+   "alt_carga_p90": 1950.2,
+   "desnivel_p90": 1917.3,
+   "alt_max": 4197.2,
+   "fob_mm": 13130.5
   },
   {
-   "hub": "Otuzco",
-   "alt_m": 2674.7,
-   "piso": "quechua",
-   "distritos": 68,
-   "alt_carga_p50": 110.5,
-   "alt_carga_p90": 634.0,
-   "desnivel_p90": -2040.6,
+   "hub": "Pisco",
+   "alt_m": 20.0,
+   "piso": "chala",
+   "distritos": 168,
+   "alt_carga_p50": 382.1,
+   "alt_carga_p90": 498.1,
+   "desnivel_p90": 478.2,
    "alt_max": 4701.3,
-   "fob_mm": 5466.5
+   "fob_mm": 11011.9
+  },
+  {
+   "hub": "Juliaca",
+   "alt_m": 3845.1,
+   "piso": "suni",
+   "distritos": 83,
+   "alt_carga_p50": 1343.0,
+   "alt_carga_p90": 2699.9,
+   "desnivel_p90": -1145.3,
+   "alt_max": 4917.6,
+   "fob_mm": 794.9
   },
   {
    "hub": "Satipo",
    "alt_m": 626.6,
    "piso": "selva alta",
-   "distritos": 18,
-   "alt_carga_p50": 1063.2,
-   "alt_carga_p90": 1457.4,
-   "desnivel_p90": 830.8,
-   "alt_max": 2145.8,
-   "fob_mm": 677.0
+   "distritos": 9,
+   "alt_carga_p50": 1089.9,
+   "alt_carga_p90": 1453.8,
+   "desnivel_p90": 827.2,
+   "alt_max": 1723.0,
+   "fob_mm": 581.1
   },
   {
-   "hub": "Picota",
-   "alt_m": 221.9,
-   "piso": "selva baja",
-   "distritos": 45,
-   "alt_carga_p50": 908.9,
-   "alt_carga_p90": 1875.5,
-   "desnivel_p90": 1653.6,
-   "alt_max": 2612.6,
-   "fob_mm": 417.9
-  },
-  {
-   "hub": "Jauja",
-   "alt_m": 3385.6,
-   "piso": "quechua",
-   "distritos": 72,
-   "alt_carga_p50": 2280.6,
-   "alt_carga_p90": 4140.2,
-   "desnivel_p90": 754.6,
+   "hub": "Tarma",
+   "alt_m": 3061.3,
+   "piso": "ceja de selva",
+   "distritos": 82,
+   "alt_carga_p50": 1861.5,
+   "alt_carga_p90": 4114.8,
+   "desnivel_p90": 1053.5,
    "alt_max": 4802.9,
-   "fob_mm": 306.7
+   "fob_mm": 380.2
+  },
+  {
+   "hub": "Bellavista",
+   "alt_m": 318.1,
+   "piso": "selva baja",
+   "distritos": 32,
+   "alt_carga_p50": 544.4,
+   "alt_carga_p90": 1207.4,
+   "desnivel_p90": 889.3,
+   "alt_max": 2612.6,
+   "fob_mm": 343.6
   }
  ]
 }

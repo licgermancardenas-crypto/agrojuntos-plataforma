@@ -134,7 +134,11 @@ ETAPAS = [
     ("dashboard", "build_dashboard_data.py",
      ["out/ruteo_departamento.csv", "out/clusters_territorio.csv",
       "out/cartera_territorio.csv", "out/hubs_asignacion.csv"],
-     ["../dashboard/data/resumen.json", "../dashboard/data/logistica.json"],
+     # dos niveles arriba, no uno: `build_dashboard_data.py` escribe en el
+     # dashboard que esta al lado de MAPEO, no dentro. Con la ruta corta las
+     # salidas no existian y la etapa salia desactualizada para siempre.
+     ["../../dashboard/data/resumen.json",
+      "../../dashboard/data/logistica.json"],
      "los JSON que sirve el sitio"),
 
     ("reporte", "reporte.py",

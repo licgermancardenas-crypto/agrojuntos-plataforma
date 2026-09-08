@@ -288,9 +288,10 @@ El séptimo centro sigue marcando el rendimiento decreciente, ahora con
 
 ### La red que se decidió
 
-Los seis que elige la cobertura máxima con vara de dos horas **más Huamachuco**,
-con una **promesa de servicio de cuatro horas**. El séptimo no salió del
-algoritmo: salió de mirar el caso de Sánchez Carrión y Pataz.
+Los seis que elige la cobertura máxima con vara de dos horas **más Huamachuco y
+Sicuani**, con una **promesa de servicio de cuatro horas**. Los dos últimos no
+salieron del algoritmo: salieron de mirar dos casos concretos —Sánchez Carrión y
+Pataz el primero, el agujero de reparto del altiplano el segundo—.
 
 Ese territorio es el mayor del país —US$ 33.6 MM, el 6.7% del mercado nacional,
 9,114 clientes, 434,680 ha— y está alto: cota mediana de 3,214 m, con el 69% de
@@ -321,9 +322,46 @@ Lo que la red vigente cubre:
 
 | | cobertura del mercado |
 |---|---|
-| siete centros, promesa de 4 h | **46.5%** |
-| los mismos siete, vara de 2 h | 25.0% |
-| los seis anteriores, vara de 2 h | 23.1% |
+| ocho centros, promesa de 4 h | **49.4%** |
+| los mismos ocho, vara de 2 h | 26.1% |
+| siete centros, promesa de 4 h | 46.5% |
+| los seis originales, vara de 2 h | 23.1% |
+
+### El octavo: Sicuani, y por qué no Urubamba
+
+El cruce del canal con los centros dejó un agujero con nombre. De los 3,097
+puntos de venta ubicables, **435 de los que le tocaban a Juliaca quedaban fuera
+de su propia promesa**: el altiplano tenía los clientes —19,130 detrás de sus
+puntos, el mayor de la red— y no tenía cómo abastecerlos, con mediana de 5.7
+horas.
+
+`diag_satelite.py` midió los 101 candidatos posibles. Una docena rescata entre
+166 y 203 de esos puntos y **todos están en el mismo hueco**, así que el ranking
+por clientes no decide nada por sí solo:
+
+| candidato | puntos | clientes | SAM | h a la red |
+|---|---|---|---|---|
+| Urubamba, Cusco | +172 | +4,089 | +14.1 MM | 5.7 |
+| Anta, Cusco | +170 | +4,041 | +15.6 MM | 5.8 |
+| **Canchis (Sicuani), Cusco** | **+167** | **+3,688** | **+14.6 MM** | **3.3** |
+| Islay, Arequipa | +203 | +3,282 | +20.5 MM | sin dato |
+
+Lo que decide es la última columna, y por eso el diagnóstico la calcula: **un
+satélite se reabastece de una casa madre**. A 5.7 horas de todo, Urubamba no es
+un satélite sino otro almacén con su propia línea de abastecimiento, y cuesta
+otra cosa. Sicuani está a 3.3 h —dentro de la promesa— y se abastece de Juliaca.
+
+El efecto medido, ya con la red de ocho: Juliaca baja de 466 puntos a 287 y sube
+del 7% al 10% dentro de promesa, con la mediana de 5.7 a 4.4 horas; Sicuani toma
+199 puntos con el 84% en promesa. La cadena completa —cliente con tienda a 45
+minutos y tienda abastecida dentro de la promesa— pasa de 44,451 a **48,139
+clientes**.
+
+Lo que no arregla, dicho: de los 435 huérfanos rescata 199 y quedan 236 fuera.
+Con 35 candidatos que califican como satélite y ninguno que pase de +167 puntos,
+la aritmética dice que el sur no se cierra con un centro más: o son varios, o se
+sirve con otra cadencia —entrega programada, consolidación semanal— en vez de
+con radio de cuatro horas.
 
 Sánchez Carrión pasa a responder a Huamachuco, y su cartera alcanzada sube de 93
 a **120 de sus 133 empresas**. Lo que no cambia es la naturaleza del territorio:

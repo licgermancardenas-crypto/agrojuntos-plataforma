@@ -163,12 +163,20 @@ def mtime(p):
     return os.path.getmtime(p) if os.path.exists(p) else None
 
 
-def al_dia(entradas, salidas):
+def al_dia(entradas, salidas, script=None):
     """Una etapa está al día si todas sus salidas son más nuevas que la más
-    reciente de sus entradas. Sin salidas, nunca lo está."""
+    reciente de sus entradas. Sin salidas, nunca lo está.
+
+    El propio script cuenta como entrada. Sin eso, cambiar un criterio en el
+    código dejaba la etapa «al día» sirviendo la cifra vieja: se agregó
+    Sicuani a la red en `build_hubs.py`, se corrió el pipeline entero y
+    contestó «0 etapas corridas, 21 al día» con los siete centros anteriores.
+    El dato no había cambiado; la regla que lo produce, sí."""
     if not salidas or any(mtime(s) is None for s in salidas):
         return False
     ent = [mtime(e) for e in entradas if mtime(e) is not None]
+    if script and mtime(script) is not None:
+        ent.append(mtime(script))
     if not ent:
         return True
     return min(mtime(s) for s in salidas) >= max(ent)
@@ -218,7 +226,8 @@ def main():
                      "ninguna etapa de este pipeline")))
             return 1
         si_toca = any(e in tocados for e in ent)
-        if not a.forzar and not si_toca and al_dia(ent, sal):
+        if not a.forzar and not si_toca and al_dia(
+                ent, sal, os.path.join("scripts", script)):
             print("  %-18s al día" % nom)
             saltadas += 1
             continue

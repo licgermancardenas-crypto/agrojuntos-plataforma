@@ -1,6 +1,6 @@
 {
- "generado": "2026-09-08T00:46:05",
- "motivo": "La red es una decisión y no el resultado del algoritmo: son los 6 centros que elige la cobertura máxima con vara de 2 horas, más Huamachuco, con una promesa de servicio de 4 horas.",
+ "generado": "2026-09-08T10:40:40",
+ "motivo": "La red es una decisión y no el resultado del algoritmo: son los 6 centros que elige la cobertura máxima con vara de 2 horas, más Huamachuco, Sicuani, con una promesa de servicio de 4 horas.",
  "promesa_h": 4.0,
  "centros": [
   {
@@ -58,8 +58,16 @@
    "lat": -7.81549,
    "lon": -78.05275,
    "por": "decision"
+  },
+  {
+   "hub": "Sicuani",
+   "provincia": "Canchis",
+   "region": "Cusco",
+   "lat": -14.27128,
+   "lon": -71.22905,
+   "por": "decision"
   }
  ],
- "sam_cubierto_promesa_pct": 46.47,
- "sam_cubierto_2h_pct": 25.02
+ "sam_cubierto_promesa_pct": 49.37,
+ "sam_cubierto_2h_pct": 26.05
 }

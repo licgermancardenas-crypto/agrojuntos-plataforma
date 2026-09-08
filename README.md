@@ -914,29 +914,43 @@ camión de reparto, no del cliente.
 
 | centro | puntos que resurte | del padrón | dentro de la promesa | horas, mediana | clientes detrás |
 |---|---|---|---|---|---|
-| Pisco | 1496 | 129 | 84% | 3.0 h | 7,680 |
+| Pisco | 1476 | 127 | 85% | 3.0 h | 7,470 |
 | Huamachuco | 477 | 70 | 60% | 3.0 h | 7,122 |
-| Juliaca | 466 | 95 | 7% | 5.7 h | 19,130 |
 | Tarma | 307 | 52 | 61% | 2.0 h | 9,527 |
+| Juliaca | 287 | 76 | 10% | 4.4 h | 13,998 |
 | Chiclayo | 230 | 133 | 61% | 3.0 h | 16,452 |
+| Sicuani | 199 | 21 | 84% | 2.8 h | 5,342 |
 | Bellavista | 100 | 79 | 64% | 3.2 h | 6,866 |
 | Satipo | 21 | 21 | 100% | 1.4 h | 3,451 |
 
-**El 61% de los puntos está dentro de la promesa de cuatro horas de su centro**;
-el resto no. Y el cruce da vuelta al mapa: Pisco resurte 1,496 puntos que llegan
-a 7,680 clientes —costa densa, muchas tiendas sobre la misma gente— y Juliaca
-resurte 466 que llegan a 19,130, con **solo el 7% dentro de la promesa** y una
-mediana de 5.7 horas. El centro con más clientes detrás de su canal es
-justamente el que no puede resurtirlo.
+El cruce dio vuelta al mapa y de ahí salió el octavo centro. Pisco resurte 1,476
+puntos que llegan a 7,470 clientes —costa densa, muchas tiendas sobre la misma
+gente— mientras que Juliaca resurtía 466 que llegan a 19,130 con **solo el 7%
+dentro de la promesa** y mediana de 5.7 horas: el centro con más clientes detrás
+de su canal era el que no podía abastecerlo.
 
-Huamachuco, el centro que se puso por decisión, entra como el segundo en número
-de puntos: 477, de los cuales 70 son del padrón.
+**Sicuani se puso por eso.** `diag_satelite.py` midió los 101 candidatos
+posibles: una docena rescata entre 166 y 203 de los 435 puntos huérfanos de
+Juliaca y todos están en el mismo hueco, así que el ranking por clientes no
+decide. Lo que decide es a cuántas horas queda el candidato de la red que ya
+existe —un satélite se reabastece de una casa madre; a seis horas de todo no es
+un satélite sino otro almacén—. Urubamba compra 400 clientes más y está a 5.7 h
+de todo; **Sicuani está a 3.3 h, dentro de la promesa, y se abastece de
+Juliaca**. Con él, Juliaca baja de 466 puntos a 287 y sube del 7% al 10% dentro
+de promesa, con la mediana de 5.7 a 4.4 horas.
+
+Lo que no arregla, dicho: rescata 199 puntos y quedan 236 fuera. El sur no se
+cierra con un centro más.
+
+Huamachuco y Sicuani, los dos puestos por decisión, resurten 477 y 199 puntos:
+el segundo y el sexto de la red.
 
 De ahí sale la cifra que cuenta, porque **la cadena vale lo que valga su tramo
 más débil**: clientes con tienda a 45 minutos *y* cuya tienda está además dentro
-de la promesa de su centro son **44,451 (28.9%)**, contra el 45.2% que tiene
-tienda cerca sin mirar cómo se abastece. Diecisiete puntos de cobertura se
-evaporan al exigir que el eslabón de arriba también cierre.
+de la promesa de su centro son **48,139 (31.3%)**, contra el 45.2% que tiene tienda
+cerca sin mirar cómo se abastece. Catorce puntos de cobertura se evaporan al
+exigir que el eslabón de arriba también cierre —eran dieciséis antes de Sicuani,
+que sumó 3,688 clientes a la cadena completa—.
 
 **Dos límites del dato, dichos.** La ubicación del padrón es el distrito y no la
 esquina: SUNAT publica el domicilio fiscal y aquí se lleva al centroide agrícola
@@ -974,10 +988,10 @@ un manual: café con mediana de 1,331 m y p90 de 1,953, cacao 483, arándano 290
 uva 354. Que el café caiga en su banda conocida es una validación independiente
 de que el ubigeo del manifiesto apunta al fundo y no al domicilio fiscal.
 
-**La red vigente son siete centros con promesa de cuatro horas**: Chiclayo,
+**La red vigente son ocho centros con promesa de cuatro horas**: Chiclayo,
 Pisco, Bellavista, Juliaca, Satipo y Tarma —los que elige la cobertura máxima—
-más **Huamachuco**, que entró por decisión y no por algoritmo. Cubre el
-46.5% del mercado dentro de la promesa y el 25.0% a dos horas. El motivo del
+más **Huamachuco** y **Sicuani**, que entraron por decisión y no por algoritmo.
+Cubre el 49.4% del mercado dentro de la promesa y el 26.1% a dos horas. El motivo del
 séptimo está medido: Sánchez Carrión y Pataz es el mayor territorio del país
 —US$ 33.6 MM, 9,114 clientes, el 69% de su mercado sobre los 3,000 m— y no lo
 sirve nadie a dos horas; el mejor centro posible, su propia capital, alcanza el

@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-08T00:50:28",
+ "generado": "2026-09-08T10:41:57",
  "fuente": "Terrarium (AWS elevation-tiles-prod) zoom 9, ~299 m/px",
  "validacion": {
   "motivo": "cota muestreada contra 20 altitudes publicadas de plaza",
@@ -382,12 +382,12 @@
    "hub": "Pisco",
    "alt_m": 20.0,
    "piso": "chala",
-   "distritos": 165,
-   "alt_carga_p50": 382.1,
+   "distritos": 160,
+   "alt_carga_p50": 381.9,
    "alt_carga_p90": 498.1,
-   "desnivel_p90": 478.2,
+   "desnivel_p90": 478.1,
    "alt_max": 4701.3,
-   "fob_mm": 11010.8
+   "fob_mm": 11000.6
   },
   {
    "hub": "Chiclayo",
@@ -415,12 +415,12 @@
    "hub": "Juliaca",
    "alt_m": 3845.1,
    "piso": "suni",
-   "distritos": 83,
-   "alt_carga_p50": 1343.0,
-   "alt_carga_p90": 2699.9,
-   "desnivel_p90": -1145.3,
+   "distritos": 52,
+   "alt_carga_p50": 1329.2,
+   "alt_carga_p90": 2643.3,
+   "desnivel_p90": -1201.8,
    "alt_max": 4917.6,
-   "fob_mm": 794.9
+   "fob_mm": 742.4
   },
   {
    "hub": "Satipo",
@@ -454,6 +454,17 @@
    "desnivel_p90": 889.3,
    "alt_max": 2612.6,
    "fob_mm": 343.6
+  },
+  {
+   "hub": "Sicuani",
+   "alt_m": 3549.1,
+   "piso": "puna",
+   "distritos": 36,
+   "alt_carga_p50": 3335.8,
+   "alt_carga_p90": 3819.7,
+   "desnivel_p90": 270.6,
+   "alt_max": 4732.5,
+   "fob_mm": 62.7
   }
  ]
 }

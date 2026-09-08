@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-08T02:54:02",
+ "generado": "2026-09-08T10:43:13",
  "motivo": "la red de centros dice dónde poner inventario; esta dice quién le vende al agricultor que no es empresa formal",
  "radios_min": [
   30,
@@ -526,18 +526,18 @@
  },
  "cadena_completa": {
   "motivo": "clientes con tienda a 45 min cuya tienda esta ademas dentro de la promesa de su centro",
-  "clientes": 44451,
-  "pct": 28.9
+  "clientes": 48139,
+  "pct": 31.3
  },
  "reparto": [
   {
    "hub": "Pisco",
-   "puntos": 1496,
-   "del_padron": 129,
+   "puntos": 1476,
+   "del_padron": 127,
    "en_promesa": 1251,
-   "pct_en_promesa": 83.6,
+   "pct_en_promesa": 84.8,
    "horas_mediana": 3.05,
-   "clientes": 7680
+   "clientes": 7470
   },
   {
    "hub": "Huamachuco",
@@ -549,15 +549,6 @@
    "clientes": 7122
   },
   {
-   "hub": "Juliaca",
-   "puntos": 466,
-   "del_padron": 95,
-   "en_promesa": 31,
-   "pct_en_promesa": 6.7,
-   "horas_mediana": 5.7,
-   "clientes": 19130
-  },
-  {
    "hub": "Tarma",
    "puntos": 307,
    "del_padron": 52,
@@ -567,6 +558,15 @@
    "clientes": 9527
   },
   {
+   "hub": "Juliaca",
+   "puntos": 287,
+   "del_padron": 76,
+   "en_promesa": 30,
+   "pct_en_promesa": 10.5,
+   "horas_mediana": 4.44,
+   "clientes": 13998
+  },
+  {
    "hub": "Chiclayo",
    "puntos": 230,
    "del_padron": 133,
@@ -574,6 +574,15 @@
    "pct_en_promesa": 61.3,
    "horas_mediana": 3.01,
    "clientes": 16452
+  },
+  {
+   "hub": "Sicuani",
+   "puntos": 199,
+   "del_padron": 21,
+   "en_promesa": 168,
+   "pct_en_promesa": 84.4,
+   "horas_mediana": 2.81,
+   "clientes": 5342
   },
   {
    "hub": "Bellavista",

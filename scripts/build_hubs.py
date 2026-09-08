@@ -58,8 +58,25 @@ K_MAX = 12                      # centros a evaluar
 # Por eso se declara aqui, con su fecha y su motivo, y no se deduce.
 RED_BASE_K = 6                  # los que elige el greedy con vara de 2 h
 RED_BASE_UMBRAL = 2.0
-RED_EXTRA = ["Huamachuco"]      # agregados por decision, no por el algoritmo
+RED_EXTRA = ["Huamachuco", "Sicuani"]   # por decision, no por el algoritmo
 PROMESA_H = 4.0                 # la vara con la que se promete el servicio
+
+# El segundo agregado, Sicuani, sale del cruce del canal con los centros y no
+# de la cobertura de mercado. El problema que resuelve: de los 3,097 puntos de
+# venta ubicables, 435 de los que le tocan a Juliaca quedan fuera de su propia
+# promesa —el altiplano tiene los clientes y no tiene como abastecerlos, con
+# mediana de 5.7 h—.
+#
+# `diag_satelite.py` midio los 101 candidatos posibles. Una docena rescata
+# entre 166 y 203 de esos puntos y todos estan en el mismo hueco, asi que el
+# ranking por clientes no decide: lo que decide es a cuantas horas queda el
+# candidato de la red que ya existe. Un satelite se reabastece de una casa
+# madre; a seis horas de todo no es un satelite sino otro almacen, y cuesta
+# otra cosa. Urubamba compra 400 clientes mas y esta a 5.7 h de todo;
+# **Sicuani esta a 3.3 h, dentro de la promesa, y se abastece de Juliaca**.
+#
+# Lo que no hace, dicho: rescata 167 de los 435 puntos y quedan 268 fuera. El
+# sur no se arregla con un centro mas.
 
 def slug(s):
     s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode()

@@ -78,6 +78,7 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/mercado/modelo_v3_departamento.csv` | Modelo final: mercado, clientes, logística, estacionalidad y score por región |
 | `datos/territorio/sectores_2024.csv` | Los 7,036 sectores con UBIGEO, hectáreas y centroide |
 | `datos/territorio/clusters_territorio.csv` | Los 57 territorios de venta, con extensión, cartera y horas al centro |
+| `datos/territorio/clusters_absorcion.json` | La regla con que un territorio absorbe lo que quedó fuera, y cuánto entra |
 | `datos/territorio/cartera_territorio.csv` | Qué cartera cae en cada territorio y a qué centro responde |
 | `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
 | `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial con pendiente, ida y vuelta por separado |
@@ -291,6 +292,24 @@ mercado da **57 territorios**, de los cuales **48 miden menos de 120 km** de
 punta a punta y se recorren en una salida. Agrupar sobre el total encadenaba el
 país entero en un solo núcleo de 2,000 km: la agricultura peruana es continua a
 lo largo de los valles.
+
+Ese corte del 80%, más el ruido de DBSCAN, dejaba **73,298 clientes —el 48%—
+sin territorio**, y no es lo mismo que decir que no se pueden atender: una
+celda rala pegada a un territorio denso la visita el mismo vendedor en el mismo
+viaje. Después de agrupar hay entonces un segundo paso con una regla sola:
+**una celda huérfana entra al territorio que la alcance por carretera, mientras
+el territorio siga midiendo menos de 120 km**. Se aceptan de la más cercana a
+la más lejana y se para donde la caja se rompe.
+
+Entran **24,971 clientes y US$ 75.6 MM**. La cobertura pasa de la mitad a
+**69% de los clientes** y al **71% del SAM**, y **ningún territorio deja de
+recorrerse en el día**: siguen siendo **48 de 57**. La alternativa obvia —una vara
+fija de horas para todos— está medida en `diag_territorios.py` y sale peor:
+recupera los mismos clientes y deja 34 de 57 visitables.
+
+Los ~48,000 que siguen fuera lo están porque meterlos rompería el territorio
+que los recibe. Ese es el argumento de la capa de canal —alguien más les
+vende— y no el de un territorio más grande.
 
 **Centros de distribución.** Cobertura máxima con algoritmo voraz sobre 129
 ciudades capitales, evaluadas contra tiempos ruteados. El resultado corrige una

@@ -56,6 +56,24 @@ def carga(rel):
         return None
 
 
+def carga_datos(rel):
+    """Un JSON de `datos/`, que es lo que se publica como dato y no como sitio.
+
+    No todo lo que hay que comprobar baja al navegador: la regla con la que un
+    territorio absorbe lo que quedó fuera vive en su propio archivo, y su cifra
+    es una de las que la documentación repite.
+    """
+    p = os.path.join(RAIZ, "datos", rel)
+    if not os.path.exists(p):
+        falla("no existe datos/" + rel)
+        return None
+    try:
+        return json.loads(io.open(p, encoding="utf-8").read())
+    except Exception as e:
+        falla("datos/%s no parsea: %s" % (rel, e))
+        return None
+
+
 def cuadraturas():
     print("\ncuadraturas de los agregados")
     for lado in ("importaciones", "exportaciones"):
@@ -115,6 +133,7 @@ def documentacion():
     aco = carga("acopio.json")
     log = carga("logistica.json")
     red = carga("red.json")
+    abs_ = carga_datos("territorio/clusters_absorcion.json")
     can = carga("canal.json")
     if not (exp and imp and aco and log and red and can and txt):
         return
@@ -159,6 +178,17 @@ def documentacion():
         # La promesa de servicio es una decisión y la documentación la
         # explica; si alguien la cambia en `build_hubs.py` sin tocar el texto,
         # el README quedaría defendiendo una red que ya no existe.
+        # La cobertura de los territorios es una decisión con regla —se
+        # absorbe mientras el territorio siga siendo visitable— y no el
+        # residuo de un umbral. Si alguien mueve el tope, el texto se entera.
+        ("clientes que entran al absorber",
+         "{:,} clientes".format(int(round(abs_["clientes"])))),
+        ("SAM que entra al absorber",
+         "US$ {:,.1f} MM".format(abs_["sam_usd"] / 1e6)),
+        ("cobertura en clientes",
+         "%.0f%% de los clientes" % abs_["pct_clientes_en_territorio"]),
+        ("territorios visitables", "%d de %d" % (abs_["visitables"],
+                                                 abs_["territorios"])),
         ("centros de la red", str(len(red["centros"]))),
         ("cobertura en promesa", "%.1f%%" % red["sam_cubierto_promesa_pct"]),
         ("cobertura a 2 h", "%.1f%%" % red["sam_cubierto_2h_pct"]),

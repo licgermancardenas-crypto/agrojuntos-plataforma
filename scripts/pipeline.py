@@ -63,7 +63,10 @@ ETAPAS = [
      ["out/hubs_cobertura.csv", "out/hubs_asignacion.csv",
       "out/hubs_distrito.csv"],
      "elige donde poner los centros, por cobertura maxima"),
-    ("clusters", "build_clusters.py", ["out/h3_r6.csv"],
+    # Lee tambien la red vial: despues de agrupar reparte lo que quedo fuera
+    # entre los territorios que lo alcanzan, y para eso rutea.
+    ("clusters", "build_clusters.py",
+     ["out/h3_r6.csv", "data/vial/compacto/PE-LIM.npz"],
      ["out/clusters_territorio.csv", "out/clusters_celda.csv"],
      "traza los territorios de venta sobre la densidad del mercado"),
     ("cartera", "build_cartera.py",

@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-09T16:27:32",
+ "generado": "2026-09-09T16:45:16",
  "motivo": "cada decisión con la cifra que la sostiene, la alternativa que se midió y se descartó, y lo que tendría que cambiar para darla vuelta; las cifras salen de los archivos del pipeline y no de este texto",
  "abiertas": 4,
  "decididas": 5,
@@ -73,12 +73,12 @@
    "estado": "abierta",
    "familia": "Dónde estar",
    "pregunta": "¿Conviene un noveno centro, y dónde?",
-   "respuesta": "Sin decidir. Hoy queda fuera de la promesa el 35.6% del mercado, y la región peor servida es la selva baja con 45% dentro de su vara de seis horas.",
-   "alternativa": "No abrir y mover la promesa. `diag_satelite.py` compara las dos cosas: cuántos puntos de venta entran por abrir un centro más y cuántos entran por prometer cinco, seis u ocho horas con los que ya hay.",
-   "bisagra": "Un centro nuevo tiene que poder abastecerse: solo sirve si queda dentro de la promesa de la red que ya existe.",
-   "cifra": 35.6,
-   "unidad": "% del SAM sin cubrir",
-   "fuente": "out/red_elegida.json · diag_satelite.py"
+   "respuesta": "Sin decidir. Hoy 2,437 de 3,097 puntos de venta están dentro de la promesa del centro que los surte (79%), y detrás hay 53,360 clientes con la cadena completa. El candidato que más compraría es Barranca: +265 puntos y +3,563 clientes.",
+   "alternativa": "No abrir y prometer seis horas parejas: 2,601 puntos (+164) y 56,938 clientes con la cadena completa (+3,578). Un centro nuevo compra casi lo mismo que mover la cadencia, y el alquiler lo paga solo uno de los dos.",
+   "bisagra": "Que el candidato pueda abastecerse. Barranca, el que más compra, no tiene ningún centro dentro de su promesa: no sería un satélite sino otro almacén. El primero que sí se abastece es Santa, a 4.6 h de la red, y compra +196 puntos.",
+   "cifra": 3563,
+   "unidad": "clientes que compra el mejor candidato",
+   "fuente": "out/satelite.json · build_satelite.py"
   },
   {
    "id": "canal-sin-resurtido",

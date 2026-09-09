@@ -1,0 +1,215 @@
+{
+ "generado": "2026-09-09T16:43:23",
+ "motivo": "qué compra un centro más sobre la red vigente, cuántos harían falta para cerrar el sur y qué pasaría con otra promesa; el candidato tiene que poder abastecerse de la red que ya existe o no es un satélite sino otro almacén",
+ "promesa": {
+  "COSTA": 4.0,
+  "SIERRA": 6.0,
+  "SELVA ALTA": 6.0,
+  "SELVA BAJA": 6.0
+ },
+ "hoy": {
+  "puntos_en_promesa": 2437,
+  "puntos": 3097,
+  "pct": 78.7,
+  "clientes_cadena": 53360,
+  "sam_en_promesa_mm": 323.7,
+  "huerfanos_del_sur": 108
+ },
+ "mejor_candidato": {
+  "centro": "Barranca",
+  "region": "Lima",
+  "puntos_nuevos": 265,
+  "clientes_nuevos": 3563,
+  "sam_nuevo_mm": 19.5,
+  "rescata_del_sur": 0,
+  "h_a_la_red": null
+ },
+ "candidatos": [
+  {
+   "candidato": "Barranca",
+   "region": "Lima",
+   "puntos_nuevos": 265,
+   "clientes_cadena": 56924,
+   "clientes_nuevos": 3563,
+   "sam_mm": 343.2,
+   "sam_nuevo_mm": 19.5,
+   "rescata_juliaca": 0,
+   "h_a_la_red": null
+  },
+  {
+   "candidato": "Santa",
+   "region": "Ancash",
+   "puntos_nuevos": 196,
+   "clientes_cadena": 56493,
+   "clientes_nuevos": 3132,
+   "sam_mm": 333.8,
+   "sam_nuevo_mm": 10.1,
+   "rescata_juliaca": 0,
+   "h_a_la_red": 4.6338027106777755
+  },
+  {
+   "candidato": "Mariscal Nieto",
+   "region": "Moquegua",
+   "puntos_nuevos": 64,
+   "clientes_cadena": 56331,
+   "clientes_nuevos": 2970,
+   "sam_mm": 338.9,
+   "sam_nuevo_mm": 15.2,
+   "rescata_juliaca": 64,
+   "h_a_la_red": 5.849705041325501
+  },
+  {
+   "candidato": "Huaura",
+   "region": "Lima",
+   "puntos_nuevos": 213,
+   "clientes_cadena": 56298,
+   "clientes_nuevos": 2938,
+   "sam_mm": 340.7,
+   "sam_nuevo_mm": 17.0,
+   "rescata_juliaca": 0,
+   "h_a_la_red": 5.087355273652894
+  },
+  {
+   "candidato": "Dos De Mayo",
+   "region": "Huanuco",
+   "puntos_nuevos": 129,
+   "clientes_cadena": 56242,
+   "clientes_nuevos": 2882,
+   "sam_mm": 338.3,
+   "sam_nuevo_mm": 14.6,
+   "rescata_juliaca": 0,
+   "h_a_la_red": 7.459887103004866
+  },
+  {
+   "candidato": "Islay",
+   "region": "Arequipa",
+   "puntos_nuevos": 54,
+   "clientes_cadena": 56122,
+   "clientes_nuevos": 2761,
+   "sam_mm": 343.9,
+   "sam_nuevo_mm": 20.1,
+   "rescata_juliaca": 54,
+   "h_a_la_red": null
+  },
+  {
+   "candidato": "Arequipa",
+   "region": "Arequipa",
+   "puntos_nuevos": 52,
+   "clientes_cadena": 55909,
+   "clientes_nuevos": 2548,
+   "sam_mm": 339.8,
+   "sam_nuevo_mm": 16.1,
+   "rescata_juliaca": 52,
+   "h_a_la_red": 4.437874042686684
+  },
+  {
+   "candidato": "Huaral",
+   "region": "Lima",
+   "puntos_nuevos": 127,
+   "clientes_cadena": 55859,
+   "clientes_nuevos": 2498,
+   "sam_mm": 338.8,
+   "sam_nuevo_mm": 15.0,
+   "rescata_juliaca": 0,
+   "h_a_la_red": 4.57272988343412
+  }
+ ],
+ "cadena": [
+  {
+   "paso": 1,
+   "centro": "Arequipa",
+   "region": "Arequipa",
+   "puntos": 2489,
+   "clientes_cadena": 55909,
+   "huerf_jul": 56
+  },
+  {
+   "paso": 2,
+   "centro": "Oyon",
+   "region": "Lima",
+   "puntos": 2577,
+   "clientes_cadena": 58108,
+   "huerf_jul": 56
+  },
+  {
+   "paso": 3,
+   "centro": "Viru",
+   "region": "La Libertad",
+   "puntos": 2753,
+   "clientes_cadena": 59983,
+   "huerf_jul": 56
+  },
+  {
+   "paso": 4,
+   "centro": "Mariscal Nieto",
+   "region": "Moquegua",
+   "puntos": 2802,
+   "clientes_cadena": 61742,
+   "huerf_jul": 7
+  },
+  {
+   "paso": 5,
+   "centro": "Sullana",
+   "region": "Piura",
+   "puntos": 2816,
+   "clientes_cadena": 63059,
+   "huerf_jul": 7
+  },
+  {
+   "paso": 6,
+   "centro": "Utcubamba",
+   "region": "Amazonas",
+   "puntos": 2833,
+   "clientes_cadena": 63934,
+   "huerf_jul": 7
+  },
+  {
+   "paso": 7,
+   "centro": "Acobamba",
+   "region": "Huancavelica",
+   "puntos": 2973,
+   "clientes_cadena": 64788,
+   "huerf_jul": 7
+  },
+  {
+   "paso": 8,
+   "centro": "Huanuco",
+   "region": "Huanuco",
+   "puntos": 2987,
+   "clientes_cadena": 65459,
+   "huerf_jul": 7
+  }
+ ],
+ "cadencia": [
+  {
+   "promesa_h": 4.0,
+   "puntos": 2147,
+   "pct_puntos": 69.3,
+   "clientes_cadena": 48252
+  },
+  {
+   "promesa_h": 5.0,
+   "puntos": 2417,
+   "pct_puntos": 78.0,
+   "clientes_cadena": 51438
+  },
+  {
+   "promesa_h": 6.0,
+   "puntos": 2601,
+   "pct_puntos": 84.0,
+   "clientes_cadena": 56938
+  },
+  {
+   "promesa_h": 8.0,
+   "puntos": 2937,
+   "pct_puntos": 94.8,
+   "clientes_cadena": 63680
+  },
+  {
+   "promesa_h": 12.0,
+   "puntos": 3092,
+   "pct_puntos": 99.8,
+   "clientes_cadena": 68075
+  }
+ ]
+}

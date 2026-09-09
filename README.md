@@ -81,6 +81,7 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/territorio/clusters_absorcion.json` | La regla con que un territorio absorbe lo que quedó fuera, y cuánto entra |
 | `datos/decisiones/decisiones.json` | Cada decisión con su cifra, la alternativa que se descartó y su bisagra |
 | `datos/territorio/satelite.json` | Qué compra un centro más, cuántos cerrarían el sur y qué pasaría con otra promesa |
+| `datos/decisiones/ampliacion.json` | Qué importan los 769 exportadores que trajo el universo ampliado |
 | `datos/territorio/cartera_territorio.csv` | Qué cartera cae en cada territorio y a qué centro responde |
 | `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
 | `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial con pendiente, ida y vuelta por separado |
@@ -207,7 +208,30 @@ que llevaba roto desde que la promesa dejó de ser un número único**: leía
 `float(red["promesa_h"])` sobre un diccionario de cuatro regiones y no
 arrancaba.
 
-Y el número, ahora que existe, dice algo que no se veía: el mejor candidato
+### Los 769 exportadores nuevos no son 769 clientes
+
+Ampliar el universo sumó 769 exportadores y US$ 3,650 MM de embarque, y la
+conclusión fácil era llamarlos cartera nueva. `build_ampliacion.py` cruza esos
+RUC contra lo que **importan**, que es lo único que dice si compran lo que la
+plataforma vende, y resultaron ser tres cosas:
+
+| | empresas | compran |
+|---|---|---|
+| la industria del insumo | 25 | US$ 250 MM · el 57% de lo que compra el grupo |
+| grano y alimento balanceado | 78 | US$ 5,450 MM · el 88% en seis empresas |
+| el resto | 59 | US$ 188 MM, y 168 de ellos son una sola química |
+
+Las del primer grupo —BASF, Interoc, Montana, Neoagrum— **ya están en el
+ranking de protección de cultivos de este mismo proyecto**: son proveedor o
+competencia, no cliente. Las del segundo —ADM, Seaboard, Cargill, San
+Fernando— compran torta de soya y maíz, que no está en el catálogo.
+
+**Clasificadas como productor o agroindustria quedan 47 de 769**, y el 93% ni
+siquiera está en el padrón agrario porque se llaman Quimpac o Cargill. El
+clasificador no falló: que no las reconozca por su nombre es la señal de que
+son otra cosa. El embarque dice qué venden; solo la importación dice si compran.
+
+Y el número del noveno centro, ahora que existe, dice algo que no se veía: el mejor candidato
 —Barranca, +265 puntos de venta y +3,563 clientes— **no tiene ningún centro
 dentro de su promesa**, así que no sería un satélite sino otro almacén. El
 primero que sí puede abastecerse es Santa, a 4.6 h de la red, con +196 puntos.

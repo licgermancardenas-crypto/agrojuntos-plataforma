@@ -1,0 +1,164 @@
+{
+ "generado": "2026-09-09T16:58:05",
+ "motivo": "qué importan las empresas que trajo el universo ampliado; el embarque dice qué venden y solo la importación dice si compran lo que la plataforma vende",
+ "regla_reventa": "está en el padrón de importadores de insumo y despacha 50 veces o más: compra para revender, no para producir",
+ "empresas": 769,
+ "fob_export": 3649539683.68,
+ "exportan": [
+  {
+   "n": "Alimento balanceado",
+   "mm": 1127.6
+  },
+  {
+   "n": "Alcohol etílico",
+   "mm": 580.1
+  },
+  {
+   "n": "Aceite de palma",
+   "mm": 394.9
+  },
+  {
+   "n": "Azúcar de caña",
+   "mm": 393.9
+  },
+  {
+   "n": "Productos vegetales diversos (tara, achiote)",
+   "mm": 205.2
+  },
+  {
+   "n": "Extractos vegetales (tara y otros)",
+   "mm": 131.4
+  }
+ ],
+ "importan_algo": 120,
+ "sin_clasificar_pct": 92.6,
+ "productor_o_agroindustria": 47,
+ "industria_del_insumo": {
+  "empresas": 25,
+  "fob": 249683396.53,
+  "pct_de_lo_que_compra": 57.0,
+  "top": [
+   {
+    "n": "NEOAGRUM S.A.C.",
+    "fob": 67412814.99,
+    "clase": "sin clasificar",
+    "despachos": 2013
+   },
+   {
+    "n": "BASF PERUANA S A",
+    "fob": 56973620.99,
+    "clase": "sin clasificar",
+    "despachos": 1197
+   },
+   {
+    "n": "INTEROC SOCIEDAD ANONIMA",
+    "fob": 41713928.24,
+    "clase": "sin clasificar",
+    "despachos": 1199
+   },
+   {
+    "n": "MONTANA S A",
+    "fob": 24598958.06,
+    "clase": "sin clasificar",
+    "despachos": 643
+   },
+   {
+    "n": "SERVICIOS Y FORMULACIONES INDUSTRIALES S",
+    "fob": 19133030.64,
+    "clase": "sin clasificar",
+    "despachos": 611
+   },
+   {
+    "n": "AGROFRESH COMERCIAL PERU S.A.C.",
+    "fob": 8006150.77,
+    "clase": "agroindustria",
+    "despachos": 186
+   }
+  ]
+ },
+ "grano_y_balanceado": {
+  "empresas": 78,
+  "fob": 5449872479.96,
+  "pct_en_seis": 88.3,
+  "top": [
+   {
+    "n": "ADM ANDINA PERU S.R.L.",
+    "fob": 1413868835.94
+   },
+   {
+    "n": "SEABOARD OVERSEAS PERU S.A.",
+    "fob": 1084710043.75
+   },
+   {
+    "n": "CARGILL AMERICAS PERU S.R.L.",
+    "fob": 963891916.18
+   },
+   {
+    "n": "SAN FERNANDO S.A.",
+    "fob": 960725148.03
+   },
+   {
+    "n": "VITAPRO S.A.",
+    "fob": 259384131.61
+   },
+   {
+    "n": "RINTI S A",
+    "fob": 131258923.82
+   }
+  ]
+ },
+ "el_resto": {
+  "empresas": 59,
+  "fob": 188158266.97,
+  "top": [
+   {
+    "n": "QUIMPAC S.A.",
+    "fob": 168340972.24,
+    "clase": "sin clasificar",
+    "despachos": 22
+   },
+   {
+    "n": "AGROLMOS SOCIEDAD ANONIMA - AGROLMOS S.A",
+    "fob": 8251890.5,
+    "clase": "agro_otro",
+    "despachos": 19
+   },
+   {
+    "n": "BIOILS PERU S.A.C.",
+    "fob": 1508158.31,
+    "clase": "sin clasificar",
+    "despachos": 34
+   },
+   {
+    "n": "SUMINISTROS AVICOLAS S.A.C.",
+    "fob": 1212726.31,
+    "clase": "sin clasificar",
+    "despachos": 40
+   },
+   {
+    "n": "UPL PERU S.A.C.",
+    "fob": 1175467.14,
+    "clase": "sin clasificar",
+    "despachos": 33
+   },
+   {
+    "n": "BEGGIE PERÚ S.A.",
+    "fob": 910653.83,
+    "clase": "sin clasificar",
+    "despachos": 33
+   },
+   {
+    "n": "KIMBERLY-CLARK PERU S.R.L.",
+    "fob": 675662.84,
+    "clase": "sin clasificar",
+    "despachos": 32
+   },
+   {
+    "n": "CEVA SALUD ANIMAL S.A.C.",
+    "fob": 572755.0,
+    "clase": "sin clasificar",
+    "despachos": 17
+   }
+  ]
+ }
+}

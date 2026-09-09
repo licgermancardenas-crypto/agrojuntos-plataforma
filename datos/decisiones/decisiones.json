@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-09T16:45:16",
+ "generado": "2026-09-09T17:00:46",
  "motivo": "cada decisión con la cifra que la sostiene, la alternativa que se midió y se descartó, y lo que tendría que cambiar para darla vuelta; las cifras salen de los archivos del pipeline y no de este texto",
  "abiertas": 4,
  "decididas": 5,
@@ -109,12 +109,12 @@
    "estado": "abierta",
    "familia": "A quién le vendemos",
    "pregunta": "¿Qué se hace con los exportadores que trajo el universo ampliado?",
-   "respuesta": "Sin decidir. 758 empresas embarcan solo en los capítulos que entraron —alimento balanceado, aceites, galletas, pisco— y no aparecían en la cartera. Es cartera nueva, no solo FOB nuevo.",
-   "alternativa": "Tratarlas como el resto del directorio y esperar a que aparezcan por territorio.",
-   "bisagra": "Si compran el mismo insumo que un agroexportador de fruta. Una planta de alimento balanceado no es un fundo, y eso no está medido.",
-   "cifra": 758,
-   "unidad": "empresas",
-   "fuente": "mercado.json bloque universo · exportadores_min.json"
+   "respuesta": "Sin decidir, y son menos de los que parecían. De las 769 empresas, 47 están clasificadas como productor o agroindustria; el 93% ni siquiera está en el padrón agrario, porque se llaman Quimpac, Seaboard o Cargill. Solo el 16% importa algo.",
+   "alternativa": "Tratarlas como cartera nueva por su embarque: US$ 3,650 MM de exportación que antes no se veían. El embarque dice qué venden y no si compran lo que la plataforma vende.",
+   "bisagra": "Lo que compran, que son tres cosas distintas. 25 son la industria del insumo —US$ 249.7 MM, el 57% de lo que compra el grupo, y cuatro de ellas ya están en el ranking de protección de cultivos de este proyecto: son proveedor o competencia, no cliente—. 78 compran grano y alimento balanceado, US$ 5,450 MM, que no está en el catálogo. Y el resto son 59 empresas con US$ 188.2 MM, encabezadas por una química que compra a granel en 22 despachos al año.",
+   "cifra": 47,
+   "unidad": "de 769 son productor o agroindustria",
+   "fuente": "out/ampliacion.json · build_ampliacion.py"
   }
  ]
 }

@@ -81,6 +81,7 @@ def main():
     abso = leer("out/clusters_absorcion.json")
     aco = leer("out/acopio.json")
     sat = leer("out/satelite.json")
+    amp = leer("out/ampliacion.json")
     mer = leer(EXP)
     uni = mer["universo"]
     cob = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
@@ -311,23 +312,41 @@ def main():
         "fuente": "out/canal.json bloque viabilidad · canal_punto.csv",
     })
 
+    _ins = amp["industria_del_insumo"]
+    _gan = amp["grano_y_balanceado"]
+    _res = amp["el_resto"]
     D.append({
         "id": "exportadores-nuevos", "estado": "abierta",
         "familia": "A quién le vendemos",
         "pregunta": "¿Qué se hace con los exportadores que trajo el universo "
                     "ampliado?",
-        "respuesta": "Sin decidir. %s empresas embarcan solo en los "
-                     "capítulos que entraron —alimento balanceado, aceites, "
-                     "galletas, pisco— y no aparecían en la cartera. Es "
-                     "cartera nueva, no solo FOB nuevo."
-                     % f"{uni['exportadores_solo_ampliacion']:,}",
-        "alternativa": "Tratarlas como el resto del directorio y esperar a "
-                       "que aparezcan por territorio.",
-        "bisagra": "Si compran el mismo insumo que un agroexportador de "
-                   "fruta. Una planta de alimento balanceado no es un fundo, "
-                   "y eso no está medido.",
-        "cifra": uni["exportadores_solo_ampliacion"], "unidad": "empresas",
-        "fuente": "mercado.json bloque universo · exportadores_min.json",
+        "respuesta": "Sin decidir, y son menos de los que parecían. De las %d "
+                     "empresas, %d están clasificadas como productor o "
+                     "agroindustria; el %.0f%% ni siquiera está en el padrón "
+                     "agrario, porque se llaman Quimpac, Seaboard o Cargill. "
+                     "Solo el %.0f%% importa algo."
+                     % (amp["empresas"], amp["productor_o_agroindustria"],
+                        amp["sin_clasificar_pct"],
+                        100 * amp["importan_algo"] / amp["empresas"]),
+        "alternativa": "Tratarlas como cartera nueva por su embarque: %s de "
+                       "exportación que antes no se veían. El embarque dice "
+                       "qué venden y no si compran lo que la plataforma vende."
+                       % mm(amp["fob_export"]),
+        "bisagra": "Lo que compran, que son tres cosas distintas. %d son la "
+                   "industria del insumo —%s, el %.0f%% de lo que compra el "
+                   "grupo, y cuatro de ellas ya están en el ranking de "
+                   "protección de cultivos de este proyecto: son proveedor o "
+                   "competencia, no cliente—. %d compran grano y alimento "
+                   "balanceado, %s, que no está en el catálogo. Y el resto "
+                   "son %d empresas con %s, encabezadas por una química que "
+                   "compra a granel en %d despachos al año."
+                   % (_ins["empresas"], mm(_ins["fob"]),
+                      _ins["pct_de_lo_que_compra"], _gan["empresas"],
+                      mm(_gan["fob"]), _res["empresas"], mm(_res["fob"]),
+                      _res["top"][0]["despachos"] if _res["top"] else 0),
+        "cifra": amp["productor_o_agroindustria"],
+        "unidad": "de %d son productor o agroindustria" % amp["empresas"],
+        "fuente": "out/ampliacion.json · build_ampliacion.py",
     })
 
     salida = {

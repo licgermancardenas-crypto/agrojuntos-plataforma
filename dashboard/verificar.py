@@ -45,6 +45,7 @@ VISTAS = [
     ("#estacionalidad", ".cal tbody tr", "Estacionalidad"),
     ("#logistica", "#tLogistica tbody tr", "Logística"),
     ("#expansion", "#tHubs tbody tr", "Expansión"),
+    ("#canasta", "#canInsumos .bar", "Canasta"),
     ("#decisiones", "#decLista .card .b p", "Decisiones"),
     ("#metodo", "#tFuentes tbody tr", "Método"),
 ]
@@ -336,6 +337,32 @@ MUTACIONES = {
           d.universo.familias_ampliacion = [];
           d.universo.por_capitulo = [];
         }
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
+    # La canasta pierde el calendario: todos los meses pesan lo mismo, de modo
+    # que la temporada de compra desaparece y el vendedor sale cuando quiere.
+    "canasta_sin_temporada": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('canasta.json') < 0) return r;
+        const d = await r.clone().json();
+        Object.keys(d.serie_por_region).forEach(k => {
+          const s = d.serie_por_region[k];
+          const m = s.reduce((a, b) => a + b, 0) / s.length;
+          d.serie_por_region[k] = s.map(() => m);
+        });
+        Object.keys(d.insumo_por_region_mes).forEach(k => {
+          const meses = d.insumo_por_region_mes[k];
+          const uno = meses[Object.keys(meses)[0]];
+          Object.keys(meses).forEach(m => { meses[m] = uno; });
+          const cul = d.cultivo_por_region_mes[k] || {};
+          const c1 = cul[Object.keys(cul)[0]];
+          Object.keys(cul).forEach(m => { cul[m] = c1; });
+        });
         return new Response(JSON.stringify(d),
                             {headers: {'Content-Type': 'application/json'}});
       };
@@ -1803,6 +1830,75 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  Ica sale como uva, que es lo que embarca: ok")
+
+    # ---------------------------------------------------------- canasta -----
+    # La vista existe para contestar «en Piura, en marzo, qué llevo», y eso
+    # depende de dos cosas que se comprueban aquí: que elegir región cambie de
+    # verdad la mezcla de insumo —Huánuco es fitosanitario y San Martín
+    # fertilizante, y si el filtro está muerto se ven iguales— y que la
+    # pantalla diga que el mes es el de la siembra. Sin esa frase, un comercial
+    # sale medio año tarde.
+    print("")
+    print("canasta · el insumo por región y mes")
+    CAN = json.load(io.open(os.path.join("data", "canasta.json"),
+                            encoding="utf-8"))
+    pg.evaluate("() => location.hash = '#canasta'")
+    pg.wait_for_selector("#canInsumos .bar", timeout=25000)
+    pg.wait_for_timeout(400)
+    _txt = " ".join((pg.text_content("#canIntro") or "").split())
+    if "siembra" not in _txt.lower():
+        print("  LA PANTALLA NO DICE QUE EL MES ES EL DE LA SIEMBRA")
+        ok = False
+    else:
+        print("  declara que el mes es el de la siembra: ok")
+
+    def _mezcla():
+        return pg.eval_on_selector_all(
+            "#canInsumos .bar .bn", "b => b.map(x => x.textContent)")
+
+    _pais = _mezcla()
+    pg.select_option("#fCanDep", "Huánuco")
+    pg.wait_for_timeout(500)
+    _hua = _mezcla()
+    pg.select_option("#fCanDep", "San Martín")
+    pg.wait_for_timeout(500)
+    _sm = _mezcla()
+    print("  país %s · Huánuco %s · San Martín %s"
+          % (_pais[0] if _pais else "—", _hua[0] if _hua else "—",
+             _sm[0] if _sm else "—"))
+    if not _hua or not _sm or _hua == _sm:
+        print("  EL FILTRO DE REGION NO CAMBIA LA MEZCLA DE INSUMO")
+        ok = False
+    else:
+        print("  la mezcla cambia con la región: ok")
+
+    # Y que el mes filtre de verdad. Se comparan dos meses entre sí y no el mes
+    # contra el año: el año trae una fila más y la comparación pasaría por la
+    # longitud aunque el contenido fuera el mismo, que es exactamente lo que
+    # deja pasar una prueba vacua.
+    def _mes(m):
+        pg.click('#canCal button[data-m="%s"]' % m)
+        pg.wait_for_timeout(450)
+        return pg.eval_on_selector_all(
+            "#canCultivos .bar", "b => b.map(x => x.textContent)")
+
+    _oct, _abr = _mes("Oct"), _mes("Abr")
+    if not _oct or _oct == _abr:
+        print("  DOS MESES DISTINTOS MUESTRAN EL MISMO CORTE POR CULTIVO")
+        ok = False
+    else:
+        print("  octubre y abril siembran cosas distintas: ok")
+
+    # El calendario tampoco puede salir plano: si los doce meses pesan igual,
+    # la temporada de compra desaparece de la pantalla.
+    _pcts = pg.eval_on_selector_all(
+        "#canCal button .mono", "b => b.map(x => x.textContent)")
+    if len(set(_pcts)) <= 2:
+        print("  EL CALENDARIO SALE PLANO: no hay temporada que mostrar")
+        ok = False
+    else:
+        print("  el calendario tiene temporada (%d valores distintos): ok"
+              % len(set(_pcts)))
 
     # ------------------------------------------------------- decisiones -----
     # El módulo existe para que la alternativa descartada no se pierda. Si una

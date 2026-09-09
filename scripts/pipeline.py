@@ -186,7 +186,8 @@ ETAPAS = [
     # dos, solo, contesta la pregunta que hace un comercial.
     ("canasta", "build_canasta.py",
      ["out/estacionalidad_detalle.csv", "out/costos_cultivo.csv"],
-     ["out/canasta.json", "out/canasta_detalle.csv"],
+     ["out/canasta.json", "out/canasta_detalle.csv",
+      "../../../_repo/dashboard/data/canasta.json"],
      "el insumo por cultivo, región y mes"),
 
     # Qué compran las empresas que trajo el universo ampliado. El embarque dice

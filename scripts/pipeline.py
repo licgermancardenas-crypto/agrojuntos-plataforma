@@ -181,11 +181,21 @@ ETAPAS = [
      ["out/satelite.json", "out/diag_satelite.csv"],
      "qué compra un centro más, y si podría abastecerse"),
 
+    # Qué compran las empresas que trajo el universo ampliado. El embarque dice
+    # qué venden; solo la importación dice si compran lo que la plataforma
+    # vende, y la diferencia entre las dos cosas es la decisión.
+    ("ampliacion", "build_ampliacion.py",
+     [EXP + "operaciones_limpias.csv", "out/aduanas_importaciones.csv",
+      "out/comercio_importadores.csv", "out/import_agro_lineas.csv",
+      "out/empresas_agro_activas.csv", "scripts/universo.py"],
+     ["out/ampliacion.json"],
+     "qué compran los exportadores que trajo el universo ampliado"),
+
     # Las decisiones se arman al final: leen lo que todas las demás dejaron.
     ("decisiones", "build_decisiones.py",
      ["out/red_elegida.json", "out/canal.json", "out/clusters_absorcion.json",
       "out/acopio.json", "out/hubs_cobertura.csv", "out/satelite.json",
-      EXP + "mercado.json"],
+      "out/ampliacion.json", EXP + "mercado.json"],
      ["out/decisiones.json",
       "../../../_repo/dashboard/data/decisiones.json"],
      "cada decisión con su alternativa medida y su bisagra"),

@@ -8,6 +8,7 @@ it prints.
 """
 import base64
 import glob
+import json as _json
 import os
 import re
 import shutil
@@ -943,6 +944,15 @@ page(f"""
 
 
 # --------------------------------------------------- comercio exterior ----
+# La ventana de aduanas ya no es de diez semanas. `acumular_aduanas.py` guarda
+# cada semana antes de que SUNAT la retire y `build_aduanas.py` mide cuántas
+# quedaron y entre qué fechas. Los rótulos de estas páginas la leen de ahí:
+# escrita a mano, siguieron anunciando «diez semanas, junio a agosto de 2026»
+# encima de cuatro años y medio de manifiestos.
+_VEN = _json.load(open("out/aduanas_ventana.json", encoding="utf-8"))
+_vsem = int(_VEN["semanas"])
+_vrango = "%s a %s" % (_VEN["desde"], _VEN["hasta"])
+
 _impo = pd.read_csv("out/comercio_importadores.csv", encoding="utf-8-sig",
                     dtype={"ruc": str})
 _expo = pd.read_csv("out/comercio_exportadores.csv", encoding="utf-8-sig",
@@ -959,7 +969,7 @@ page(f"""
   <h2 class="title">Quién trae el insumo <em>y quién exporta la cosecha</em></h2>
   <p class="deck">SUNAT publica los microdatos de aduanas bajo la Ley de
      Transparencia: cada línea de despacho con RUC, partida, valor FOB, peso y
-     país. Diez semanas dan el mapa competitivo y los mayores compradores.</p>
+     país. Las {_vsem} semanas archivadas dan el mapa competitivo.</p>
 
   <div class="kpis">
     <div><span class="v">{nf(len(_impo))}</span><span class="l">importadores<br>de insumos agrícolas</span></div>
@@ -976,11 +986,11 @@ page(f"""
       proveedores a los que AgroJuntos compra y la competencia de su canal.</p>
       {table([[r["razon_social"][:30], f'{r["fob_anual"]/1e6:,.1f}',
                nf(r["tn"]), int(r["semanas"])]
-              for _, r in _prot.head(6).iterrows()],
+              for _, r in _prot.head(5).iterrows()],
              ["Importador", "FOB anual MM", "Toneladas", "Sem."],
              ["l","r","r","r"], cls="tight")}
-      <p class="sub">«Sem.» indica en cuántas de las diez semanas observadas la
-      empresa registró importación: diez significa flujo continuo.</p>
+      <p class="sub">«Sem.» son las semanas archivadas —de {_vsem}— en que la
+      empresa registró importación.</p>
     </div>
     <div>
       <h3 class="rule">Los mayores compradores</h3>
@@ -989,7 +999,7 @@ page(f"""
       cualquier otro productor.</p>
       {table([[r["razon_social"][:30], f'{r["fob_anual"]/1e6:,.0f}',
                int(r["destinos"])]
-              for _, r in _expo.head(6).iterrows()],
+              for _, r in _expo.head(5).iterrows()],
              ["Agroexportador", "FOB anual MM", "Países"],
              ["l","r","r"], cls="tight")}
 
@@ -1009,7 +1019,7 @@ page(f"""
   <b>Rusia en un 30%</b> de su valor, seguida de China (16%), Colombia (7%) y
   Arabia Saudita (6%). Ese es el origen de la volatilidad de precio que enfrenta
   el productor —y que un canal con crédito puede amortiguar.</p>
-  <p class="sub">Diez semanas de registros, junio a agosto de 2026. El anualizado
+  <p class="sub">{_vsem} semanas de registros, {_vrango}. El anualizado
   extrapola ese período sin corregir estacionalidad, de modo que debe leerse como
   orden de magnitud.</p>
 """, "Parte IV · El mercado desde aduanas")
@@ -1018,8 +1028,6 @@ page(f"""
 # Esta pagina no anualiza nada: son anos medidos. Se lee del mismo agregado que
 # alimenta el sitio, para que el informe impreso y la plataforma no puedan
 # decir cifras distintas.
-import json as _json
-
 _M = _json.load(open("data/importaciones/processed/mercado.json",
                      encoding="utf-8"))
 _IMP = _json.load(open("data/importaciones/processed/importadores.json",
@@ -1302,7 +1310,7 @@ page(f"""
          ["Categoría", "FOB anual MM", "FOB 10 sem", "Toneladas", "Empresas",
           "Partidas", "Mayor componente", "% del total"],
          ["l","r","r","r","r","r","l","r"], foot=IMP_FOOT)}
-  <p class="sub">Diez semanas de manifiestos, junio a agosto de 2026. Se
+  <p class="sub">{_vsem} semanas de manifiestos, {_vrango}. Se
   clasifica a la longitud de partida que cada caso pide: a cuatro dígitos
   <b>8701</b> junta el tractor agrícola con el tractocamión —21 contra 137 MM—
   y <b>3002</b> la vacuna humana con la veterinaria.</p>
@@ -1554,6 +1562,9 @@ for _v in _XP["cats"].values():
         _xdest[_p["n"]] = _xdest.get(_p["n"], 0) + _p["fob"]
 _xdest = sorted(_xdest.items(), key=lambda r: -r[1])
 _xfob = _XM["por_anio"][_XA]["fob"]
+# El universo arancelario: qué capítulos entraron con la ampliación y cuánto
+# aportan. Lo escribe `scripts/universo.py` y lo agrega build_export_agregados.
+_xuni = _XM["universo"]
 _xtop = sorted(((e["n"], e["por_anio"][_XA]["fob"], e["dep"],
                  e["familias"][0]["n"] if e["familias"] else "—")
                 for e in _XE.values() if _XA in e["por_anio"]),
@@ -1600,22 +1611,26 @@ page(f"""
              ["l", "r", "r", "r", "l"], cls="tight")}
       <p class="sub">«Semanas» son archivos de manifiesto, no semanas del
       calendario: un embarque de diciembre aparece en un archivo de enero.</p>
-      <div class="note warn">
-        <span class="h">Este total no coincide con el oficial, y por cuánto</span>
+      <div class="note">
+        <span class="h">Cuánto se aleja del oficial, y de qué está hecha la
+        diferencia</span>
         <p>MIDAGRI publica <b>US$ 15,013 MM</b> para {_XA} y aquí sale
         <b>US$ {nf(_xfob/1e6)} MM</b>, un
-        <b>{abs(100*(_xfob/1e6 - 15013)/15013):.0f}% menos</b>. Contrastarlo
-        contra esa cifra —que es lo que nadie había hecho— destapó que
-        <b>SUNAT republica cada declaración con el valor rectificado</b>: en
-        {_XA} el 51% del valor estaba repetido entre semanas. Lo que resta
-        está medido y es el universo: faltan capítulos que este informe no
-        cuenta como agro —aceites 802 MM, preparaciones de cereales 308,
-        quinua 181, pisco 167, esencias 141—, y con ellos sumaría
-        <b>US$ 15,206 MM</b>, un 1.3% del oficial. Los dos mayores que quedan
-        fuera son harina de pescado y conservas.</p>
-        <p class="sub" style="margin:6px 0 0">Antes de depurar esta página daba
-        US$ 17,928 MM y una caída de 5.4%: las dos cosas eran el arrastre de
-        las republicaciones.</p>
+        <b>{abs(100*(_xfob/1e6 - 15013)/15013):.1f}% menos</b>. Contrastarlo
+        contra esa cifra destapó dos cosas: que <b>SUNAT republica cada
+        declaración con el valor rectificado</b> —en {_XA}, el 51% del valor
+        estaba repetido entre semanas— y que <b>el universo arancelario era
+        una elección tácita</b>. Siete capítulos daban 13,230 MM, un 12% por
+        debajo del oficial, y lo que faltaba no era método sino partidas.</p>
+        <p>Hoy está escrito y medido. Entraron
+        <b>{len(_xuni['por_capitulo'])} capítulos</b> —cereales, alimento
+        balanceado, aceites vegetales, quinua, pisco, azúcar, esencias— y
+        quedaron fuera el aceite y la harina de pescado, 2,388 MM de pesca
+        dentro de capítulos agrarios. Vale
+        <b>US$ {nf(_xuni['fob_ampliacion']/1e6)} MM</b>, el
+        {_xuni['pct_ampliacion']:.0f}% del total, y trae
+        <b>{nf(_xuni['exportadores_solo_ampliacion'])} exportadores</b>
+        nuevos. La regla está en <code>scripts/universo.py</code>.</p>
       </div>
     </div>
     <div>
@@ -2908,7 +2923,7 @@ page(f"""
         <span class="h">Frontera de la clasificación arancelaria</span>
         <p>El reparto de la importación en categorías comerciales se corta donde
         el arancel deja de distinguir el uso. Quedan fuera
-        <b>US$ {_imx.fob_usd.sum()/1e6:,.0f} MM</b> en diez semanas de partidas
+        <b>US$ {_imx.fob_usd.sum()/1e6:,.0f} MM</b> en {_vsem} semanas de partidas
         que mezclan agro con industria: bombas, válvulas, manguera plástica,
         rodamientos, tornillería y útiles de perforación. No es gasto agrícola
         sin contar, es el tamaño de la zona ambigua. Riego sale bajo por esta

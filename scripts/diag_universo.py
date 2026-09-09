@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 """Qué capítulos arancelarios deja fuera el universo agro, y cuánto valen.
 
+**Este diagnóstico ya se aplicó.** Su respuesta está en `scripts/universo.py`,
+que es hoy el único sitio donde se decide qué partida cuenta como agro: 25
+capítulos menos una lista corta de partidas —aceite y harina de pescado,
+cosmética, tejidos— y 2025 cierra 1.5% por debajo de MIDAGRI en vez de 12%. Lo
+que sigue describe el estado anterior, de siete capítulos, porque es lo que
+esta corrida mide y con lo que se compara; el archivo se conserva para poder
+rehacer la medición cuando el universo vuelva a discutirse.
+
 Nuestro total de 2025 queda 12% por debajo del oficial de MIDAGRI. Las otras
 dos explicaciones ya se midieron y se descartaron: anclar en la fecha de
 regularización en vez del embarque mueve 83 MM, y las republicaciones ya se

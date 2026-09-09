@@ -50,7 +50,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_aduanas import abrir, leer_dbf, semana_de
-from build_agroexport import AGRO, PARTIDAS
+from build_agroexport import PARTIDAS
+from universo import es_agro
 
 RAW = "data/aduanas_hist"
 PROC = "data/exportaciones/processed"
@@ -135,7 +136,7 @@ def procesar(zip_path, man):
         for r in leer_dbf(fh, CAMPOS):
             leidas += 1
             p10 = partida10(r.get("PART_NANDI"))
-            if p10[:2] not in AGRO:
+            if not es_agro(p10):
                 continue
             p4 = p10[:4]
             # La serie se ancla en el **embarque**, que es cuando la
@@ -230,8 +231,13 @@ def main():
     print("\nsemanas nuevas procesadas: %d" % nuevo)
     if os.path.exists(OPERS):
         import pandas as pd
-        d = pd.read_csv(OPERS, encoding="utf-8-sig",
-                        dtype={"ruc": str, "anio": str}, low_memory=False)
+        # Cinco columnas, no las treinta. Con el universo arancelario ampliado
+        # el archivo pasó de 750 a 927 MB y leerlo entero para imprimir un
+        # resumen mataba el proceso *después* de haber extraído bien las 247
+        # semanas: el trabajo estaba hecho y la salida decía que había fallado.
+        d = pd.read_csv(OPERS, encoding="utf-8-sig", low_memory=False,
+                        usecols=["ruc", "anio", "fecha", "fob_usd"],
+                        dtype={"ruc": str, "anio": str, "fecha": str})
         print("operaciones acumuladas : %s" % format(len(d), ","))
         print("  empresas con RUC     : %s" % format(d.ruc.nunique(), ","))
         print("  FOB total            : US$ %.1f MM" % (d.fob_usd.sum() / 1e6))

@@ -87,15 +87,21 @@ ETAPAS = [
      [IMP + "operaciones_clasificadas.csv"], [IMP + "precios.json"],
      "US$/kg donde el kilo significa algo"),
 
+    # `universo.py` va declarado como entrada de todo lo que decide con él qué
+    # es agro. El orquestador vigila el script de la etapa, no lo que el script
+    # importa: sin esta línea, ampliar el universo arancelario dejaba las tres
+    # etapas «al día» sirviendo el recorte viejo. Van tres veces el mismo
+    # defecto —`mapa-geo`, `reporte` y ahora esto—, y siempre por lo mismo.
     ("export-historico", "build_export_historico.py",
-     ["data/aduanas_hist/manifiesto.json"], [EXP + "operaciones.csv"],
+     ["data/aduanas_hist/manifiesto.json", "scripts/universo.py"],
+     [EXP + "operaciones.csv"],
      "extrae las líneas de agro de cada ZIP"),
     ("export-depurar", "build_export_depurar.py",
      [EXP + "operaciones.csv"],
      [EXP + "operaciones_limpias.csv", EXP + "depuracion.json"],
      "quita republicaciones y precios imposibles"),
     ("export-agregados", "build_export_agregados.py",
-     [EXP + "operaciones_limpias.csv"],
+     [EXP + "operaciones_limpias.csv", "scripts/universo.py"],
      [EXP + "mercado.json", EXP + "exportadores.json", EXP + "anomalias.json"],
      "agrega por empresa, mercado y territorio"),
     ("export-panel", "build_export_panel.py",
@@ -148,7 +154,9 @@ ETAPAS = [
      "el atlas geoespacial que baja el navegador"),
     ("dashboard", "build_dashboard_data.py",
      ["out/ruteo_departamento.csv", "out/clusters_territorio.csv",
-      "out/cartera_territorio.csv", "out/hubs_asignacion.csv"],
+      "out/cartera_territorio.csv", "out/hubs_asignacion.csv",
+      "out/aduanas_exportaciones.csv", "out/aduanas_importaciones.csv",
+      "scripts/universo.py"],
      # dos niveles arriba, no uno: `build_dashboard_data.py` escribe en el
      # dashboard que esta al lado de MAPEO, no dentro. Con la ruta corta las
      # salidas no existian y la etapa salia desactualizada para siempre.
@@ -157,12 +165,32 @@ ETAPAS = [
      "los JSON que sirve el sitio"),
 
     ("reporte", "reporte.py",
-     # Declara los cuatro que empezó a leer al incorporar las páginas nuevas.
-     # Sin ellos figuraba «al día» con un PDF armado media hora antes que los
-     # datos que muestra: el mismo defecto que tenía `mapa-geo`, y van dos.
-     [IMP + "mercado.json", EXP + "mercado.json", "out/acopio.json",
-      "out/red_elegida.json", "out/canal.json", "out/altitud.json",
-      "out/ruteo_departamento.csv", "out/cartera_territorio.csv"],
+     # Todas las que lee, sacadas del propio archivo y no de memoria. Declarar
+     # solo unas cuantas es lo que dejaba el informe «al día» con un PDF
+     # armado media hora antes que los datos que muestra: pasó con `mapa-geo`,
+     # pasó aquí con las páginas nuevas, y volvió a pasar cuando el corte de
+     # aduanas cambió de once semanas a 246 y el informe no se enteró.
+     [EXP + "exportadores.json", EXP + "mercado.json", EXP + "panel.json",
+      IMP + "importadores.json", IMP + "mercado.json", IMP + "panel.json",
+      IMP + "precios.json", "out/acopio.json", "out/aduanas_ventana.json",
+      "out/agroexport_aduana.csv", "out/agroexport_departamento.csv",
+      "out/agroexport_producto.csv", "out/altitud.json", "out/canal.json",
+      "out/cartera_empresa.csv", "out/cartera_hub.csv",
+      "out/cartera_territorio.csv", "out/cenagro_departamento.csv",
+      "out/clusters_territorio.csv", "out/comercio_exportadores.csv",
+      "out/comercio_importadores.csv", "out/costos_cultivo.csv",
+      "out/cultivos_nacional.csv", "out/embudo_departamento.csv",
+      "out/empresas_agro_activas.csv", "out/estacionalidad_nacional.csv",
+      "out/estacionalidad_region.csv", "out/h3_r5.csv",
+      "out/hubs_cobertura.csv", "out/import_agro_categoria.csv",
+      "out/import_agro_excluidas.csv", "out/import_agro_glosa.csv",
+      "out/import_agro_lineas.csv", "out/import_agro_referencia.csv",
+      "out/logistica_departamento.csv", "out/modelo_v2_departamento.csv",
+      "out/modelo_v2_sector.csv", "out/modelo_v3_departamento.csv",
+      "out/osm_prospectos.csv", "out/puertos.csv", "out/red_elegida.json",
+      "out/ruteo_departamento.csv", "out/ruteo_sector.csv",
+      "out/som_escenarios.csv", "out/ventas_cliente.csv",
+      "out/ventas_doc.csv"],
      ["out/reporte_agrojuntos.html"], "arma el informe y lo imprime"),
 ]
 

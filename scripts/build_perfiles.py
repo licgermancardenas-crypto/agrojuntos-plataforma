@@ -7,14 +7,16 @@ partida, el peso, el país de origen y la descripción comercial que escribió e
 propio declarante, y esa es la materia con la que se arma el perfil: qué
 insumo entra, en qué cantidad, de qué origen y con qué continuidad.
 
-La continuidad es el dato que no se ve en un total. Diez semanas de ventana
-permiten distinguir al importador de flujo —presente casi todas— del que hizo
-un despacho aislado, y a un canal de ventas eso le cambia la conversación.
+La continuidad es el dato que no se ve en un total. Las semanas archivadas
+—246 al cierre de esta corrida, y ya no las diez de la ventana móvil de
+SUNAT— permiten distinguir al importador de flujo, presente en casi todas, del
+que hizo un despacho aislado, y a un canal de ventas eso le cambia la
+conversación.
 
 Los perfiles se reparten en cien archivos por los dos últimos dígitos del RUC.
-Uno por empresa serían 2,810 archivos en el repositorio para servir 2 KB cada
-vez; uno solo pesaría 6 MB y habría que bajarlo entero para ver una empresa. La
-partición deja cada consulta en unos 60 KB y el repositorio en cien archivos.
+Uno por empresa serían 30,564 archivos en el repositorio para servir 1 KB cada
+vez; uno solo pesaría 27 MB y habría que bajarlo entero para ver una empresa.
+La partición deja cada consulta en unos 240 KB.
 
 Uso:
     python scripts/build_perfiles.py
@@ -69,8 +71,18 @@ expr = leer("comercio_exportadores.csv")
 # El manifiesto de exportacion es el del pais entero: trae mineria, textil y
 # pesca. Solo interesa el detalle de los agroexportadores ya verificados por
 # build_comercio, o el directorio se llenaria de empresas que no son del agro.
-exp = leer("aduanas_exportaciones.csv")
-exp = exp[exp["ruc"].isin(set(expr["ruc"]))]
+# En tandas y filtrando al vuelo: el manifiesto de exportacion son 8.7
+# millones de lineas y 712 MB desde que el historico dejo de ser una ventana
+# de diez semanas, y de eso aqui solo sirve el puñado de RUC ya verificados.
+# Leerlo entero para tirar el 99% es lo que apagaba el proceso por memoria.
+_rucs = set(expr["ruc"])
+_COLS_EXP = ["ruc", "partida", "pais_destino", "fob_usd", "peso_kg", "semana"]
+exp = pd.concat(
+    [t[t["ruc"].isin(_rucs)] for t in pd.read_csv(
+        "out/aduanas_exportaciones.csv", encoding="utf-8-sig",
+        usecols=_COLS_EXP, dtype={"ruc": str, "partida": str},
+        chunksize=500_000)],
+    ignore_index=True)
 emp = leer("empresas_agro_activas.csv")
 car = leer("cartera_empresa.csv")
 impr = leer("comercio_importadores.csv")
@@ -160,7 +172,11 @@ EMPD = emp.set_index("ruc").to_dict("index")
 EXPR = expr.set_index("ruc").to_dict("index")
 IMPR = impr.set_index("ruc").to_dict("index")
 NOMBRE = {}
-for d in (imp, exp, emp):
+# El nombre del exportador sale de `expr`, que trae uno por RUC ya resuelto, y
+# no del detalle de lineas: ese archivo son 8.7 millones de filas y traerse la
+# razon social de cada una solo para armar este diccionario costaba la memoria
+# que hace falta despues.
+for d in (imp, expr, emp):
     for r, n in zip(d["ruc"], d["razon_social"]):
         NOMBRE.setdefault(r, str(n))
 
@@ -190,11 +206,12 @@ GE = dict(list(exp.groupby("ruc")))
 perfiles = defaultdict(dict)
 rucs = sorted(set(emp["ruc"]) | set(imp["ruc"]) | set(expr["ruc"]))
 VACIO = imp.iloc[0:0]
+VACIO_EXP = exp.iloc[0:0]
 for ruc in rucs:
     if not isinstance(ruc, str) or not ruc.strip():
         continue
     gi = GI.get(ruc, VACIO)
-    ge = GE.get(ruc, exp.iloc[0:0])
+    ge = GE.get(ruc, VACIO_EXP)
     car_r = CARD.get(ruc, {})
     emp_r = EMPD.get(ruc, {})
     # La ubicacion tambien esta en las tablas de comercio exterior, que traen
@@ -244,8 +261,14 @@ for ruc in rucs:
             "partidas_top": top(gi, "partida", "fob_usd", 10),
             "paises": [dict(x, n=pais(x["n"]))
                        for x in top(gi, "pais_origen", "fob_usd", 8)],
-            "serie": [round(float(gi[gi.semana == s].fob_usd.sum()), 2)
-                      for s in SEMS],
+            # Una pasada y no una por semana. Esto era
+            # `[gi[gi.semana == s].fob_usd.sum() for s in SEMS]`: con la
+            # ventana de diez semanas eran diez recorridos por empresa y no se
+            # notaba; con el historico acumulado son 246, y armar los perfiles
+            # pasó de segundos a no terminar.
+            "serie": [round(float(v), 2) for v in
+                      gi.groupby("semana").fob_usd.sum()
+                        .reindex(SEMS, fill_value=0.0)],
             # La descripcion comercial la escribe el declarante: es el detalle
             # mas fino que existe de que compro exactamente esta empresa.
             "desc": [{"d": str(r["descripcion"])[:70],

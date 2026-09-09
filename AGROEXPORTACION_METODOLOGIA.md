@@ -5,9 +5,11 @@ qué no aguanta el dato. El gemelo de
 [`IMPORTADORES_INSUMOS_METODOLOGIA.md`](IMPORTADORES_INSUMOS_METODOLOGIA.md)
 para el otro lado de la aduana.
 
-Cifras al día de la última corrida: **1,468,627 series de embarque, 4,054
-exportadores con RUC, US$ 47,811 MM FOB entre 2022 y 2026**, en 72 familias de
-producto y 140 destinos, sobre 244 semanas de manifiesto.
+Cifras al día de la última corrida: **1,894,908 series de embarque, 4,812
+exportadores con RUC, US$ 55,106 MM FOB entre 2022 y 2026**, en 177 familias de
+producto y 162 destinos, sobre 245 semanas de manifiesto. El salto contra la
+corrida anterior —1,468,627 series y 47,811 MM— es la ampliación del universo
+arancelario, no un cambio de fuente.
 
 ---
 
@@ -42,20 +44,48 @@ dos pedazos.
 
 ## El universo
 
-Se cuentan como agro siete capítulos arancelarios: **07** hortalizas, **08**
-frutas, **09** café y especias, **12** semillas, **18** cacao, **20**
-preparaciones de hortalizas y frutas, **21** preparaciones diversas. La
-partida se lee de `PART_NANDI`, que **llega sin el cero inicial en los
-capítulos 01–09** —la uva viene como `806100000`— y hay que rellenar a diez
-dígitos antes de mirar nada.
+El universo está escrito en `scripts/universo.py`, que es el único sitio donde
+se decide qué partida cuenta como agro: de ahí lo toman el histórico, los
+agregados, la ventana de diez semanas y el dashboard. La partida se lee de
+`PART_NANDI`, que **llega sin el cero inicial en los capítulos 01–09** —la uva
+viene como `806100000`— y hay que rellenar a diez dígitos antes de mirar nada.
 
-Ese universo es más estrecho que el de MIDAGRI, y la diferencia está medida en
-`diag_universo.py`: los capítulos agrarios que quedan fuera suman US$ 1,976 MM
-en 2025 —aceites 802, preparaciones de cereales 308, quinua 181, pisco 167,
-esencias 141—, con los que el total daría 15,206 contra los 15,013 oficiales.
-Los dos mayores que aparecen fuera se excluyen a propósito: alimento para
-animales (2,126 MM) y preparaciones de carne (433) son harina de pescado y
-conservas.
+La regla es **veinticinco capítulos del arancel, menos una lista corta de
+partidas que no pertenecen**. Los siete con que arrancó el proyecto —07
+hortalizas, 08 frutas, 09 café, 12 semillas, 18 cacao, 20 y 21 preparaciones—
+daban US$ 13,230 MM en 2025 contra los 15,013 que publica MIDAGRI: un 12%
+menos, y la diferencia no era de método sino de universo.
+
+`diag_universo.py` midió qué quedaba fuera, capítulo por capítulo, y después
+hubo que bajar a cuatro dígitos, porque a nivel de capítulo la pregunta no
+tiene respuesta: el capítulo 23 son 2,126 MM de los que 1,871 son harina de
+pescado, y el 15 son 802 de los que 518 son aceite de pescado. Contarlos
+enteros habría inflado el agro con la pesca; dejarlos fuera habría perdido el
+aceite de palma, el alimento balanceado y el salvado.
+
+Entraron 18 capítulos —preparaciones de cereales, alimento para
+animales, grasas y aceites, bebidas y alcohol, cereales, azúcares, esencias,
+lácteos, materias trenzables, flores, molinería, gomas y resinas, y seis más
+pequeños— y quedaron fuera a propósito:
+
+| Fuera | Por qué |
+|---|---|
+| capítulos 03 y 16 enteros | pescado y conservas; el 1602, que sí sería agro, no llega a un millón |
+| partidas 1504 y 2301 | aceite y harina de pescado, US$ 2,388 MM de pesca dentro de capítulos agrarios |
+| 3303–3307 | perfumería y cosmética; el 3301, aceite esencial, sí entra |
+| 5204–5212 y 5306–5311 | hilados y tejidos; el algodón en rama sí entra |
+
+Con esa regla 2025 da **US$ 14,790 MM** depurado contra los 15,013 oficiales:
+un 1.5% por debajo, y del lado prudente. Lo que queda es diferencia de
+criterio —MIDAGRI ancla en la regularización y no en el embarque, y arrastra
+rectificaciones posteriores al corte—, no capítulos olvidados.
+
+La ampliación vale US$ 7,295 MM del período de cinco años, el 13% del total, y
+trae **758 exportadores** que antes no aparecían en ninguno de los siete
+capítulos originales: es cartera nueva, no solo FOB nuevo. `mercado.json`
+guarda el desglose en su bloque `universo`, de modo que la plataforma puede
+marcar qué familias son de la ampliación en vez de anunciar un salto del 12%
+sin explicación.
 
 ---
 
@@ -64,7 +94,7 @@ conservas.
 `build_export_depurar.py` aparta dos cosas antes de agregar nada, y deja
 constancia de ambas en `depuracion.json`.
 
-### Republicaciones · US$ 19,150 MM
+### Republicaciones · US$ 19,459 MM
 
 SUNAT vuelve a publicar cada declaración en semanas posteriores con el valor
 rectificado: misma aduana, año, declaración y serie, mismo peso, un FOB que
@@ -76,9 +106,9 @@ versión nueva del mismo embarque. Se conserva la última, que es la vigente.
 Sumarlas contaba varias veces el mismo embarque e inflaba el total un tercio.
 También fabricaba una caída: las republicaciones se acumulan más en los años
 viejos que en el corriente, así que el año en curso parecía hundirse. La
-variación de 2026 pasó de −5.4% a **+2.4%** al depurar.
+variación de 2026 pasó de −5.4% a **+2.8%** al depurar.
 
-### Precios que el producto no aguanta · US$ 127 MM
+### Precios que el producto no aguanta · US$ 140 MM
 
 Una declaración de café verde declara US$ 37.4 millones por 56,925 kg —US$ 657
 el kilo— cuando la serie anterior del mismo documento va a 8.7. No se filtran

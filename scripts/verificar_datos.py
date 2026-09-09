@@ -126,6 +126,18 @@ def documentacion():
         ("series de embarque", mil(exp["operaciones"])),
         ("importación · operaciones", mil(imp["operaciones"])),
         ("importación · empresas", mil(imp["empresas_con_dato"])),
+        # El universo arancelario es una decision, como la promesa de la red:
+        # si alguien toca `universo.py` sin tocar el texto, la documentacion
+        # quedaria explicando un recorte que ya no es el que produce las
+        # cifras de al lado.
+        # Con la unidad pegada al número: un "18" suelto aparece dentro de
+        # "2018" en cualquier documento y la comprobación no comprobaría nada.
+        ("capítulos de la ampliación",
+         "%d capítulos" % len(exp["universo"]["por_capitulo"])),
+        ("FOB de la ampliación",
+         "%s MM" % mil(exp["universo"]["fob_ampliacion"] / 1e6)),
+        ("exportadores que trae la ampliación",
+         "%d exportadores" % exp["universo"]["exportadores_solo_ampliacion"]),
         ("distritos con embarque", str(aco["distritos"])),
         ("plantas certificadas", str(aco["senasa"]["empacadoras"])),
         ("plantas sin embarque propio", str(aco["senasa"]["sin_embarque_propio"])),

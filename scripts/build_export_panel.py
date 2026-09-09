@@ -55,6 +55,9 @@ COLS = {
     "fob_usd": "float64", "peso_neto_kg": "float64",
 }
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from tandas import leer_en_tandas                      # noqa: E402
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
                               errors="replace", line_buffering=True)
 
@@ -78,8 +81,7 @@ def main():
     # gigabytes que la maquina no tiene, y ninguna entra en el cubo. Las que
     # se repiten mucho van como categoria: el RUC de una agroexportadora sale
     # miles de veces y no hace falta guardar la cadena miles de veces.
-    d = pd.read_csv(ENTRADA, encoding="utf-8-sig", usecols=list(COLS),
-                    dtype=COLS, low_memory=False)
+    d = leer_en_tandas(ENTRADA, COLS)
     d = d[d.fob_usd >= 0].copy()
     # fecha ordenada para que .max() siga dando el ultimo embarque; una
     # categoria sin orden no se puede comparar.

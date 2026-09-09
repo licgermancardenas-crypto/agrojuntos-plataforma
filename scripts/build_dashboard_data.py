@@ -19,6 +19,10 @@ import unicodedata
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from universo import es_agro                                  # noqa: E402
+
 # Se escribe directo en el sitio y no en out/, que obligaba a copiar a mano
 # antes de desplegar. build_atlas_html.py ya escribia aqui, asi que la mitad
 # de los datos se renovaba y la otra mitad no: el paso manual era el que
@@ -284,16 +288,11 @@ log = pd.read_csv("out/logistica_departamento.csv", encoding="utf-8-sig")
 pue = pd.read_csv("out/puertos.csv", encoding="utf-8-sig")
 imp_l = pd.read_csv("out/aduanas_importaciones.csv", encoding="utf-8-sig",
                     dtype={"ruc": str})
-exp_l = pd.read_csv("out/aduanas_exportaciones.csv", encoding="utf-8-sig",
-                    dtype={"ruc": str, "partida4": str})
-
-# El archivo de aduanas trae la exportacion completa del pais: el mineral de
-# cobre (2603) y el oro (7108) son por si solos el 60% del FOB. Sin este filtro
-# la pagina anunciaria US$ 33,813 MM de agroexportacion en diez semanas, mas
-# que todo lo que el Peru exporta en un ano. Capitulos 07, 08, 09, 12, 18, 20
-# y 21, los mismos que usa build_aduanas.py.
-AGRO_EXP = {"07", "08", "09", "12", "18", "20", "21"}
-exp_l = exp_l[exp_l["partida4"].str.zfill(4).str[:2].isin(AGRO_EXP)]
+# La exportacion cruda de aduanas ya no se lee aqui. Se leia entera —712 MB,
+# 8.7 millones de lineas—, se filtraba al universo agro y no se usaba en
+# ninguna salida: la mitad exportadora de esta pantalla pasó a
+# `exportaciones/mercado.json` y el filtro quedó huérfano. Costaba el
+# archivo entero en memoria en una máquina que no lo tiene.
 
 
 def num(v, dec=1):
@@ -317,8 +316,8 @@ ter_dep = ter.assign(kk=ter["dep"].map(norm)).groupby("kk")
 
 expo_k = expo.assign(kk=expo["dep"].map(lambda v: norm(v) if pd.notna(v) else ""))
 impo_k = impo.assign(kk=impo["dep"].map(lambda v: norm(v) if pd.notna(v) else ""))
-# Todo el comercio exterior viaja MEDIDO —las diez semanas tal cual— y es el
-# sitio el que anualiza o mensualiza segun lo que el lector elija. Antes el
+# Todo el comercio exterior viaja MEDIDO —las semanas archivadas tal cual— y
+# es el sitio el que anualiza o mensualiza segun lo que el lector elija. Antes el
 # FOB salia anualizado y el tonelaje medido en la misma fila, de modo que una
 # tabla mezclaba dos periodos sin decirlo.
 expo_g = expo_k.groupby("kk").agg(n=("ruc", "size"), fob=("fob", "sum"))
@@ -497,6 +496,13 @@ ax_ap = pd.read_csv("out/agroexport_aduana_producto.csv", encoding="utf-8-sig",
 # anualizaria con el divisor equivocado.
 SEM = int(imp_l["semana"].nunique())
 ANUAL = 52 / SEM
+# El universo del que se recorta la importacion agricola: cuantas lineas trae
+# el manifiesto y cuanto FOB suman todas, agricolas o no. Lo mide
+# build_aduanas.py sobre los mismos archivos. Estuvo escrito a mano —2,953,512
+# lineas y US$ 13,748 MM— de cuando la ventana era de diez semanas, y siguio
+# publicandose como «toda la importacion del pais» despues de que el historico
+# acumulado la multiplicara por veinte.
+VENTANA = json.load(io.open("out/aduanas_ventana.json", encoding="utf-8"))
 
 
 def top_por(df, clave, n=6, etiqueta="producto", valor="fob_usd"):
@@ -578,8 +584,10 @@ con_mercancia = imp_c[imp_c.lineas > 0]
 guardar("importacion.json", {
     "meta": {
         "semanas": SEM,
-        "lineas_pais": 2953512,
-        "fob_pais": int(13748e6),
+        "desde": VENTANA["desde"],
+        "hasta": VENTANA["hasta"],
+        "lineas_pais": int(VENTANA["lineas_pais"]),
+        "fob_pais": int(VENTANA["fob_pais"]),
         "fob": int(con_mercancia.fob_usd.sum()),
         "tn": int(round(con_mercancia.toneladas.sum())),
         "empresas": int(imp_l.ruc.nunique()),

@@ -60,6 +60,10 @@ import sys
 import numpy as np
 import pandas as pd
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from tandas import leer_en_tandas                      # noqa: E402
+from universo import CAPITULO, CAP_ORIGEN, ampliada    # noqa: E402
+
 PROC = "data/exportaciones/processed"
 # El archivo depurado, no el crudo: el crudo trae la misma serie
 # repetida y precios que el producto no aguanta. Ver
@@ -129,8 +133,7 @@ def top(sub, col, n=8):
 def main():
     if not os.path.exists(ENTRADA):
         sys.exit("falta " + ENTRADA + ": corre build_export_depurar.py")
-    d = pd.read_csv(ENTRADA, encoding="utf-8-sig", usecols=list(COLS),
-                    dtype=COLS, low_memory=False)
+    d = leer_en_tandas(ENTRADA, COLS)
     d = d[d.fob_usd >= 0].copy()
     # fecha ordenada para que .max() siga dando el ultimo embarque; una
     # categoria sin orden no se puede comparar.
@@ -304,8 +307,52 @@ def main():
     fob_ubi = float(d_ubi.fob_usd.sum())
     sin_dep = d[d.dep == ""]
 
+    # --------------------------------------------- de donde sale el total --
+    # El universo arancelario dejo de ser una eleccion tacita: `universo.py`
+    # la escribe y la mide contra MIDAGRI. Aqui se guarda cuanto aporta cada
+    # capitulo que entro con la ampliacion, para que la plataforma pueda
+    # marcar las familias nuevas en vez de anunciar un salto sin explicacion.
+    cap = d.partida.astype(str).str.zfill(10).str[:2]
+    amp = d.partida.astype(str).map(ampliada)
+    fob_amp = float(d.fob_usd[amp].sum())
+    por_cap = (d[amp].assign(cap=cap[amp]).groupby("cap", observed=True)
+               .agg(fob=("fob_usd", "sum"), ops=("fob_usd", "size"),
+                    empresas=("ruc", "nunique"))
+               .sort_values("fob", ascending=False))
+    universo = {
+        "regla": "capitulos del arancel menos una lista corta de partidas que "
+                 "no son agro; escrita y justificada en scripts/universo.py",
+        "capitulos_origen": sorted(CAP_ORIGEN),
+        "capitulos": {c: CAPITULO[c] for c in sorted(CAPITULO)},
+        "excluido": {"1504": "aceite de pescado", "2301": "harina de pescado",
+                     "33xx": "perfumeria y cosmetica",
+                     "52xx/53xx": "hilados y tejidos"},
+        "fob_ampliacion": round(fob_amp, 2),
+        "pct_ampliacion": round(100 * fob_amp / tot, 2) if tot else 0.0,
+        "por_capitulo": [{"cap": c, "n": CAPITULO[c],
+                          "fob": round(float(r.fob), 2), "ops": int(r.ops),
+                          "empresas": int(r.empresas)}
+                         for c, r in por_cap.iterrows()],
+        # Las familias que entraron, por nombre. La pantalla lista familias y
+        # no capítulos, así que sin esta lista no puede marcar cuáles son
+        # nuevas, que es justo lo que evita que el salto del total parezca un
+        # error del sitio.
+        "familias_ampliacion": sorted(
+            str(x) for x in d.familia[amp].unique()),
+        # Lo que la ampliación vale como cartera, que no es lo mismo que lo
+        # que vale como FOB: exportadores que no aparecían en ninguno de los
+        # siete capítulos originales y ahora sí son prospecto.
+        "exportadores_solo_ampliacion": int(
+            d_emp.assign(_a=amp.loc[d_emp.index].values)
+            .groupby("ruc", observed=True)._a.all().sum()),
+        "fob_ampliacion_por_anio": {
+            str(a): round(float(g.fob_usd[amp.loc[g.index]].sum()), 2)
+            for a, g in d.groupby("anio", observed=True)},
+    }
+
     mercado = {
         "generado": an["generado"],
+        "universo": universo,
         "fuente": "SUNAT/Aduanas · microdatos de manifiestos (Ley 27806)",
         "ultimo_registro": ultimo,
         "anio_en_curso": anio_actual,
@@ -509,6 +556,8 @@ def main():
     print("FOB total         : US$ %.1f MM" % (tot / 1e6))
     print("familias          : %d | destinos: %d"
           % (len(fam), len(dest)))
+    print("universo ampliado : US$ %.1f MM (%.1f%% del total) en %d capitulos"
+          % (fob_amp / 1e6, universo["pct_ampliacion"], len(por_cap)))
     print("ultimo embarque   : %s" % ultimo)
     print("rezago            : p50 %d d, p90 %d d, p99 %d d" % (p50, p90, p99))
     print("maduracion        : %s"

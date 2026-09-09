@@ -1,16 +1,17 @@
 ﻿codigo,aduana,fob_usd,kg,empresas,producto_lider,pct_lider,via_principal
-118,Marítima del Callao,807276788.52,289702360.3,638,Cacao en grano,16.7,Marítima
-082,Salaverry,563524454.04,226693283.5,66,"Palta, mango, dátil y piña",57.9,Marítima
-046,Paita,507230333.73,194125038.5,268,Café,43.7,Marítima
-127,Pisco,404120651.4,176416798.3,159,Uva,34.7,Marítima
-055,Chiclayo,199117520.4,93752042.5,42,"Palta, mango, dátil y piña",62.0,Marítima
-370,Chancay,167612178.78,86708799.8,203,"Palta, mango, dátil y piña",50.2,Marítima
-235,Aérea del Callao,114504678.09,14873858.2,360,Hortalizas frescas (espárrago y otras),37.3,Aérea
+118,Marítima del Callao,1044872516.56,415463663.0,794,Cacao en grano,12.9,Marítima
+082,Salaverry,580022369.04,273110787.8,71,"Palta, mango, dátil y piña",56.2,Marítima
+046,Paita,545765773.8,212761307.9,283,Café,40.7,Marítima
+127,Pisco,404832862.15,176492628.8,161,Uva,34.7,Marítima
+055,Chiclayo,199432276.4,93796682.5,43,"Palta, mango, dátil y piña",61.9,Marítima
+370,Chancay,181261166.97,98411444.9,208,"Palta, mango, dátil y piña",46.4,Marítima
+235,Aérea del Callao,121994410.67,15396113.6,456,Hortalizas frescas (espárrago y otras),35.1,Aérea
+019,Tumbes,80428537.78,94269468.4,122,Alimento balanceado,43.4,Carretera
 091,Chimbote,63568061.92,24041532.4,46,"Palta, mango, dátil y piña",52.2,Marítima
-145,Mollendo Matarani,27781719.13,9108581.1,39,Uva,59.9,Marítima
-019,Tumbes,27633645.54,24899070.0,80,"Palta, mango, dátil y piña",31.0,Carretera
-172,Tacna,17158316.16,18066379.4,139,Plantas para perfumería,26.1,Carretera
-262,Desaguadero,5343733.94,1866670.3,23,Salsas y condimentos,43.4,Carretera
+145,Mollendo Matarani,28855691.97,12930659.6,40,Uva,57.7,Marítima
+172,Tacna,20830379.52,21588414.3,151,Plantas para perfumería,21.5,Carretera
+262,Desaguadero,9398221.78,3356129.1,40,Salsas y condimentos,24.7,Carretera
 163,Ilo,772834.0,261963.0,2,"Arándano, fresa y otras bayas",71.3,Marítima
+226,Iquitos,122386.0,1561.8,6,Otros animales vivos,93.9,Aérea
 154,Arequipa,82262.4,18696.0,1,Uva,100.0,Marítima
 280,Puerto Maldonado,1700.0,1000.0,1,Plantas para perfumería,100.0,Carretera

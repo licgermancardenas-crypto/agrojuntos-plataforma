@@ -16,6 +16,7 @@ La Libertad,2005,Hortalizas preparadas,37416769.32,14028134.4
 Ica,0810,"Arándano, fresa y otras bayas",37333545.69,5686137.4
 Junin,0901,Café,36732255.73,6064071.4
 Lima,0811,Frutas congeladas,34950027.13,13719366.8
+Lima,1008,Quinua y cereales andinos,32925097.45,11263401.0
 Piura,0804,"Palta, mango, dátil y piña",32156889.11,22129081.2
 Amazonas,0901,Café,30149686.95,4857221.0
 Lima,0904,Pimienta y ají,29944198.34,6861974.1
@@ -38,6 +39,7 @@ Ancash,0810,"Arándano, fresa y otras bayas",12976304.06,1891604.3
 Lima,2106,Preparaciones alimenticias,11572289.36,2058586.9
 Piura,0811,Frutas congeladas,11291606.64,3618726.2
 Madre De Dios,0801,Coco y castaña,10896970.9,1046280.0
+Lima,3301,Aceites esenciales,10491667.73,287176.3
 La Libertad,2001,Conservas en vinagre,10064655.15,4112705.8
 Lima,2103,Salsas y condimentos,8922776.66,3652354.1
 Junin,0910,"Jengibre, cúrcuma y especias",8693171.08,6314361.0
@@ -45,6 +47,7 @@ Lima,0801,Coco y castaña,8661399.0,903458.6
 Lima,0910,"Jengibre, cúrcuma y especias",8477174.35,4585304.2
 Lima,1207,Semillas oleaginosas,8424800.83,1269930.3
 Lambayeque,0901,Café,8323888.56,1284018.0
+Lima,1515,Otros aceites vegetales,8298071.63,997016.1
 Ancash,0811,Frutas congeladas,8211775.19,3156913.1
 Lima,1803,Pasta de cacao,7931312.1,1423937.8
 Lima,0710,Hortalizas congeladas,7603842.9,2545270.1
@@ -56,6 +59,7 @@ San Martin,0901,Café,6925914.01,1227345.5
 Piura,2106,Preparaciones alimenticias,6891779.94,375026.0
 Lambayeque,0804,"Palta, mango, dátil y piña",6704827.73,4560626.0
 Lambayeque,0803,Banano y plátano,6072042.29,7209561.6
+Lima,1905,Galletas y panadería,5892132.63,1440977.3
 Ica,0806,Uva,5865621.55,1710609.2
 Cusco,1801,Cacao en grano,5472845.55,1302280.0
 Lima,0713,Legumbres secas,5383971.62,3799782.3
@@ -74,29 +78,44 @@ Callao,0811,Frutas congeladas,3587202.24,1139331.0
 Tacna,1211,Plantas para perfumería,3428850.89,1354185.5
 Piura,2005,Hortalizas preparadas,3351222.14,1976440.9
 Callao,1209,Semillas para siembra,3336208.64,2394.5
+Lima,1106,Harinas de legumbres y frutas,3305609.37,586589.0
 Lima,1211,Plantas para perfumería,3281844.53,754284.9
 Piura,2009,Jugos de fruta,3246485.39,790053.8
 Arequipa,2005,Hortalizas preparadas,3208948.36,1220192.4
 Arequipa,0810,"Arándano, fresa y otras bayas",3000083.54,1350428.6
+Lima,1005,Maíz,2941668.91,1291980.2
+Callao,1902,Pastas alimenticias,2882387.52,2806682.9
 Lima,0714,Raíces y tubérculos,2852835.65,1906276.1
+Tumbes,1006,Arroz,2669725.56,4909000.0
 Callao,0805,Cítricos,2568708.57,2101171.0
 Piura,2001,Conservas en vinagre,2515104.8,854555.7
+Lima,0402,Leche en polvo,2514275.61,1126366.6
 Callao,2103,Salsas y condimentos,2482279.05,557835.1
 San Martin,2008,Frutas preparadas,2403860.53,839299.4
+Piura,3301,Aceites esenciales,2335542.0,61710.0
 Lima,2007,Mermeladas y purés,2296069.54,1530896.7
+Lima,3302,Mezclas odoríferas,2277549.84,252318.5
 Tumbes,0703,Cebolla y ajo,2257256.19,6937787.0
 Lambayeque,2005,Hortalizas preparadas,2249625.9,1493162.8
+Callao,2302,Salvados y afrecho,2190872.48,6969840.0
 Junin,0804,"Palta, mango, dátil y piña",2167829.78,178265.2
 Tacna,0712,Hortalizas secas,2155667.25,275041.9
 Lambayeque,0710,Hortalizas congeladas,2140543.6,1062752.4
+Lima,1704,Confitería sin cacao,2115125.18,508463.3
 Lima,1212,Algarroba y otros frutos,2091673.77,2694724.1
+Lima,1404,"Productos vegetales diversos (tara, achiote)",2065613.03,1136384.3
+Lima,1904,Cereales inflados y hojuelas,2055362.34,374572.2
+La Libertad,1515,Otros aceites vegetales,1966789.57,253901.8
 La Libertad,2008,Frutas preparadas,1831327.21,501071.0
 Lima,0803,Banano y plátano,1814494.62,2151044.2
+Lima,0601,Bulbos y tubérculos de flor,1803279.48,494914.0
 Arequipa,0712,Hortalizas secas,1790766.54,74534.0
 La Libertad,0806,Uva,1727502.54,705380.4
 Lima,2001,Conservas en vinagre,1699209.69,1043539.7
 Lima,0813,Frutas secas,1679843.0,156860.4
+Callao,1905,Galletas y panadería,1666342.42,669127.7
 Lambayeque,0806,Uva,1647295.97,384515.0
+Lima,1511,Aceite de palma,1583583.08,1419337.0
 Piura,0910,"Jengibre, cúrcuma y especias",1583472.68,1077188.5
 La Libertad,0710,Hortalizas congeladas,1524073.04,441972.9
 Ica,1212,Algarroba y otros frutos,1483891.1,1992210.0
@@ -104,6 +123,7 @@ Lambayeque,0703,Cebolla y ajo,1470975.39,3414409.0
 Arequipa,1212,Algarroba y otros frutos,1421869.22,1752845.0
 La Libertad,2103,Salsas y condimentos,1314043.32,280208.0
 Lambayeque,2009,Jugos de fruta,1234507.64,387017.0
+Callao,1511,Aceite de palma,1216209.62,914590.0
 Piura,0814,Cortezas de cítricos,1215471.26,924936.9
 Piura,0713,Legumbres secas,1160977.98,818000.0
 Arequipa,0804,"Palta, mango, dátil y piña",1155258.55,700442.0
@@ -112,6 +132,7 @@ Ancash,0708,Legumbres frescas,1077547.37,287477.8
 Junin,0805,Cítricos,1063619.82,1187592.0
 Ancash,0714,Raíces y tubérculos,1058400.0,504000.0
 Lambayeque,0810,"Arándano, fresa y otras bayas",987451.62,126846.5
+La Libertad,1701,Azúcar de caña,946549.24,1680000.0
 Lima,1802,Cáscara de cacao,944578.2,1453978.3
 Cusco,0901,Café,940590.95,110027.0
 Tacna,0711,Hortalizas conservadas provisionalmente,935827.0,1257435.0
@@ -121,6 +142,9 @@ Callao,0710,Hortalizas congeladas,872447.46,296024.3
 La Libertad,0803,Banano y plátano,843074.0,1042027.2
 La Libertad,2006,Frutas confitadas,835611.81,184964.0
 Ayacucho,1211,Plantas para perfumería,834868.5,259456.0
+Lima,1901,Preparaciones de harina y malta,834809.67,208143.6
+Lambayeque,3301,Aceites esenciales,802545.0,21780.0
+Tacna,2202,Bebidas no alcohólicas,801912.24,813034.9
 Arequipa,0904,Pimienta y ají,799408.75,192200.0
 Callao,1207,Semillas oleaginosas,797922.5,1704.7
 Huanuco,1801,Cacao en grano,792427.46,108341.0
@@ -128,24 +152,33 @@ Callao,0904,Pimienta y ají,749744.74,181701.0
 Loreto,1801,Cacao en grano,734730.72,150238.0
 La Libertad,0703,Cebolla y ajo,726910.5,1842870.0
 Piura,2008,Frutas preparadas,685259.84,445084.1
+Lima,1302,Extractos vegetales (tara y otros),650359.6,136374.9
 Tumbes,0713,Legumbres secas,649563.62,499671.5
+Piura,1515,Otros aceites vegetales,637911.48,89240.0
 Ancash,2008,Frutas preparadas,624072.46,205810.0
 Arequipa,2001,Conservas en vinagre,622386.71,169924.5
 Piura,1207,Semillas oleaginosas,621123.6,251130.0
 Lima,0702,Tomate,618838.22,1078200.0
+Lima,2309,Alimento balanceado,593358.04,226960.6
 Ucayali,1209,Semillas para siembra,574800.0,40000.0
 Ica,1209,Semillas para siembra,572842.01,2140.0
 Huanuco,1805,Cacao en polvo,562749.14,53023.3
+Lima,2202,Bebidas no alcohólicas,553431.56,385618.3
+Callao,1901,Preparaciones de harina y malta,552104.85,205837.0
 Moquegua,0810,"Arándano, fresa y otras bayas",551200.0,77268.0
 Callao,2102,Levaduras,544690.99,509610.0
 San Martin,1207,Semillas oleaginosas,540480.0,240000.0
 Tacna,0804,"Palta, mango, dátil y piña",530655.34,379890.0
 Tacna,2103,Salsas y condimentos,525114.21,244184.0
 Lima,0712,Hortalizas secas,492769.19,92804.0
+Lima,1104,Granos aplastados y copos,478927.71,274841.1
+Tacna,1905,Galletas y panadería,467349.66,200278.6
+Lima,1701,Azúcar de caña,460580.98,657829.9
 Tacna,0805,Cítricos,458660.0,255020.0
 Junin,0813,Frutas secas,447254.08,40220.0
 Huanuco,1803,Pasta de cacao,442835.18,46578.0
 Ica,1207,Semillas oleaginosas,440237.13,114215.0
+Lima,1102,Harinas de cereales,431132.44,134609.4
 San Martin,1804,Manteca de cacao,410346.22,56565.3
 Ayacucho,1801,Cacao en grano,407709.13,75326.0
 Lambayeque,1207,Semillas oleaginosas,402422.9,120847.0
@@ -157,6 +190,8 @@ San Martin,1805,Cacao en polvo,357565.96,48902.8
 Lambayeque,0814,Cortezas de cítricos,356425.72,269000.6
 Tumbes,0804,"Palta, mango, dátil y piña",338882.36,212400.0
 Cusco,1211,Plantas para perfumería,330411.34,44966.0
+Lima,0602,Plantas vivas,322972.84,1320.3
+Arequipa,1704,Confitería sin cacao,305972.61,9286.4
 Piura,0901,Café,298681.1,43401.0
 Ica,0803,Banano y plátano,293550.0,14677.5
 Ica,0710,Hortalizas congeladas,285642.76,63855.8
@@ -164,38 +199,52 @@ Arequipa,1211,Plantas para perfumería,257891.56,20503.5
 Callao,2106,Preparaciones alimenticias,252562.69,49570.8
 Lima,2006,Frutas confitadas,249572.7,105929.1
 Callao,0806,Uva,241152.0,130872.0
+Lima,2302,Salvados y afrecho,240855.02,764813.0
 Junin,2009,Jugos de fruta,240686.95,82739.4
 Callao,2008,Frutas preparadas,239716.51,104738.5
 Tacna,0910,"Jengibre, cúrcuma y especias",235609.9,333860.8
 Ica,0813,Frutas secas,228870.0,20823.0
+Callao,1513,Aceite de coco y palmiste,224072.02,134590.0
 Lima,2105,Helados,221963.29,29771.0
 Piura,0904,Pimienta y ají,218192.52,75355.4
+Callao,3302,Mezclas odoríferas,215462.93,4858.0
 Lambayeque,0805,Cítricos,214774.3,276080.0
+Arequipa,1008,Quinua y cereales andinos,200830.0,57783.2
 Madre De Dios,2008,Frutas preparadas,197911.99,16400.0
 Lima,0802,Nueces,195000.0,25000.0
+Lima,1507,Aceite de soya,192264.58,33131.3
 Piura,1801,Cacao en grano,190000.0,19000.0
 Tacna,0709,Hortalizas frescas (espárrago y otras),189185.0,1891850.0
 Huanuco,2008,Frutas preparadas,184630.05,58559.5
+Callao,1515,Otros aceites vegetales,183766.46,11387.0
 Tacna,0703,Cebolla y ajo,178952.6,1944220.0
 Tacna,0714,Raíces y tubérculos,178680.76,1481359.0
+Callao,1704,Confitería sin cacao,174714.65,37603.1
 Tacna,0904,Pimienta y ají,167303.26,136548.7
 Tumbes,0901,Café,158215.17,33000.0
 Ucayali,1806,Chocolate,156298.47,14510.6
 Ancash,0705,Lechuga,154588.98,39728.3
 Ica,0703,Cebolla y ajo,154508.75,572065.0
+Lima,2203,Cerveza,153735.6,74936.0
 Pasco,0901,Café,149327.66,20010.0
 Callao,0801,Coco y castaña,143264.0,16000.0
 Apurimac,0901,Café,142182.72,21240.0
 Tacna,0708,Legumbres frescas,141824.4,1432454.0
+Lambayeque,1515,Otros aceites vegetales,141824.0,22160.0
 Junin,2005,Hortalizas preparadas,140453.34,11838.9
+Lima,1006,Arroz,134226.88,249600.6
 Callao,0803,Banano y plátano,131290.0,9936.5
 Huanuco,0803,Banano y plátano,130665.58,35341.9
+Callao,1005,Maíz,130620.44,68313.8
 Ayacucho,1207,Semillas oleaginosas,130240.0,15220.0
 Arequipa,0910,"Jengibre, cúrcuma y especias",126928.8,4765.9
 Ancash,0910,"Jengibre, cúrcuma y especias",124717.84,31171.0
 San Martin,1211,Plantas para perfumería,122679.0,11500.0
 Amazonas,1801,Cacao en grano,118700.0,25000.0
+Lima,1902,Pastas alimenticias,116870.98,58109.7
+Lima,1516,Grasas y aceites hidrogenados,113675.05,19686.4
 Callao,2005,Hortalizas preparadas,113093.68,43230.5
+San Martín,1511,Aceite de palma,110716.02,86120.0
 Callao,1208,Harinas,110154.5,15605.0
 Tacna,1806,Chocolate,109477.99,47236.1
 Arequipa,0703,Cebolla y ajo,107080.75,95500.0
@@ -203,10 +252,13 @@ Amazonas,0703,Cebolla y ajo,105350.0,229824.0
 San Martin,1803,Pasta de cacao,104192.54,13837.5
 Arequipa,1806,Chocolate,102595.59,11374.1
 Lambayeque,0910,"Jengibre, cúrcuma y especias",101734.52,36000.0
+Piura,1701,Azúcar de caña,100262.85,85760.0
+Arequipa,1106,Harinas de legumbres y frutas,100199.89,5255.6
 La Libertad,0805,Cítricos,96416.98,99766.0
 San Martin,0904,Pimienta y ají,94636.8,47700.0
 La Libertad,0713,Legumbres secas,93240.0,29970.0
 Piura,1212,Algarroba y otros frutos,88365.81,88365.8
+Lima,1702,Otros azúcares,86343.78,35279.7
 Lambayeque,1801,Cacao en grano,86020.0,21500.0
 Ancash,1211,Plantas para perfumería,83404.89,24000.9
 Lambayeque,2008,Frutas preparadas,83145.0,74510.6
@@ -215,35 +267,63 @@ Ancash,0709,Hortalizas frescas (espárrago y otras),76542.52,20932.1
 Junin,0810,"Arándano, fresa y otras bayas",72785.15,44937.8
 Piura,1202,Maní,72172.8,20160.0
 Cusco,1803,Pasta de cacao,70998.51,2924.4
+La Libertad,1904,Cereales inflados y hojuelas,70601.44,14096.0
+Tacna,1902,Pastas alimenticias,70159.41,58449.9
 Lambayeque,0712,Hortalizas secas,68140.0,13200.0
+Lima,2206,Otras bebidas fermentadas,67995.36,36370.1
+Tacna,1106,Harinas de legumbres y frutas,64167.91,32500.0
+Tacna,1904,Cereales inflados y hojuelas,63913.71,104120.4
 Tacna,2104,Sopas y caldos,61353.63,24297.3
+Lima,1509,Aceite de oliva,59918.4,7795.9
 Tacna,2106,Preparaciones alimenticias,58749.43,35310.6
 Arequipa,2106,Preparaciones alimenticias,56924.16,3498.7
+Lima,1001,Trigo,56438.47,29395.5
 Ayacucho,0713,Legumbres secas,56408.2,28890.0
 Callao,1806,Chocolate,54187.9,10934.3
 Piura,0712,Hortalizas secas,52488.0,6400.0
+Lima,2209,Vinagre,52109.06,63200.2
 Piura,0703,Cebolla y ajo,51060.0,204240.0
 Cajamarca,1801,Cacao en grano,50856.0,10920.0
 Tumbes,1202,Maní,48000.0,75000.0
 La Libertad,0808,Manzana y pera,46800.0,22560.0
+Tacna,2201,Agua,46179.83,37021.2
 Callao,0713,Legumbres secas,46107.05,15396.6
 Ica,0704,Coles y brócoli,45765.0,3051.0
 La Libertad,2007,Mermeladas y purés,41027.4,12189.3
+Callao,1102,Harinas de cereales,40992.0,6720.0
 Ancash,0806,Uva,40263.57,34440.0
 Lima,0902,Té,38965.74,5210.5
+Lima,0403,Yogur y leches ácidas,37071.37,11543.1
 Callao,1211,Plantas para perfumería,37050.0,27986.2
+Callao,1106,Harinas de legumbres y frutas,34977.41,2325.0
 Tacna,0901,Café,34102.93,11052.2
 Puno,1202,Maní,33800.0,50000.0
+Tacna,1901,Preparaciones de harina y malta,32493.48,16678.9
+Tacna,1509,Aceite de oliva,31360.0,20360.0
+Lima,0208,Carne de cuy y otras,31156.6,1355.7
 La Libertad,0904,Pimienta y ají,30730.92,15595.4
+Callao,1904,Cereales inflados y hojuelas,30279.2,4448.6
 Tacna,2101,Extractos de café y té,29781.79,8424.7
 Piura,1211,Plantas para perfumería,28695.3,5100.0
+Callao,1701,Azúcar de caña,28657.53,20272.0
+Tacna,1006,Arroz,28462.0,237771.8
+Tacna,1701,Azúcar de caña,28222.6,31135.6
+Tacna,0404,Lactosuero,28216.59,10877.7
+Tacna,1102,Harinas de cereales,28171.53,24817.9
 Tacna,0807,Melón y sandía,27834.0,292700.0
 San Martin,2106,Preparaciones alimenticias,27200.0,3200.0
 Junin,1803,Pasta de cacao,27084.8,1925.0
+Lima,2204,Vino,27004.21,1651.3
 Lambayeque,2103,Salsas y condimentos,26919.0,8473.1
+Lima,1108,Almidones y féculas,26705.37,7726.8
+Ica,2302,Salvados y afrecho,26069.24,95956.0
+Callao,1104,Granos aplastados y copos,26038.96,9722.4
 San Martin,1802,Cáscara de cacao,25323.2,56600.0
 Lima,0906,Canela,24367.65,2616.9
+Tumbes,1008,Quinua y cereales andinos,24000.0,20000.0
 Piura,0711,Hortalizas conservadas provisionalmente,23729.17,21340.0
+Tacna,1404,"Productos vegetales diversos (tara, achiote)",23307.26,7025.0
+Ica,0603,Flores cortadas,22883.27,1876.0
 Callao,2007,Mermeladas y purés,22480.8,11020.0
 Lima,0909,Semillas de anís e hinojo,22343.74,3101.7
 Ica,2008,Frutas preparadas,22050.0,3150.0
@@ -252,85 +332,172 @@ Ucayali,1804,Manteca de cacao,20762.66,1287.7
 Callao,2101,Extractos de café y té,20141.63,3023.6
 Callao,0714,Raíces y tubérculos,20045.17,6866.0
 Ancash,0805,Cítricos,20000.0,26000.0
+Lima,1105,Harina y copos de papa,19961.11,6173.8
+Ica,1005,Maíz,19959.6,8592.0
 Lima,1204,Linaza,19943.88,4941.9
+San Martin,1515,Otros aceites vegetales,19665.0,950.0
+Tumbes,1005,Maíz,18430.0,28000.0
 Lima,0809,"Melocotón, cereza y ciruela",18360.0,30600.0
 San Martin,0905,Vainilla,17480.43,35.0
 Lima,0701,Papa,17217.76,5183.0
+Lambayeque,1905,Galletas y panadería,16224.0,5142.2
+Lima,1107,Malta,15905.48,8033.7
 San Martin,0801,Coco y castaña,15610.0,19000.0
 Tumbes,0712,Hortalizas secas,15520.0,24250.0
+Callao,2202,Bebidas no alcohólicas,15205.25,5768.6
+Lima,2208,Pisco y licores,15063.69,1451.8
 Puno,0703,Cebolla y ajo,14572.8,28800.0
+Lima,1517,Margarina,13937.34,2395.2
+Arequipa,1102,Harinas de cereales,13887.68,828.7
+Callao,1006,Arroz,13690.0,6171.7
 Arequipa,0701,Papa,13305.6,28800.0
 San Martin,2006,Frutas confitadas,13115.0,6100.0
 Arequipa,0711,Hortalizas conservadas provisionalmente,13056.0,16320.0
+Arequipa,2202,Bebidas no alcohólicas,12997.5,46688.9
 Cusco,0801,Coco y castaña,12000.0,10000.0
+Lima,1103,Sémola y pellets de cereal,11480.99,6793.2
 Apurimac,1207,Semillas oleaginosas,11300.0,2000.0
 Ica,2005,Hortalizas preparadas,11286.0,736.6
 Lima,2004,Hortalizas congeladas preparadas,10443.1,2760.7
+Piura,1106,Harinas de legumbres y frutas,10438.98,400.0
+Arequipa,1404,"Productos vegetales diversos (tara, achiote)",10436.17,1080.0
+Huanuco,1702,Otros azúcares,10411.7,900.0
+Cusco,1302,Extractos vegetales (tara y otros),10333.08,130.0
 Tumbes,0801,Coco y castaña,10296.0,30820.0
 Moquegua,0806,Uva,10080.0,8000.0
+Lambayeque,2202,Bebidas no alcohólicas,9775.0,3098.2
+Tacna,3302,Mezclas odoríferas,9621.9,4547.2
 Callao,2104,Sopas y caldos,9600.9,3129.2
+Ica,3302,Mezclas odoríferas,9590.4,2332.8
+Huanuco,1106,Harinas de legumbres y frutas,9588.23,476.0
+Arequipa,3301,Aceites esenciales,9302.05,68.1
+Lima,0401,Leche y nata sin concentrar,8960.0,2915.1
+Piura,1302,Extractos vegetales (tara y otros),8604.06,390.0
 La Libertad,0714,Raíces y tubérculos,8509.11,11068.0
 Tacna,2007,Mermeladas y purés,8070.89,2830.1
 Lima,0907,Clavo de olor,7940.62,1126.1
 Cusco,0813,Frutas secas,7850.3,300.0
 Moquegua,1806,Chocolate,7825.29,2604.4
 Lima,2102,Levaduras,7574.15,3626.1
+Lambayeque,2203,Cerveza,7410.0,2061.3
 Lima,0905,Vainilla,7275.0,15.0
+Lima,0409,Miel de abeja,7227.2,1061.7
 Arequipa,1204,Linaza,7171.2,660.5
 Lima,0807,Melón y sandía,7094.0,68335.0
 Ucayali,1803,Pasta de cacao,6920.89,429.2
+Ica,1006,Arroz,6920.32,5140.0
 Lima,1206,Girasol,6567.43,2818.4
+Tacna,0402,Leche en polvo,6478.3,2457.1
+Tacna,1104,Granos aplastados y copos,6156.26,36445.1
+Loreto,1106,Harinas de legumbres y frutas,6000.0,200.0
+Ayacucho,1302,Extractos vegetales (tara y otros),5706.93,100.0
+Junin,1106,Harinas de legumbres y frutas,5636.41,600.0
+Tacna,1704,Confitería sin cacao,5606.39,5595.3
+Callao,1105,Harina y copos de papa,5542.8,2360.8
 Tacna,0909,Semillas de anís e hinojo,5239.82,2353.1
+Tacna,1005,Maíz,5100.5,29680.0
 Ica,2106,Preparaciones alimenticias,5068.8,299.5
 Tumbes,1207,Semillas oleaginosas,5035.0,19900.0
+Callao,2308,Residuos vegetales para forraje,4953.6,1344.0
+Lima,1301,Gomas y resinas,4857.58,165.4
 Ica,0904,Pimienta y ají,4758.78,414.7
 Arequipa,0902,Té,4536.0,270.7
 Lima,1201,Soya,4417.43,1939.5
 Lambayeque,1806,Chocolate,4389.0,1391.1
 Moquegua,0804,"Palta, mango, dátil y piña",4183.2,7200.0
+Tacna,2209,Vinagre,4055.0,2767.9
 Callao,0712,Hortalizas secas,4001.0,1706.0
 Ica,0713,Legumbres secas,3551.04,1296.0
 Tacna,0801,Coco y castaña,3536.0,35360.0
+Tacna,0401,Leche y nata sin concentrar,3439.09,1575.3
 Callao,1803,Pasta de cacao,3400.0,200.0
+Tacna,1507,Aceite de soya,3351.12,2518.2
 Tacna,2001,Conservas en vinagre,3264.34,1779.6
 Loreto,0811,Frutas congeladas,3100.0,500.0
+Lima,1512,Aceite de girasol y cártamo,3037.16,161.6
 Amazonas,1806,Chocolate,2975.6,110.1
 San Martin,1806,Chocolate,2958.2,133.0
+Lambayeque,1005,Maíz,2937.0,930.9
+Tacna,1101,Harina de trigo,2912.93,1501.5
+Lambayeque,2208,Pisco y licores,2871.0,492.6
+Loreto,0106,Otros animales vivos,2850.0,28.4
 Ayacucho,0804,"Palta, mango, dátil y piña",2760.0,900.0
 Lima,0707,Pepino,2740.97,770.9
+Tacna,1512,Aceite de girasol y cártamo,2692.9,1320.0
+Tacna,0603,Flores cortadas,2624.0,5428.0
+Ica,1704,Confitería sin cacao,2613.6,198.0
+Lambayeque,1904,Cereales inflados y hojuelas,2545.32,1037.6
 Arequipa,1207,Semillas oleaginosas,2508.0,240.0
 Ica,0712,Hortalizas secas,2400.0,960.0
 La Libertad,0807,Melón y sandía,2250.0,300.0
 Tacna,2008,Frutas preparadas,2209.56,8113.6
+Lima,1003,Cebada,2201.67,2026.7
+Lima,0405,Mantequilla,2122.3,668.3
 Lambayeque,0904,Pimienta y ají,2080.0,659.3
 Tumbes,1211,Plantas para perfumería,2000.0,2000.0
+Lima,1703,Melaza,1965.6,726.1
 Lima,0808,Manzana y pera,1940.34,1248.7
+Ica,2209,Vinagre,1839.12,1137.6
 Lambayeque,2106,Preparaciones alimenticias,1779.0,563.9
+Lima,1101,Harina de trigo,1553.66,944.5
+Tacna,0403,Yogur y leches ácidas,1548.19,601.7
+Lima,2201,Agua,1546.51,3887.8
 Tacna,0902,Té,1521.0,558.2
+Arequipa,2201,Agua,1367.9,6099.3
 Tacna,2009,Jugos de fruta,1360.39,1286.2
 Junin,2008,Frutas preparadas,1312.31,140.0
+Huanuco,1302,Extractos vegetales (tara y otros),1291.9,100.0
 Arequipa,1805,Cacao en polvo,1248.48,74.5
+Callao,2203,Cerveza,1248.0,380.6
+Tacna,1703,Melaza,1162.63,2832.1
+Lima,1004,Avena,1159.06,316.7
+Tacna,1515,Otros aceites vegetales,1082.59,790.8
+Lambayeque,2204,Vino,1030.0,219.0
 Tacna,0903,Mate,1009.34,312.4
 Junin,1806,Chocolate,885.0,60.0
 Lima,0706,Zanahoria y remolacha,739.2,7392.0
 Tacna,0905,Vainilla,738.4,250.6
+Ica,1003,Cebada,720.0,600.0
 La Libertad,1211,Plantas para perfumería,720.0,360.0
+Arequipa,1103,Sémola y pellets de cereal,705.6,42.1
 Callao,0906,Canela,705.17,171.6
 Arequipa,0813,Frutas secas,672.0,39.3
+Lambayeque,2201,Agua,660.0,209.2
+Lambayeque,1704,Confitería sin cacao,630.0,199.7
 Tacna,0713,Legumbres secas,490.0,3500.0
 Ayacucho,0904,Pimienta y ají,478.32,200.0
+Callao,1101,Harina de trigo,429.02,104.4
 Lambayeque,2101,Extractos de café y té,416.0,54.4
+Ica,1904,Cereales inflados y hojuelas,412.8,144.0
 Piura,1803,Pasta de cacao,403.02,60.0
 Tumbes,0904,Pimienta y ají,400.0,2000.0
 Callao,0905,Vainilla,399.28,108.0
+Lima,0603,Flores cortadas,379.35,25.0
+Tacna,1108,Almidones y féculas,377.62,133.8
+Piura,1904,Cereales inflados y hojuelas,364.0,56.0
 Tacna,0906,Canela,363.27,2028.1
 Ica,1806,Chocolate,355.2,20.6
 Ica,2007,Mermeladas y purés,331.2,86.4
 Tacna,0710,Hortalizas congeladas,322.28,3115.0
+Junin,1702,Otros azúcares,287.5,25.0
+Tacna,1103,Sémola y pellets de cereal,224.07,104.9
+Arequipa,1905,Galletas y panadería,217.5,27.8
 Callao,1212,Algarroba y otros frutos,201.36,24.0
+Callao,1302,Extractos vegetales (tara y otros),200.0,5.0
+Lambayeque,1001,Trigo,198.0,62.8
 Lima,1214,Forrajes,197.7,30.0
 Amazonas,1805,Cacao en polvo,182.0,6.7
+La Libertad,0602,Plantas vivas,180.0,1.9
+Lambayeque,3302,Mezclas odoríferas,165.0,52.3
+Tacna,1003,Cebada,136.74,1346.0
+Junin,1515,Otros aceites vegetales,120.0,5.0
+Lima,0404,Lactosuero,120.0,77.1
+Tacna,1008,Quinua y cereales andinos,112.0,700.0
+Tacna,0405,Mantequilla,69.67,23.5
 Tacna,1212,Algarroba y otros frutos,67.2,229.0
+Lima,2207,Alcohol etílico,33.84,14.0
+La Libertad,2209,Vinagre,24.67,4.8
+Tacna,1702,Otros azúcares,23.28,6.0
 Callao,0809,"Melocotón, cereza y ciruela",10.51,10.0
 Lima,1202,Maní,0.94,0.1
 Piura,2007,Mermeladas y purés,0.1,1.9

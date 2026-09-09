@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-08T14:36:06",
+ "generado": "2026-09-09T00:04:35",
  "fuente": "Terrarium (AWS elevation-tiles-prod) zoom 9, ~299 m/px",
  "validacion": {
   "motivo": "cota muestreada contra 20 altitudes publicadas de plaza",
@@ -75,54 +75,54 @@
   ]
  },
  "distritos": {
-  "total": 580,
+  "total": 629,
   "por_piso": [
    {
     "piso": "chala",
-    "distritos": 190,
-    "fob_mm": 21259.3,
-    "pct": 75.4
+    "distritos": 195,
+    "fob_mm": 24832.3,
+    "pct": 75.6
    },
    {
     "piso": "yunga",
-    "distritos": 77,
-    "fob_mm": 3227.0,
-    "pct": 11.4
+    "distritos": 85,
+    "fob_mm": 3645.1,
+    "pct": 11.1
    },
    {
     "piso": "ceja de selva",
-    "distritos": 59,
-    "fob_mm": 2370.1,
-    "pct": 8.4
+    "distritos": 61,
+    "fob_mm": 2376.3,
+    "pct": 7.2
    },
    {
     "piso": "quechua",
-    "distritos": 103,
-    "fob_mm": 582.1,
-    "pct": 2.1
+    "distritos": 118,
+    "fob_mm": 771.5,
+    "pct": 2.3
    },
    {
     "piso": "selva alta",
     "distritos": 26,
-    "fob_mm": 382.4,
-    "pct": 1.4
+    "fob_mm": 604.9,
+    "pct": 1.8
    },
    {
     "piso": "selva baja",
-    "distritos": 28,
-    "fob_mm": 199.7,
-    "pct": 0.7
+    "distritos": 38,
+    "fob_mm": 392.1,
+    "pct": 1.2
    },
    {
     "piso": "puna",
-    "distritos": 46,
-    "fob_mm": 96.9,
-    "pct": 0.3
+    "distritos": 51,
+    "fob_mm": 118.2,
+    "pct": 0.4
    },
    {
     "piso": "suni",
-    "distritos": 51,
-    "fob_mm": 72.3,
+    "distritos": 55,
+    "fob_mm": 94.7,
     "pct": 0.3
    }
   ]
@@ -178,7 +178,7 @@
   },
   {
    "familia": "Cacao en grano",
-   "fob_mm": 1154.2,
+   "fob_mm": 1154.1,
    "p10": 122.4,
    "p50": 483.5,
    "p90": 1212.8,
@@ -201,12 +201,36 @@
    "distritos": 118
   },
   {
+   "familia": "Alimento balanceado",
+   "fob_mm": 756.1,
+   "p10": 18.4,
+   "p50": 18.4,
+   "p90": 125.7,
+   "distritos": 36
+  },
+  {
+   "familia": "Galletas y panadería",
+   "fob_mm": 519.1,
+   "p10": 66.0,
+   "p50": 125.7,
+   "p90": 125.7,
+   "distritos": 64
+  },
+  {
    "familia": "Pimienta y ají",
    "fob_mm": 486.3,
    "p10": 57.4,
    "p50": 237.7,
    "p90": 396.9,
    "distritos": 94
+  },
+  {
+   "familia": "Aceite de palma",
+   "fob_mm": 469.8,
+   "p10": 14.0,
+   "p50": 152.6,
+   "p90": 505.3,
+   "distritos": 20
   },
   {
    "familia": "Cebolla y ajo",
@@ -225,12 +249,28 @@
    "distritos": 53
   },
   {
+   "familia": "Alcohol etílico",
+   "fob_mm": 357.0,
+   "p10": 35.2,
+   "p50": 76.8,
+   "p90": 391.4,
+   "distritos": 18
+  },
+  {
    "familia": "Banano y plátano",
    "fob_mm": 348.8,
    "p10": 67.8,
    "p50": 105.8,
    "p90": 125.6,
    "distritos": 61
+  },
+  {
+   "familia": "Quinua y cereales andinos",
+   "fob_mm": 327.9,
+   "p10": 49.1,
+   "p50": 211.7,
+   "p90": 2984.6,
+   "distritos": 97
   },
   {
    "familia": "Frutas preparadas",
@@ -257,6 +297,14 @@
    "distritos": 70
   },
   {
+   "familia": "Azúcar de caña",
+   "fob_mm": 273.9,
+   "p10": 94.7,
+   "p50": 391.4,
+   "p90": 391.4,
+   "distritos": 55
+  },
+  {
    "familia": "Conservas en vinagre",
    "fob_mm": 262.5,
    "p10": 18.4,
@@ -266,19 +314,27 @@
   },
   {
    "familia": "Semillas para siembra",
-   "fob_mm": 232.4,
+   "fob_mm": 232.3,
    "p10": 103.0,
    "p50": 146.4,
    "p90": 396.9,
-   "distritos": 50
+   "distritos": 49
   },
   {
    "familia": "Preparaciones alimenticias",
-   "fob_mm": 232.1,
+   "fob_mm": 232.0,
    "p10": 49.1,
    "p50": 76.8,
    "p90": 122.4,
    "distritos": 78
+  },
+  {
+   "familia": "Aceites esenciales",
+   "fob_mm": 219.8,
+   "p10": 94.7,
+   "p50": 99.7,
+   "p90": 113.7,
+   "distritos": 47
   },
   {
    "familia": "Hortalizas congeladas",
@@ -305,6 +361,14 @@
    "distritos": 110
   },
   {
+   "familia": "Preparaciones de harina y malta",
+   "fob_mm": 173.8,
+   "p10": 153.2,
+   "p50": 850.4,
+   "p90": 850.4,
+   "distritos": 37
+  },
+  {
    "familia": "Salsas y condimentos",
    "fob_mm": 162.2,
    "p10": 16.2,
@@ -313,12 +377,36 @@
    "distritos": 80
   },
   {
+   "familia": "Productos vegetales diversos (tara, achiote)",
+   "fob_mm": 151.3,
+   "p10": 107.2,
+   "p50": 211.7,
+   "p90": 3150.6,
+   "distritos": 94
+  },
+  {
+   "familia": "Extractos vegetales (tara y otros)",
+   "fob_mm": 145.1,
+   "p10": 69.6,
+   "p50": 211.7,
+   "p90": 3150.6,
+   "distritos": 87
+  },
+  {
    "familia": "Algarroba y otros frutos",
    "fob_mm": 140.1,
    "p10": 446.6,
    "p50": 1007.4,
    "p90": 2326.1,
    "distritos": 71
+  },
+  {
+   "familia": "Leche en polvo",
+   "fob_mm": 129.2,
+   "p10": 125.7,
+   "p50": 850.4,
+   "p90": 850.4,
+   "distritos": 23
   },
   {
    "familia": "Cacao en polvo",
@@ -346,11 +434,19 @@
   },
   {
    "familia": "Coco y castaña",
-   "fob_mm": 105.1,
+   "fob_mm": 105.0,
    "p10": 115.8,
    "p50": 243.0,
    "p90": 2510.4,
    "distritos": 48
+  },
+  {
+   "familia": "Pastas alimenticias",
+   "fob_mm": 97.9,
+   "p10": 14.0,
+   "p50": 58.5,
+   "p90": 267.4,
+   "distritos": 47
   },
   {
    "familia": "Tomate preparado",
@@ -361,6 +457,14 @@
    "distritos": 8
   },
   {
+   "familia": "Harinas de legumbres y frutas",
+   "fob_mm": 85.6,
+   "p10": 49.1,
+   "p50": 122.4,
+   "p90": 850.4,
+   "distritos": 102
+  },
+  {
    "familia": "Plantas para perfumería",
    "fob_mm": 83.0,
    "p10": 66.0,
@@ -369,12 +473,52 @@
    "distritos": 142
   },
   {
+   "familia": "Maíz",
+   "fob_mm": 80.1,
+   "p10": 49.1,
+   "p50": 430.7,
+   "p90": 3813.0,
+   "distritos": 85
+  },
+  {
+   "familia": "Aceite de coco y palmiste",
+   "fob_mm": 75.3,
+   "p10": 14.0,
+   "p50": 505.3,
+   "p90": 520.2,
+   "distritos": 20
+  },
+  {
+   "familia": "Bebidas no alcohólicas",
+   "fob_mm": 72.4,
+   "p10": 119.5,
+   "p50": 850.4,
+   "p90": 2248.4,
+   "distritos": 65
+  },
+  {
+   "familia": "Bulbos y tubérculos de flor",
+   "fob_mm": 62.2,
+   "p10": 61.3,
+   "p50": 146.4,
+   "p90": 146.4,
+   "distritos": 5
+  },
+  {
    "familia": "Sopas y caldos",
    "fob_mm": 51.7,
    "p10": 14.0,
    "p50": 153.2,
    "p90": 153.2,
    "distritos": 41
+  },
+  {
+   "familia": "Pisco y licores",
+   "fob_mm": 51.4,
+   "p10": 37.6,
+   "p50": 118.2,
+   "p90": 461.8,
+   "distritos": 74
   }
  ],
  "hubs": [
@@ -382,89 +526,89 @@
    "hub": "Pisco",
    "alt_m": 20.0,
    "piso": "chala",
-   "distritos": 160,
-   "alt_carga_p50": 381.9,
-   "alt_carga_p90": 498.1,
-   "desnivel_p90": 478.1,
+   "distritos": 166,
+   "alt_carga_p50": 354.7,
+   "alt_carga_p90": 522.6,
+   "desnivel_p90": 502.6,
    "alt_max": 4701.3,
-   "fob_mm": 11000.6
+   "fob_mm": 13454.8
   },
   {
    "hub": "Chiclayo",
    "alt_m": 32.9,
    "piso": "chala",
-   "distritos": 116,
-   "alt_carga_p50": 115.8,
-   "alt_carga_p90": 1951.7,
-   "desnivel_p90": 1918.8,
-   "alt_max": 2982.9,
-   "fob_mm": 8049.4
+   "distritos": 124,
+   "alt_carga_p50": 113.5,
+   "alt_carga_p90": 1949.4,
+   "desnivel_p90": 1916.5,
+   "alt_max": 3293.1,
+   "fob_mm": 10462.3
   },
   {
    "hub": "Huamachuco",
    "alt_m": 3190.3,
    "piso": "quechua",
-   "distritos": 57,
-   "alt_carga_p50": 109.8,
-   "alt_carga_p90": 648.3,
-   "desnivel_p90": -2542.0,
+   "distritos": 63,
+   "alt_carga_p50": 95.0,
+   "alt_carga_p90": 658.2,
+   "desnivel_p90": -2532.1,
    "alt_max": 4220.6,
-   "fob_mm": 5082.1
+   "fob_mm": 5932.1
   },
   {
    "hub": "Juliaca",
    "alt_m": 3845.1,
    "piso": "suni",
-   "distritos": 52,
-   "alt_carga_p50": 1329.2,
-   "alt_carga_p90": 2643.3,
-   "desnivel_p90": -1201.8,
+   "distritos": 63,
+   "alt_carga_p50": 1331.3,
+   "alt_carga_p90": 2634.1,
+   "desnivel_p90": -1211.0,
    "alt_max": 4917.6,
-   "fob_mm": 742.4
-  },
-  {
-   "hub": "Satipo",
-   "alt_m": 626.6,
-   "piso": "selva alta",
-   "distritos": 9,
-   "alt_carga_p50": 1089.9,
-   "alt_carga_p90": 1453.8,
-   "desnivel_p90": 827.2,
-   "alt_max": 1723.0,
-   "fob_mm": 581.1
-  },
-  {
-   "hub": "Tarma",
-   "alt_m": 3061.3,
-   "piso": "ceja de selva",
-   "distritos": 82,
-   "alt_carga_p50": 1861.5,
-   "alt_carga_p90": 4114.8,
-   "desnivel_p90": 1053.5,
-   "alt_max": 4802.9,
-   "fob_mm": 380.2
+   "fob_mm": 891.1
   },
   {
    "hub": "Bellavista",
    "alt_m": 318.1,
    "piso": "selva baja",
-   "distritos": 32,
-   "alt_carga_p50": 544.4,
-   "alt_carga_p90": 1207.4,
-   "desnivel_p90": 889.3,
-   "alt_max": 2612.6,
-   "fob_mm": 343.6
+   "distritos": 40,
+   "alt_carga_p50": 517.0,
+   "alt_carga_p90": 1212.5,
+   "desnivel_p90": 894.4,
+   "alt_max": 3316.7,
+   "fob_mm": 711.6
+  },
+  {
+   "hub": "Satipo",
+   "alt_m": 626.6,
+   "piso": "selva alta",
+   "distritos": 10,
+   "alt_carga_p50": 1075.3,
+   "alt_carga_p90": 1453.6,
+   "desnivel_p90": 827.0,
+   "alt_max": 1723.0,
+   "fob_mm": 584.0
+  },
+  {
+   "hub": "Tarma",
+   "alt_m": 3061.3,
+   "piso": "ceja de selva",
+   "distritos": 95,
+   "alt_carga_p50": 956.3,
+   "alt_carga_p90": 4088.5,
+   "desnivel_p90": 1027.2,
+   "alt_max": 4802.9,
+   "fob_mm": 578.5
   },
   {
    "hub": "Sicuani",
    "alt_m": 3549.1,
-   "piso": "puna",
-   "distritos": 36,
-   "alt_carga_p50": 3335.8,
-   "alt_carga_p90": 3819.7,
-   "desnivel_p90": 270.6,
+   "piso": "suni",
+   "distritos": 46,
+   "alt_carga_p50": 3802.5,
+   "alt_carga_p90": 4084.9,
+   "desnivel_p90": 535.8,
    "alt_max": 4732.5,
-   "fob_mm": 62.7
+   "fob_mm": 90.6
   }
  ]
 }

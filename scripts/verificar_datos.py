@@ -142,6 +142,12 @@ def documentacion():
         ("plantas certificadas", str(aco["senasa"]["empacadoras"])),
         ("plantas sin embarque propio", str(aco["senasa"]["sin_embarque_propio"])),
         ("distritos huérfanos", str(aco["huerfanos"]["distritos"])),
+        # La carga que ningún centro alcanza es la cifra que justifica abrir un
+        # almacén. Estuvo inflada veinte veces porque el centro se heredaba de
+        # la celda de demanda y no se ruteaba al distrito, así que conviene que
+        # la documentación y el dato no se separen otra vez.
+        ("distritos sin centro",
+         "%d distritos" % aco["sin_centro"]["distritos"]),
         # La accesibilidad se movió nueve puntos al entrar la pendiente en el
         # ruteo, y el README tenía la cifra vieja. Las dos van juntas: la de
         # hoy y la de antes, porque el documento explica el cambio.

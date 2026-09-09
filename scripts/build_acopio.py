@@ -32,13 +32,19 @@ import os
 import sys
 
 import h3
+import numpy as np
 import pandas as pd
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from tandas import leer_en_tandas                      # noqa: E402
 
 PROC = "data/exportaciones/processed"
 OPERACIONES = os.path.join(PROC, "operaciones_limpias.csv")
 MERCADO = os.path.join(PROC, "mercado.json")
 SECTORES = "out/sectores_2024.csv"
-ASIGNACION = "out/hubs_asignacion.csv"
+# La reticula H3 solo se usa ya para el territorio de venta; el centro que
+# sirve a cada distrito se rutea al distrito y viene de aqui.
+HUB_DISTRITO = "out/hubs_distrito.csv"
 CARTERA = "out/cartera_territorio.csv"
 CELDAS = "out/clusters_celda.csv"
 SENASA = "out/senasa_exportadores.csv"
@@ -52,17 +58,19 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
 
 
 def main():
-    for p in (OPERACIONES, MERCADO, SECTORES, ASIGNACION):
+    for p in (OPERACIONES, MERCADO, SECTORES, HUB_DISTRITO):
         if not os.path.exists(p):
             sys.exit("falta " + p)
     m = json.load(io.open(MERCADO, encoding="utf-8"))
     anios = m["departamentos"]["anios_usados"]
 
-    d = pd.read_csv(OPERACIONES, encoding="utf-8-sig", low_memory=False,
-                    usecols=["ruc", "ubigeo", "fob_usd", "anio", "mes",
-                             "familia", "peso_neto_kg"], dtype=str)
-    for c in ("fob_usd", "peso_neto_kg"):
-        d[c] = pd.to_numeric(d[c], errors="coerce").fillna(0.0)
+    # En tandas: el archivo pasó de 562 a 719 MB al ampliar el universo
+    # arancelario y el tokenizador de pandas pide un bloque contiguo de ese
+    # tamaño, que esta máquina no tiene. Ver `scripts/tandas.py`.
+    d = leer_en_tandas(OPERACIONES, {
+        "ruc": "category", "ubigeo": "str", "anio": "category",
+        "mes": "category", "familia": "category",
+        "fob_usd": "float64", "peso_neto_kg": "float64"})
     d = d[d.anio.isin(anios) & d.ubigeo.fillna("").str.fullmatch(r"\d{6}")]
 
     # ---------------------------------------------------- por distrito --
@@ -100,9 +108,24 @@ def main():
                    for a, b in zip(j.lat, j.lon)]
 
     # ------------------------------------------------- hub y territorio --
-    asg = pd.read_csv(ASIGNACION, encoding="utf-8-sig")
-    asg = asg.drop_duplicates("h3").set_index("h3")
-    j = j.join(asg[["hub", "horas_al_hub", "cubierto_2h"]], on="h3")
+    # El centro que sirve al distrito se rutea al distrito, y no se hereda de
+    # la celda de demanda que le toca encima.
+    #
+    # Heredarlo de la celda parecia inofensivo y no lo era: `hubs_asignacion`
+    # solo tiene las celdas **con clientes**, porque de eso trata la red. Donde
+    # la produccion es de agroindustria grande y no de pequenos agricultores no
+    # hay celda, y el distrito salia sin centro que lo alcance. Olmos —US$
+    # 1,599 MM de arandano, 118 empresas, 56,369 ha— encabezaba asi la lista de
+    # carga que ningun centro sirve, y lo que faltaba no era carretera sino la
+    # celda. `build_hubs.py` rutea ahora los 1,834 distritos del pais desde la
+    # red elegida, en la misma corrida y con el mismo grafo con pendiente.
+    hd = pd.read_csv(HUB_DISTRITO, encoding="utf-8-sig",
+                     dtype={"ubigeo": str})
+    hd = hd.drop_duplicates("ubigeo").set_index("ubigeo")
+    # `j` viene indexado por ubigeo, que es la clave del cruce.
+    j = j.join(hd[["hub", "horas_al_hub", "cubierto_2h", "km_al_nodo",
+                   "promesa_h", "cubierto_promesa"]])
+    j["hub"] = j["hub"].replace("", np.nan)
     j["fob_mm"] = (j.fob / 1e6).round(1)
     j = j.sort_values("fob", ascending=False).reset_index()
 
@@ -174,9 +197,9 @@ def main():
         g = (sub.groupby("ubigeo")
              .agg(fob=("fob_usd", "sum"), empresas=("ruc", "nunique")))
         g = g.join(geo).dropna(subset=["lat"]).sort_values("fob", ascending=False)
-        g = g.join(asg[["hub", "horas_al_hub"]].reindex(
-            [h3.latlng_to_cell(float(a), float(b), RES_HUB)
-             for a, b in zip(g.lat, g.lon)]).set_index(g.index))
+        # Por ubigeo, como arriba: la celda de demanda no cubre los distritos
+        # donde produce la agroindustria grande.
+        g = g.join(hd[["hub", "horas_al_hub"]])
         pm = sub.groupby("mes").fob_usd.sum()
         por_prod[clave] = {
             "familia": familia, "salvedad": salvedad,

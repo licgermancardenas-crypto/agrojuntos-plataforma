@@ -100,6 +100,7 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/geoespacial/h3_r5.csv` | 1,992 celdas hexagonales de ~292 km² con mercado, clientes y accesibilidad |
 | `datos/geoespacial/clusters_territorio.csv` | 57 territorios de venta detectados por densidad |
 | `datos/geoespacial/hubs_cobertura.csv` | Orden óptimo de apertura de centros, a 2, 4 y 6 horas |
+| `datos/geoespacial/hubs_distrito.csv` | Los 1,826 distritos del país con su centro, sus horas y la distancia al nodo vial usado |
 | `datos/empresas/cartera_empresa.csv` | Cada empresa con su territorio de venta y el centro que la sirve |
 | `datos/empresas/cartera_territorio.csv` | Cartera de los 57 territorios: empresas, agroindustria, agroexportadores y cobertura a dos horas |
 | `agro_insumos_pe_data/processed_data/importadores_insumos_agro.csv` | 446 importadores de insumos, sin el nitrato de amonio de uso minero |
@@ -833,10 +834,26 @@ datos/acopio/acopio_huerfanos.csv   la que no cae en ningún territorio
 ```
 
 **La pregunta de inventario no es cuánto mercado hay sino cuánto se alcanza.**
-Pisco llega a US$ 6,236 MM a dos horas y Huamachuco a 2; Chiclayo pasa de
-2,142 a 8,623 al abrir el radio de dos a seis, así que lo que vale depende del
-compromiso de entrega. Y 41 distritos con 2,257 MM no tienen centro que los
-sirva —Olmos solo son 1,599—: no es carga cero, es carga fuera de alcance.
+Pisco llega a US$ 6,254 MM a dos horas y Chiclayo a 2,142; Chiclayo pasa de
+2,142 a 8,999 al abrir el radio de dos a seis, así que lo que vale depende del
+compromiso de entrega. Fuera de alcance quedan **22 distritos con 130 MM**, y
+lo que los deja fuera ya no es la distancia: ocho de ellos —Santa Anita entre
+ellos, que son 87 de esos 130— no traen geometría en la capa distrital, y el
+resto son ribereños de Loreto y Madre de Dios sin ninguna ruta por carretera.
+
+Esa cifra era **41 distritos y US$ 2,257 MM**, y la diferencia no fue abrir
+ningún almacén. El centro que sirve a cada distrito se heredaba de la celda H3
+que le tocaba encima, y `hubs_asignacion.csv` solo tiene las celdas **con
+clientes**: donde produce la agroindustria grande y no el pequeño agricultor no
+hay celda, y el distrito salía sin centro. Olmos —1,599 MM de arándano, 118
+empresas, 56,369 ha— encabezaba así la lista de carga que nadie alcanza, y está
+a **2.5 horas de Chiclayo**, dentro de la promesa de cuatro. `build_hubs.py`
+rutea ahora los 1,826 distritos del país desde la red elegida, al punto medio
+de sus sectores agrícolas —donde está la tierra, no el centro del polígono— y
+al primero de los quince nodos viales más cercanos al que de verdad se llegue:
+el grafo de OSM tiene tramos sueltos, y engancharse al más cercano a secas
+dejaba a Chao, con 1,602 MM y a cinco kilómetros de la Panamericana, sin salida
+al resto del país.
 
 **La mitad de la carga cae fuera de los territorios de venta.** US$ 17,670 MM
 en 416 distritos, el 54%. No es que estén mal trazados —dentro se exportan

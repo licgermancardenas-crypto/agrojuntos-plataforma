@@ -57,6 +57,9 @@ import unicodedata
 
 import pandas as pd
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import sitio                                           # noqa: E402
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
                               errors="replace", line_buffering=True)
 
@@ -164,6 +167,25 @@ def main():
                                   for i, v in g.groupby("insumo").usd.sum()
                                   .sort_values(ascending=False).items()]}
 
+    # Lo que la pantalla necesita y los cortes de arriba no dan: la serie
+    # completa de doce meses de cada región —para dibujarla— y, dentro de cada
+    # mes, qué se está sembrando ahí. Es la respuesta a «Piura, marzo»: sin el
+    # segundo cruce la vista sabe cuánto pero no para qué.
+    serie = {}
+    for dep, g in x.groupby("dep"):
+        m = g.groupby("mes").usd.sum()
+        serie[str(dep)] = [round(float(m.get(k, 0.0)), 2) for k in MESES]
+    cult_mes = {}
+    for (dep, m), g in x.groupby(["dep", "mes"]):
+        s2 = g.groupby("cultivo").usd.sum().sort_values(ascending=False).head(4)
+        cult_mes.setdefault(str(dep), {})[str(m)] = [
+            {"n": str(i), "usd": round(float(v), 2)} for i, v in s2.items()]
+    ins_mes = {}
+    for (dep, m), g in x.groupby(["dep", "mes"]):
+        s2 = g.groupby("insumo").usd.sum().sort_values(ascending=False)
+        ins_mes.setdefault(str(dep), {})[str(m)] = [
+            {"n": str(i), "usd": round(float(v), 2)} for i, v in s2.items()]
+
     salida = {
         "generado": pd.Timestamp.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "motivo": ("qué insumo se compra, para qué cultivo, en qué región y en "
@@ -188,9 +210,16 @@ def main():
         "cultivo_por_region": cruce("dep", "cultivo", 5),
         "mes_por_region": cruce("dep", "mes", 3),
         "insumo_por_cultivo": cruce("cultivo", "insumo", 6),
+        "meses": MESES,
+        "serie_por_region": serie,
+        "cultivo_por_region_mes": cult_mes,
+        "insumo_por_region_mes": ins_mes,
     }
-    io.open("out/canasta.json", "w", encoding="utf-8").write(
-        json.dumps(salida, ensure_ascii=False, indent=1))
+    crudo = json.dumps(salida, ensure_ascii=False, indent=1)
+    io.open("out/canasta.json", "w", encoding="utf-8").write(crudo)
+    # Y al sitio, que lo lee tal cual.
+    io.open(os.path.join(sitio.DATA, "canasta.json"), "w",
+            encoding="utf-8").write(crudo)
 
     print("=" * 78)
     print("LA CANASTA DE INSUMOS  ·  US$ %.0f MM al año en %d cultivos"

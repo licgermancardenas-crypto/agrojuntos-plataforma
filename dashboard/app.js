@@ -3760,6 +3760,139 @@ function vistaDecisiones() {
   });
 }
 
+/* --------------------------------------------------------------- canasta --
+   Qué insumo se compra, para qué cultivo, en qué región y en qué mes.
+
+   La pregunta que hace un comercial no es «cuánto vale el mercado» sino «en
+   Piura, en marzo, qué llevo». Las tres piezas existían separadas —el
+   calendario de siembra, la hoja de costos por cultivo, el modelo de mercado—
+   y esta vista es el cruce.
+
+   Dos cosas que la pantalla tiene que decir y no puede callar:
+
+   El mes es el de la SIEMBRA. El fertilizante entra con el cultivo, no cuando
+   sale el camión, y anclarlo en la cosecha correría el calendario medio año.
+
+   No es una medición de compras. Es un coeficiente técnico —lo que cuesta
+   producir bien una hectárea— aplicado a superficie real. Dice a qué se
+   destina el gasto y cuándo, no que alguien lo haya comprado. La salvedad
+   viaja en el propio archivo y se pinta, no se resume. */
+function vistaCanasta() {
+  cargar("canasta").then(function (D) {
+    var sel = document.getElementById("fCanDep");
+    var deps = D.por_region.map(function (r) { return r.n; });
+    sel.innerHTML = '<option value="">Todo el país</option>' +
+      deps.map(function (d) {
+        return '<option value="' + esc(d) + '">' + esc(d) + "</option>"; }).join("");
+
+    var pico = D.meses.reduce(function (a, m) {
+      return (D.por_mes[m] && (!a || D.por_mes[m].usd > D.por_mes[a].usd)) ? m : a;
+    }, null);
+    var valle = D.meses.reduce(function (a, m) {
+      return (D.por_mes[m] && (!a || D.por_mes[m].usd < D.por_mes[a].usd)) ? m : a;
+    }, null);
+    document.getElementById("canKpis").innerHTML = [
+      [usd(D.usd_total), "canasta de insumos", "al año, " + D.cultivos + " cultivos"],
+      [D.por_insumo[0].pct.toFixed(0) + "%", D.por_insumo[0].n.toLowerCase(),
+       "la línea mayor"],
+      [pico, "el mes que más pesa",
+       pct(D.por_mes[pico].pct, 1) + " del año"],
+      [(D.por_mes[pico].usd / D.por_mes[valle].usd).toFixed(1) + "×",
+       "la temporada sobre el valle", pico + " contra " + valle],
+    ].map(function (k) {
+      return "<div><span class='v'>" + k[0] + "</span><span class='l'>" +
+        esc(k[1]) + "<br>" + esc(k[2]) + "</span></div>";
+    }).join("");
+    document.getElementById("canMeta").textContent =
+      D.con_estructura_propia_pct + "% con hoja de costos propia";
+
+    var mesSel = null;
+
+    function pintar() {
+      var dep = sel.value;
+      var serie = dep ? D.serie_por_region[dep]
+                      : D.meses.map(function (m) {
+                          return D.por_mes[m] ? D.por_mes[m].usd : 0; });
+      var tot = serie.reduce(function (a, b) { return a + b; }, 0) || 1;
+      var mx = Math.max.apply(null, serie) || 1;
+
+      document.getElementById("canDepMeta").textContent =
+        (dep || "Todo el país") + " · " + usd(tot) + " al año";
+      document.getElementById("canIntro").innerHTML =
+        "El mes es el de la <b>siembra</b>, no el de la cosecha: el " +
+        "fertilizante entra con el cultivo, no cuando sale el camión. " +
+        "Pulsa un mes para ver qué se siembra entonces" +
+        (dep ? " en " + esc(dep) : "") + ".";
+
+      document.getElementById("canCal").innerHTML =
+        '<div class="chips" style="flex-wrap:wrap">' +
+        D.meses.map(function (m, i) {
+          var p = 100 * serie[i] / tot;
+          return '<button class="chip" data-m="' + m + '" aria-pressed="' +
+            (m === mesSel) + '" title="' + usd(serie[i]) + '">' + m +
+            ' <span class="mono">' + p.toFixed(1) + "%</span>" +
+            '<span class="bt" style="display:block;height:4px;margin-top:3px">' +
+            '<i style="width:' + (100 * serie[i] / mx).toFixed(0) +
+            '%"></i></span></button>';
+        }).join("") + "</div>";
+      document.getElementById("canCal").querySelectorAll("button").forEach(
+        function (b) {
+          b.onclick = function () {
+            mesSel = (mesSel === b.dataset.m) ? null : b.dataset.m;
+            pintar();
+          };
+        });
+
+      /* Con un mes elegido, las dos tablas de abajo hablan de ese mes: es la
+         respuesta a «Piura, marzo» y no un total anual con un mes resaltado. */
+      var ins, cul, sufijo = mesSel ? " · " + mesSel : "";
+      if (mesSel && dep) {
+        ins = (D.insumo_por_region_mes[dep] || {})[mesSel] || [];
+        cul = (D.cultivo_por_region_mes[dep] || {})[mesSel] || [];
+      } else if (mesSel) {
+        ins = (D.por_mes[mesSel] || {}).insumos || [];
+        cul = null;
+      } else if (dep) {
+        ins = D.insumo_por_region[dep] || [];
+        cul = D.cultivo_por_region[dep] || [];
+      } else {
+        ins = D.por_insumo;
+        cul = D.por_cultivo.slice(0, 8);
+      }
+
+      function fila(l) {
+        var t = l.reduce(function (a, r) { return a + r.usd; }, 0) || 1;
+        return l.map(function (r) {
+          return { n: r.n, v: r.usd, t: usd(r.usd), p: 100 * r.usd / t }; });
+      }
+      document.getElementById("canInsEyebrow").textContent =
+        (dep || "Todo el país") + sufijo;
+      barras(document.getElementById("canInsumos"), fila(ins));
+      document.getElementById("canCulEyebrow").textContent =
+        cul ? (dep || "Todo el país") + sufijo
+            : "elige una región para ver el cultivo";
+      document.getElementById("canCultivos").innerHTML = "";
+      if (cul && cul.length) {
+        barras(document.getElementById("canCultivos"), fila(cul));
+      } else {
+        document.getElementById("canCultivos").innerHTML =
+          "<p class='sub'>El corte por cultivo dentro de un mes necesita " +
+          "una región: el mismo mes siembra cosas distintas en Piura y en " +
+          "Puno, y sumarlas no dice nada.</p>";
+      }
+      document.getElementById("canCalNota").textContent = mesSel
+        ? "Mostrando " + mesSel + ". Pulsa otra vez para volver al año."
+        : "";
+    }
+
+    sel.onchange = function () { mesSel = null; pintar(); };
+    pintar();
+    document.getElementById("canNota").textContent = D.salvedad + " " +
+      D.el_mes_es + ". " + D.con_estructura_propia_pct + "% del gasto usa la " +
+      "estructura de su propio cultivo; el resto, el promedio de su familia.";
+  });
+}
+
 function ir(hash) {
   var id = (hash || "#resumen").replace("#", "");
   /* El perfil no es una vista mas: lleva el RUC en el propio hash, de modo
@@ -3794,6 +3927,7 @@ function ir(hash) {
     if (id === "exportacion") vistaExportacion();
     if (id === "logistica") vistaLogistica();
     if (id === "metodo") vistaMetodo();
+    if (id === "canasta") vistaCanasta();
     if (id === "decisiones") vistaDecisiones();
   }
 }

@@ -52,6 +52,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   <a href="#estacionalidad">Estacionalidad</a>
   <a href="#logistica">Logística</a>
   <a href="#expansion">Expansión</a>
+  <a href="#canasta">Canasta</a>
   <a href="#decisiones">Decisiones</a>
   <a href="/mapa">Mapa</a>
   <a href="#metodo">Método</a>
@@ -266,6 +267,40 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </section>
 
 <!-- ----------------------------------------------------------- expansion -->
+<!-- ------------------------------------------------------------ canasta -->
+<section class="view" id="v-canasta">
+  <div class="kpis" id="canKpis"></div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Qué se compra, para qué cultivo y cuándo</h3>
+      <span class="eyebrow" id="canMeta"></span></div>
+    <div class="filters">
+      <select id="fCanDep"></select>
+      <span class="count" id="canDepMeta"></span>
+    </div>
+    <div class="b"><p id="canIntro"></p></div>
+    <div id="canCal"></div>
+    <p class="sub" id="canCalNota"></p>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="card">
+      <div class="h"><h3>En qué se le va</h3>
+        <span class="eyebrow" id="canInsEyebrow">Seis líneas de insumo</span></div>
+      <div class="b"><div id="canInsumos"></div></div>
+    </div>
+    <div class="card">
+      <div class="h"><h3>Para qué cultivo</h3>
+        <span class="eyebrow" id="canCulEyebrow"></span></div>
+      <div class="b"><div id="canCultivos"></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="b"><p class="sub" id="canNota"></p></div>
+  </div>
+</section>
+
 <!-- --------------------------------------------------------- decisiones -->
 <section class="view" id="v-decisiones">
   <div class="card">

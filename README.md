@@ -203,6 +203,12 @@ el cultivo, no cuando sale el camión; anclarlo en la cosecha correría el
 calendario medio año y mandaría al vendedor tarde. Octubre pesa 12.9% y abril
 5.6%: el año tiene una temporada de compra de 2.3 veces el valle.
 
+La vista **Canasta** del sitio la deja consultable: se elige región y mes y
+responde qué insumo y para qué cultivo. Pulsar octubre en Puno y pulsar abril
+en Piura devuelven cosas distintas, que es el punto — y la prueba del navegador
+compara justamente dos meses entre sí, porque comparar un mes contra el año
+pasaría por la diferencia de longitud aunque el filtro estuviera muerto.
+
 **No es una medición de compras.** Nadie publica lo que compró un agricultor.
 Es un coeficiente técnico —lo que cuesta producir bien una hectárea— aplicado a
 la superficie real, y la hoja describe un manejo tecnificado que el minifundio

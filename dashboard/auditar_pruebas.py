@@ -107,6 +107,8 @@ CASOS = [
     # muestra y no por la conclusion.
     ("decision_sin_alternativa", "SE MUESTRA SIN SU ALTERNATIVA",
      "una decisión se publica sin la alternativa contra la que se decidió"),
+    ("canasta_sin_temporada", "EL MISMO CORTE POR CULTIVO",
+     "la canasta pierde el calendario y todos los meses pesan lo mismo"),
 ]
 
 

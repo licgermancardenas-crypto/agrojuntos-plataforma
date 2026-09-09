@@ -30,6 +30,7 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from scipy.sparse.csgraph import dijkstra
+from scipy.spatial import cKDTree
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import grafo_vial
@@ -123,6 +124,70 @@ dem_idx = snap(dem.centro_lon.values, dem.centro_lat.values)
 W = dem["sam_usd"].values
 SAM_TOTAL = W.sum()
 
+# ------------------------------------------------------ distritos del pais --
+# Ademas de las celdas de demanda, cada distrito del pais con su centroide.
+#
+# La capa de acopio preguntaba «que centro sirve a este distrito que embarca»
+# mirando la celda H3 de su centroide dentro de `hubs_asignacion.csv`, y ese
+# archivo solo tiene las celdas **con clientes**: donde la produccion es de
+# agroindustria grande y no de pequenos agricultores, la celda no existe y el
+# distrito salia sin centro. Olmos —US$ 1,599 MM de arandano, 118 empresas,
+# 56,369 ha— figuraba asi como el mayor distrito que ningun centro alcanza,
+# cuando lo que faltaba no era carretera sino la celda.
+#
+# El centroide del distrito no es donde esta el fundo, y en un distrito
+# alargado como Olmos son decenas de kilometros. Se guarda por eso la
+# distancia del centroide al nodo vial mas cercano, para que quien lea la hora
+# sepa cuanto de ella es aproximacion.
+dis = gpd.read_file("data/peru_distrital_simple.geojson").to_crs(4326)
+col_u = next((c for c in dis.columns
+              if c.upper() in ("IDDIST", "UBIGEO", "IDDPTO")), None)
+if col_u is None:
+    sys.exit("la capa distrital no trae ubigeo: columnas %s" % list(dis.columns))
+dis["ubigeo"] = dis[col_u].astype(str).str.zfill(6)
+# Ocho distritos de la capa vienen sin geometria —Amantani, La Punta, Santa
+# Anita y cinco mas—. No se les inventa un punto: quedan fuera del ruteo y de
+# la salida, y quien los busque no los encuentra, que es lo correcto.
+_sin_geo = dis.geometry.isna() | dis.geometry.is_empty
+if _sin_geo.any():
+    print("distritos sin geometria en la capa, se omiten: %s"
+          % ", ".join(sorted(dis.loc[_sin_geo, "NOMBDIST"].astype(str))),
+          flush=True)
+    dis = dis[~_sin_geo].reset_index(drop=True)
+# El punto del distrito es el centro de sus sectores agricolas —donde esta la
+# tierra— y no el del poligono, que en un distrito alargado como Olmos cae en
+# el desierto. Es ademas el mismo punto con el que `build_acopio.py` dibuja el
+# distrito en el mapa: la hora y el punto tienen que hablar del mismo sitio.
+# Donde no hay sectores agricolas se usa el punto representativo del poligono,
+# y la salida dice cual de los dos se uso.
+_c = dis.geometry.representative_point()
+dis["lon"], dis["lat"] = _c.x.values, _c.y.values
+dis["punto"] = "poligono"
+_sec = pd.read_csv("out/sectores_2024.csv", encoding="utf-8-sig",
+                   usecols=["ubigeo", "lat", "lon"], dtype={"ubigeo": str})
+_gs = _sec.groupby("ubigeo")[["lat", "lon"]].mean()
+_hay = dis["ubigeo"].isin(_gs.index)
+dis.loc[_hay, "lat"] = dis.loc[_hay, "ubigeo"].map(_gs["lat"]).values
+dis.loc[_hay, "lon"] = dis.loc[_hay, "ubigeo"].map(_gs["lon"]).values
+dis.loc[_hay, "punto"] = "sectores"
+# No un nodo por distrito sino los quince mas cercanos, y despues el primero
+# al que de verdad se llegue.
+#
+# El grafo de OSM tiene componentes sueltos: tramos mapeados que no conectan
+# con la red. Enganchar el distrito al nodo mas cercano a secas metia a Chao
+# —US$ 1,602 MM de agroexportacion, a cinco kilometros de la Panamericana— y a
+# Lurigancho —dentro de Lima, a 350 metros de una via— en la lista de sitios a
+# los que no llega ningun centro. No es que no lleguen: es que ese pedazo de
+# calle no esta pegado al resto del pais.
+#
+# El nodo que se acabe usando puede quedar mas lejos que el mas cercano, y por
+# eso la salida lleva la distancia hasta el: la hora es del nodo, y lo que
+# falte hasta el fundo no esta contado.
+K_NODOS = 15
+dis_dd, dis_kk = arbol.query(
+    np.column_stack([dis.lon.values, dis.lat.values]), k=K_NODOS)
+nodos_dis = np.unique(dis_kk.ravel())
+
 # ------------------------------------------------------------- candidatos -
 # La ciudad capital, no el centroide de la provincia: un almacén se instala en
 # un pueblo con carretera, energía y mano de obra, no en el centro geométrico
@@ -146,9 +211,13 @@ print(f"candidatos: {len(cand)} ciudades capitales con mercado relevante",
 # --------------------------------------------- matriz candidato x demanda --
 print("ruteando desde cada candidato...", flush=True)
 T = np.full((len(cand), len(dem)), np.inf)
+# La misma corrida sirve para los distritos: leer otro juego de indices del
+# mismo vector de distancias no cuesta un Dijkstra mas.
+TD = np.full((len(cand), len(nodos_dis)), np.inf)
 for i, src in enumerate(cand_idx):
     d = dijkstra(G, indices=int(src), directed=True)
     T[i] = d[dem_idx]
+    TD[i] = d[nodos_dis]
     if (i + 1) % 10 == 0:
         print(f"  {i+1}/{len(cand)}", flush=True)
 
@@ -221,6 +290,55 @@ dem_out["promesa_h"] = (dem_out["region_nat"].map(PROMESA_H)
                         .fillna(PROMESA_DEF))
 dem_out["cubierto_promesa"] = dem_out["horas_al_hub"] <= dem_out["promesa_h"]
 dem_out.to_csv("out/hubs_asignacion.csv", index=False, encoding="utf-8-sig")
+
+# Lo mismo para cada distrito del pais, que es lo que la capa de acopio
+# necesita y no podia sacar de la reticula de demanda.
+sub_d = TD[sel]
+_mejor_nodo = np.argmin(sub_d, axis=0)
+_h_nodo = sub_d[_mejor_nodo, np.arange(len(nodos_dis))]
+# De los quince candidatos de cada distrito, el primero —el mas cercano— al
+# que llegue alguno de los centros.
+_loc = np.searchsorted(nodos_dis, dis_kk)
+_h_cand = _h_nodo[_loc]
+_ok = np.isfinite(_h_cand)
+_elegido = np.argmax(_ok, axis=1)
+_fila = np.arange(len(dis))
+_hay = _ok[_fila, _elegido]
+_nodo = dis_kk[_fila, _elegido]
+
+dis_out = dis[["ubigeo", "lat", "lon", "punto"]].copy()
+# Grados a kilometros, aproximado y suficiente para declarar el orden de
+# magnitud del salto: un grado de latitud son 111 km.
+dis_out["km_al_nodo"] = np.hypot(
+    (coords[_nodo, 0] - dis.lon.values) * np.cos(np.radians(dis.lat.values)),
+    coords[_nodo, 1] - dis.lat.values) * 111.0
+_hub_i = _mejor_nodo[_loc[_fila, _elegido]]
+dis_out["hub"] = [nombres[i] for i in _hub_i]
+dis_out["horas_al_hub"] = _h_cand[_fila, _elegido]
+# Un distrito al que no llega ninguna ruta se queda sin centro y sin hora, que
+# es distinto de estar lejos: se dice, no se rellena.
+_sin = ~_hay
+dis_out.loc[_sin, "hub"] = ""
+dis_out.loc[_sin, "horas_al_hub"] = np.inf
+dis_out["cubierto_2h"] = dis_out["horas_al_hub"] <= 2.0
+# La region natural decide la promesa, y no hay una por distrito a esta altura
+# del pipeline —`build_altitud.py` corre despues—. Se toma la de la celda de
+# demanda mas cercana, que es la misma reticula con la que se decidio la red:
+# preferible a heredarla del departamento, que mete a la sierra de Lambayeque
+# en la costa.
+_kd = cKDTree(np.column_stack([dem_out.centro_lon.values,
+                               dem_out.centro_lat.values]))
+_cerca = _kd.query(np.column_stack([dis_out.lon.values,
+                                    dis_out.lat.values]))[1]
+dis_out["region_nat"] = dem_out["region_nat"].values[_cerca]
+dis_out["promesa_h"] = dis_out["region_nat"].map(PROMESA_H).fillna(PROMESA_DEF)
+dis_out["cubierto_promesa"] = dis_out["horas_al_hub"] <= dis_out["promesa_h"]
+dis_out.to_csv("out/hubs_distrito.csv", index=False, encoding="utf-8-sig")
+print("distritos ruteados: %d · sin ruta a ningun centro: %d · "
+      "a mas de 5 km del nodo vial usado: %d · dentro de su promesa: %.1f%%"
+      % (len(dis_out), int(_sin.sum()),
+         int((dis_out.km_al_nodo > 5).sum()),
+         100 * dis_out.cubierto_promesa.mean()), flush=True)
 
 cub2 = W[dem_out["cubierto_2h"].values].sum() / SAM_TOTAL
 cubp = W[dem_out["cubierto_promesa"].values].sum() / SAM_TOTAL

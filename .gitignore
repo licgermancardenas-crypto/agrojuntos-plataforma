@@ -31,3 +31,11 @@ data/importaciones/processed/operaciones*.csv
 # sitio. Si se versiona, un `vercel --prod` desde otra copia publica en el
 # proyecto equivocado.
 .vercel/
+
+# El detalle linea por linea de la exportacion: 670 MB desde que el historico
+# dejo de ser la ventana movil de diez semanas —8.7 millones de lineas, y trae
+# el pais entero, mineria y pesca incluidas—. GitHub no acepta un archivo de
+# ese tamano y no es un dato publicable sino un intermedio: se versiona el
+# agregado por empresa, `datos/comercio/aduanas_agroexportadores.csv`, que es
+# lo que el sitio lee. Se regenera con build_aduanas.py.
+datos/comercio/aduanas_exportaciones.csv

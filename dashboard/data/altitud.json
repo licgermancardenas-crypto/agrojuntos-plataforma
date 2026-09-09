@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-08T23:10:11",
+ "generado": "2026-09-09T00:04:35",
  "fuente": "Terrarium (AWS elevation-tiles-prod) zoom 9, ~299 m/px",
  "validacion": {
   "motivo": "cota muestreada contra 20 altitudes publicadas de plaza",
@@ -526,56 +526,56 @@
    "hub": "Pisco",
    "alt_m": 20.0,
    "piso": "chala",
-   "distritos": 164,
-   "alt_carga_p50": 355.2,
-   "alt_carga_p90": 526.1,
-   "desnivel_p90": 506.1,
+   "distritos": 166,
+   "alt_carga_p50": 354.7,
+   "alt_carga_p90": 522.6,
+   "desnivel_p90": 502.6,
    "alt_max": 4701.3,
-   "fob_mm": 13328.0
+   "fob_mm": 13454.8
   },
   {
    "hub": "Chiclayo",
    "alt_m": 32.9,
    "piso": "chala",
-   "distritos": 125,
-   "alt_carga_p50": 115.4,
-   "alt_carga_p90": 1951.0,
-   "desnivel_p90": 1918.1,
+   "distritos": 124,
+   "alt_carga_p50": 113.5,
+   "alt_carga_p90": 1949.4,
+   "desnivel_p90": 1916.5,
    "alt_max": 3293.1,
-   "fob_mm": 8882.7
+   "fob_mm": 10462.3
   },
   {
    "hub": "Huamachuco",
    "alt_m": 3190.3,
    "piso": "quechua",
    "distritos": 63,
-   "alt_carga_p50": 93.5,
-   "alt_carga_p90": 645.1,
-   "desnivel_p90": -2545.2,
+   "alt_carga_p50": 95.0,
+   "alt_carga_p90": 658.2,
+   "desnivel_p90": -2532.1,
    "alt_max": 4220.6,
-   "fob_mm": 5850.6
+   "fob_mm": 5932.1
   },
   {
    "hub": "Juliaca",
    "alt_m": 3845.1,
    "piso": "suni",
-   "distritos": 57,
-   "alt_carga_p50": 1331.9,
-   "alt_carga_p90": 2642.7,
-   "desnivel_p90": -1202.4,
+   "distritos": 63,
+   "alt_carga_p50": 1331.3,
+   "alt_carga_p90": 2634.1,
+   "desnivel_p90": -1211.0,
    "alt_max": 4917.6,
-   "fob_mm": 852.0
+   "fob_mm": 891.1
   },
   {
    "hub": "Bellavista",
    "alt_m": 318.1,
    "piso": "selva baja",
-   "distritos": 37,
-   "alt_carga_p50": 509.3,
-   "alt_carga_p90": 1090.7,
-   "desnivel_p90": 772.6,
+   "distritos": 40,
+   "alt_carga_p50": 517.0,
+   "alt_carga_p90": 1212.5,
+   "desnivel_p90": 894.4,
    "alt_max": 3316.7,
-   "fob_mm": 585.3
+   "fob_mm": 711.6
   },
   {
    "hub": "Satipo",
@@ -592,23 +592,23 @@
    "hub": "Tarma",
    "alt_m": 3061.3,
    "piso": "ceja de selva",
-   "distritos": 91,
-   "alt_carga_p50": 1872.7,
-   "alt_carga_p90": 4115.7,
-   "desnivel_p90": 1054.4,
+   "distritos": 95,
+   "alt_carga_p50": 956.3,
+   "alt_carga_p90": 4088.5,
+   "desnivel_p90": 1027.2,
    "alt_max": 4802.9,
-   "fob_mm": 410.5
+   "fob_mm": 578.5
   },
   {
    "hub": "Sicuani",
    "alt_m": 3549.1,
    "piso": "suni",
-   "distritos": 41,
-   "alt_carga_p50": 3720.4,
-   "alt_carga_p90": 4068.4,
-   "desnivel_p90": 519.2,
+   "distritos": 46,
+   "alt_carga_p50": 3802.5,
+   "alt_carga_p90": 4084.9,
+   "desnivel_p90": 535.8,
    "alt_max": 4732.5,
-   "fob_mm": 84.7
+   "fob_mm": 90.6
   }
  ]
 }

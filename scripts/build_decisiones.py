@@ -80,6 +80,7 @@ def main():
     can = leer("out/canal.json")
     abso = leer("out/clusters_absorcion.json")
     aco = leer("out/acopio.json")
+    sat = leer("out/satelite.json")
     mer = leer(EXP)
     uni = mer["universo"]
     cob = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
@@ -219,25 +220,53 @@ def main():
     })
 
     # --------------------------------------------------------- abiertas --
+    # El mejor por clientes y el mejor que además puede abastecerse no son el
+    # mismo, y esa es la columna que decide: un centro al que la red no llega
+    # dentro de su promesa no es un satélite sino otro almacén, y cuesta otra
+    # cosa.
+    surt = [c for c in sat["candidatos"] if c.get("h_a_la_red") is not None]
+    mejor = sat["candidatos"][0] if sat["candidatos"] else None
+    mejor_surt = surt[0] if surt else None
+    seis = next((c for c in sat["cadencia"] if c["promesa_h"] == 6.0), None)
+    hoy_s = sat["hoy"]
+
     D.append({
         "id": "noveno-centro", "estado": "abierta",
         "familia": "Dónde estar",
         "pregunta": "¿Conviene un noveno centro, y dónde?",
-        "respuesta": "Sin decidir. Hoy queda fuera de la promesa el %.1f%% "
-                     "del mercado, y la región peor servida es la selva baja "
-                     "con %.0f%% dentro de su vara de seis horas."
-                     % (100 - red["sam_cubierto_promesa_pct"],
-                        next((r["pct"] for r in red["por_region"]
-                              if r["region"] == "SELVA BAJA"), 0)),
-        "alternativa": "No abrir y mover la promesa. `diag_satelite.py` "
-                       "compara las dos cosas: cuántos puntos de venta entran "
-                       "por abrir un centro más y cuántos entran por prometer "
-                       "cinco, seis u ocho horas con los que ya hay.",
-        "bisagra": "Un centro nuevo tiene que poder abastecerse: solo sirve "
-                   "si queda dentro de la promesa de la red que ya existe.",
-        "cifra": round(100 - red["sam_cubierto_promesa_pct"], 1),
-        "unidad": "% del SAM sin cubrir",
-        "fuente": "out/red_elegida.json · diag_satelite.py",
+        "respuesta": "Sin decidir. Hoy %s de %s puntos de venta están dentro "
+                     "de la promesa del centro que los surte (%.0f%%), y "
+                     "detrás hay %s clientes con la cadena completa. El "
+                     "candidato que más compraría es %s: +%d puntos y +%s "
+                     "clientes."
+                     % (f"{hoy_s['puntos_en_promesa']:,}",
+                        f"{hoy_s['puntos']:,}", hoy_s["pct"],
+                        f"{hoy_s['clientes_cadena']:,}",
+                        mejor["candidato"] if mejor else "—",
+                        mejor["puntos_nuevos"] if mejor else 0,
+                        f"{mejor['clientes_nuevos']:,}" if mejor else "0"),
+        "alternativa": "No abrir y prometer seis horas parejas: %s puntos "
+                       "(+%d) y %s clientes con la cadena completa (+%s). Un "
+                       "centro nuevo compra casi lo mismo que mover la "
+                       "cadencia, y el alquiler lo paga solo uno de los dos."
+                       % (f"{seis['puntos']:,}",
+                          seis["puntos"] - hoy_s["puntos_en_promesa"],
+                          f"{seis['clientes_cadena']:,}",
+                          f"{seis['clientes_cadena'] - hoy_s['clientes_cadena']:,}")
+                       if seis else "No abrir y mover la promesa.",
+        "bisagra": ("Que el candidato pueda abastecerse. %s, el que más "
+                    "compra, no tiene ningún centro dentro de su promesa: no "
+                    "sería un satélite sino otro almacén. El primero que sí "
+                    "se abastece es %s, a %.1f h de la red, y compra +%d "
+                    "puntos."
+                    % (mejor["candidato"], mejor_surt["candidato"],
+                       mejor_surt["h_a_la_red"], mejor_surt["puntos_nuevos"]))
+                   if mejor and mejor_surt and mejor.get("h_a_la_red") is None
+                   else "Que el candidato pueda abastecerse de la red que ya "
+                        "existe: si no, no es un satélite sino otro almacén.",
+        "cifra": mejor["clientes_nuevos"] if mejor else 0,
+        "unidad": "clientes que compra el mejor candidato",
+        "fuente": "out/satelite.json · build_satelite.py",
     })
 
     D.append({

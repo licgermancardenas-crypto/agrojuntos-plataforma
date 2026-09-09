@@ -37,12 +37,17 @@ Por candidato se miden tres cosas:
 La tercera es la que evita el error caro: proponer un satélite donde en
 realidad hace falta un almacén completo.
 
-No es una etapa del pipeline: es un diagnóstico que contesta una pregunta. Si
-la respuesta se toma, el centro se agrega a `RED_EXTRA` en `build_hubs.py`,
+Era un diagnóstico de una vez y ahora es una etapa, porque la pregunta no se
+cerró: «¿conviene un noveno centro?» está abierta en el módulo de decisiones, y
+una decisión abierta cuyo número solo existe en la terminal de quien corrió el
+script es una decisión sin dato. Emite `satelite.json`, que es de donde
+`build_decisiones.py` saca el marginal.
+
+Si la respuesta se toma, el centro se agrega a `RED_EXTRA` en `build_hubs.py`,
 que es donde viven las decisiones.
 
 Uso:
-    python scripts/diag_satelite.py
+    python scripts/build_satelite.py
 """
 import io
 import json
@@ -81,9 +86,14 @@ def leer(p, **kw):
 
 
 red = json.load(io.open("out/red_elegida.json", encoding="utf-8"))
-PROMESA = float(red["promesa_h"])
-print("la red vigente: %s · promesa de %.0f h"
-      % (" · ".join(c["hub"] for c in red["centros"]), PROMESA))
+# La promesa dejó de ser un número: son cuatro horas en la costa y seis en el
+# resto, porque el terreno no se reparte parejo. Este archivo la leía como
+# `float(red["promesa_h"])` y desde entonces reventaba al arrancar; se lee por
+# celda, que es como la publica `hubs_asignacion.csv`.
+PROMESA_TXT = " · ".join("%s %.0f h" % (k.lower(), v)
+                         for k, v in red["promesa_h"].items())
+print("la red vigente: %s · promesa %s"
+      % (" · ".join(c["hub"] for c in red["centros"]), PROMESA_TXT))
 
 # --------------------------------------------------------------- demanda ---
 sec = leer("out/ruteo_sector.csv")
@@ -155,11 +165,20 @@ cand = (cap[cap["sam"] > W.sum() * 0.002]
 if len(cand) != T.shape[0]:
     sys.exit("la matriz no corresponde a estos candidatos: corre build_hubs")
 
+# La promesa de cada celda, que es la vara con la que se juzga si algo está
+# dentro. `PROM_C` va por celda —para el SAM— y `PROM_P` por punto de venta,
+# que hereda la de la celda donde cae.
+_asg = leer("out/hubs_asignacion.csv", dtype={"h3": str})
+_pmap = dict(zip(_asg["h3"], _asg["promesa_h"]))
+PROM_DEF = float(red.get("promesa_def_h", 6.0))
+PROM_C = np.array([float(_pmap.get(c, PROM_DEF)) for c in dem.h3])
+
 idx_celda = {c: i for i, c in enumerate(dem.h3)}
 pts["h3"] = [h3.latlng_to_cell(a, b, R_HUB)
              for a, b in zip(pts["lat"], pts["lon"])]
 pos = np.array([idx_celda.get(c, -1) for c in pts["h3"]])
 vivo = pos >= 0
+PROM_P = np.where(vivo, PROM_C[pos.clip(min=0)], PROM_DEF)
 print("puntos ubicables en la grilla de reparto: %d de %d"
       % (int(vivo.sum()), len(pts)))
 
@@ -168,7 +187,7 @@ sel_actual = [int(cand.index[cand["PROVINCIA"].map(slug) == slug(c["provincia"])
               for c in red["centros"]]
 t_actual = T[sel_actual][:, pos.clip(min=0)].min(axis=0)
 t_actual[~vivo] = np.inf
-hoy = t_actual <= PROMESA
+hoy = t_actual <= PROM_P
 print()
 print("hoy: %d de %d puntos dentro de la promesa (%.0f%%)"
       % (hoy.sum(), vivo.sum(), 100 * hoy.sum() / vivo.sum()))
@@ -194,7 +213,7 @@ print("     de ellos, %d puntos son de Juliaca y quedan fuera de su promesa"
       % int(huerf_jul.sum()))
 
 base_cli = clientes_cadena(hoy)
-base_sam = W[(T[sel_actual] <= PROMESA).any(axis=0)].sum()
+base_sam = W[(T[sel_actual] <= PROM_C).any(axis=0)].sum()
 print("     %s clientes con la cadena completa · US$ %.0f MM de mercado "
       "dentro de la promesa" % (f"{base_cli:,.0f}", base_sam / 1e6))
 
@@ -204,7 +223,7 @@ def gana(t_ref, extra=None):
     red vigente más `extra`."""
     t = t_ref if extra is None else np.minimum(t_ref, T[extra][pos.clip(min=0)])
     t = np.where(vivo, t, np.inf)
-    ok = t <= PROMESA
+    ok = t <= PROM_P
     return ok, clientes_cadena(ok), t
 
 
@@ -217,7 +236,7 @@ for i in range(len(cand)):
     nuevo_ok, cli, _ = gana(t_actual, i)
     if nuevo_ok.sum() == hoy.sum():
         continue
-    sam = W[((T[sel_actual + [i]]) <= PROMESA).any(axis=0)].sum()
+    sam = W[((T[sel_actual + [i]]) <= PROM_C).any(axis=0)].sum()
     filas.append({
         "candidato": str(cand.loc[i, "PROVINCIA"]).title(),
         "region": str(cand.loc[i, "DEPARTAM"]).title(),
@@ -263,7 +282,7 @@ for paso in range(1, 9):
             continue
         # ¿puede abastecerse? el candidato tiene que estar dentro de la
         # promesa de alguno de los centros ya abiertos
-        if T[en_red, celda_cand[i]].min() > PROMESA:
+        if T[en_red, celda_cand[i]].min() > PROM_C[celda_cand[i]]:
             continue
         ok, cli, _ = gana(t_red, i)
         if cli > mejor_v:
@@ -275,7 +294,7 @@ for paso in range(1, 9):
     _, _, t_red = gana(t_red, mejor)
     en_red.append(mejor)
     nom = str(cand.loc[mejor, "PROVINCIA"]).title()
-    dentro = t_red <= PROMESA
+    dentro = t_red <= PROM_P
     curva.append({"paso": paso, "centro": nom,
                   "region": str(cand.loc[mejor, "DEPARTAM"]).title(),
                   "puntos": int(dentro.sum()),
@@ -309,10 +328,10 @@ for paso in range(1, 9):
             continue
         if str(cand.loc[i, "DEPARTAM"]).upper() not in SUR:
             continue
-        if T[en_sur, celda_cand[i]].min() > PROMESA:
+        if T[en_sur, celda_cand[i]].min() > PROM_C[celda_cand[i]]:
             continue
         t = np.where(vivo, np.minimum(t_sur, T[i][pos.clip(min=0)]), np.inf)
-        v = int((huerf_jul & (t <= PROMESA)).sum())
+        v = int((huerf_jul & (t <= PROM_P)).sum())
         if v > mejor_v:
             mejor, mejor_v, mejor_t = i, v, t
     if mejor is None:
@@ -322,11 +341,11 @@ for paso in range(1, 9):
         break
     t_sur = mejor_t
     en_sur.append(mejor)
-    quedan = int((huerf_jul & (t_sur > PROMESA)).sum())
+    quedan = int((huerf_jul & (t_sur > PROM_P)).sum())
     print("  %d. %-18s %-10s rescata %3d · quedan %3d · cadena %s clientes"
           % (paso, str(cand.loc[mejor, "PROVINCIA"]).title()[:18],
              str(cand.loc[mejor, "DEPARTAM"])[:10], mejor_v, quedan,
-             f"{clientes_cadena(t_sur <= PROMESA):,.0f}"))
+             f"{clientes_cadena(t_sur <= PROM_P):,.0f}"))
     if quedan == 0:
         break
 
@@ -334,11 +353,57 @@ for paso in range(1, 9):
 print()
 print("la alternativa: los mismos centros con otra promesa")
 print("  %8s %9s %12s %14s" % ("promesa", "puntos", "% de puntos", "clientes cadena"))
+cadencia = []
 for h in (4.0, 5.0, 6.0, 8.0, 12.0):
     ok = np.where(vivo, t_actual, np.inf) <= h
+    cadencia.append({"promesa_h": h, "puntos": int(ok.sum()),
+                     "pct_puntos": round(100 * ok.sum() / vivo.sum(), 1),
+                     "clientes_cadena": int(round(clientes_cadena(ok)))})
     print("  %6.0f h %9d %11.0f%% %14s"
           % (h, ok.sum(), 100 * ok.sum() / vivo.sum(),
              f"{clientes_cadena(ok):,.0f}"))
 
+# ------------------------------------------------------- lo que se publica -
+# La pregunta «¿conviene un noveno centro?» está abierta en el módulo de
+# decisiones, y `build_decisiones.py` saca de aquí su marginal. Sin este
+# archivo la decisión se publicaría con el hueco que queda —«35.6% sin
+# cubrir»— y sin lo único que permite decidirla: cuánto compra el que sigue.
+mejor = res.iloc[0] if len(res) else None
+salida = {
+    "generado": pd.Timestamp.now().strftime("%Y-%m-%dT%H:%M:%S"),
+    "motivo": ("qué compra un centro más sobre la red vigente, cuántos harían "
+               "falta para cerrar el sur y qué pasaría con otra promesa; el "
+               "candidato tiene que poder abastecerse de la red que ya existe "
+               "o no es un satélite sino otro almacén"),
+    "promesa": red["promesa_h"],
+    "hoy": {
+        "puntos_en_promesa": int(hoy.sum()),
+        "puntos": int(vivo.sum()),
+        "pct": round(100 * hoy.sum() / vivo.sum(), 1),
+        "clientes_cadena": int(round(base_cli)),
+        "sam_en_promesa_mm": round(float(base_sam) / 1e6, 1),
+        "huerfanos_del_sur": int(huerf_jul.sum()),
+    },
+    "mejor_candidato": (None if mejor is None else {
+        "centro": mejor.candidato, "region": mejor.region,
+        "puntos_nuevos": int(mejor.puntos_nuevos),
+        "clientes_nuevos": int(mejor.clientes_nuevos),
+        "sam_nuevo_mm": float(mejor.sam_nuevo_mm),
+        "rescata_del_sur": int(mejor.rescata_juliaca),
+        "h_a_la_red": (None if not np.isfinite(mejor.h_a_la_red)
+                       else round(float(mejor.h_a_la_red), 2)),
+    }),
+    "candidatos": [
+        {k: (None if isinstance(v, float) and not np.isfinite(v)
+             else (float(v) if isinstance(v, (float, np.floating))
+                   else (int(v) if isinstance(v, (int, np.integer)) else v)))
+         for k, v in r._asdict().items() if k != "Index"}
+        for r in res.head(8).itertuples()],
+    "cadena": curva,
+    "cadencia": cadencia,
+}
+io.open("out/satelite.json", "w", encoding="utf-8").write(
+    json.dumps(salida, ensure_ascii=False, indent=1))
+
 print()
-print("out/diag_satelite.csv")
+print("out/diag_satelite.csv · out/satelite.json")

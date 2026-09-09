@@ -61,7 +61,7 @@ ETAPAS = [
      ["out/h3_r5.csv", "out/ruteo_sector.csv", "data/vial/compacto/PE-LIM.npz",
       "data/peru_distrital_simple.geojson"],
      ["out/hubs_cobertura.csv", "out/hubs_asignacion.csv",
-      "out/hubs_distrito.csv"],
+      "out/hubs_distrito.csv", "out/hubs_matriz_tiempos.npy"],
      "elige donde poner los centros, por cobertura maxima"),
     # Lee tambien la red vial: despues de agrupar reparte lo que quedo fuera
     # entre los territorios que lo alcanzan, y para eso rutea.
@@ -170,10 +170,22 @@ ETAPAS = [
       "../../../_repo/dashboard/data/logistica.json"],
      "los JSON que sirve el sitio"),
 
+    # Qué compra un centro más sobre la red vigente. Era un diagnóstico de una
+    # vez; es etapa desde que el módulo de decisiones publica esa pregunta como
+    # abierta, porque una decisión abierta cuyo número solo existe en la
+    # terminal de quien corrió el script es una decisión sin dato.
+    ("satelite", "build_satelite.py",
+     ["out/red_elegida.json", "out/hubs_matriz_tiempos.npy",
+      "out/hubs_asignacion.csv", "out/h3_r5.csv", "out/ruteo_sector.csv",
+      "out/empresas_agro_activas.csv", "out/osm_prospectos.csv"],
+     ["out/satelite.json", "out/diag_satelite.csv"],
+     "qué compra un centro más, y si podría abastecerse"),
+
     # Las decisiones se arman al final: leen lo que todas las demás dejaron.
     ("decisiones", "build_decisiones.py",
      ["out/red_elegida.json", "out/canal.json", "out/clusters_absorcion.json",
-      "out/acopio.json", "out/hubs_cobertura.csv", EXP + "mercado.json"],
+      "out/acopio.json", "out/hubs_cobertura.csv", "out/satelite.json",
+      EXP + "mercado.json"],
      ["out/decisiones.json",
       "../../../_repo/dashboard/data/decisiones.json"],
      "cada decisión con su alternativa medida y su bisagra"),

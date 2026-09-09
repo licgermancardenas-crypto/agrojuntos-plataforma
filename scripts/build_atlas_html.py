@@ -22,6 +22,10 @@ import io
 import json
 import os
 import shutil
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import sitio                                           # noqa: E402
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLANTILLA = os.path.join(RAIZ, "scripts", "mapa_geo_template.html")
@@ -29,7 +33,7 @@ DATOS = os.path.join(RAIZ, "out", "mapa_geo.json")
 CAPAS = os.path.join(RAIZ, "out", "mapa_capas.json")
 SALIDA = os.path.join(RAIZ, "out", "atlas_geo.html")
 DASHBOARD = os.path.abspath(
-    os.path.join(RAIZ, "..", "..", "dashboard", "mapa.html"))
+    os.path.join(sitio.DASHBOARD, "mapa.html"))
 DATA_WEB = os.path.join(os.path.dirname(DASHBOARD), "data")
 
 # El mismo icono que index.html: una pestaña con otro emoji leería como otro

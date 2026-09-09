@@ -14,13 +14,14 @@ import io
 import json
 import os
 import re
+import sys
 import unicodedata
 
 import numpy as np
 import pandas as pd
 
-import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import sitio                                                  # noqa: E402
 from universo import es_agro                                  # noqa: E402
 
 # Se escribe directo en el sitio y no en out/, que obligaba a copiar a mano
@@ -28,7 +29,7 @@ from universo import es_agro                                  # noqa: E402
 # de los datos se renovaba y la otra mitad no: el paso manual era el que
 # dejaba el sitio con JSON de dos fechas distintas.
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.abspath(os.path.join(RAIZ, "..", "..", "dashboard", "data"))
+OUT = sitio.DATA
 os.makedirs(OUT, exist_ok=True)
 
 

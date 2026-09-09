@@ -159,11 +159,12 @@ ETAPAS = [
       "out/cartera_territorio.csv", "out/hubs_asignacion.csv",
       "out/aduanas_exportaciones.csv", "out/aduanas_importaciones.csv",
       "scripts/universo.py"],
-     # dos niveles arriba, no uno: `build_dashboard_data.py` escribe en el
-     # dashboard que esta al lado de MAPEO, no dentro. Con la ruta corta las
-     # salidas no existian y la etapa salia desactualizada para siempre.
-     ["../../dashboard/data/resumen.json",
-      "../../dashboard/data/logistica.json"],
+     # En el repositorio, que es donde el sitio los lee. Antes apuntaban al
+     # dashboard viejo que esta al lado de MAPEO, y de ahi habia que copiarlos
+     # a mano: ver `scripts/sitio.py`, que es donde se explica por que habia
+     # dos arboles y cual sobrevive.
+     ["../../../_repo/dashboard/data/resumen.json",
+      "../../../_repo/dashboard/data/logistica.json"],
      "los JSON que sirve el sitio"),
 
     ("reporte", "reporte.py",
@@ -291,6 +292,25 @@ def main():
         corridas += 1
 
     print("\n%d etapas corridas, %d al día" % (corridas, saltadas))
+
+    # Publicar no es una etapa con entradas y salidas: es lo que hay que hacer
+    # siempre al final, y por eso corre aunque no se haya recalculado nada.
+    # Compara contenido, así que repetirlo no cuesta ni ensucia el repositorio.
+    #
+    # Iba a mano hasta hoy, y a mano se olvidaba: `_repo/datos/` llegó a tener
+    # 35 archivos atrasados mientras `out/` estaba al día. El pipeline era
+    # riguroso hasta la puerta y ahí soltaba.
+    print()
+    r = subprocess.run(
+        [sys.executable, os.path.join("scripts", "publicar.py")]
+        + (["--secar"] if a.secar else []),
+        capture_output=True, text=True, encoding="utf-8", errors="replace")
+    for linea in (r.stdout or "").splitlines():
+        print("  " + linea)
+    if r.returncode:
+        print((r.stderr or "")[-600:])
+        return 1
+
     if not a.secar and any(e[0] == "reporte" for e in etapas):
         print("recuerda medir las páginas: python scripts/medir_paginas.py")
     return 0

@@ -170,6 +170,14 @@ ETAPAS = [
       "../../../_repo/dashboard/data/logistica.json"],
      "los JSON que sirve el sitio"),
 
+    # Las decisiones se arman al final: leen lo que todas las demás dejaron.
+    ("decisiones", "build_decisiones.py",
+     ["out/red_elegida.json", "out/canal.json", "out/clusters_absorcion.json",
+      "out/acopio.json", "out/hubs_cobertura.csv", EXP + "mercado.json"],
+     ["out/decisiones.json",
+      "../../../_repo/dashboard/data/decisiones.json"],
+     "cada decisión con su alternativa medida y su bisagra"),
+
     ("reporte", "reporte.py",
      # Todas las que lee, sacadas del propio archivo y no de memoria. Declarar
      # solo unas cuantas es lo que dejaba el informe «al día» con un PDF

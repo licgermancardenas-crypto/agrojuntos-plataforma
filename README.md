@@ -79,6 +79,7 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/territorio/sectores_2024.csv` | Los 7,036 sectores con UBIGEO, hectáreas y centroide |
 | `datos/territorio/clusters_territorio.csv` | Los 57 territorios de venta, con extensión, cartera y horas al centro |
 | `datos/territorio/clusters_absorcion.json` | La regla con que un territorio absorbe lo que quedó fuera, y cuánto entra |
+| `datos/decisiones/decisiones.json` | Cada decisión con su cifra, la alternativa que se descartó y su bisagra |
 | `datos/territorio/cartera_territorio.csv` | Qué cartera cae en cada territorio y a qué centro responde |
 | `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
 | `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial con pendiente, ida y vuelta por separado |
@@ -170,6 +171,32 @@ cuadraturas den, que los agregados sean coherentes entre sí y que las cifras
 de esta documentación correspondan a los datos— y `verificar.py` recorre el
 sitio en un Chrome de verdad. Una vez por semana, `auditar_pruebas.py`
 reintroduce cada defecto que las pruebas dicen cubrir y exige que salten.
+
+## Decisiones
+
+La plataforma contesta muy bien *qué es verdad*. Lo que no contestaba es *qué
+hacemos y cuánto vale*, y se notaba: el universo arancelario, el séptimo y
+octavo centro, la promesa diferenciada, la regla de absorción y el ruteo por
+distrito se decidieron todos midiendo alternativas —y las mediciones
+terminaban **en mensajes de commit**. Quien abriera el proyecto seis meses
+después vería la red de ocho centros sin saber que la de seis se midió, ni
+cuánto peor era.
+
+`build_decisiones.py` lo pone en un archivo. Cada decisión lleva **la cifra que
+la sostiene**, **la alternativa que se midió y se descartó —con la suya—** y
+**la bisagra**: lo que tendría que cambiar para darla vuelta. Los números salen
+de los archivos que el pipeline ya publica, así que cuando el dato cambia, la
+decisión que se muestra cambia con él.
+
+Dos reglas de contenido, y las dos son lo que separa esto de una lámina de
+conclusiones. Una decisión abierta se publica con su cifra y su bisagra, nunca
+con un adjetivo: «conviene expandir al sur» no es un dato aunque lleve
+tipografía de dato. Y no se inventan preguntas: están las que el proyecto
+enfrentó o enfrenta, no un catálogo de las plausibles.
+
+La única cifra que no se recalcula está marcada: la del método anterior de
+acopio —41 distritos sin centro y US$ 2,257 MM— viaja con la fecha en que se
+midió, porque ese método ya no existe en el código.
 
 **El orden no es opcional y ya no es tradición oral.** `pipeline.py` declara
 las veinticinco etapas con lo que lee y lo que escribe cada una, corre lo que haga

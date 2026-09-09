@@ -1,0 +1,120 @@
+{
+ "generado": "2026-09-09T16:27:32",
+ "motivo": "cada decisión con la cifra que la sostiene, la alternativa que se midió y se descartó, y lo que tendría que cambiar para darla vuelta; las cifras salen de los archivos del pipeline y no de este texto",
+ "abiertas": 4,
+ "decididas": 5,
+ "decisiones": [
+  {
+   "id": "universo-arancelario",
+   "estado": "decidida",
+   "familia": "Qué contamos",
+   "pregunta": "¿Qué partida arancelaria cuenta como agroexportación?",
+   "respuesta": "25 capítulos del arancel menos la pesca disfrazada de capítulo agrario. US$ 14,790 MM en 2025, un 1.5% por debajo de los US$ 15,013 MM que publica MIDAGRI.",
+   "alternativa": "Los siete capítulos con que arrancó el proyecto: US$ 13,169 MM, un 12% por debajo del oficial.",
+   "bisagra": "Que el aceite y la harina de pescado —US$ 2,388 MM de las partidas 1504 y 2301— pasen a contarse como agro, o que MIDAGRI cambie su propio criterio.",
+   "cifra": 14790.3,
+   "unidad": "US$ MM en 2025",
+   "fuente": "scripts/universo.py · mercado.json bloque universo"
+  },
+  {
+   "id": "red-de-centros",
+   "estado": "decidida",
+   "familia": "Dónde estar",
+   "pregunta": "¿Cuántos centros de distribución y dónde?",
+   "respuesta": "8 centros: los que elige la cobertura máxima más Huamachuco y Sicuani, puestos por decisión. Cubren el 64.4% del mercado dentro de su promesa.",
+   "alternativa": "Quedarse en los seis del algoritmo: 23.1% del mercado a dos horas.",
+   "bisagra": "Lo que agregue un noveno centro sobre esta red, que no es lo mismo que el noveno de la lista voraz: esa lista reordena la red entera en cada paso.",
+   "cifra": 64.41,
+   "unidad": "% del SAM",
+   "fuente": "out/red_elegida.json · build_hubs.py"
+  },
+  {
+   "id": "promesa-de-servicio",
+   "estado": "decidida",
+   "familia": "Cómo servimos",
+   "pregunta": "¿En cuántas horas se promete la entrega?",
+   "respuesta": "costa 4 h, sierra 6 h, selva alta 6 h, selva baja 6 h. Cubre el 64.4% del mercado.",
+   "alternativa": "Prometer dos horas a todo el país: 26.1% del mercado. La misma red, menos de la mitad de la cobertura.",
+   "bisagra": "La selva baja, que con la promesa de seis horas llega solo al 45%: es la región donde la vara no alcanza.",
+   "cifra": 64.41,
+   "unidad": "% del SAM",
+   "fuente": "out/red_elegida.json · PROMESA_H en build_hubs.py"
+  },
+  {
+   "id": "territorios-absorben",
+   "estado": "decidida",
+   "familia": "Quién atiende a quién",
+   "pregunta": "¿Qué se hace con el mercado que no cae en ningún territorio de venta?",
+   "respuesta": "Entra al territorio que lo alcance por carretera mientras el territorio siga midiendo menos de 120 km. Entran 24,971 clientes y US$ 75.6 MM; la cobertura llega al 69% de los clientes y 48 de 57 territorios se siguen recorriendo en el día.",
+   "alternativa": "Una vara fija de horas para todos. Con dos horas entran los mismos clientes y los territorios visitables bajan de 48 a 34; con seis horas, a 14.",
+   "bisagra": "Los 48,327 clientes que siguen fuera: meterlos rompe el territorio que los recibe, así que son argumento de la capa de canal y no de un territorio más grande.",
+   "cifra": 68.6,
+   "unidad": "% de clientes",
+   "fuente": "out/clusters_absorcion.json · diag_territorios.py"
+  },
+  {
+   "id": "acopio-por-distrito",
+   "estado": "decidida",
+   "familia": "Cómo medimos",
+   "pregunta": "¿Qué centro sirve a un distrito que embarca?",
+   "respuesta": "Se rutea al distrito, al punto medio de sus sectores agrícolas. Quedan 22 distritos y US$ 130.0 MM fuera del alcance de todo centro.",
+   "alternativa": "Heredarlo de la celda de demanda que le toca encima. Daba 41 distritos y US$ 2,257 MM sin centro, entre ellos Olmos con 1,599 MM, que está a 2.5 horas de Chiclayo.",
+   "alternativa_historica": {
+    "medido_el": "2026-09-08",
+    "por": "el método anterior, que ya no existe en el código"
+   },
+   "bisagra": "Los ocho distritos que la capa distrital trae sin geometría, que son la mayor parte de lo que queda fuera.",
+   "cifra": 22,
+   "unidad": "distritos",
+   "fuente": "out/acopio.json · out/hubs_distrito.csv"
+  },
+  {
+   "id": "noveno-centro",
+   "estado": "abierta",
+   "familia": "Dónde estar",
+   "pregunta": "¿Conviene un noveno centro, y dónde?",
+   "respuesta": "Sin decidir. Hoy queda fuera de la promesa el 35.6% del mercado, y la región peor servida es la selva baja con 45% dentro de su vara de seis horas.",
+   "alternativa": "No abrir y mover la promesa. `diag_satelite.py` compara las dos cosas: cuántos puntos de venta entran por abrir un centro más y cuántos entran por prometer cinco, seis u ocho horas con los que ya hay.",
+   "bisagra": "Un centro nuevo tiene que poder abastecerse: solo sirve si queda dentro de la promesa de la red que ya existe.",
+   "cifra": 35.6,
+   "unidad": "% del SAM sin cubrir",
+   "fuente": "out/red_elegida.json · diag_satelite.py"
+  },
+  {
+   "id": "canal-sin-resurtido",
+   "estado": "abierta",
+   "familia": "Cómo servimos",
+   "pregunta": "¿Qué se hace con el canal que su centro no alcanza?",
+   "respuesta": "Sin decidir. 660 puntos de venta quedan fuera de la promesa del centro que los surte. El peor no es el que deja más puntos fuera sino el que peor proporción alcanza: Huamachuco llega al 61% de los suyos, con mediana de 3.0 horas.",
+   "alternativa": "Esperar. La promesa de seis horas ya rescató parte del sur al abrir Sicuani, y el resto no paga todavía un alquiler.",
+   "bisagra": "Los 7,122 clientes que hay detrás del canal de Huamachuco: es el centro con más gente detrás de sus puntos y el que peor puede abastecerlos.",
+   "cifra": 660,
+   "unidad": "puntos fuera de promesa",
+   "fuente": "out/canal.json bloque reparto"
+  },
+  {
+   "id": "canal-a-reclutar",
+   "estado": "abierta",
+   "familia": "Quién atiende a quién",
+   "pregunta": "¿Con qué puntos de venta conviene trabajar primero?",
+   "respuesta": "Sin decidir. 517 de 3270 puntos tienen mercado propio —clientes que no le quedan más cerca a otro—, US$ 240 MM de SAM exclusivo. El mayor deja US$ 15,260 al año en el escenario base.",
+   "alternativa": "Abrir almacén propio donde ya hay quien vende, que es competir con el canal en vez de usarlo.",
+   "bisagra": "La penetración: el escenario base supone 1.5% del mercado del punto. Con la mitad, el mayor deja US$ 5,087.",
+   "cifra": 517,
+   "unidad": "puntos con mercado",
+   "fuente": "out/canal.json bloque viabilidad · canal_punto.csv"
+  },
+  {
+   "id": "exportadores-nuevos",
+   "estado": "abierta",
+   "familia": "A quién le vendemos",
+   "pregunta": "¿Qué se hace con los exportadores que trajo el universo ampliado?",
+   "respuesta": "Sin decidir. 758 empresas embarcan solo en los capítulos que entraron —alimento balanceado, aceites, galletas, pisco— y no aparecían en la cartera. Es cartera nueva, no solo FOB nuevo.",
+   "alternativa": "Tratarlas como el resto del directorio y esperar a que aparezcan por territorio.",
+   "bisagra": "Si compran el mismo insumo que un agroexportador de fruta. Una planta de alimento balanceado no es un fundo, y eso no está medido.",
+   "cifra": 758,
+   "unidad": "empresas",
+   "fuente": "mercado.json bloque universo · exportadores_min.json"
+  }
+ ]
+}

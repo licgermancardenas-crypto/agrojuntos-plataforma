@@ -596,7 +596,25 @@ El perfil no tiene equivalente impreso: 23,300 fichas no son un anexo, son un
 padrón. El informe conserva las tablas de mayores importadores y
 agroexportadores, que es lo que un documento de lectura lineal puede sostener.
 
-Las once primeras vistas viven en `index.html` y se conmutan por hash. El
+**La barra está ordenada por quién pregunta, no por cuándo se construyó.**
+Cada vista se agregaba al final el día que se hacía, y con quince entradas la
+barra —que tiene `overflow-x:auto`— dejaba fuera de pantalla justo las dos que
+un comercial usa a diario. El orden es ahora Resumen, Decisiones y Canasta
+primero —dónde estamos, qué está abierto, qué llevo—, después lo operativo
+—Territorios, Empresas, Logística, Expansión— y al final la consulta de
+mercado y comercio exterior.
+
+**Estacionalidad se fusionó en Canasta.** Mostraba el calendario de demanda por
+región; Canasta muestra ese mismo calendario con dos dimensiones más —el insumo
+y el cultivo—, así que mantener las dos era pedirle al lector que eligiera entre
+dos respuestas a la misma pregunta, y la peor de las dos. Lo único propio que
+tenía —ver las veinticinco regiones a la vez— vive dentro de Canasta como un
+bloque, y la prueba del navegador lo sigue exigiendo: fusionar dos vistas es la
+manera más fácil de perder la mitad de una sin que nadie lo note. `#estacionalidad`
+redirige a `#canasta`, para que un marcador viejo aterrice donde está la
+respuesta y no rebote al resumen.
+
+Las trece vistas viven en `index.html` y se conmutan por hash. El
 mapa es un documento propio en `/mapa`: su lienzo ocupa el ancho completo y su
 payload pesa 1.1 MB, que no tiene por qué cargarse para ver el resumen. Comparte
 encabezado, navegación, tema y pie con el resto, así que se recorre como una
@@ -608,7 +626,7 @@ aplica antes de pintar, de modo que la página no aparece un instante en claro
 antes de volverse oscura. El mapa se dibuja en canvas leyendo variables CSS,
 así que cambiar el tema lo obliga a repintarse: el CSS solo alcanza al DOM.
 
-`verificar.py` abre el sitio en un navegador real, recorre las once vistas,
+`verificar.py` abre el sitio en un navegador real, recorre las trece vistas,
 prueba la búsqueda, ejerce los filtros del mapa —comprueba que reduzcan el
 conteo y que *Limpiar* restaure—, navega entre el mapa y el resto en ambos
 sentidos, recorre los tres estados del tema, mide el contraste real de una

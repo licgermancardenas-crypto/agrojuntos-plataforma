@@ -1,0 +1,13 @@
+{
+ "regla": "una celda huerfana entra al territorio que la alcance por carretera mientras el territorio siga midiendo menos de 120 km de punta a punta",
+ "tope_horas": 4.0,
+ "visitable_km": 120.0,
+ "celdas": 1158,
+ "clientes": 24970.98,
+ "sam_usd": 75637858.17,
+ "territorios": 57,
+ "visitables": 48,
+ "pct_clientes_en_territorio": 68.6,
+ "pct_sam_en_territorio": 71.1,
+ "clientes_sin_territorio": 48326.82
+}

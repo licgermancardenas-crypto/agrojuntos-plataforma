@@ -1,0 +1,7004 @@
+{
+ "generado": "2026-09-09T17:12:47",
+ "motivo": "qué insumo se compra, para qué cultivo, en qué región y en qué mes; la hoja de costos de MIDAGRI aplicada a la superficie sembrada por mes y departamento",
+ "salvedad": "no es una medición de compras: nadie publica lo que compró un agricultor. Es un coeficiente técnico —lo que cuesta producir bien una hectárea— aplicado a la superficie real. Dice a qué se destina el gasto y cuándo, no que alguien lo haya comprado",
+ "el_mes_es": "el de la siembra y no el de la cosecha: el fertilizante entra con el cultivo. Los permanentes reparten su mantenimiento en los doce meses, que es un supuesto",
+ "usd_total": 1699967678.77,
+ "cultivos": 144,
+ "con_estructura_propia_pct": 95.2,
+ "por_insumo": [
+  {
+   "n": "Fertilizante",
+   "usd": 642273850.41,
+   "pct": 37.8
+  },
+  {
+   "n": "Fitosanitario",
+   "usd": 509593432.95,
+   "pct": 30.0
+  },
+  {
+   "n": "Semilla",
+   "usd": 247582241.57,
+   "pct": 14.6
+  },
+  {
+   "n": "Abono orgánico",
+   "usd": 160819111.41,
+   "pct": 9.5
+  },
+  {
+   "n": "Riego",
+   "usd": 119616852.06,
+   "pct": 7.0
+  },
+  {
+   "n": "Asistencia técnica",
+   "usd": 20082190.37,
+   "pct": 1.2
+  }
+ ],
+ "por_region": [
+  {
+   "n": "San Martín",
+   "usd": 193283677.3,
+   "pct": 11.4
+  },
+  {
+   "n": "Puno",
+   "usd": 129265371.38,
+   "pct": 7.6
+  },
+  {
+   "n": "Cajamarca",
+   "usd": 124724725.86,
+   "pct": 7.3
+  },
+  {
+   "n": "Piura",
+   "usd": 118780381.39,
+   "pct": 7.0
+  },
+  {
+   "n": "Huánuco",
+   "usd": 110701729.42,
+   "pct": 6.5
+  },
+  {
+   "n": "La Libertad",
+   "usd": 107778757.29,
+   "pct": 6.3
+  },
+  {
+   "n": "Junín",
+   "usd": 91291128.29,
+   "pct": 5.4
+  },
+  {
+   "n": "Amazonas",
+   "usd": 84740702.23,
+   "pct": 5.0
+  },
+  {
+   "n": "Cusco",
+   "usd": 81136697.93,
+   "pct": 4.8
+  },
+  {
+   "n": "Loreto",
+   "usd": 79753270.94,
+   "pct": 4.7
+  },
+  {
+   "n": "Lambayeque",
+   "usd": 66923976.29,
+   "pct": 3.9
+  },
+  {
+   "n": "Ica",
+   "usd": 64088275.67,
+   "pct": 3.8
+  },
+  {
+   "n": "Ucayali",
+   "usd": 62718374.03,
+   "pct": 3.7
+  },
+  {
+   "n": "Ayacucho",
+   "usd": 62416066.07,
+   "pct": 3.7
+  },
+  {
+   "n": "Arequipa",
+   "usd": 59748102.09,
+   "pct": 3.5
+  },
+  {
+   "n": "Lima",
+   "usd": 58084390.45,
+   "pct": 3.4
+  },
+  {
+   "n": "Huancavelica",
+   "usd": 39007798.45,
+   "pct": 2.3
+  },
+  {
+   "n": "Apurímac",
+   "usd": 37474968.7,
+   "pct": 2.2
+  },
+  {
+   "n": "Pasco",
+   "usd": 33788621.4,
+   "pct": 2.0
+  },
+  {
+   "n": "Áncash",
+   "usd": 23809968.95,
+   "pct": 1.4
+  },
+  {
+   "n": "Tacna",
+   "usd": 19013632.37,
+   "pct": 1.1
+  },
+  {
+   "n": "Tumbes",
+   "usd": 14427308.08,
+   "pct": 0.8
+  },
+  {
+   "n": "Madre de Dios",
+   "usd": 12713141.72,
+   "pct": 0.7
+  },
+  {
+   "n": "Ancash",
+   "usd": 10539603.72,
+   "pct": 0.6
+  },
+  {
+   "n": "Moquegua",
+   "usd": 5342836.2,
+   "pct": 0.3
+  },
+  {
+   "n": "Apurimac",
+   "usd": 4450590.36,
+   "pct": 0.3
+  },
+  {
+   "n": "Lima Metropolitana",
+   "usd": 3742958.31,
+   "pct": 0.2
+  },
+  {
+   "n": "yucare de Dios",
+   "usd": 186013.65,
+   "pct": 0.0
+  },
+  {
+   "n": "sandre de Dios",
+   "usd": 28356.81,
+   "pct": 0.0
+  },
+  {
+   "n": "pillore de Dios",
+   "usd": 4485.47,
+   "pct": 0.0
+  },
+  {
+   "n": "tomare de Dios",
+   "usd": 1767.95,
+   "pct": 0.0
+  }
+ ],
+ "por_cultivo": [
+  {
+   "n": "Arroz",
+   "usd": 268530887.86,
+   "pct": 15.8
+  },
+  {
+   "n": "Papa",
+   "usd": 188042408.5,
+   "pct": 11.1
+  },
+  {
+   "n": "MAD",
+   "usd": 120652806.97,
+   "pct": 7.1
+  },
+  {
+   "n": "braquearia",
+   "usd": 79240256.4,
+   "pct": 4.7
+  },
+  {
+   "n": "Amilac",
+   "usd": 78948503.27,
+   "pct": 4.6
+  },
+  {
+   "n": "cafe",
+   "usd": 69710789.16,
+   "pct": 4.1
+  },
+  {
+   "n": "palta",
+   "usd": 56853206.76,
+   "pct": 3.3
+  },
+  {
+   "n": "cacao",
+   "usd": 53651784.72,
+   "pct": 3.2
+  },
+  {
+   "n": "avenaf",
+   "usd": 49677347.27,
+   "pct": 2.9
+  },
+  {
+   "n": "platano",
+   "usd": 46212257.04,
+   "pct": 2.7
+  },
+  {
+   "n": "palma",
+   "usd": 41929370.28,
+   "pct": 2.5
+  },
+  {
+   "n": "alfalfa",
+   "usd": 39035679.36,
+   "pct": 2.3
+  },
+  {
+   "n": "quinua",
+   "usd": 29890519.63,
+   "pct": 1.8
+  },
+  {
+   "n": "Frijol",
+   "usd": 28781717.62,
+   "pct": 1.7
+  },
+  {
+   "n": "uva",
+   "usd": 27895061.04,
+   "pct": 1.6
+  }
+ ],
+ "por_mes": {
+  "Ene": {
+   "usd": 145344803.54,
+   "pct": 8.5,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 58129114.35
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 43857272.89
+    },
+    {
+     "n": "Semilla",
+     "usd": 20025742.67
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 11556726.63
+    },
+    {
+     "n": "Riego",
+     "usd": 10084363.01
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1691583.99
+    }
+   ]
+  },
+  "Feb": {
+   "usd": 137386456.69,
+   "pct": 8.1,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 54478175.38
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 44361773.92
+    },
+    {
+     "n": "Semilla",
+     "usd": 16019858.32
+    },
+    {
+     "n": "Riego",
+     "usd": 10879309.18
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 9952054.8
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1695285.09
+    }
+   ]
+  },
+  "Mar": {
+   "usd": 109074389.3,
+   "pct": 6.4,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 41134847.64
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 35803456.91
+    },
+    {
+     "n": "Semilla",
+     "usd": 11675597.97
+    },
+    {
+     "n": "Riego",
+     "usd": 9450646.28
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 9344279.16
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1665561.34
+    }
+   ]
+  },
+  "Abr": {
+   "usd": 94944535.94,
+   "pct": 5.6,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 34405867.96
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 31390097.42
+    },
+    {
+     "n": "Semilla",
+     "usd": 10010906.75
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 9098236.15
+    },
+    {
+     "n": "Riego",
+     "usd": 8385404.3
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1654023.36
+    }
+   ]
+  },
+  "May": {
+   "usd": 96097185.56,
+   "pct": 5.7,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 35477756.77
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 32315952.65
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 9213247.52
+    },
+    {
+     "n": "Semilla",
+     "usd": 9129739.54
+    },
+    {
+     "n": "Riego",
+     "usd": 8305065.82
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1655423.26
+    }
+   ]
+  },
+  "Jun": {
+   "usd": 107088683.02,
+   "pct": 6.3,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 40545821.71
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 36049739.86
+    },
+    {
+     "n": "Semilla",
+     "usd": 10038523.16
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 9587362.51
+    },
+    {
+     "n": "Riego",
+     "usd": 9195857.46
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1671378.32
+    }
+   ]
+  },
+  "Jul": {
+   "usd": 108351829.6,
+   "pct": 6.4,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 41340411.51
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 36633142.56
+    },
+    {
+     "n": "Semilla",
+     "usd": 9737327.56
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 9490976.94
+    },
+    {
+     "n": "Riego",
+     "usd": 9479967.54
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1670003.49
+    }
+   ]
+  },
+  "Ago": {
+   "usd": 133827138.18,
+   "pct": 7.9,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 51106346.45
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 42893373.96
+    },
+    {
+     "n": "Semilla",
+     "usd": 15717567.36
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 11716036.83
+    },
+    {
+     "n": "Riego",
+     "usd": 10713083.1
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1680730.48
+    }
+   ]
+  },
+  "Set": {
+   "usd": 167876711.3,
+   "pct": 9.9,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 62310416.21
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 49151999.29
+    },
+    {
+     "n": "Semilla",
+     "usd": 26922010.27
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 16377551.88
+    },
+    {
+     "n": "Riego",
+     "usd": 11443780.06
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1670953.59
+    }
+   ]
+  },
+  "Oct": {
+   "usd": 219377677.3,
+   "pct": 12.9,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 79164168.67
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 59030957.83
+    },
+    {
+     "n": "Semilla",
+     "usd": 43392387.4
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 24449868.26
+    },
+    {
+     "n": "Riego",
+     "usd": 11666340.15
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1673954.99
+    }
+   ]
+  },
+  "Nov": {
+   "usd": 197054003.4,
+   "pct": 11.6,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 72962560.17
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 52059314.56
+    },
+    {
+     "n": "Semilla",
+     "usd": 38924576.93
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 21200719.59
+    },
+    {
+     "n": "Riego",
+     "usd": 10228391.79
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1678440.36
+    }
+   ]
+  },
+  "Dic": {
+   "usd": 183544264.94,
+   "pct": 10.8,
+   "insumos": [
+    {
+     "n": "Fertilizante",
+     "usd": 71218363.59
+    },
+    {
+     "n": "Fitosanitario",
+     "usd": 46046351.1
+    },
+    {
+     "n": "Semilla",
+     "usd": 35988003.64
+    },
+    {
+     "n": "Abono orgánico",
+     "usd": 18832051.14
+    },
+    {
+     "n": "Riego",
+     "usd": 9784643.37
+    },
+    {
+     "n": "Asistencia técnica",
+     "usd": 1674852.1
+    }
+   ]
+  }
+ },
+ "insumo_por_region": {
+  "Amazonas": [
+   {
+    "n": "Fitosanitario",
+    "usd": 33859286.86,
+    "pct": 40.0
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 30194704.21,
+    "pct": 35.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 7729666.08,
+    "pct": 9.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 7103021.4,
+    "pct": 8.4
+   },
+   {
+    "n": "Riego",
+    "usd": 4687087.49,
+    "pct": 5.5
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1166936.19,
+    "pct": 1.4
+   }
+  ],
+  "Ancash": [
+   {
+    "n": "Fertilizante",
+    "usd": 4015986.36,
+    "pct": 38.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 3137414.28,
+    "pct": 29.8
+   },
+   {
+    "n": "Riego",
+    "usd": 1999868.52,
+    "pct": 19.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 997219.92,
+    "pct": 9.5
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 323395.32,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 65719.32,
+    "pct": 0.6
+   }
+  ],
+  "Apurimac": [
+   {
+    "n": "Fertilizante",
+    "usd": 1717126.32,
+    "pct": 38.6
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 967790.16,
+    "pct": 21.7
+   },
+   {
+    "n": "Riego",
+    "usd": 849408.84,
+    "pct": 19.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 714190.56,
+    "pct": 16.0
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 177740.16,
+    "pct": 4.0
+   },
+   {
+    "n": "Semilla",
+    "usd": 24334.32,
+    "pct": 0.5
+   }
+  ],
+  "Apurímac": [
+   {
+    "n": "Fertilizante",
+    "usd": 12594440.16,
+    "pct": 33.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 11754462.25,
+    "pct": 31.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 7286422.01,
+    "pct": 19.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 4945337.89,
+    "pct": 13.2
+   },
+   {
+    "n": "Riego",
+    "usd": 889548.79,
+    "pct": 2.4
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 4757.6,
+    "pct": 0.0
+   }
+  ],
+  "Arequipa": [
+   {
+    "n": "Fertilizante",
+    "usd": 22275044.05,
+    "pct": 37.3
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 15587512.93,
+    "pct": 26.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 8015530.42,
+    "pct": 13.4
+   },
+   {
+    "n": "Riego",
+    "usd": 7215865.8,
+    "pct": 12.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 6471212.73,
+    "pct": 10.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 182936.16,
+    "pct": 0.3
+   }
+  ],
+  "Ayacucho": [
+   {
+    "n": "Fertilizante",
+    "usd": 21844291.67,
+    "pct": 35.0
+   },
+   {
+    "n": "Semilla",
+    "usd": 16251507.78,
+    "pct": 26.0
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 12588031.85,
+    "pct": 20.2
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 8621107.93,
+    "pct": 13.8
+   },
+   {
+    "n": "Riego",
+    "usd": 2968987.47,
+    "pct": 4.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 142139.37,
+    "pct": 0.2
+   }
+  ],
+  "Cajamarca": [
+   {
+    "n": "Fertilizante",
+    "usd": 43035109.43,
+    "pct": 34.5
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 30949764.64,
+    "pct": 24.8
+   },
+   {
+    "n": "Semilla",
+    "usd": 27386787.47,
+    "pct": 22.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 15934315.51,
+    "pct": 12.8
+   },
+   {
+    "n": "Riego",
+    "usd": 4736654.99,
+    "pct": 3.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2682093.82,
+    "pct": 2.2
+   }
+  ],
+  "Cusco": [
+   {
+    "n": "Fertilizante",
+    "usd": 30160442.37,
+    "pct": 37.2
+   },
+   {
+    "n": "Semilla",
+    "usd": 19131347.11,
+    "pct": 23.6
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 18648600.12,
+    "pct": 23.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 10511258.59,
+    "pct": 13.0
+   },
+   {
+    "n": "Riego",
+    "usd": 2259425.96,
+    "pct": 2.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 425623.78,
+    "pct": 0.5
+   }
+  ],
+  "Huancavelica": [
+   {
+    "n": "Semilla",
+    "usd": 12571162.01,
+    "pct": 32.2
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 12094206.62,
+    "pct": 31.0
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 7660712.11,
+    "pct": 19.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 5068550.62,
+    "pct": 13.0
+   },
+   {
+    "n": "Riego",
+    "usd": 1548867.94,
+    "pct": 4.0
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 64299.15,
+    "pct": 0.2
+   }
+  ],
+  "Huánuco": [
+   {
+    "n": "Fitosanitario",
+    "usd": 54034540.45,
+    "pct": 48.8
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 28216330.46,
+    "pct": 25.5
+   },
+   {
+    "n": "Semilla",
+    "usd": 14920240.78,
+    "pct": 13.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 9908201.2,
+    "pct": 9.0
+   },
+   {
+    "n": "Riego",
+    "usd": 2879738.61,
+    "pct": 2.6
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 742677.92,
+    "pct": 0.7
+   }
+  ],
+  "Ica": [
+   {
+    "n": "Fertilizante",
+    "usd": 24269867.36,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 16954521.28,
+    "pct": 26.5
+   },
+   {
+    "n": "Riego",
+    "usd": 12889618.01,
+    "pct": 20.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 5483839.56,
+    "pct": 8.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 3271115.66,
+    "pct": 5.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1219313.8,
+    "pct": 1.9
+   }
+  ],
+  "Junín": [
+   {
+    "n": "Fertilizante",
+    "usd": 36217838.67,
+    "pct": 39.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 24149209.02,
+    "pct": 26.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 11908866.22,
+    "pct": 13.0
+   },
+   {
+    "n": "Semilla",
+    "usd": 11862026.76,
+    "pct": 13.0
+   },
+   {
+    "n": "Riego",
+    "usd": 5790997.72,
+    "pct": 6.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1362189.9,
+    "pct": 1.5
+   }
+  ],
+  "La Libertad": [
+   {
+    "n": "Fertilizante",
+    "usd": 39647569.93,
+    "pct": 36.8
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 27704566.1,
+    "pct": 25.7
+   },
+   {
+    "n": "Semilla",
+    "usd": 19248540.34,
+    "pct": 17.9
+   },
+   {
+    "n": "Riego",
+    "usd": 11738470.97,
+    "pct": 10.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 8602464.24,
+    "pct": 8.0
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 837145.71,
+    "pct": 0.8
+   }
+  ],
+  "Lambayeque": [
+   {
+    "n": "Fertilizante",
+    "usd": 28147358.8,
+    "pct": 42.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 20943245.48,
+    "pct": 31.3
+   },
+   {
+    "n": "Semilla",
+    "usd": 6988590.28,
+    "pct": 10.4
+   },
+   {
+    "n": "Riego",
+    "usd": 6986922.11,
+    "pct": 10.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 2937175.13,
+    "pct": 4.4
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 920684.49,
+    "pct": 1.4
+   }
+  ],
+  "Lima": [
+   {
+    "n": "Fertilizante",
+    "usd": 21291957.85,
+    "pct": 36.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 14844527.06,
+    "pct": 25.6
+   },
+   {
+    "n": "Riego",
+    "usd": 9296008.92,
+    "pct": 16.0
+   },
+   {
+    "n": "Semilla",
+    "usd": 6295180.96,
+    "pct": 10.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 5765716.44,
+    "pct": 9.9
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 590999.22,
+    "pct": 1.0
+   }
+  ],
+  "Lima Metropolitana": [
+   {
+    "n": "Fertilizante",
+    "usd": 1269321.57,
+    "pct": 33.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 864637.98,
+    "pct": 23.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 722916.94,
+    "pct": 19.3
+   },
+   {
+    "n": "Riego",
+    "usd": 442331.67,
+    "pct": 11.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 431552.25,
+    "pct": 11.5
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 12197.9,
+    "pct": 0.3
+   }
+  ],
+  "Loreto": [
+   {
+    "n": "Fertilizante",
+    "usd": 32953331.38,
+    "pct": 41.3
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 24134733.79,
+    "pct": 30.3
+   },
+   {
+    "n": "Riego",
+    "usd": 9019153.32,
+    "pct": 11.3
+   },
+   {
+    "n": "Semilla",
+    "usd": 7946468.01,
+    "pct": 10.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 4585733.29,
+    "pct": 5.7
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1113851.15,
+    "pct": 1.4
+   }
+  ],
+  "Madre de Dios": [
+   {
+    "n": "Fitosanitario",
+    "usd": 7277135.68,
+    "pct": 57.2
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 3452028.17,
+    "pct": 27.2
+   },
+   {
+    "n": "Semilla",
+    "usd": 693415.35,
+    "pct": 5.5
+   },
+   {
+    "n": "Riego",
+    "usd": 611320.21,
+    "pct": 4.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 573892.63,
+    "pct": 4.5
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 105349.68,
+    "pct": 0.8
+   }
+  ],
+  "Moquegua": [
+   {
+    "n": "Fertilizante",
+    "usd": 1851018.33,
+    "pct": 34.6
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1441138.8,
+    "pct": 27.0
+   },
+   {
+    "n": "Riego",
+    "usd": 887284.93,
+    "pct": 16.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 790826.64,
+    "pct": 14.8
+   },
+   {
+    "n": "Semilla",
+    "usd": 321008.82,
+    "pct": 6.0
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 51558.68,
+    "pct": 1.0
+   }
+  ],
+  "Pasco": [
+   {
+    "n": "Fitosanitario",
+    "usd": 17677639.11,
+    "pct": 52.3
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 8086278.5,
+    "pct": 23.9
+   },
+   {
+    "n": "Semilla",
+    "usd": 3263102.73,
+    "pct": 9.7
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3056547.42,
+    "pct": 9.0
+   },
+   {
+    "n": "Riego",
+    "usd": 1382115.69,
+    "pct": 4.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 322937.95,
+    "pct": 1.0
+   }
+  ],
+  "Piura": [
+   {
+    "n": "Fertilizante",
+    "usd": 48619648.99,
+    "pct": 40.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 34800889.94,
+    "pct": 29.3
+   },
+   {
+    "n": "Semilla",
+    "usd": 13368554.37,
+    "pct": 11.3
+   },
+   {
+    "n": "Riego",
+    "usd": 10046053.22,
+    "pct": 8.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 7090069.28,
+    "pct": 6.0
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 4855165.59,
+    "pct": 4.1
+   }
+  ],
+  "Puno": [
+   {
+    "n": "Fertilizante",
+    "usd": 49737405.64,
+    "pct": 38.5
+   },
+   {
+    "n": "Semilla",
+    "usd": 33368868.48,
+    "pct": 25.8
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 23080974.07,
+    "pct": 17.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 20521723.04,
+    "pct": 15.9
+   },
+   {
+    "n": "Riego",
+    "usd": 2486831.09,
+    "pct": 1.9
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 69569.06,
+    "pct": 0.1
+   }
+  ],
+  "San Martín": [
+   {
+    "n": "Fertilizante",
+    "usd": 83939490.36,
+    "pct": 43.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 77392558.09,
+    "pct": 40.0
+   },
+   {
+    "n": "Semilla",
+    "usd": 12136006.78,
+    "pct": 6.3
+   },
+   {
+    "n": "Riego",
+    "usd": 9453100.12,
+    "pct": 4.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 9082062.14,
+    "pct": 4.7
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1280459.81,
+    "pct": 0.7
+   }
+  ],
+  "Tacna": [
+   {
+    "n": "Fertilizante",
+    "usd": 8843520.08,
+    "pct": 46.5
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 3829410.94,
+    "pct": 20.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3227208.58,
+    "pct": 17.0
+   },
+   {
+    "n": "Riego",
+    "usd": 2459035.87,
+    "pct": 12.9
+   },
+   {
+    "n": "Semilla",
+    "usd": 615024.38,
+    "pct": 3.2
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 39432.52,
+    "pct": 0.2
+   }
+  ],
+  "Tumbes": [
+   {
+    "n": "Fertilizante",
+    "usd": 6446769.56,
+    "pct": 44.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 5084989.36,
+    "pct": 35.2
+   },
+   {
+    "n": "Semilla",
+    "usd": 1127795.76,
+    "pct": 7.8
+   },
+   {
+    "n": "Riego",
+    "usd": 953816.59,
+    "pct": 6.6
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 421058.82,
+    "pct": 2.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 392877.99,
+    "pct": 2.7
+   }
+  ],
+  "Ucayali": [
+   {
+    "n": "Fertilizante",
+    "usd": 32249065.43,
+    "pct": 51.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 19089095.97,
+    "pct": 30.4
+   },
+   {
+    "n": "Riego",
+    "usd": 3947643.53,
+    "pct": 6.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3715172.35,
+    "pct": 5.9
+   },
+   {
+    "n": "Semilla",
+    "usd": 2767966.88,
+    "pct": 4.4
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 949429.87,
+    "pct": 1.5
+   }
+  ],
+  "pillore de Dios": [
+   {
+    "n": "Fertilizante",
+    "usd": 1463.93,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 1151.91,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 932.24,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 512.47,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 418.85,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 6.07,
+    "pct": 0.1
+   }
+  ],
+  "sandre de Dios": [
+   {
+    "n": "Fertilizante",
+    "usd": 9751.47,
+    "pct": 34.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 8878.58,
+    "pct": 31.3
+   },
+   {
+    "n": "Semilla",
+    "usd": 3861.37,
+    "pct": 13.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3619.83,
+    "pct": 12.8
+   },
+   {
+    "n": "Riego",
+    "usd": 2245.56,
+    "pct": 7.9
+   }
+  ],
+  "tomare de Dios": [
+   {
+    "n": "Riego",
+    "usd": 603.81,
+    "pct": 34.2
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 426.14,
+    "pct": 24.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 406.81,
+    "pct": 23.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 289.75,
+    "pct": 16.4
+   },
+   {
+    "n": "Semilla",
+    "usd": 41.44,
+    "pct": 2.3
+   }
+  ],
+  "yucare de Dios": [
+   {
+    "n": "Riego",
+    "usd": 121076.93,
+    "pct": 65.1
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 24333.9,
+    "pct": 13.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 15028.14,
+    "pct": 8.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 14204.04,
+    "pct": 7.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 11370.64,
+    "pct": 6.1
+   }
+  ],
+  "Áncash": [
+   {
+    "n": "Fertilizante",
+    "usd": 9067722.7,
+    "pct": 38.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 5714818.67,
+    "pct": 24.0
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 5579663.2,
+    "pct": 23.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 2363175.17,
+    "pct": 9.9
+   },
+   {
+    "n": "Riego",
+    "usd": 1066348.53,
+    "pct": 4.5
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 18240.68,
+    "pct": 0.1
+   }
+  ]
+ },
+ "cultivo_por_region": {
+  "Amazonas": [
+   {
+    "n": "Arroz",
+    "usd": 24672114.52,
+    "pct": 29.1
+   },
+   {
+    "n": "cafe",
+    "usd": 9801355.68,
+    "pct": 11.6
+   },
+   {
+    "n": "pelefante",
+    "usd": 8980543.44,
+    "pct": 10.6
+   },
+   {
+    "n": "MAD",
+    "usd": 5306210.64,
+    "pct": 6.3
+   },
+   {
+    "n": "braquearia",
+    "usd": 5069263.8,
+    "pct": 6.0
+   }
+  ],
+  "Ancash": [
+   {
+    "n": "palta",
+    "usd": 3234997.68,
+    "pct": 30.7
+   },
+   {
+    "n": "esparrago",
+    "usd": 1747691.76,
+    "pct": 16.6
+   },
+   {
+    "n": "alfalfa",
+    "usd": 1712786.4,
+    "pct": 16.3
+   },
+   {
+    "n": "mango",
+    "usd": 1223961.0,
+    "pct": 11.6
+   },
+   {
+    "n": "arandano",
+    "usd": 534501.36,
+    "pct": 5.1
+   }
+  ],
+  "Apurimac": [
+   {
+    "n": "palta",
+    "usd": 1896438.12,
+    "pct": 42.6
+   },
+   {
+    "n": "alfalfa",
+    "usd": 610279.32,
+    "pct": 13.7
+   },
+   {
+    "n": "trebol",
+    "usd": 423642.48,
+    "pct": 9.5
+   },
+   {
+    "n": "ryegrass",
+    "usd": 387182.88,
+    "pct": 8.7
+   },
+   {
+    "n": "tuna",
+    "usd": 308752.2,
+    "pct": 6.9
+   }
+  ],
+  "Apurímac": [
+   {
+    "n": "Papa",
+    "usd": 12134665.27,
+    "pct": 32.4
+   },
+   {
+    "n": "Amilac",
+    "usd": 9273455.32,
+    "pct": 24.7
+   },
+   {
+    "n": "quinua",
+    "usd": 2727949.32,
+    "pct": 7.3
+   },
+   {
+    "n": "habags",
+    "usd": 2142595.85,
+    "pct": 5.7
+   },
+   {
+    "n": "Frijol",
+    "usd": 1313304.85,
+    "pct": 3.5
+   }
+  ],
+  "Arequipa": [
+   {
+    "n": "Arroz",
+    "usd": 13134642.64,
+    "pct": 22.0
+   },
+   {
+    "n": "alfalfa",
+    "usd": 6684319.2,
+    "pct": 11.2
+   },
+   {
+    "n": "cebollacabeza",
+    "usd": 6155439.35,
+    "pct": 10.3
+   },
+   {
+    "n": "chala",
+    "usd": 6051425.11,
+    "pct": 10.1
+   },
+   {
+    "n": "Papa",
+    "usd": 5324553.91,
+    "pct": 8.9
+   }
+  ],
+  "Ayacucho": [
+   {
+    "n": "Papa",
+    "usd": 18073412.21,
+    "pct": 29.0
+   },
+   {
+    "n": "Amilac",
+    "usd": 8022947.09,
+    "pct": 12.9
+   },
+   {
+    "n": "quinua",
+    "usd": 7212273.85,
+    "pct": 11.6
+   },
+   {
+    "n": "palta",
+    "usd": 4716412.44,
+    "pct": 7.6
+   },
+   {
+    "n": "habags",
+    "usd": 2864861.36,
+    "pct": 4.6
+   }
+  ],
+  "Cajamarca": [
+   {
+    "n": "Papa",
+    "usd": 15379787.0,
+    "pct": 12.3
+   },
+   {
+    "n": "Arroz",
+    "usd": 14357263.64,
+    "pct": 11.5
+   },
+   {
+    "n": "Amilac",
+    "usd": 13848220.89,
+    "pct": 11.1
+   },
+   {
+    "n": "cafe",
+    "usd": 11458266.12,
+    "pct": 9.2
+   },
+   {
+    "n": "MAD",
+    "usd": 7602772.95,
+    "pct": 6.1
+   }
+  ],
+  "Cusco": [
+   {
+    "n": "Papa",
+    "usd": 17334406.83,
+    "pct": 21.4
+   },
+   {
+    "n": "Amilac",
+    "usd": 10372083.36,
+    "pct": 12.8
+   },
+   {
+    "n": "cafe",
+    "usd": 8858938.68,
+    "pct": 10.9
+   },
+   {
+    "n": "avenaf",
+    "usd": 7312364.66,
+    "pct": 9.0
+   },
+   {
+    "n": "cacao",
+    "usd": 5453736.6,
+    "pct": 6.7
+   }
+  ],
+  "Huancavelica": [
+   {
+    "n": "Papa",
+    "usd": 12647266.78,
+    "pct": 32.4
+   },
+   {
+    "n": "Amilac",
+    "usd": 7297760.83,
+    "pct": 18.7
+   },
+   {
+    "n": "habags",
+    "usd": 2664579.8,
+    "pct": 6.8
+   },
+   {
+    "n": "Frijol",
+    "usd": 2591560.41,
+    "pct": 6.6
+   },
+   {
+    "n": "palta",
+    "usd": 2372011.2,
+    "pct": 6.1
+   }
+  ],
+  "Huánuco": [
+   {
+    "n": "braquearia",
+    "usd": 37625875.68,
+    "pct": 34.0
+   },
+   {
+    "n": "Papa",
+    "usd": 24869881.26,
+    "pct": 22.5
+   },
+   {
+    "n": "cacao",
+    "usd": 6678738.24,
+    "pct": 6.0
+   },
+   {
+    "n": "Arroz",
+    "usd": 6128822.57,
+    "pct": 5.5
+   },
+   {
+    "n": "Amilac",
+    "usd": 5277211.54,
+    "pct": 4.8
+   }
+  ],
+  "Ica": [
+   {
+    "n": "uva",
+    "usd": 13191599.52,
+    "pct": 20.6
+   },
+   {
+    "n": "esparrago",
+    "usd": 11413490.64,
+    "pct": 17.8
+   },
+   {
+    "n": "MAD",
+    "usd": 8147413.79,
+    "pct": 12.7
+   },
+   {
+    "n": "palta",
+    "usd": 6171632.88,
+    "pct": 9.6
+   },
+   {
+    "n": "mandarina",
+    "usd": 3692045.16,
+    "pct": 5.8
+   }
+  ],
+  "Junín": [
+   {
+    "n": "cafe",
+    "usd": 14220855.0,
+    "pct": 15.6
+   },
+   {
+    "n": "Papa",
+    "usd": 13096591.34,
+    "pct": 14.3
+   },
+   {
+    "n": "naranja",
+    "usd": 8423706.0,
+    "pct": 9.2
+   },
+   {
+    "n": "cacao",
+    "usd": 7589363.04,
+    "pct": 8.3
+   },
+   {
+    "n": "platano",
+    "usd": 4715438.88,
+    "pct": 5.2
+   }
+  ],
+  "La Libertad": [
+   {
+    "n": "Arroz",
+    "usd": 18211195.01,
+    "pct": 16.9
+   },
+   {
+    "n": "Papa",
+    "usd": 15245686.29,
+    "pct": 14.1
+   },
+   {
+    "n": "palta",
+    "usd": 14835773.52,
+    "pct": 13.8
+   },
+   {
+    "n": "esparrago",
+    "usd": 10145191.44,
+    "pct": 9.4
+   },
+   {
+    "n": "Amilac",
+    "usd": 5906220.93,
+    "pct": 5.5
+   }
+  ],
+  "Lambayeque": [
+   {
+    "n": "Arroz",
+    "usd": 31489040.38,
+    "pct": 47.1
+   },
+   {
+    "n": "MAD",
+    "usd": 8037968.21,
+    "pct": 12.0
+   },
+   {
+    "n": "palta",
+    "usd": 5110466.28,
+    "pct": 7.6
+   },
+   {
+    "n": "mango",
+    "usd": 2724944.76,
+    "pct": 4.1
+   },
+   {
+    "n": "arandano",
+    "usd": 1490428.92,
+    "pct": 2.2
+   }
+  ],
+  "Lima": [
+   {
+    "n": "palta",
+    "usd": 6996017.64,
+    "pct": 12.0
+   },
+   {
+    "n": "mandarina",
+    "usd": 6925879.2,
+    "pct": 11.9
+   },
+   {
+    "n": "MAD",
+    "usd": 6340581.67,
+    "pct": 10.9
+   },
+   {
+    "n": "chala",
+    "usd": 4613361.45,
+    "pct": 7.9
+   },
+   {
+    "n": "Papa",
+    "usd": 3604465.21,
+    "pct": 6.2
+   }
+  ],
+  "Lima Metropolitana": [
+   {
+    "n": "brocoli",
+    "usd": 384772.99,
+    "pct": 10.3
+   },
+   {
+    "n": "chala",
+    "usd": 383873.04,
+    "pct": 10.3
+   },
+   {
+    "n": "cebollachina",
+    "usd": 258446.56,
+    "pct": 6.9
+   },
+   {
+    "n": "mandarina",
+    "usd": 252811.56,
+    "pct": 6.8
+   },
+   {
+    "n": "aji",
+    "usd": 243983.74,
+    "pct": 6.5
+   }
+  ],
+  "Loreto": [
+   {
+    "n": "Arroz",
+    "usd": 23383639.26,
+    "pct": 29.3
+   },
+   {
+    "n": "MAD",
+    "usd": 15437956.08,
+    "pct": 19.4
+   },
+   {
+    "n": "platano",
+    "usd": 6821256.6,
+    "pct": 8.6
+   },
+   {
+    "n": "yuca",
+    "usd": 5638233.67,
+    "pct": 7.1
+   },
+   {
+    "n": "palma",
+    "usd": 5526520.44,
+    "pct": 6.9
+   }
+  ],
+  "Madre de Dios": [
+   {
+    "n": "braquearia",
+    "usd": 5308141.2,
+    "pct": 41.8
+   },
+   {
+    "n": "MAD",
+    "usd": 3918008.78,
+    "pct": 30.8
+   },
+   {
+    "n": "Arroz",
+    "usd": 1279616.35,
+    "pct": 10.1
+   },
+   {
+    "n": "platano",
+    "usd": 774818.16,
+    "pct": 6.1
+   },
+   {
+    "n": "cacao",
+    "usd": 532638.36,
+    "pct": 4.2
+   }
+  ],
+  "Moquegua": [
+   {
+    "n": "alfalfa",
+    "usd": 1908248.4,
+    "pct": 35.7
+   },
+   {
+    "n": "palta",
+    "usd": 1293999.12,
+    "pct": 24.2
+   },
+   {
+    "n": "Papa",
+    "usd": 368631.9,
+    "pct": 6.9
+   },
+   {
+    "n": "uva",
+    "usd": 337955.16,
+    "pct": 6.3
+   },
+   {
+    "n": "Amilac",
+    "usd": 298336.15,
+    "pct": 5.6
+   }
+  ],
+  "Pasco": [
+   {
+    "n": "braquearia",
+    "usd": 10561043.28,
+    "pct": 31.3
+   },
+   {
+    "n": "Papa",
+    "usd": 4586709.57,
+    "pct": 13.6
+   },
+   {
+    "n": "cafe",
+    "usd": 2962800.12,
+    "pct": 8.8
+   },
+   {
+    "n": "platano",
+    "usd": 2337945.72,
+    "pct": 6.9
+   },
+   {
+    "n": "achiot",
+    "usd": 2079590.64,
+    "pct": 6.2
+   }
+  ],
+  "Piura": [
+   {
+    "n": "Arroz",
+    "usd": 33806003.27,
+    "pct": 28.5
+   },
+   {
+    "n": "mango",
+    "usd": 17508368.64,
+    "pct": 14.7
+   },
+   {
+    "n": "limon",
+    "usd": 10257574.08,
+    "pct": 8.6
+   },
+   {
+    "n": "MAD",
+    "usd": 9944398.71,
+    "pct": 8.4
+   },
+   {
+    "n": "Amilac",
+    "usd": 5858654.05,
+    "pct": 4.9
+   }
+  ],
+  "Puno": [
+   {
+    "n": "avenaf",
+    "usd": 35771962.78,
+    "pct": 27.7
+   },
+   {
+    "n": "Papa",
+    "usd": 32843069.84,
+    "pct": 25.4
+   },
+   {
+    "n": "alfalfa",
+    "usd": 17226518.04,
+    "pct": 13.3
+   },
+   {
+    "n": "quinua",
+    "usd": 14010002.66,
+    "pct": 10.8
+   },
+   {
+    "n": "cebadaf",
+    "usd": 6238771.83,
+    "pct": 4.8
+   }
+  ],
+  "San Martín": [
+   {
+    "n": "Arroz",
+    "usd": 73557936.0,
+    "pct": 38.1
+   },
+   {
+    "n": "MAD",
+    "usd": 28644441.33,
+    "pct": 14.8
+   },
+   {
+    "n": "braquearia",
+    "usd": 18824401.32,
+    "pct": 9.7
+   },
+   {
+    "n": "cacao",
+    "usd": 18819294.84,
+    "pct": 9.7
+   },
+   {
+    "n": "palma",
+    "usd": 15518486.04,
+    "pct": 8.0
+   }
+  ],
+  "Tacna": [
+   {
+    "n": "olivo",
+    "usd": 10684481.52,
+    "pct": 56.2
+   },
+   {
+    "n": "alfalfa",
+    "usd": 2094842.52,
+    "pct": 11.0
+   },
+   {
+    "n": "aji",
+    "usd": 886340.86,
+    "pct": 4.7
+   },
+   {
+    "n": "chala",
+    "usd": 820737.26,
+    "pct": 4.3
+   },
+   {
+    "n": "naranja",
+    "usd": 671920.68,
+    "pct": 3.5
+   }
+  ],
+  "Tumbes": [
+   {
+    "n": "Arroz",
+    "usd": 10672825.88,
+    "pct": 74.0
+   },
+   {
+    "n": "limon",
+    "usd": 1775523.72,
+    "pct": 12.3
+   },
+   {
+    "n": "platano",
+    "usd": 1020445.2,
+    "pct": 7.1
+   },
+   {
+    "n": "MAD",
+    "usd": 260282.61,
+    "pct": 1.8
+   },
+   {
+    "n": "ciruela",
+    "usd": 166484.28,
+    "pct": 1.2
+   }
+  ],
+  "Ucayali": [
+   {
+    "n": "palma",
+    "usd": 19281276.48,
+    "pct": 30.7
+   },
+   {
+    "n": "Arroz",
+    "usd": 12996202.73,
+    "pct": 20.7
+   },
+   {
+    "n": "cacao",
+    "usd": 6548915.88,
+    "pct": 10.4
+   },
+   {
+    "n": "platano",
+    "usd": 5499383.4,
+    "pct": 8.8
+   },
+   {
+    "n": "MAD",
+    "usd": 5331663.05,
+    "pct": 8.5
+   }
+  ],
+  "pillore de Dios": [
+   {
+    "n": "pepinillo",
+    "usd": 4485.47,
+    "pct": 100.0
+   }
+  ],
+  "sandre de Dios": [
+   {
+    "n": "sandia",
+    "usd": 28356.81,
+    "pct": 100.0
+   }
+  ],
+  "tomare de Dios": [
+   {
+    "n": "tomate",
+    "usd": 1767.95,
+    "pct": 100.0
+   }
+  ],
+  "yucare de Dios": [
+   {
+    "n": "yuca",
+    "usd": 186013.65,
+    "pct": 100.0
+   }
+  ],
+  "Áncash": [
+   {
+    "n": "Papa",
+    "usd": 5823222.82,
+    "pct": 24.5
+   },
+   {
+    "n": "MAD",
+    "usd": 3844572.26,
+    "pct": 16.1
+   },
+   {
+    "n": "Arroz",
+    "usd": 3220949.94,
+    "pct": 13.5
+   },
+   {
+    "n": "Amilac",
+    "usd": 2444270.0,
+    "pct": 10.3
+   },
+   {
+    "n": "choclo",
+    "usd": 1596411.28,
+    "pct": 6.7
+   }
+  ]
+ },
+ "mes_por_region": {
+  "Amazonas": [
+   {
+    "n": "Dic",
+    "usd": 10356846.53,
+    "pct": 12.2
+   },
+   {
+    "n": "Nov",
+    "usd": 9571468.89,
+    "pct": 11.3
+   },
+   {
+    "n": "Oct",
+    "usd": 8606342.26,
+    "pct": 10.2
+   }
+  ],
+  "Ancash": [
+   {
+    "n": "Abr",
+    "usd": 878300.31,
+    "pct": 8.3
+   },
+   {
+    "n": "Ago",
+    "usd": 878300.31,
+    "pct": 8.3
+   },
+   {
+    "n": "Dic",
+    "usd": 878300.31,
+    "pct": 8.3
+   }
+  ],
+  "Apurimac": [
+   {
+    "n": "Abr",
+    "usd": 370882.53,
+    "pct": 8.3
+   },
+   {
+    "n": "Ago",
+    "usd": 370882.53,
+    "pct": 8.3
+   },
+   {
+    "n": "Dic",
+    "usd": 370882.53,
+    "pct": 8.3
+   }
+  ],
+  "Apurímac": [
+   {
+    "n": "Oct",
+    "usd": 11153168.97,
+    "pct": 29.8
+   },
+   {
+    "n": "Nov",
+    "usd": 9116518.38,
+    "pct": 24.3
+   },
+   {
+    "n": "Dic",
+    "usd": 7408125.91,
+    "pct": 19.8
+   }
+  ],
+  "Arequipa": [
+   {
+    "n": "Nov",
+    "usd": 8813717.48,
+    "pct": 14.8
+   },
+   {
+    "n": "Oct",
+    "usd": 8254379.08,
+    "pct": 13.8
+   },
+   {
+    "n": "May",
+    "usd": 6105489.69,
+    "pct": 10.2
+   }
+  ],
+  "Ayacucho": [
+   {
+    "n": "Oct",
+    "usd": 14780529.46,
+    "pct": 23.7
+   },
+   {
+    "n": "Dic",
+    "usd": 13909473.47,
+    "pct": 22.3
+   },
+   {
+    "n": "Nov",
+    "usd": 13463422.0,
+    "pct": 21.6
+   }
+  ],
+  "Cajamarca": [
+   {
+    "n": "Oct",
+    "usd": 19631801.35,
+    "pct": 15.7
+   },
+   {
+    "n": "Dic",
+    "usd": 14563914.51,
+    "pct": 11.7
+   },
+   {
+    "n": "Nov",
+    "usd": 13630022.74,
+    "pct": 10.9
+   }
+  ],
+  "Cusco": [
+   {
+    "n": "Nov",
+    "usd": 19225717.01,
+    "pct": 23.7
+   },
+   {
+    "n": "Oct",
+    "usd": 16687470.74,
+    "pct": 20.6
+   },
+   {
+    "n": "Set",
+    "usd": 13761506.82,
+    "pct": 17.0
+   }
+  ],
+  "Huancavelica": [
+   {
+    "n": "Dic",
+    "usd": 8465734.94,
+    "pct": 21.7
+   },
+   {
+    "n": "Nov",
+    "usd": 8135047.65,
+    "pct": 20.9
+   },
+   {
+    "n": "Oct",
+    "usd": 8095128.51,
+    "pct": 20.8
+   }
+  ],
+  "Huánuco": [
+   {
+    "n": "Oct",
+    "usd": 14839246.0,
+    "pct": 13.4
+   },
+   {
+    "n": "Set",
+    "usd": 12656773.17,
+    "pct": 11.4
+   },
+   {
+    "n": "Nov",
+    "usd": 10188426.85,
+    "pct": 9.2
+   }
+  ],
+  "Ica": [
+   {
+    "n": "Ene",
+    "usd": 6255341.5,
+    "pct": 9.8
+   },
+   {
+    "n": "Abr",
+    "usd": 6197075.51,
+    "pct": 9.7
+   },
+   {
+    "n": "May",
+    "usd": 6141029.59,
+    "pct": 9.6
+   }
+  ],
+  "Junín": [
+   {
+    "n": "Oct",
+    "usd": 15395670.06,
+    "pct": 16.9
+   },
+   {
+    "n": "Set",
+    "usd": 11636210.3,
+    "pct": 12.7
+   },
+   {
+    "n": "Nov",
+    "usd": 10340551.72,
+    "pct": 11.3
+   }
+  ],
+  "La Libertad": [
+   {
+    "n": "Dic",
+    "usd": 19441443.51,
+    "pct": 18.0
+   },
+   {
+    "n": "Nov",
+    "usd": 15044928.4,
+    "pct": 14.0
+   },
+   {
+    "n": "Oct",
+    "usd": 13404266.1,
+    "pct": 12.4
+   }
+  ],
+  "Lambayeque": [
+   {
+    "n": "Ene",
+    "usd": 21484882.19,
+    "pct": 32.1
+   },
+   {
+    "n": "Feb",
+    "usd": 11391937.69,
+    "pct": 17.0
+   },
+   {
+    "n": "Jun",
+    "usd": 6467367.69,
+    "pct": 9.7
+   }
+  ],
+  "Lima": [
+   {
+    "n": "Feb",
+    "usd": 6496336.82,
+    "pct": 11.2
+   },
+   {
+    "n": "Ago",
+    "usd": 6196124.33,
+    "pct": 10.7
+   },
+   {
+    "n": "Jul",
+    "usd": 6037071.52,
+    "pct": 10.4
+   }
+  ],
+  "Lima Metropolitana": [
+   {
+    "n": "Feb",
+    "usd": 425679.04,
+    "pct": 11.4
+   },
+   {
+    "n": "Jun",
+    "usd": 356400.46,
+    "pct": 9.5
+   },
+   {
+    "n": "Ene",
+    "usd": 355931.33,
+    "pct": 9.5
+   }
+  ],
+  "Loreto": [
+   {
+    "n": "Jul",
+    "usd": 15186622.6,
+    "pct": 19.0
+   },
+   {
+    "n": "Ago",
+    "usd": 11454944.13,
+    "pct": 14.4
+   },
+   {
+    "n": "Jun",
+    "usd": 11232720.63,
+    "pct": 14.1
+   }
+  ],
+  "Madre de Dios": [
+   {
+    "n": "Oct",
+    "usd": 2995971.01,
+    "pct": 23.6
+   },
+   {
+    "n": "Nov",
+    "usd": 2325430.26,
+    "pct": 18.3
+   },
+   {
+    "n": "Set",
+    "usd": 1517964.15,
+    "pct": 11.9
+   }
+  ],
+  "Moquegua": [
+   {
+    "n": "Set",
+    "usd": 665900.39,
+    "pct": 12.5
+   },
+   {
+    "n": "Ago",
+    "usd": 575074.61,
+    "pct": 10.8
+   },
+   {
+    "n": "Oct",
+    "usd": 557556.01,
+    "pct": 10.4
+   }
+  ],
+  "Pasco": [
+   {
+    "n": "Set",
+    "usd": 5166636.56,
+    "pct": 15.3
+   },
+   {
+    "n": "Oct",
+    "usd": 4707417.42,
+    "pct": 13.9
+   },
+   {
+    "n": "Ago",
+    "usd": 3575395.71,
+    "pct": 10.6
+   }
+  ],
+  "Piura": [
+   {
+    "n": "Feb",
+    "usd": 22763441.3,
+    "pct": 19.2
+   },
+   {
+    "n": "Mar",
+    "usd": 17133911.03,
+    "pct": 14.4
+   },
+   {
+    "n": "Ago",
+    "usd": 12430085.37,
+    "pct": 10.5
+   }
+  ],
+  "Puno": [
+   {
+    "n": "Dic",
+    "usd": 31859250.7,
+    "pct": 24.6
+   },
+   {
+    "n": "Oct",
+    "usd": 28201612.27,
+    "pct": 21.8
+   },
+   {
+    "n": "Nov",
+    "usd": 26636762.67,
+    "pct": 20.6
+   }
+  ],
+  "San Martín": [
+   {
+    "n": "Feb",
+    "usd": 20495031.8,
+    "pct": 10.6
+   },
+   {
+    "n": "Set",
+    "usd": 19368617.07,
+    "pct": 10.0
+   },
+   {
+    "n": "Mar",
+    "usd": 18664069.09,
+    "pct": 9.7
+   }
+  ],
+  "Tacna": [
+   {
+    "n": "Oct",
+    "usd": 1839637.55,
+    "pct": 9.7
+   },
+   {
+    "n": "Set",
+    "usd": 1836117.53,
+    "pct": 9.7
+   },
+   {
+    "n": "Nov",
+    "usd": 1769755.1,
+    "pct": 9.3
+   }
+  ],
+  "Tumbes": [
+   {
+    "n": "Feb",
+    "usd": 4702893.95,
+    "pct": 32.6
+   },
+   {
+    "n": "Ago",
+    "usd": 4458485.61,
+    "pct": 30.9
+   },
+   {
+    "n": "Set",
+    "usd": 1249920.71,
+    "pct": 8.7
+   }
+  ],
+  "Ucayali": [
+   {
+    "n": "Jun",
+    "usd": 6644082.2,
+    "pct": 10.6
+   },
+   {
+    "n": "May",
+    "usd": 6085217.29,
+    "pct": 9.7
+   },
+   {
+    "n": "Set",
+    "usd": 5832766.29,
+    "pct": 9.3
+   }
+  ],
+  "pillore de Dios": [
+   {
+    "n": "May",
+    "usd": 1877.63,
+    "pct": 41.9
+   },
+   {
+    "n": "Abr",
+    "usd": 1460.39,
+    "pct": 32.6
+   },
+   {
+    "n": "Mar",
+    "usd": 938.82,
+    "pct": 20.9
+   }
+  ],
+  "sandre de Dios": [
+   {
+    "n": "Jun",
+    "usd": 6855.49,
+    "pct": 24.2
+   },
+   {
+    "n": "Mar",
+    "usd": 6855.49,
+    "pct": 24.2
+   },
+   {
+    "n": "Abr",
+    "usd": 6232.27,
+    "pct": 22.0
+   }
+  ],
+  "tomare de Dios": [
+   {
+    "n": "May",
+    "usd": 1767.95,
+    "pct": 100.0
+   }
+  ],
+  "yucare de Dios": [
+   {
+    "n": "Feb",
+    "usd": 27524.69,
+    "pct": 14.8
+   },
+   {
+    "n": "May",
+    "usd": 25859.89,
+    "pct": 13.9
+   },
+   {
+    "n": "Ene",
+    "usd": 22752.27,
+    "pct": 12.2
+   }
+  ],
+  "Áncash": [
+   {
+    "n": "Nov",
+    "usd": 5837664.04,
+    "pct": 24.5
+   },
+   {
+    "n": "Dic",
+    "usd": 3669082.41,
+    "pct": 15.4
+   },
+   {
+    "n": "Oct",
+    "usd": 2674808.41,
+    "pct": 11.2
+   }
+  ]
+ },
+ "insumo_por_cultivo": {
+  "Amilac": [
+   {
+    "n": "Fertilizante",
+    "usd": 32421759.51,
+    "pct": 41.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 23677982.85,
+    "pct": 30.0
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 11387434.86,
+    "pct": 14.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 8152648.14,
+    "pct": 10.3
+   },
+   {
+    "n": "Riego",
+    "usd": 3308677.91,
+    "pct": 4.2
+   }
+  ],
+  "Arroz": [
+   {
+    "n": "Fertilizante",
+    "usd": 122639877.17,
+    "pct": 45.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 103501492.65,
+    "pct": 38.5
+   },
+   {
+    "n": "Semilla",
+    "usd": 26383887.83,
+    "pct": 9.8
+   },
+   {
+    "n": "Riego",
+    "usd": 14681877.71,
+    "pct": 5.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 886933.16,
+    "pct": 0.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 436819.34,
+    "pct": 0.2
+   }
+  ],
+  "Frijol": [
+   {
+    "n": "Semilla",
+    "usd": 11529260.02,
+    "pct": 40.1
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 8079320.97,
+    "pct": 28.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 7883207.44,
+    "pct": 27.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1149058.94,
+    "pct": 4.0
+   },
+   {
+    "n": "Riego",
+    "usd": 140870.25,
+    "pct": 0.5
+   }
+  ],
+  "MAD": [
+   {
+    "n": "Fertilizante",
+    "usd": 57044848.38,
+    "pct": 47.3
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 33628678.69,
+    "pct": 27.9
+   },
+   {
+    "n": "Semilla",
+    "usd": 14955759.58,
+    "pct": 12.4
+   },
+   {
+    "n": "Riego",
+    "usd": 10348030.39,
+    "pct": 8.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 4675489.93,
+    "pct": 3.9
+   }
+  ],
+  "Mmorado": [
+   {
+    "n": "Fertilizante",
+    "usd": 530896.95,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 417738.26,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 338080.68,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 185847.19,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 151897.02,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2201.93,
+    "pct": 0.1
+   }
+  ],
+  "Papa": [
+   {
+    "n": "Semilla",
+    "usd": 57749181.9,
+    "pct": 30.7
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 53057312.75,
+    "pct": 28.2
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 46611028.63,
+    "pct": 24.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 30494402.9,
+    "pct": 16.2
+   },
+   {
+    "n": "Riego",
+    "usd": 130482.32,
+    "pct": 0.1
+   }
+  ],
+  "Trigo": [
+   {
+    "n": "Fertilizante",
+    "usd": 5825187.32,
+    "pct": 42.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 5449756.33,
+    "pct": 39.8
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1282472.25,
+    "pct": 9.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1126292.98,
+    "pct": 8.2
+   }
+  ],
+  "acelga": [
+   {
+    "n": "Fertilizante",
+    "usd": 59783.02,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 47040.44,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 38070.36,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 20927.78,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 17104.75,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 247.84,
+    "pct": 0.1
+   }
+  ],
+  "achiot": [
+   {
+    "n": "Fitosanitario",
+    "usd": 5491283.28,
+    "pct": 100.0
+   }
+  ],
+  "aji": [
+   {
+    "n": "Fertilizante",
+    "usd": 1436810.16,
+    "pct": 37.5
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1029793.38,
+    "pct": 26.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 727532.16,
+    "pct": 19.0
+   },
+   {
+    "n": "Riego",
+    "usd": 367137.32,
+    "pct": 9.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 260737.42,
+    "pct": 6.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 12333.83,
+    "pct": 0.3
+   }
+  ],
+  "ajo": [
+   {
+    "n": "Semilla",
+    "usd": 1759246.78,
+    "pct": 37.8
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 942396.28,
+    "pct": 20.2
+   },
+   {
+    "n": "Riego",
+    "usd": 850206.17,
+    "pct": 18.2
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 623388.0,
+    "pct": 13.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 484098.24,
+    "pct": 10.4
+   }
+  ],
+  "albahaca": [
+   {
+    "n": "Fertilizante",
+    "usd": 54063.4,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 42539.98,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 34428.12,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 18925.56,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 15468.27,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 224.2,
+    "pct": 0.1
+   }
+  ],
+  "alcachofa": [
+   {
+    "n": "Fertilizante",
+    "usd": 2278719.0,
+    "pct": 34.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 2089887.0,
+    "pct": 31.3
+   },
+   {
+    "n": "Semilla",
+    "usd": 945331.08,
+    "pct": 14.2
+   },
+   {
+    "n": "Riego",
+    "usd": 795143.64,
+    "pct": 11.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 511602.84,
+    "pct": 7.7
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 57527.88,
+    "pct": 0.9
+   }
+  ],
+  "alfalfa": [
+   {
+    "n": "Fitosanitario",
+    "usd": 14133264.72,
+    "pct": 36.2
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 13448498.4,
+    "pct": 34.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 8858172.96,
+    "pct": 22.7
+   },
+   {
+    "n": "Riego",
+    "usd": 2595743.28,
+    "pct": 6.6
+   }
+  ],
+  "algodon": [
+   {
+    "n": "Fertilizante",
+    "usd": 1447896.67,
+    "pct": 36.2
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 947751.16,
+    "pct": 23.7
+   },
+   {
+    "n": "Riego",
+    "usd": 755716.54,
+    "pct": 18.9
+   },
+   {
+    "n": "Semilla",
+    "usd": 523971.61,
+    "pct": 13.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 319718.42,
+    "pct": 8.0
+   }
+  ],
+  "anona": [
+   {
+    "n": "Fertilizante",
+    "usd": 106758.12,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 93774.6,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 32868.96,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 31311.12,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 8676.48,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 8256.72,
+    "pct": 2.9
+   }
+  ],
+  "apio": [
+   {
+    "n": "Fertilizante",
+    "usd": 289450.21,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 227754.97,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 184324.95,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 101325.64,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 82815.66,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1200.51,
+    "pct": 0.1
+   }
+  ],
+  "arandano": [
+   {
+    "n": "Fertilizante",
+    "usd": 3024133.08,
+    "pct": 40.8
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 2163862.8,
+    "pct": 29.2
+   },
+   {
+    "n": "Riego",
+    "usd": 1950316.2,
+    "pct": 26.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 206595.72,
+    "pct": 2.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 71369.4,
+    "pct": 1.0
+   }
+  ],
+  "arracacha": [
+   {
+    "n": "Fertilizante",
+    "usd": 314057.84,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 247117.55,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 199995.3,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 109939.9,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 89856.32,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1302.59,
+    "pct": 0.1
+   }
+  ],
+  "arvejags": [
+   {
+    "n": "Semilla",
+    "usd": 14406581.62,
+    "pct": 79.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3062328.38,
+    "pct": 16.8
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 765582.12,
+    "pct": 4.2
+   }
+  ],
+  "arvejagv": [
+   {
+    "n": "Semilla",
+    "usd": 6156212.46,
+    "pct": 38.9
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 3584569.09,
+    "pct": 22.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3119040.6,
+    "pct": 19.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 2825276.18,
+    "pct": 17.8
+   },
+   {
+    "n": "Riego",
+    "usd": 149290.22,
+    "pct": 0.9
+   }
+  ],
+  "avenaf": [
+   {
+    "n": "Fertilizante",
+    "usd": 22940219.65,
+    "pct": 46.2
+   },
+   {
+    "n": "Semilla",
+    "usd": 19256719.82,
+    "pct": 38.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 6804494.68,
+    "pct": 13.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 675913.12,
+    "pct": 1.4
+   }
+  ],
+  "avenag": [
+   {
+    "n": "Fertilizante",
+    "usd": 1461753.8,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 1150186.57,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 930860.14,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 511705.52,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 418228.3,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 6062.98,
+    "pct": 0.1
+   }
+  ],
+  "betarraga": [
+   {
+    "n": "Fertilizante",
+    "usd": 325810.31,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 256364.96,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 207479.3,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 114053.93,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 93218.8,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1351.26,
+    "pct": 0.1
+   }
+  ],
+  "braquearia": [
+   {
+    "n": "Fitosanitario",
+    "usd": 76228871.4,
+    "pct": 96.2
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 2245778.52,
+    "pct": 2.8
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 765606.48,
+    "pct": 1.0
+   }
+  ],
+  "brocoli": [
+   {
+    "n": "Fitosanitario",
+    "usd": 590119.59,
+    "pct": 40.6
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 425132.03,
+    "pct": 29.2
+   },
+   {
+    "n": "Semilla",
+    "usd": 254687.15,
+    "pct": 17.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 123714.3,
+    "pct": 8.5
+   },
+   {
+    "n": "Riego",
+    "usd": 59976.24,
+    "pct": 4.1
+   }
+  ],
+  "cacao": [
+   {
+    "n": "Fertilizante",
+    "usd": 39901143.48,
+    "pct": 74.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 10750593.48,
+    "pct": 20.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 2787565.56,
+    "pct": 5.2
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 212482.2,
+    "pct": 0.4
+   }
+  ],
+  "cafe": [
+   {
+    "n": "Fertilizante",
+    "usd": 31635674.64,
+    "pct": 45.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 23647508.16,
+    "pct": 33.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 14427606.36,
+    "pct": 20.7
+   }
+  ],
+  "caigua": [
+   {
+    "n": "Fertilizante",
+    "usd": 186879.54,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 147046.78,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 119006.76,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 65419.58,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 53468.84,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 775.03,
+    "pct": 0.1
+   }
+  ],
+  "caimito": [
+   {
+    "n": "Fertilizante",
+    "usd": 151478.04,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 133055.64,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 46637.52,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 44426.88,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 12311.04,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 11715.36,
+    "pct": 2.9
+   }
+  ],
+  "calabaza": [
+   {
+    "n": "Fertilizante",
+    "usd": 154495.98,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 121565.75,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 98384.63,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 54083.27,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 44203.46,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 640.8,
+    "pct": 0.1
+   }
+  ],
+  "camote": [
+   {
+    "n": "Fertilizante",
+    "usd": 1906251.96,
+    "pct": 34.6
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1216039.48,
+    "pct": 22.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 1040077.93,
+    "pct": 18.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 989141.64,
+    "pct": 18.0
+   },
+   {
+    "n": "Riego",
+    "usd": 279892.39,
+    "pct": 5.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 74603.67,
+    "pct": 1.4
+   }
+  ],
+  "camucamu": [
+   {
+    "n": "Fertilizante",
+    "usd": 639315.24,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 561564.12,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 196834.44,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 187504.32,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 51958.56,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 49444.68,
+    "pct": 2.9
+   }
+  ],
+  "capuli": [
+   {
+    "n": "Fertilizante",
+    "usd": 23455.2,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 20602.56,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 7221.36,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 6879.12,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1906.2,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 1814.04,
+    "pct": 2.9
+   }
+  ],
+  "carambola": [
+   {
+    "n": "Fertilizante",
+    "usd": 72185.88,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 63407.04,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 22224.96,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 21171.24,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 5866.8,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 5582.76,
+    "pct": 2.9
+   }
+  ],
+  "castilla": [
+   {
+    "n": "Fertilizante",
+    "usd": 3345501.56,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 2632420.61,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 2130450.43,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1171135.36,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 957194.98,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 13876.25,
+    "pct": 0.1
+   }
+  ],
+  "cañaalcohol": [
+   {
+    "n": "Fertilizante",
+    "usd": 8179766.64,
+    "pct": 81.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 1861782.36,
+    "pct": 18.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 29255.76,
+    "pct": 0.3
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 18673.8,
+    "pct": 0.2
+   }
+  ],
+  "cañaetanol": [
+   {
+    "n": "Fertilizante",
+    "usd": 1565248.56,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1374888.72,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 481914.0,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 459070.8,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 127211.04,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 121056.24,
+    "pct": 2.9
+   }
+  ],
+  "cañihua": [
+   {
+    "n": "Fertilizante",
+    "usd": 653526.78,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 514230.05,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 416172.71,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 228775.36,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 186983.21,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2710.67,
+    "pct": 0.1
+   }
+  ],
+  "cebada": [
+   {
+    "n": "Fertilizante",
+    "usd": 7810199.14,
+    "pct": 57.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 4190790.49,
+    "pct": 30.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1174288.21,
+    "pct": 8.7
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 380264.5,
+    "pct": 2.8
+   }
+  ],
+  "cebadaf": [
+   {
+    "n": "Fertilizante",
+    "usd": 4393066.24,
+    "pct": 57.5
+   },
+   {
+    "n": "Semilla",
+    "usd": 1999331.33,
+    "pct": 26.2
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1078327.88,
+    "pct": 14.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 170434.78,
+    "pct": 2.2
+   }
+  ],
+  "cebollacabeza": [
+   {
+    "n": "Riego",
+    "usd": 4677656.93,
+    "pct": 42.3
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 2737423.65,
+    "pct": 24.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1956755.11,
+    "pct": 17.7
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 940646.98,
+    "pct": 8.5
+   },
+   {
+    "n": "Semilla",
+    "usd": 701394.4,
+    "pct": 6.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 54173.4,
+    "pct": 0.5
+   }
+  ],
+  "cebollachina": [
+   {
+    "n": "Fertilizante",
+    "usd": 531325.87,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 418075.83,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 338353.92,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 185997.41,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 152019.82,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2203.81,
+    "pct": 0.1
+   }
+  ],
+  "cereza": [
+   {
+    "n": "Fertilizante",
+    "usd": 158.16,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 138.96,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 48.72,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 46.44,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 12.84,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 12.24,
+    "pct": 2.9
+   }
+  ],
+  "chala": [
+   {
+    "n": "Fertilizante",
+    "usd": 7754695.05,
+    "pct": 51.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 2457994.05,
+    "pct": 16.4
+   },
+   {
+    "n": "Semilla",
+    "usd": 1931518.77,
+    "pct": 12.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1884262.45,
+    "pct": 12.6
+   },
+   {
+    "n": "Riego",
+    "usd": 917171.9,
+    "pct": 6.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 7986.97,
+    "pct": 0.1
+   }
+  ],
+  "chirimoya": [
+   {
+    "n": "Fitosanitario",
+    "usd": 600235.56,
+    "pct": 63.7
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 169440.72,
+    "pct": 18.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 116140.8,
+    "pct": 12.3
+   },
+   {
+    "n": "Riego",
+    "usd": 56803.2,
+    "pct": 6.0
+   }
+  ],
+  "choclo": [
+   {
+    "n": "Fertilizante",
+    "usd": 9227230.34,
+    "pct": 47.3
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 3982961.15,
+    "pct": 20.4
+   },
+   {
+    "n": "Semilla",
+    "usd": 3412688.79,
+    "pct": 17.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 2816698.3,
+    "pct": 14.4
+   },
+   {
+    "n": "Riego",
+    "usd": 82745.4,
+    "pct": 0.4
+   }
+  ],
+  "cirolero": [
+   {
+    "n": "Fertilizante",
+    "usd": 28587.48,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 25110.84,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 8801.52,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 8384.4,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2323.2,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 2210.88,
+    "pct": 2.9
+   }
+  ],
+  "ciruela": [
+   {
+    "n": "Fertilizante",
+    "usd": 127611.48,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 112091.88,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 39289.44,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 37427.28,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 10371.12,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 9869.64,
+    "pct": 2.9
+   }
+  ],
+  "coco": [
+   {
+    "n": "Fertilizante",
+    "usd": 466335.36,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 409621.56,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 143576.76,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 136771.08,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 37900.08,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 36066.24,
+    "pct": 2.9
+   }
+  ],
+  "cocona": [
+   {
+    "n": "Fertilizante",
+    "usd": 411692.52,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 361624.08,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 126753.48,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 120744.96,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 33459.24,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 31840.2,
+    "pct": 2.9
+   }
+  ],
+  "col": [
+   {
+    "n": "Fertilizante",
+    "usd": 316114.36,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 248735.56,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 201304.77,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 110659.78,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 90444.64,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1311.09,
+    "pct": 0.1
+   }
+  ],
+  "coliflor": [
+   {
+    "n": "Fertilizante",
+    "usd": 184796.09,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 145407.42,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 117679.93,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 64690.21,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 52872.67,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 766.31,
+    "pct": 0.1
+   }
+  ],
+  "damasco": [
+   {
+    "n": "Fertilizante",
+    "usd": 22079.16,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 19393.8,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 6797.88,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 6475.56,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1794.36,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 1707.6,
+    "pct": 2.9
+   }
+  ],
+  "datil": [
+   {
+    "n": "Fertilizante",
+    "usd": 24712.56,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 21707.04,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 7608.6,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 7247.88,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2008.44,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 1911.24,
+    "pct": 2.9
+   }
+  ],
+  "esparrago": [
+   {
+    "n": "Fertilizante",
+    "usd": 12323060.64,
+    "pct": 48.3
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 9561476.28,
+    "pct": 37.5
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1637905.44,
+    "pct": 6.4
+   },
+   {
+    "n": "Riego",
+    "usd": 1467857.04,
+    "pct": 5.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 507424.08,
+    "pct": 2.0
+   }
+  ],
+  "espinaca": [
+   {
+    "n": "Fertilizante",
+    "usd": 197665.03,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 155533.35,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 125874.99,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 69195.12,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 56554.68,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 819.8,
+    "pct": 0.1
+   }
+  ],
+  "fpalo": [
+   {
+    "n": "Fertilizante",
+    "usd": 168454.45,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 132549.0,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 107273.49,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 58969.58,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 48197.18,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 698.72,
+    "pct": 0.1
+   }
+  ],
+  "fresa": [
+   {
+    "n": "Semilla",
+    "usd": 416863.89,
+    "pct": 39.7
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 287880.46,
+    "pct": 27.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 139407.86,
+    "pct": 13.3
+   },
+   {
+    "n": "Riego",
+    "usd": 105282.95,
+    "pct": 10.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 100712.8,
+    "pct": 9.6
+   }
+  ],
+  "frijolverd": [
+   {
+    "n": "Fertilizante",
+    "usd": 828994.48,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 652297.43,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 527912.36,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 290200.02,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 237186.9,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 3438.46,
+    "pct": 0.1
+   }
+  ],
+  "garbanzo": [
+   {
+    "n": "Fertilizante",
+    "usd": 121404.27,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 95527.42,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 77311.5,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 42499.1,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 34735.46,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 503.56,
+    "pct": 0.1
+   }
+  ],
+  "grama_chilena": [
+   {
+    "n": "Fertilizante",
+    "usd": 1187772.36,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1043319.72,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 365695.44,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 348360.96,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 96532.8,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 91862.28,
+    "pct": 2.9
+   }
+  ],
+  "gramaazul": [
+   {
+    "n": "Fertilizante",
+    "usd": 839850.36,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 737710.8,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 258576.0,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 246319.2,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 68256.48,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 64953.96,
+    "pct": 2.9
+   }
+  ],
+  "gramalote": [
+   {
+    "n": "Fertilizante",
+    "usd": 1320245.04,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1159681.68,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 406481.52,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 387213.84,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 107299.2,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 102107.64,
+    "pct": 2.9
+   }
+  ],
+  "granada": [
+   {
+    "n": "Riego",
+    "usd": 1054439.76,
+    "pct": 44.3
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 676164.12,
+    "pct": 28.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 434584.32,
+    "pct": 18.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 114373.2,
+    "pct": 4.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 99407.64,
+    "pct": 4.2
+   }
+  ],
+  "granadilla": [
+   {
+    "n": "Fitosanitario",
+    "usd": 688575.0,
+    "pct": 34.6
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 613576.08,
+    "pct": 30.8
+   },
+   {
+    "n": "Semilla",
+    "usd": 522498.48,
+    "pct": 26.2
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 161582.88,
+    "pct": 8.1
+   },
+   {
+    "n": "Riego",
+    "usd": 6091.56,
+    "pct": 0.3
+   }
+  ],
+  "guanabana": [
+   {
+    "n": "Fertilizante",
+    "usd": 253024.68,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 222252.96,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 77902.08,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 74209.44,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 20563.8,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 19569.12,
+    "pct": 2.9
+   }
+  ],
+  "guayaba": [
+   {
+    "n": "Fertilizante",
+    "usd": 157132.2,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 138022.32,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 48378.24,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 46085.28,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 12770.52,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 12152.52,
+    "pct": 2.9
+   }
+  ],
+  "guinda": [
+   {
+    "n": "Fertilizante",
+    "usd": 34004.4,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 29868.96,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 10469.4,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 9973.08,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2763.6,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 2629.92,
+    "pct": 2.9
+   }
+  ],
+  "habags": [
+   {
+    "n": "Semilla",
+    "usd": 14862798.15,
+    "pct": 67.2
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3370255.5,
+    "pct": 15.2
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 2891278.71,
+    "pct": 13.1
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 841838.23,
+    "pct": 3.8
+   },
+   {
+    "n": "Riego",
+    "usd": 148047.4,
+    "pct": 0.7
+   }
+  ],
+  "habagv": [
+   {
+    "n": "Semilla",
+    "usd": 1684061.49,
+    "pct": 32.2
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 1235551.0,
+    "pct": 23.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1216725.49,
+    "pct": 23.2
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 753352.43,
+    "pct": 14.4
+   },
+   {
+    "n": "Riego",
+    "usd": 345795.78,
+    "pct": 6.6
+   }
+  ],
+  "higo": [
+   {
+    "n": "Fertilizante",
+    "usd": 77082.24,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 67707.84,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 23732.52,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 22607.16,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 6264.6,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 5961.48,
+    "pct": 2.9
+   }
+  ],
+  "kiwicha": [
+   {
+    "n": "Fertilizante",
+    "usd": 337453.55,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 265526.6,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 214893.93,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 118129.86,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 96550.21,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1399.66,
+    "pct": 0.1
+   }
+  ],
+  "lechuga": [
+   {
+    "n": "Semilla",
+    "usd": 775608.79,
+    "pct": 63.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 151244.84,
+    "pct": 12.3
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 150343.34,
+    "pct": 12.2
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 127352.27,
+    "pct": 10.4
+   },
+   {
+    "n": "Riego",
+    "usd": 23796.23,
+    "pct": 1.9
+   }
+  ],
+  "lenteja": [
+   {
+    "n": "Fertilizante",
+    "usd": 570184.77,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 448652.06,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 363099.6,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 199600.41,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 163137.89,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2364.99,
+    "pct": 0.1
+   }
+  ],
+  "lima": [
+   {
+    "n": "Fertilizante",
+    "usd": 239120.64,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 210039.96,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 73621.44,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 70131.6,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 19434.0,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 18493.56,
+    "pct": 2.9
+   }
+  ],
+  "limon": [
+   {
+    "n": "Fertilizante",
+    "usd": 8435497.08,
+    "pct": 49.2
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 4388934.96,
+    "pct": 25.6
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2738983.68,
+    "pct": 16.0
+   },
+   {
+    "n": "Riego",
+    "usd": 966725.76,
+    "pct": 5.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 618596.16,
+    "pct": 3.6
+   }
+  ],
+  "limond": [
+   {
+    "n": "Fertilizante",
+    "usd": 85738.68,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 75311.28,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 26397.6,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 25146.12,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 6968.16,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 6631.08,
+    "pct": 2.9
+   }
+  ],
+  "loctao": [
+   {
+    "n": "Fertilizante",
+    "usd": 1229431.08,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 967382.52,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 782914.63,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 430377.95,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 351757.49,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 5099.39,
+    "pct": 0.1
+   }
+  ],
+  "lucuma": [
+   {
+    "n": "Fertilizante",
+    "usd": 245601.12,
+    "pct": 34.8
+   },
+   {
+    "n": "Riego",
+    "usd": 202898.04,
+    "pct": 28.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 119595.96,
+    "pct": 17.0
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 114798.72,
+    "pct": 16.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 22668.6,
+    "pct": 3.2
+   }
+  ],
+  "maca": [
+   {
+    "n": "Fertilizante",
+    "usd": 456066.11,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 358857.34,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 290427.67,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 159651.74,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 130486.89,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1891.64,
+    "pct": 0.1
+   }
+  ],
+  "mamey": [
+   {
+    "n": "Fertilizante",
+    "usd": 16923.12,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 14865.0,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 5210.4,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 4963.32,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1375.32,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 1308.84,
+    "pct": 2.9
+   }
+  ],
+  "mandarina": [
+   {
+    "n": "Fertilizante",
+    "usd": 6419695.08,
+    "pct": 37.6
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 5471804.52,
+    "pct": 32.1
+   },
+   {
+    "n": "Riego",
+    "usd": 4329207.84,
+    "pct": 25.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 776421.12,
+    "pct": 4.6
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 66104.16,
+    "pct": 0.4
+   }
+  ],
+  "mango": [
+   {
+    "n": "Fertilizante",
+    "usd": 11036227.92,
+    "pct": 44.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 7305092.64,
+    "pct": 29.7
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 3137678.88,
+    "pct": 12.8
+   },
+   {
+    "n": "Riego",
+    "usd": 1825906.08,
+    "pct": 7.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1269173.52,
+    "pct": 5.2
+   }
+  ],
+  "mani": [
+   {
+    "n": "Fertilizante",
+    "usd": 544753.23,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 428641.12,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 346904.52,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 190697.76,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 155861.49,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2259.44,
+    "pct": 0.1
+   }
+  ],
+  "manzana": [
+   {
+    "n": "Fertilizante",
+    "usd": 1467813.72,
+    "pct": 44.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1157290.8,
+    "pct": 34.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 362327.76,
+    "pct": 10.9
+   },
+   {
+    "n": "Riego",
+    "usd": 341359.2,
+    "pct": 10.3
+   }
+  ],
+  "maracuya": [
+   {
+    "n": "Fertilizante",
+    "usd": 985232.28,
+    "pct": 31.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 542886.72,
+    "pct": 17.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 515729.64,
+    "pct": 16.7
+   },
+   {
+    "n": "Riego",
+    "usd": 443963.16,
+    "pct": 14.4
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 373644.24,
+    "pct": 12.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 229600.92,
+    "pct": 7.4
+   }
+  ],
+  "marañon": [
+   {
+    "n": "Fertilizante",
+    "usd": 94026.24,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 82591.08,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 28949.04,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 27576.84,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 7641.6,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 7272.0,
+    "pct": 2.9
+   }
+  ],
+  "mashua": [
+   {
+    "n": "Fertilizante",
+    "usd": 866886.47,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 682112.94,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 552042.4,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 303464.62,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 248028.39,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 3595.6,
+    "pct": 0.1
+   }
+  ],
+  "melocoton": [
+   {
+    "n": "Fitosanitario",
+    "usd": 1295767.92,
+    "pct": 38.5
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 1079806.56,
+    "pct": 32.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 728869.56,
+    "pct": 21.6
+   },
+   {
+    "n": "Riego",
+    "usd": 262752.96,
+    "pct": 7.8
+   }
+  ],
+  "melon": [
+   {
+    "n": "Fertilizante",
+    "usd": 199734.96,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 157162.17,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 127193.25,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 69919.69,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 57146.99,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 828.44,
+    "pct": 0.1
+   }
+  ],
+  "membrillo": [
+   {
+    "n": "Fertilizante",
+    "usd": 72775.8,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 63925.08,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 22406.28,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 21344.28,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 5914.8,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 5628.24,
+    "pct": 2.9
+   }
+  ],
+  "nabo": [
+   {
+    "n": "Fertilizante",
+    "usd": 72788.2,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 57273.49,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 46352.1,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 25480.4,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 20825.67,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 301.82,
+    "pct": 0.1
+   }
+  ],
+  "naranja": [
+   {
+    "n": "Fertilizante",
+    "usd": 10709112.96,
+    "pct": 53.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 7029196.56,
+    "pct": 35.2
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 2041837.08,
+    "pct": 10.2
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 161344.08,
+    "pct": 0.8
+   }
+  ],
+  "nispero": [
+   {
+    "n": "Fertilizante",
+    "usd": 33741.96,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 29638.32,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 10388.76,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 9896.16,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 2742.36,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 2609.76,
+    "pct": 2.9
+   }
+  ],
+  "oca": [
+   {
+    "n": "Semilla",
+    "usd": 3686087.36,
+    "pct": 48.3
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1974689.63,
+    "pct": 25.9
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 1645574.67,
+    "pct": 21.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 329114.96,
+    "pct": 4.3
+   }
+  ],
+  "olivo": [
+   {
+    "n": "Fertilizante",
+    "usd": 7630141.56,
+    "pct": 53.9
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 2436753.12,
+    "pct": 17.2
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 2102757.72,
+    "pct": 14.8
+   },
+   {
+    "n": "Riego",
+    "usd": 1998743.76,
+    "pct": 14.1
+   }
+  ],
+  "olluco": [
+   {
+    "n": "Semilla",
+    "usd": 4190344.39,
+    "pct": 46.5
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 3743844.7,
+    "pct": 41.5
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 572520.61,
+    "pct": 6.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 508304.23,
+    "pct": 5.6
+   }
+  ],
+  "oregano": [
+   {
+    "n": "Abono orgánico",
+    "usd": 214221.12,
+    "pct": 28.5
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 208867.56,
+    "pct": 27.8
+   },
+   {
+    "n": "Riego",
+    "usd": 195305.16,
+    "pct": 26.0
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 133917.96,
+    "pct": 17.8
+   }
+  ],
+  "pacae": [
+   {
+    "n": "Fertilizante",
+    "usd": 979944.84,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 860767.68,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 301708.8,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 287407.68,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 79641.96,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 75789.0,
+    "pct": 2.9
+   }
+  ],
+  "pallargs": [
+   {
+    "n": "Fertilizante",
+    "usd": 785212.65,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 617847.54,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 500031.62,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 274873.65,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 224660.33,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 3256.81,
+    "pct": 0.1
+   }
+  ],
+  "pallarverd": [
+   {
+    "n": "Fertilizante",
+    "usd": 47458.65,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 37343.02,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 30222.17,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 16613.51,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 13578.59,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 196.85,
+    "pct": 0.1
+   }
+  ],
+  "palma": [
+   {
+    "n": "Fertilizante",
+    "usd": 26998111.44,
+    "pct": 64.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 13450524.0,
+    "pct": 32.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1460082.96,
+    "pct": 3.5
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 20651.88,
+    "pct": 0.0
+   }
+  ],
+  "palta": [
+   {
+    "n": "Riego",
+    "usd": 21962147.28,
+    "pct": 38.6
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 17977627.2,
+    "pct": 31.6
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 13322492.52,
+    "pct": 23.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 2453188.08,
+    "pct": 4.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1137751.68,
+    "pct": 2.0
+   }
+  ],
+  "papaya": [
+   {
+    "n": "Fertilizante",
+    "usd": 1790754.36,
+    "pct": 46.3
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1677265.08,
+    "pct": 43.4
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 398659.68,
+    "pct": 10.3
+   }
+  ],
+  "paprika": [
+   {
+    "n": "Fertilizante",
+    "usd": 1127448.19,
+    "pct": 32.4
+   },
+   {
+    "n": "Riego",
+    "usd": 901815.19,
+    "pct": 25.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 618177.13,
+    "pct": 17.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 409750.05,
+    "pct": 11.8
+   },
+   {
+    "n": "Semilla",
+    "usd": 400690.83,
+    "pct": 11.5
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 21181.63,
+    "pct": 0.6
+   }
+  ],
+  "pecana": [
+   {
+    "n": "Fertilizante",
+    "usd": 770971.92,
+    "pct": 64.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 205783.92,
+    "pct": 17.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 156037.2,
+    "pct": 13.1
+   },
+   {
+    "n": "Riego",
+    "usd": 58708.92,
+    "pct": 4.9
+   }
+  ],
+  "pelefante": [
+   {
+    "n": "Fitosanitario",
+    "usd": 21272577.72,
+    "pct": 91.3
+   },
+   {
+    "n": "Riego",
+    "usd": 1076100.36,
+    "pct": 4.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 954949.92,
+    "pct": 4.1
+   }
+  ],
+  "pepinillo": [
+   {
+    "n": "Fertilizante",
+    "usd": 329044.54,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 258909.87,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 209538.92,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 115186.13,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 94144.21,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1364.7,
+    "pct": 0.1
+   }
+  ],
+  "pepino": [
+   {
+    "n": "Fertilizante",
+    "usd": 63051.26,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 49612.12,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 40151.68,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 22071.87,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 18039.85,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 261.49,
+    "pct": 0.1
+   }
+  ],
+  "pera": [
+   {
+    "n": "Fertilizante",
+    "usd": 77632.8,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 68191.44,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 23901.96,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 22768.92,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 6309.48,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 6004.32,
+    "pct": 2.9
+   }
+  ],
+  "pijuayo": [
+   {
+    "n": "Fitosanitario",
+    "usd": 242034.6,
+    "pct": 100.0
+   }
+  ],
+  "pimiento": [
+   {
+    "n": "Fertilizante",
+    "usd": 540394.47,
+    "pct": 27.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 504602.24,
+    "pct": 25.6
+   },
+   {
+    "n": "Riego",
+    "usd": 400860.98,
+    "pct": 20.3
+   },
+   {
+    "n": "Semilla",
+    "usd": 367732.77,
+    "pct": 18.7
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 140003.58,
+    "pct": 7.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 17896.17,
+    "pct": 0.9
+   }
+  ],
+  "piquillo": [
+   {
+    "n": "Fitosanitario",
+    "usd": 1150067.67,
+    "pct": 40.6
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 877274.74,
+    "pct": 31.0
+   },
+   {
+    "n": "Riego",
+    "usd": 499321.45,
+    "pct": 17.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 253465.36,
+    "pct": 8.9
+   },
+   {
+    "n": "Semilla",
+    "usd": 29485.99,
+    "pct": 1.0
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 23779.02,
+    "pct": 0.8
+   }
+  ],
+  "pituca": [
+   {
+    "n": "Fertilizante",
+    "usd": 346781.87,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 272866.6,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 220834.31,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 121395.39,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 99219.13,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1438.32,
+    "pct": 0.1
+   }
+  ],
+  "piña": [
+   {
+    "n": "Semilla",
+    "usd": 2520335.88,
+    "pct": 36.3
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 2477154.12,
+    "pct": 35.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1404024.84,
+    "pct": 20.2
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 533233.32,
+    "pct": 7.7
+   }
+  ],
+  "platano": [
+   {
+    "n": "Fertilizante",
+    "usd": 11811676.08,
+    "pct": 25.6
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 11145186.36,
+    "pct": 24.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 9740467.08,
+    "pct": 21.1
+   },
+   {
+    "n": "Riego",
+    "usd": 8692135.08,
+    "pct": 18.8
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 4822792.44,
+    "pct": 10.4
+   }
+  ],
+  "pomarosa": [
+   {
+    "n": "Fertilizante",
+    "usd": 38116.56,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 33481.08,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 11735.4,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 11179.32,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 3097.8,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 2947.92,
+    "pct": 2.9
+   }
+  ],
+  "poro": [
+   {
+    "n": "Fertilizante",
+    "usd": 170633.37,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 134263.39,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 108661.0,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 59732.34,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 48820.54,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 707.65,
+    "pct": 0.1
+   }
+  ],
+  "quinua": [
+   {
+    "n": "Fertilizante",
+    "usd": 14668717.46,
+    "pct": 49.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 6976849.37,
+    "pct": 23.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 6477362.65,
+    "pct": 21.7
+   },
+   {
+    "n": "Semilla",
+    "usd": 1767590.15,
+    "pct": 5.9
+   }
+  ],
+  "rabanito": [
+   {
+    "n": "Fertilizante",
+    "usd": 103360.5,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 81329.47,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 65820.95,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 36182.55,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 29572.86,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 428.51,
+    "pct": 0.1
+   }
+  ],
+  "rocoto": [
+   {
+    "n": "Fitosanitario",
+    "usd": 209905.74,
+    "pct": 49.4
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 123848.81,
+    "pct": 29.2
+   },
+   {
+    "n": "Semilla",
+    "usd": 41482.74,
+    "pct": 9.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 32744.5,
+    "pct": 7.7
+   },
+   {
+    "n": "Riego",
+    "usd": 16530.07,
+    "pct": 3.9
+   }
+  ],
+  "ryegrass": [
+   {
+    "n": "Abono orgánico",
+    "usd": 5445235.2,
+    "pct": 46.0
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 3601519.56,
+    "pct": 30.4
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 2663270.4,
+    "pct": 22.5
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 136780.92,
+    "pct": 1.2
+   }
+  ],
+  "sachainchi": [
+   {
+    "n": "Fertilizante",
+    "usd": 216472.32,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 190145.76,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 66648.24,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 63489.0,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 17593.2,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 16741.92,
+    "pct": 2.9
+   }
+  ],
+  "sandia": [
+   {
+    "n": "Fertilizante",
+    "usd": 1084288.04,
+    "pct": 34.4
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 987231.31,
+    "pct": 31.3
+   },
+   {
+    "n": "Semilla",
+    "usd": 429354.32,
+    "pct": 13.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 402497.5,
+    "pct": 12.8
+   },
+   {
+    "n": "Riego",
+    "usd": 249688.55,
+    "pct": 7.9
+   }
+  ],
+  "sauco": [
+   {
+    "n": "Fertilizante",
+    "usd": 11011.08,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 9672.0,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3390.12,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 3229.44,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 894.96,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 851.64,
+    "pct": 2.9
+   }
+  ],
+  "sorgo": [
+   {
+    "n": "Fertilizante",
+    "usd": 4221.58,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 3321.76,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 2688.34,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 1477.81,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 1207.86,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 17.5,
+    "pct": 0.1
+   }
+  ],
+  "soya": [
+   {
+    "n": "Fertilizante",
+    "usd": 185885.44,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 146264.63,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 118373.77,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 65071.5,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 53184.41,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 770.97,
+    "pct": 0.1
+   }
+  ],
+  "tamarindo": [
+   {
+    "n": "Fertilizante",
+    "usd": 54810.36,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 48144.48,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 16875.24,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 16075.44,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 4454.64,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 4239.12,
+    "pct": 2.9
+   }
+  ],
+  "tangelo": [
+   {
+    "n": "Riego",
+    "usd": 1233416.4,
+    "pct": 42.3
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 816476.76,
+    "pct": 28.0
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 641983.68,
+    "pct": 22.0
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 193501.44,
+    "pct": 6.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 33147.84,
+    "pct": 1.1
+   }
+  ],
+  "taperiba": [
+   {
+    "n": "Fertilizante",
+    "usd": 128268.0,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 112668.36,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 39491.64,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 37619.64,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 10424.64,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 9920.28,
+    "pct": 2.9
+   }
+  ],
+  "tarhui": [
+   {
+    "n": "Fertilizante",
+    "usd": 1529128.77,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 1203200.79,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 973765.21,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 535290.98,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 437505.21,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 6342.4,
+    "pct": 0.1
+   }
+  ],
+  "tomate": [
+   {
+    "n": "Riego",
+    "usd": 1556919.63,
+    "pct": 34.2
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 1098784.84,
+    "pct": 24.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1048960.75,
+    "pct": 23.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 747101.2,
+    "pct": 16.4
+   },
+   {
+    "n": "Semilla",
+    "usd": 106840.0,
+    "pct": 2.3
+   }
+  ],
+  "toronja": [
+   {
+    "n": "Fertilizante",
+    "usd": 154190.28,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 135438.36,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 47472.72,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 45222.36,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 12531.36,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 11925.0,
+    "pct": 2.9
+   }
+  ],
+  "trebol": [
+   {
+    "n": "Fertilizante",
+    "usd": 1488878.16,
+    "pct": 63.1
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 792870.24,
+    "pct": 33.6
+   },
+   {
+    "n": "Riego",
+    "usd": 58482.84,
+    "pct": 2.5
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 18580.56,
+    "pct": 0.8
+   }
+  ],
+  "tuna": [
+   {
+    "n": "Fertilizante",
+    "usd": 1701804.0,
+    "pct": 69.2
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 563431.68,
+    "pct": 22.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 176145.96,
+    "pct": 7.2
+   },
+   {
+    "n": "Riego",
+    "usd": 16205.4,
+    "pct": 0.7
+   }
+  ],
+  "té": [
+   {
+    "n": "Fertilizante",
+    "usd": 321539.76,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 282435.24,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 98996.64,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 94304.16,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 26132.16,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 24867.72,
+    "pct": 2.9
+   }
+  ],
+  "uva": [
+   {
+    "n": "Riego",
+    "usd": 9976871.4,
+    "pct": 35.8
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 8087026.44,
+    "pct": 29.0
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 5307927.84,
+    "pct": 19.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 3218158.08,
+    "pct": 11.5
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1305077.28,
+    "pct": 4.7
+   }
+  ],
+  "vainita": [
+   {
+    "n": "Fertilizante",
+    "usd": 124921.57,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 98295.1,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 79551.41,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 43730.33,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 35741.84,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 518.1,
+    "pct": 0.1
+   }
+  ],
+  "yuca": [
+   {
+    "n": "Riego",
+    "usd": 8527113.98,
+    "pct": 65.1
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 1713770.05,
+    "pct": 13.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 1058389.9,
+    "pct": 8.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1000351.19,
+    "pct": 7.6
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 800802.67,
+    "pct": 6.1
+   }
+  ],
+  "zanahoria": [
+   {
+    "n": "Fitosanitario",
+    "usd": 1577757.2,
+    "pct": 34.9
+   },
+   {
+    "n": "Fertilizante",
+    "usd": 1268547.17,
+    "pct": 28.0
+   },
+   {
+    "n": "Semilla",
+    "usd": 859067.3,
+    "pct": 19.0
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 612593.63,
+    "pct": 13.5
+   },
+   {
+    "n": "Riego",
+    "usd": 208127.49,
+    "pct": 4.6
+   }
+  ],
+  "zapallo": [
+   {
+    "n": "Fertilizante",
+    "usd": 2157457.36,
+    "pct": 45.1
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 1565772.43,
+    "pct": 32.7
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 674317.97,
+    "pct": 14.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 219263.8,
+    "pct": 4.6
+   },
+   {
+    "n": "Riego",
+    "usd": 170174.88,
+    "pct": 3.6
+   }
+  ],
+  "zapote": [
+   {
+    "n": "Fertilizante",
+    "usd": 164170.32,
+    "pct": 37.9
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 144204.6,
+    "pct": 33.3
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 50545.44,
+    "pct": 11.7
+   },
+   {
+    "n": "Riego",
+    "usd": 48149.4,
+    "pct": 11.1
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 13342.44,
+    "pct": 3.1
+   },
+   {
+    "n": "Semilla",
+    "usd": 12697.08,
+    "pct": 2.9
+   }
+  ],
+  "zarandaja": [
+   {
+    "n": "Fertilizante",
+    "usd": 327376.21,
+    "pct": 32.6
+   },
+   {
+    "n": "Semilla",
+    "usd": 257597.2,
+    "pct": 25.7
+   },
+   {
+    "n": "Fitosanitario",
+    "usd": 208476.58,
+    "pct": 20.8
+   },
+   {
+    "n": "Abono orgánico",
+    "usd": 114602.18,
+    "pct": 11.4
+   },
+   {
+    "n": "Riego",
+    "usd": 93666.94,
+    "pct": 9.3
+   },
+   {
+    "n": "Asistencia técnica",
+    "usd": 1357.85,
+    "pct": 0.1
+   }
+  ]
+ }
+}

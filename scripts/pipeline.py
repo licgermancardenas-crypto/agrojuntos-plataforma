@@ -181,6 +181,14 @@ ETAPAS = [
      ["out/satelite.json", "out/diag_satelite.csv"],
      "qué compra un centro más, y si podría abastecerse"),
 
+    # Qué insumo, para qué cultivo, en qué región y en qué mes. Cruza el
+    # calendario de siembra con la hoja de costos de MIDAGRI; ninguno de los
+    # dos, solo, contesta la pregunta que hace un comercial.
+    ("canasta", "build_canasta.py",
+     ["out/estacionalidad_detalle.csv", "out/costos_cultivo.csv"],
+     ["out/canasta.json", "out/canasta_detalle.csv"],
+     "el insumo por cultivo, región y mes"),
+
     # Qué compran las empresas que trajo el universo ampliado. El embarque dice
     # qué venden; solo la importación dice si compran lo que la plataforma
     # vende, y la diferencia entre las dos cosas es la decisión.

@@ -82,6 +82,8 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/decisiones/decisiones.json` | Cada decisión con su cifra, la alternativa que se descartó y su bisagra |
 | `datos/territorio/satelite.json` | Qué compra un centro más, cuántos cerrarían el sur y qué pasaría con otra promesa |
 | `datos/decisiones/ampliacion.json` | Qué importan los 769 exportadores que trajo el universo ampliado |
+| `datos/insumos/canasta.json` | Qué insumo se compra, para qué cultivo, en qué región y en qué mes |
+| `datos/insumos/canasta_detalle.csv` | El mismo cruce, fila por fila: insumo × cultivo × departamento × mes |
 | `datos/territorio/cartera_territorio.csv` | Qué cartera cae en cada territorio y a qué centro responde |
 | `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
 | `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial con pendiente, ida y vuelta por separado |
@@ -173,6 +175,41 @@ cuadraturas den, que los agregados sean coherentes entre sí y que las cifras
 de esta documentación correspondan a los datos— y `verificar.py` recorre el
 sitio en un Chrome de verdad. Una vez por semana, `auditar_pruebas.py`
 reintroduce cada defecto que las pruebas dicen cubrir y exige que salten.
+
+## La canasta: qué insumo, para qué cultivo, dónde y cuándo
+
+El proyecto tenía las piezas separadas y ninguna contestaba la pregunta que
+hace un comercial: *en Piura, en marzo, ¿qué se está comprando y para qué?*
+`build_canasta.py` cruza el calendario de siembra —`estacionalidad_detalle`,
+superficie sembrada por cultivo, departamento y mes— con la hoja de costos de
+MIDAGRI, que dice cuánto de una hectárea de cada cultivo es fertilizante,
+plaguicida o semilla.
+
+| | US$ MM al año | |
+|---|---|---|
+| Fertilizante | 642 | 38% |
+| Fitosanitario | 510 | 30% |
+| Semilla | 248 | 15% |
+| Abono orgánico | 161 | 9% |
+| Riego | 120 | 7% |
+| Asistencia técnica | 20 | 1% |
+
+La estructura cambia con el cultivo, y ese es el punto: la **papa** se lleva el
+31% en semilla y la **palta** el 39% en riego y cero en semilla, porque no se
+resiembra. Un promedio nacional borra justamente eso.
+
+**El mes es el de la siembra, no el de la cosecha.** El fertilizante entra con
+el cultivo, no cuando sale el camión; anclarlo en la cosecha correría el
+calendario medio año y mandaría al vendedor tarde. Octubre pesa 12.9% y abril
+5.6%: el año tiene una temporada de compra de 2.3 veces el valle.
+
+**No es una medición de compras.** Nadie publica lo que compró un agricultor.
+Es un coeficiente técnico —lo que cuesta producir bien una hectárea— aplicado a
+la superficie real, y la hoja describe un manejo tecnificado que el minifundio
+de sierra no alcanza. Dice **a qué se destina el gasto y cuándo**; el cuánto
+sale del modelo de mercado, que sí corrige por tamaño con las tasas del
+CENAGRO. El 95% del gasto usa la estructura de su propio cultivo; el resto, el
+promedio de su familia, y la salida lo marca fila por fila.
 
 ## Decisiones
 

@@ -173,7 +173,12 @@ reintroduce cada defecto que las pruebas dicen cubrir y exige que salten.
 **El orden no es opcional y ya no es tradición oral.** `pipeline.py` declara
 las veinticinco etapas con lo que lee y lo que escribe cada una, corre lo que haga
 falta y falla —diciendo qué etapa produce lo que falta— cuando una entrada no
-está. Depurar antes de agregar, agregar antes del panel —que lee del agregado
+está. Al terminar publica: `publicar.py` lleva a `datos/` lo que se recalculó y
+avisa de lo que se sirve sin que nadie lo genere. Iba a mano y a mano se
+olvidaba —`datos/` llegó a tener 35 archivos atrasados mientras `out/` estaba al
+día—, así que el rigor llegaba hasta la puerta y ahí soltaba. Los JSON del
+navegador ya no se copian: los generadores escriben directamente donde el sitio
+los lee, que es lo que explica `scripts/sitio.py`. Depurar antes de agregar, agregar antes del panel —que lee del agregado
 la frontera de completitud—, SENASA antes que acopio. Correrlas en otro orden
 no revienta nada: mezcla cifras viejas con nuevas, que es peor.
 

@@ -28,8 +28,11 @@ from collections import defaultdict
 
 import pandas as pd
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import sitio                                          # noqa: E402
+
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.abspath(os.path.join(RAIZ, "..", "..", "dashboard", "data"))
+OUT = sitio.DATA
 DEST = os.path.join(OUT, "perfil")
 os.makedirs(DEST, exist_ok=True)
 # Las semanas salen de lo archivado y no de una constante: el historico

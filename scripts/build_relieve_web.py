@@ -36,10 +36,12 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import build_relieve as R
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import build_relieve as R                              # noqa: E402
+import sitio                                           # noqa: E402
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.abspath(os.path.join(RAIZ, "..", "..", "dashboard", "data"))
+OUT = sitio.DATA
 
 # El Perú continental con un margen que evita el borde duro en la costa.
 PERU = (-81.6, -18.6, -68.4, 0.2)

@@ -99,6 +99,10 @@ CASOS = [
      "el techo de lo que OSM mapea se presenta como abandono medido"),
     ("productos_anualiza", "NO SALE DEL AGREGADO MEDIDO",
      "la vista de productos vuelve a comer de la ventana de diez semanas"),
+    # Septima tanda: el universo arancelario, que dejo de ser una eleccion
+    # tacita y ahora sostiene un 13% del total medido.
+    ("universo_sin_marca", "NO DECLARA LA AMPLIACION DEL UNIVERSO",
+     "las familias que entraron al ampliar el universo dejan de marcarse"),
 ]
 
 

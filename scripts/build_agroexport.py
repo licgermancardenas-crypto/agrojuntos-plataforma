@@ -31,10 +31,7 @@ import re
 import unicodedata
 
 from build_aduanas import abrir, leer_dbf, partida4
-
-# Capítulos del arancel que son agro. Los mismos que usa build_aduanas.py, de
-# modo que los totales de las dos vistas cuadran entre sí.
-AGRO = {"07", "08", "09", "12", "18", "20", "21"}
+from universo import es_agro
 
 CAMPOS = {"CADU", "UBIGEO", "PART_NANDI", "DCOM", "VFOBSERDOL", "VPESNET",
           "CPAIDES", "CVIATRA", "NDOC"}
@@ -75,6 +72,70 @@ PARTIDAS = {
     "2104": "Sopas y caldos", "2105": "Helados",
     "0711": "Hortalizas conservadas provisionalmente", "0903": "Mate",
     "0906": "Canela", "0907": "Clavo de olor", "1802": "Cáscara de cacao",
+
+    # Las que entraron con la ampliación del universo arancelario. Ver
+    # `universo.py`: sin nombre, la vista de productos rotularía «Partida
+    # 1905» donde el usuario espera leer galletas.
+    "0105": "Aves vivas", "0106": "Otros animales vivos",
+    "0205": "Carne de equino", "0207": "Carne de ave",
+    "0402": "Leche en polvo", "0406": "Quesos", "0408": "Huevos sin cáscara",
+    "0409": "Miel de abeja", "0410": "Otros productos comestibles animales",
+    "0511": "Cochinilla y otros productos animales",
+    "0601": "Bulbos y tubérculos de flor", "0602": "Plantas vivas",
+    "0603": "Flores cortadas", "0604": "Follaje y ramas",
+    "1005": "Maíz", "1006": "Arroz", "1008": "Quinua y cereales andinos",
+    "1001": "Trigo", "1003": "Cebada", "1004": "Avena",
+    "1102": "Harinas de cereales", "1104": "Granos aplastados y copos",
+    "1106": "Harinas de legumbres y frutas", "1108": "Almidones y féculas",
+    "1302": "Extractos vegetales (tara y otros)", "1301": "Gomas y resinas",
+    "1404": "Productos vegetales diversos (tara, achiote)",
+    "1401": "Materias vegetales para cestería",
+    "1509": "Aceite de oliva", "1511": "Aceite de palma",
+    "1513": "Aceite de coco y palmiste", "1515": "Otros aceites vegetales",
+    "1516": "Grasas y aceites hidrogenados",
+    "1518": "Grasas y aceites modificados", "1517": "Margarina",
+    "1701": "Azúcar de caña", "1702": "Otros azúcares",
+    "1703": "Melaza", "1704": "Confitería sin cacao",
+    "1901": "Preparaciones de harina y malta",
+    "1902": "Pastas alimenticias", "1904": "Cereales inflados y hojuelas",
+    "1905": "Galletas y panadería", "1903": "Tapioca",
+    "2202": "Bebidas no alcohólicas", "2203": "Cerveza",
+    "2204": "Vino", "2207": "Alcohol etílico",
+    "2208": "Pisco y licores", "2209": "Vinagre", "2201": "Agua",
+    "2302": "Salvados y afrecho", "2303": "Residuos de almidonería",
+    "2304": "Torta de soya", "2306": "Tortas de otras oleaginosas",
+    "2308": "Residuos vegetales para forraje",
+    "2309": "Alimento balanceado", "2305": "Torta de maní",
+    "2401": "Tabaco en rama", "2403": "Tabaco elaborado",
+    "3301": "Aceites esenciales", "3302": "Mezclas odoríferas",
+    "5201": "Algodón en rama", "5202": "Desperdicios de algodón",
+    "5203": "Algodón cardado", "5301": "Lino", "5303": "Yute",
+    "5305": "Otras fibras vegetales",
+    # Las que aparecen en el manifiesto por menos de medio millón. Se nombran
+    # igual: una tabla que dice «Partida 1107» en la fila veinte parece un
+    # error del sitio, no una exportación pequeña.
+    "0101": "Caballos y asnos vivos", "0204": "Carne de ovino y caprino",
+    "0206": "Despojos comestibles", "0208": "Carne de cuy y otras",
+    "0401": "Leche y nata sin concentrar", "0403": "Yogur y leches ácidas",
+    "0404": "Lactosuero", "0405": "Mantequilla",
+    "0504": "Tripas y estómagos", "0508": "Coral y conchas",
+    "1101": "Harina de trigo", "1103": "Sémola y pellets de cereal",
+    "1105": "Harina y copos de papa", "1107": "Malta",
+    "1505": "Grasa de lana y lanolina", "1507": "Aceite de soya",
+    "1512": "Aceite de girasol y cártamo", "1521": "Ceras vegetales",
+    "2206": "Otras bebidas fermentadas", "2402": "Cigarrillos",
+    "2404": "Productos de nicotina",
+    "0201": "Carne de bovino fresca", "0202": "Carne de bovino congelada",
+    "0203": "Carne de porcino", "0209": "Tocino y grasa de cerdo",
+    "0210": "Carnes saladas y ahumadas", "0407": "Huevos con cáscara",
+    "0501": "Cabello humano", "0507": "Marfil, cuernos y pezuñas",
+    "0510": "Glándulas y productos opoterápicos", "0812": "Frutas conservadas",
+    "1002": "Centeno", "1007": "Sorgo", "1109": "Gluten de trigo",
+    "1205": "Colza y nabina", "1210": "Conos de lúpulo",
+    "1501": "Grasa de cerdo y ave", "1502": "Sebo de bovino y ovino",
+    "1508": "Aceite de maní", "1510": "Otros aceites de oliva",
+    "1514": "Aceite de colza y mostaza", "1520": "Glicerol en bruto",
+    "2205": "Vermut",
 }
 
 # Tabla 4 del Anexo 01 de SUNAT (RS 040-2022), mas la aduana de Chancay,
@@ -173,7 +234,7 @@ def main():
         fh, nombre = abrir(z)
         for r in leer_dbf(fh, CAMPOS):
             p4 = partida4(r.get("PART_NANDI", ""))
-            if p4[:2] not in AGRO:
+            if not es_agro(p4):
                 continue
             try:
                 fob = float(r.get("VFOBSERDOL") or 0)

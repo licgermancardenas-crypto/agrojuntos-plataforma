@@ -21,12 +21,12 @@ construye.
 | **SAM** — productores comerciales que ya compran | **US$ 512 MM** |
 | Clientes en el mercado atendible | 156,880 |
 | Empresas agrícolas formales con RUC | 21,063 |
-| Importadores de insumos agrícolas | 491 |
-| Agroexportadores con RUC, 2022–2026 | 4,054 |
-| Agroexportación medida en 2025 | US$ 13,169 MM FOB |
-| Distritos con embarque propio, situados por el manifiesto | 580 |
+| Importadores de insumos agrícolas | 1,344 |
+| Agroexportadores con RUC, 2022–2026 | 4,812 |
+| Agroexportación medida en 2025 | US$ 14,790 MM FOB |
+| Distritos con embarque propio, situados por el manifiesto | 629 |
 | Plantas de empaque certificadas por SENASA | 296 |
-| Importación de insumos, anualizada | US$ 1,313 MM CIF |
+| Importación de insumos, anualizada | US$ 1,168 MM CIF |
 | Sectores estadísticos georreferenciados | 7,036 |
 
 El SAM está a distancia razonable: **67.3% a menos de dos horas** de un centro
@@ -82,7 +82,7 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
 | `datos/logistica/ruteo_sector.csv` | Horas al centro provincial y al puerto, ruteadas sobre la red vial con pendiente, ida y vuelta por separado |
 | `datos/topografia/altitud_sector.csv` | Cota y piso ecológico de los 7,036 sectores |
-| `datos/topografia/altitud_distrito.csv` | Cota, piso y desnivel al centro de los 580 distritos con embarque |
+| `datos/topografia/altitud_distrito.csv` | Cota, piso y desnivel al centro de los 629 distritos con embarque |
 | `datos/topografia/altitud.json` | Mercado y FOB por piso, y la banda de altura medida de cada producto |
 | `datos/estacionalidad/estacionalidad_region.csv` | Demanda mes a mes, mes pico y concentración |
 | `datos/empresas/empresas_agro_activas.csv` | Empresas con RUC, razón social, clase y distrito |
@@ -93,9 +93,9 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/exportaciones/mercado.json` | Cinco años de agroexportación: por año, por mes, por familia, por destino y por departamento, con su cobertura |
 | `datos/exportaciones/exportadores.json` | 4,062 exportadores con su cubo de producto × destino × partida, año por año |
 | `datos/exportaciones/exportadores_min.json` | El recorte de 1.25 MB que consume el dashboard, del archivo de 7.8 MB |
-| `datos/acopio/acopio_distrito.csv` | Los 580 distritos que embarcan, con producto líder, mes pico, centro que los sirve y horas |
+| `datos/acopio/acopio_distrito.csv` | Los 629 distritos que embarcan, con producto líder, mes pico, centro que los sirve y horas |
 | `datos/acopio/acopio_hub.csv` | Cuánta carga alcanza cada centro candidato a 2, 4 y 6 horas |
-| `datos/acopio/acopio_huerfanos.csv` | Los 387 distritos con embarque que no caen en ningún territorio de venta |
+| `datos/acopio/acopio_huerfanos.csv` | Los 416 distritos con embarque que no caen en ningún territorio de venta |
 | `datos/acopio/senasa_exportadores.csv` | Establecimientos certificados por SENASA, cruzados con quien embarca |
 | `datos/geoespacial/h3_r5.csv` | 1,992 celdas hexagonales de ~292 km² con mercado, clientes y accesibilidad |
 | `datos/geoespacial/clusters_territorio.csv` | 57 territorios de venta detectados por densidad |
@@ -170,7 +170,7 @@ sitio en un Chrome de verdad. Una vez por semana, `auditar_pruebas.py`
 reintroduce cada defecto que las pruebas dicen cubrir y exige que salten.
 
 **El orden no es opcional y ya no es tradición oral.** `pipeline.py` declara
-las catorce etapas con lo que lee y lo que escribe cada una, corre lo que haga
+las veinticinco etapas con lo que lee y lo que escribe cada una, corre lo que haga
 falta y falla —diciendo qué etapa produce lo que falta— cuando una entrada no
 está. Depurar antes de agregar, agregar antes del panel —que lee del agregado
 la frontera de completitud—, SENASA antes que acopio. Correrlas en otro orden
@@ -653,9 +653,9 @@ y cuál se sacó y por qué— está en
 ## Agroexportadores
 
 El otro lado de la aduana, y con la misma regla que el lado importador: años
-medidos, nunca anualizados. 244 semanas de manifiesto, 1,468,627 series de
-embarque, 4,054 exportadores con RUC y US$ 47,811 MM FOB entre 2022 y 2026,
-en 72 familias de producto y 140 destinos.
+medidos, nunca anualizados. 245 semanas de manifiesto, 1,894,908 series de
+embarque, 4,812 exportadores con RUC y US$ 55,106 MM FOB entre 2022 y 2026,
+en 177 familias de producto y 162 destinos.
 
 ```
 scripts/build_export_historico.py   extrae las lineas de agro de cada ZIP
@@ -721,16 +721,18 @@ es lo que preserva ese dato.
 
 ### Lo que queda fuera, dicho
 
-US$ 54.6 MM en 9,325 operaciones son de exportadores persona natural, cuyo
+US$ 59 MM en 13,006 operaciones son de exportadores persona natural, cuyo
 titular SUNAT no publica por la Ley 29733 de protección de datos personales:
 están en los totales del mercado y en ningún corte por empresa. Quedan fuera
-del recorte de cinco años US$ 1,592.9 MM de 2021 —embarques de diciembre que
-regularizan en enero— y 2,798 líneas con fecha de embarque anterior, que no se
+del recorte de cinco años US$ 1,703.3 MM de 2021 —embarques de diciembre que
+regularizan en enero— y 2,702 líneas con fecha de embarque anterior, que no se
 corrigen ni se borran: se cuentan y se declaran.
 
-Una declaración trae 1.35 líneas en promedio —una por partida y serie—, así que
-la declaración repetida no es una anomalía como en importación: es la forma del
-documento, y las dos cifras se cuentan por separado.
+La unidad no es la declaración sino **la serie**: una DUA trae una línea por
+partida y serie, y la clave con que este proyecto identifica cada embarque
+—aduana, año, declaración y serie— ya las distingue. Por eso la repetición de
+una declaración no es una anomalía como en importación: es la forma del
+documento.
 
 ### Lo que baja el navegador
 
@@ -755,36 +757,52 @@ mismo peso, un FOB que cambia unos miles de dólares. En 2025 eso alcanzaba al
 **51% del valor**, y de 216,381 líneas repetidas, 216,303 estaban en archivos
 distintos y solo 78 dentro del mismo. Una serie es una fila, así que toda
 repetición es una versión nueva del mismo embarque. Se conserva la última, que
-es la vigente: son US$ 19,150 MM en cinco años.
+es la vigente: son US$ 19,459 MM en cinco años.
 
 **Precios que el producto no aguanta.** Una declaración de café verde declara
 US$ 37.4 millones por 56,925 kg —US$ 657 el kilo— cuando la serie anterior del
 mismo documento va a 8.7. No se filtran con un umbral fijo, porque la semilla
 híbrida de hortaliza cuesta legítimamente cientos de dólares el kilo: se
-compara cada línea contra la mediana de su propia familia. Son 127 MM.
+compara cada línea contra la mediana de su propia familia. Son 140 MM.
 
-Depurado, 2025 pasa de US$ 17,928 MM a **13,169**. Y con eso se cae una
+Depurado, 2025 pasa de US$ 20,426 MM a **14,790**. Y con eso se cae una
 afirmación que este informe publicaba: la caída de 5.4% de la agroexportación
 en 2026 era el arrastre de las republicaciones, que se acumulan más en los
-años viejos que en el corriente. El tramo comparable da **+2.4%**.
+años viejos que en el corriente. El tramo comparable da **+2.8%**.
 
-### Por qué el total no coincide con el oficial, medido
+### El universo arancelario, que era una elección tácita
 
-Depurado, el total queda **12% por debajo** de los US$ 15,013 MM que publica
+Depurado, el total quedaba **12% por debajo** de los US$ 15,013 MM que publica
 MIDAGRI para 2025. La explicación está medida en `diag_universo.py`, no
-supuesta: este proyecto cuenta como agro siete capítulos arancelarios —07, 08,
-09, 12, 18, 20 y 21— y la estadística oficial cuenta más.
+supuesta: el proyecto contaba como agro siete capítulos —07, 08, 09, 12, 18,
+20 y 21— y la estadística oficial cuenta más. Esa elección no estaba escrita
+en ninguna parte; era un `set` de siete cadenas repetido en cuatro archivos.
 
-Los capítulos agrarios que quedan fuera suman **US$ 1,976 MM** en 2025:
-aceites 802, preparaciones de cereales 308, quinua 181, pisco 167, esencias
-141, azúcar 92, lácteos 76. Con ellos el total sería 15,206 contra 15,013: un
-**1.3%**.
+Ahora está en `scripts/universo.py`, es una sola, y la regla es **capítulos
+del arancel menos una lista corta de partidas que no pertenecen**. La lista
+corta hace falta porque a nivel de capítulo la pregunta no tiene respuesta: el
+capítulo 23 son 2,126 MM de los que **1,871 son harina de pescado**, y el 15
+son 802 de los que **518 son aceite de pescado**. Contarlos enteros habría
+inflado el agro con la pesca; dejarlos fuera habría perdido el aceite de
+palma, el alimento balanceado y el salvado, que sí son agro.
 
-Los dos mayores que aparecen fuera no se suman a propósito: alimento para
-animales, 2,126 MM, y preparaciones de carne, 433, que en Perú son harina de
-pescado y conservas. Sumarlos daría 17,765 y pasaría de largo la cifra del
-país, que es la señal de que el universo estrecho está bien elegido y solo le
-faltaba explicarse.
+Entraron 18 capítulos y quedaron fuera, a propósito, el 03 y el 16
+enteros —pescado y conservas—, las partidas 1504 y 2301, la cosmética del
+capítulo 33 y los tejidos de los capítulos 52 y 53.
+
+| | 2025 |
+|---|---|
+| siete capítulos, como estaba | US$ 13,230 MM · −12% |
+| universo escrito, depurado | **US$ 14,790 MM · −1.5%** |
+| MIDAGRI | US$ 15,013 MM |
+
+Lo que queda de diferencia es de criterio —MIDAGRI ancla en la regularización
+y no en el embarque, y arrastra rectificaciones posteriores al corte—, no
+capítulos olvidados. La ampliación vale US$ 7,295 MM del período de cinco
+años, el 13% del total, y trae **758 exportadores** que antes no estaban en la
+cartera: es cartera nueva y no solo FOB nuevo. `mercado.json` guarda el
+desglose por capítulo en su bloque `universo`, para que la plataforma marque
+las familias añadidas en vez de anunciar un salto sin explicación.
 
 El diagnóstico costó tres intentos, y los dos primeros fallaron igual: no
 reproducían el universo conocido y aun así devolvían un desglose de aspecto
@@ -803,25 +821,25 @@ su tonelaje a la capital. Para decidir dónde abrir un almacén ese es
 justamente el error que importa.
 
 `build_acopio.py` sitúa la carga con el UBIGEO del manifiesto, que apunta al
-lugar de producción. Son **580 distritos con coordenada, 3,247 empresas y
-US$ 28,190 MM** entre 2022 y 2024 —los años en que SUNAT llenó el campo—, cada
+lugar de producción. Son **629 distritos con coordenada, 3,883 empresas y
+US$ 32,835 MM** entre 2022 y 2024 —los años en que SUNAT llenó el campo—, cada
 uno con su producto líder, su mes pico y el centro que lo sirve.
 
 ```
-datos/acopio/acopio_distrito.csv    los 580 distritos, con centro y horas
+datos/acopio/acopio_distrito.csv    los 629 distritos, con centro y horas
 datos/acopio/acopio_hub.csv         cuánto alcanza cada centro a 2, 4 y 6 h
 datos/acopio/acopio_territorio.csv  la carga de cada territorio de venta
 datos/acopio/acopio_huerfanos.csv   la que no cae en ningún territorio
 ```
 
 **La pregunta de inventario no es cuánto mercado hay sino cuánto se alcanza.**
-Pisco llega a US$ 6,107 MM a dos horas y Otuzco a 2,963; Chiclayo pasa de
-2,105 a 7,430 al abrir el radio de dos a seis, así que lo que vale depende del
-compromiso de entrega. Y 36 distritos con 1,948 MM no tienen centro que los
-sirva —Olmos solo son 1,541—: no es carga cero, es carga fuera de alcance.
+Pisco llega a US$ 6,236 MM a dos horas y Huamachuco a 2; Chiclayo pasa de
+2,142 a 8,623 al abrir el radio de dos a seis, así que lo que vale depende del
+compromiso de entrega. Y 41 distritos con 2,257 MM no tienen centro que los
+sirva —Olmos solo son 1,599—: no es carga cero, es carga fuera de alcance.
 
-**La mitad de la carga cae fuera de los territorios de venta.** US$ 14,436 MM
-en 387 distritos, el 51%. No es que estén mal trazados —dentro se exportan
+**La mitad de la carga cae fuera de los territorios de venta.** US$ 17,670 MM
+en 416 distritos, el 54%. No es que estén mal trazados —dentro se exportan
 8,308 dólares por hectárea agrícola y fuera 4,856, así que capturan lo denso—
 sino que se detectaron sobre la densidad del mercado de insumos, y la demanda
 exportadora no se concentra en el mismo sitio. Se intentó agrupar los

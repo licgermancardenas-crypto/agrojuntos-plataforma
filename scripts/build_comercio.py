@@ -15,6 +15,7 @@ Two commercial readings come out of it:
                 per hectare of anyone in the country
 """
 import io
+import json
 import re
 import sys
 import unicodedata
@@ -23,7 +24,12 @@ import pandas as pd
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
                               errors="replace")
-SEMANAS = 10
+# Las semanas de la ventana, medidas. Estuvo escrito «10» de cuando el
+# manifiesto era la ventana movil de SUNAT, y con el historico acumulado —246
+# semanas— seguia dividiendo por diez: el rubro de proteccion de cultivos
+# aparecia moviendo US$ 8,823 MM anuales, veinte veces lo que mueve.
+SEMANAS = int(json.load(io.open("out/aduanas_ventana.json",
+                                encoding="utf-8"))["semanas"])
 
 
 def slug(s):
@@ -120,7 +126,8 @@ print()
 print("--- PROTECCION DE CULTIVOS: EL SET COMPETITIVO DIRECTO ---")
 v = prot.head(14)[["razon_social", "fob_anual", "tn", "semanas", "dep"]].copy()
 v["fob_anual"] = (v["fob_anual"] / 1e6).round(1)
-v.columns = ["razon social", "FOB anual MM", "tn (10 sem)", "sem", "region"]
+v.columns = ["razon social", "FOB anual MM",
+             "tn (%d sem)" % SEMANAS, "sem", "region"]
 print(v.to_string(index=False, float_format=lambda x: f"{x:,.1f}"))
 print()
 print(f"El rubro mueve US$ {prot.fob_anual.sum()/1e6:,.0f} MM anuales CIF entre "

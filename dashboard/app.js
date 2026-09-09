@@ -558,9 +558,12 @@ function pintarImportacion(D) {
 
     document.getElementById("impNota").innerHTML =
       "Microdatos de manifiestos de importación de SUNAT bajo la Ley 27806, " +
-      m.semanas + " semanas de junio a agosto de 2026: " + nf(m.lineas_pais) +
+      m.semanas + " semanas" +
+      (m.desde ? " entre " + m.desde + " y " + m.hasta : "") + ": " +
+      nf(m.lineas_pais) +
       " líneas por " + usd(m.fob_pais) + ", que es toda la importación del " +
-      "país. La clasificación se escribe a la longitud de partida que cada " +
+      "país en esas semanas. La clasificación se escribe a la longitud de " +
+      "partida que cada " +
       "caso necesita, porque a cuatro dígitos varias mezclan usos " +
       "incompatibles: <span class='mono'>8701</span> junta el tractor agrícola " +
       "con el tractocamión de carretera, y <span class='mono'>3002</span> la " +
@@ -1615,11 +1618,15 @@ function peso(kg) {
    pregunta: «cuánto sería en un mes tipo». Aquí la barra de junio es lo que
    entró en junio.
 
-   Los manifiestos de SUNAT son una ventana móvil de diez semanas, no un
-   histórico: hoy cubren del 15 de junio al 27 de agosto de 2026. Los meses y
-   los años fuera de esa ventana existen en el eje pero se dibujan como hueco
-   declarado, nunca como cero. Un cero diría que no hubo importación; el hueco
-   dice que no hay registro, que es lo cierto. */
+   Lo que SUNAT publica es una ventana móvil de diez semanas; lo que aquí se
+   dibuja es lo que `acumular_aduanas.py` alcanzó a guardar antes de que cada
+   semana se retirara, y son varios años. Cuántas semanas y entre qué fechas
+   lo declara el propio archivo —`meta.semanas`, `meta.desde`, `meta.hasta`—:
+   ningún rótulo lo escribe a mano, porque la ventana crece cada semana y una
+   fecha fija envejece sola. Los meses y los años sin semanas archivadas
+   existen en el eje pero se dibujan como hueco declarado, nunca como cero. Un
+   cero diría que no hubo importación; el hueco dice que no hay registro, que
+   es lo cierto. */
 var MES_COR = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
                "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 var MES_LAR = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -1643,9 +1650,9 @@ function ejeTemporal(valores, fechas) {
     return {
       etq: MES_COR, etqLarga: MES_LAR, val: vm, hay: hay,
       titulo: "Continuidad · FOB por mes",
-      nota: "Suma medida de cada mes. Los meses sin barra están fuera de la " +
-            "ventana de diez semanas que publica SUNAT: no hay registro, no " +
-            "es que no haya habido importación."
+      nota: "Suma medida de cada mes. Los meses sin barra no tienen semanas " +
+            "de manifiesto archivadas: no hay registro, no es que no haya " +
+            "habido importación."
     };
   }
 
@@ -2973,11 +2980,11 @@ function vistaMetodo() {
       "de modo que cualquier cambio estructural posterior a 2012 no está " +
       "recogido. La superficie y la producción sí son de 2023–2024.</div>" +
       "<div class='note brass'><span class='h'>Las cifras de aduanas " +
-      "anualizan diez semanas</span>Los microdatos publicados cubren un " +
-      "tramo, no el año. Anualizar supone que el resto del año se comporta " +
-      "igual, lo que en un sector estacional es una simplificación fuerte. " +
-      "Sirven para ordenar empresas por tamaño, no para declarar el FOB " +
-      "anual de ninguna.</div>" +
+      "anualizan las semanas archivadas</span>Los microdatos cubren las " +
+      "semanas que se alcanzó a guardar, no el año redondo. Anualizar supone " +
+      "que el resto del año se comporta igual, lo que en un sector estacional " +
+      "es una simplificación fuerte. Sirven para ordenar empresas por tamaño, " +
+      "no para declarar el FOB anual de ninguna.</div>" +
       "<div class='note brass'><span class='h'>El domicilio fiscal no es el " +
       "fundo</span>La ubicación de cada empresa es la que declara ante " +
       "SUNAT. Las agroindustriales grandes suelen declarar en Lima y cultivar " +
@@ -3079,6 +3086,16 @@ function pintarProductos(D, E) {
             return { n: c.n, v: c.ha, t: nf(c.ha) + " ha" }; }));
       }
 
+      /* Qué familias entraron al ampliar el universo arancelario. El total
+         de agroexportación subió un 12% de una versión a la otra, y sin
+         marcar cuáles son nuevas el salto parece un error del sitio en vez
+         de lo que es: capítulos que antes no se contaban. La lista la trae
+         `mercado.json` en su bloque `universo`. */
+      var NUEVAS = {};
+      ((E.universo || {}).familias_ampliacion || []).forEach(function (n) {
+        NUEVAS[n] = 1; });
+      function marca(n) { return NUEVAS[n] ? n + " · nuevo" : n; }
+
       var fila = dep ? depMed[dep.toUpperCase()] : null;
       var ex = fila ? fila.familias : null;
       titE.textContent = dep ? "Qué exporta " + dep : "Qué se exporta del país";
@@ -3091,7 +3108,7 @@ function pintarProductos(D, E) {
       } else {
         barras(document.getElementById("proExpDep"),
           fuente.map(function (p) {
-            return { n: p.n, v: p.v, t: usd(p.v) }; }));
+            return { n: marca(p.n), v: p.v, t: usd(p.v) }; }));
       }
 
       document.getElementById("proExpNota").innerHTML = dep
@@ -3109,7 +3126,19 @@ function pintarProductos(D, E) {
           "distintas —hectáreas cosechadas y dólares embarcados— y no se " +
           "suman entre sí. El embarque son " + rango + " medidos; el corte " +
           "por departamento se limita a " + anTer.join(", ") + ", que son los " +
-          "años con ubigeo en el manifiesto.";
+          "años con ubigeo en el manifiesto." +
+          (((E.universo || {}).por_capitulo || []).length
+            ? " Las familias marcadas <b>nuevo</b> entraron al ampliar el " +
+              "universo arancelario a " +
+              E.universo.por_capitulo.length + " capítulos más —los mayores, " +
+              E.universo.por_capitulo.slice(0, 3).map(function (c) {
+                return c.n.toLowerCase() + " " + usd(c.fob); }).join(", ") +
+              "—: " + usd(E.universo.fob_ampliacion) + " en total, el " +
+              pct(E.universo.pct_ampliacion, 0) + " del período, y " +
+              E.universo.exportadores_solo_ampliacion + " exportadores que " +
+              "antes no aparecían. Sin ellas la medición quedaba 12% por " +
+              "debajo de la cifra oficial de MIDAGRI; con ellas, 1.5%."
+            : "");
 
       var tot = cult
         ? cult.reduce(function (a, c) { return a + c.ha; }, 0) : m.ha;

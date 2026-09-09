@@ -321,6 +321,25 @@ MUTACIONES = {
       };
     })();""",
 
+    # La pantalla deja de decir que el universo arancelario se amplio: las
+    # familias nuevas pierden su marca y la nota, su explicacion. El total
+    # sigue siendo el mismo y un 12% mas alto que la version anterior, sin
+    # nada en pantalla que lo justifique.
+    "universo_sin_marca": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('exportaciones/mercado.json') < 0) return r;
+        const d = await r.clone().json();
+        if (d.universo) {
+          d.universo.familias_ampliacion = [];
+          d.universo.por_capitulo = [];
+        }
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
     "canal_sin_salvedad": "(() => {" + _MUT_BASE + """
       setInterval(() => {
         textos('#redCanal', 'es un techo', 'es una medicion');
@@ -1719,6 +1738,36 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  el selector de periodo no toca lo ya medido: ok")
+
+    # El universo arancelario se amplió, y la pantalla tiene que decirlo. Sin
+    # ese aviso el total de agroexportación sube un 12% de una versión a la
+    # otra y parece un error del sitio en vez de lo que es: dieciocho
+    # capítulos que antes no se contaban. Lo esperado se lee del archivo en
+    # disco y no de la página, para que una mutación que vacíe el bloque no
+    # pueda engañar a la prueba con su propia versión de los datos.
+    _uni = EX2.get("universo") or {}
+    _nn = " ".join((pg.text_content("#proExpNota") or "").split())
+    _bn = pg.eval_on_selector_all("#proExpDep .bar",
+                                  "b => b.map(x => x.textContent)")
+    if _uni.get("por_capitulo"):
+        if "universo arancelario" not in _nn or "nuevo" not in _nn:
+            print("  LA PANTALLA NO DECLARA LA AMPLIACION DEL UNIVERSO")
+            ok = False
+        else:
+            print("  la nota declara los %d capítulos de la ampliación "
+                  "y sus %d exportadores: ok"
+                  % (len(_uni["por_capitulo"]),
+                     _uni["exportadores_solo_ampliacion"]))
+        _amp = set(_uni.get("familias_ampliacion") or [])
+        _mal = [b for b in _bn
+                if b.split("·")[0].strip() in _amp and "nuevo" not in b]
+        if _mal:
+            print("  UNA FAMILIA DE LA AMPLIACION SALE SIN MARCAR: «%s»"
+                  % _mal[0][:40])
+            ok = False
+        else:
+            print("  %d familias de la ampliación, ninguna sin marcar: ok"
+                  % len(_amp))
 
     # El corte por departamento, con su año de corte declarado.
     pg.select_option("#fProDep", "Ica")

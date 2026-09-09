@@ -103,6 +103,10 @@ CASOS = [
     # tacita y ahora sostiene un 13% del total medido.
     ("universo_sin_marca", "NO DECLARA LA AMPLIACION DEL UNIVERSO",
      "las familias que entraron al ampliar el universo dejan de marcarse"),
+    # Octava tanda: el modulo de decisiones, que vale por la alternativa que
+    # muestra y no por la conclusion.
+    ("decision_sin_alternativa", "SE MUESTRA SIN SU ALTERNATIVA",
+     "una decisión se publica sin la alternativa contra la que se decidió"),
 ]
 
 

@@ -45,6 +45,7 @@ VISTAS = [
     ("#estacionalidad", ".cal tbody tr", "Estacionalidad"),
     ("#logistica", "#tLogistica tbody tr", "Logística"),
     ("#expansion", "#tHubs tbody tr", "Expansión"),
+    ("#decisiones", "#decLista .card .b p", "Decisiones"),
     ("#metodo", "#tFuentes tbody tr", "Método"),
 ]
 
@@ -335,6 +336,21 @@ MUTACIONES = {
           d.universo.familias_ampliacion = [];
           d.universo.por_capitulo = [];
         }
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
+    # La pantalla de decisiones pierde la alternativa contra la que se decidio:
+    # queda el resultado sin el costo de oportunidad, que es exactamente la
+    # lamina de conclusiones que este modulo existe para no ser.
+    "decision_sin_alternativa": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('decisiones.json') < 0) return r;
+        const d = await r.clone().json();
+        d.decisiones.forEach(x => { x.alternativa = 'No aplica.'; });
         return new Response(JSON.stringify(d),
                             {headers: {'Content-Type': 'application/json'}});
       };
@@ -1787,6 +1803,41 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  Ica sale como uva, que es lo que embarca: ok")
+
+    # ------------------------------------------------------- decisiones -----
+    # El módulo existe para que la alternativa descartada no se pierda. Si una
+    # decisión se muestra sin la cifra contra la que se decidió, vuelve a ser
+    # una lámina de conclusiones: se comprueba que cada tarjeta traiga las tres
+    # partes, y que las cifras sean las del archivo y no un texto escrito.
+    print("")
+    print("decisiones · la alternativa que se descartó")
+    DEC = json.load(io.open(os.path.join("data", "decisiones.json"),
+                            encoding="utf-8"))
+    pg.evaluate("() => location.hash = '#decisiones'")
+    pg.wait_for_selector("#decLista .card .b p", timeout=25000)
+    pg.wait_for_timeout(400)
+    _txt = " ".join((pg.text_content("#decLista") or "").split())
+    _faltan = [d["id"] for d in DEC["decisiones"]
+               if d["pregunta"][:34] not in _txt]
+    if _faltan:
+        print("  FALTAN DECISIONES EN LA PANTALLA: %s" % ", ".join(_faltan))
+        ok = False
+    else:
+        print("  las %d decisiones están en la pantalla: ok"
+              % len(DEC["decisiones"]))
+    _sin_alt = [d["id"] for d in DEC["decisiones"]
+                if d["alternativa"][:30] not in _txt]
+    if _sin_alt:
+        print("  UNA DECISION SE MUESTRA SIN SU ALTERNATIVA: %s"
+              % ", ".join(_sin_alt))
+        ok = False
+    else:
+        print("  cada decisión trae la alternativa que se descartó: ok")
+    if "Qué la daría vuelta" not in _txt:
+        print("  LA PANTALLA NO DICE QUE DARIA VUELTA CADA DECISION")
+        ok = False
+    else:
+        print("  cada decisión trae su bisagra: ok")
 
     # ---------------------------------------------- la red de canal ---------
     # El almacen no le vende al agricultor: en el mayor territorio hay 9,114

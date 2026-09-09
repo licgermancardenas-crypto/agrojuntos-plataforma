@@ -3697,6 +3697,69 @@ function fallo(e) {
 }
 
 var CARGADO = {};
+/* ------------------------------------------------------------ decisiones --
+   Lo que se decidió, contra qué se decidió, y qué lo daría vuelta.
+
+   Esta vista no calcula nada: lee `decisiones.json`, que arma
+   `build_decisiones.py` a partir de los archivos del pipeline. La cifra que
+   aquí se lee es la misma que sostiene la vista de al lado, y cuando el dato
+   cambia, cambia sola.
+
+   La regla de contenido está en el script y conviene repetirla aquí, porque es
+   lo que separa este módulo de una lámina de conclusiones: una decisión abierta
+   se publica con su cifra y su bisagra, nunca con un adjetivo. «Conviene
+   expandir al sur» no es un dato aunque se le ponga tipografía de dato. */
+function vistaDecisiones() {
+  cargar("decisiones").then(function (D) {
+    var A = D.decisiones.filter(function (d) { return d.estado === "abierta"; });
+    var C = D.decisiones.filter(function (d) { return d.estado !== "abierta"; });
+    document.getElementById("decMeta").textContent =
+      D.abiertas + " abiertas · " + D.decididas + " decididas";
+    document.getElementById("decIntro").innerHTML =
+      "Cada decisión con <b>la cifra que la sostiene</b>, <b>la alternativa " +
+      "que se midió y se descartó</b> —con la suya— y <b>la bisagra</b>: lo " +
+      "que tendría que cambiar para darla vuelta. Las cifras salen de los " +
+      "archivos del pipeline, no de un texto: cuando el dato cambia, la " +
+      "decisión que se lee aquí cambia con él.";
+
+    function tarjeta(d) {
+      var abierta = d.estado === "abierta";
+      return '<div class="card" style="margin-top:12px">' +
+        '<div class="h"><h3>' + esc(d.pregunta) + "</h3>" +
+        '<span class="eyebrow">' + esc(d.familia) +
+        (abierta ? " · sin decidir" : "") + "</span></div>" +
+        '<div class="b">' +
+        "<p><b>" + (abierta ? "Dónde está hoy" : "Lo que se decidió") +
+        ".</b> " + esc(d.respuesta) + "</p>" +
+        "<p><b>La alternativa que se midió.</b> " + esc(d.alternativa) +
+        (d.alternativa_historica
+          ? ' <span class="sub2">Medido el ' +
+            esc(d.alternativa_historica.medido_el) + " por " +
+            esc(d.alternativa_historica.por) + "; no se recalcula.</span>"
+          : "") + "</p>" +
+        "<p><b>Qué la daría vuelta.</b> " + esc(d.bisagra) + "</p>" +
+        '<p class="sub">Sale de <span class="mono">' + esc(d.fuente) +
+        "</span></p>" +
+        "</div></div>";
+    }
+
+    document.getElementById("decLista").innerHTML =
+      (A.length
+        ? '<div class="card"><div class="h"><h3>Abiertas</h3>' +
+          '<span class="eyebrow">' + A.length + "</span></div></div>" +
+          A.map(tarjeta).join("")
+        : "") +
+      (C.length
+        ? '<div class="card" style="margin-top:16px"><div class="h">' +
+          "<h3>Decididas</h3><span class=\"eyebrow\">" + C.length +
+          "</span></div></div>" + C.map(tarjeta).join("")
+        : "");
+
+    document.getElementById("decNota").textContent = D.motivo +
+      ". Generado el " + D.generado.replace("T", " ") + ".";
+  });
+}
+
 function ir(hash) {
   var id = (hash || "#resumen").replace("#", "");
   /* El perfil no es una vista mas: lleva el RUC en el propio hash, de modo
@@ -3731,6 +3794,7 @@ function ir(hash) {
     if (id === "exportacion") vistaExportacion();
     if (id === "logistica") vistaLogistica();
     if (id === "metodo") vistaMetodo();
+    if (id === "decisiones") vistaDecisiones();
   }
 }
 window.addEventListener("hashchange", function () { ir(location.hash); });

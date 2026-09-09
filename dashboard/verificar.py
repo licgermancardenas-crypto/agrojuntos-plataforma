@@ -42,10 +42,13 @@ VISTAS = [
     ("#comercio", "#tExportadores tbody tr", "Comercio"),
     ("#importacion", "#tImpCat tbody tr", "Importación"),
     ("#exportacion", "#tExpEmpresas tbody tr", "Exportación"),
-    ("#estacionalidad", ".cal tbody tr", "Estacionalidad"),
     ("#logistica", "#tLogistica tbody tr", "Logística"),
     ("#expansion", "#tHubs tbody tr", "Expansión"),
     ("#canasta", "#canInsumos .bar", "Canasta"),
+    # El calendario de todas las regiones era su propia vista y ahora es un
+    # bloque de la canasta. Se sigue exigiendo que pinte: fusionar dos vistas
+    # es la manera más fácil de perder la mitad de una sin que nadie lo note.
+    ("#canasta", ".cal tbody tr", "Canasta · calendario"),
     ("#decisiones", "#decLista .card .b p", "Decisiones"),
     ("#metodo", "#tFuentes tbody tr", "Método"),
 ]

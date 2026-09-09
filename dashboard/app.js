@@ -1909,7 +1909,13 @@ function vistaEmpresa(ruc) {
 }
 
 /* -------------------------------------------------------- estacionalidad -*/
-function vistaEstacionalidad() {
+/* El calendario de todas las regiones a la vez, que era su propia vista.
+   Canasta lo contenía entero y con dos dimensiones más —el insumo y el
+   cultivo—, así que tener las dos era pedirle al usuario que eligiera entre
+   dos respuestas a la misma pregunta, y la peor de las dos. Vive aquí como un
+   bloque: lo que aporta es ver las veinticinco regiones juntas, que el
+   selector de una en una no da. */
+function pintarCalendario() {
   cargar("estacionalidad").then(function (D) {
     var mx = 0;
     D.regiones.forEach(function (r) {
@@ -3887,6 +3893,7 @@ function vistaCanasta() {
 
     sel.onchange = function () { mesSel = null; pintar(); };
     pintar();
+    pintarCalendario();
     document.getElementById("canNota").textContent = D.salvedad + " " +
       D.el_mes_es + ". " + D.con_estructura_propia_pct + "% del gasto usa la " +
       "estructura de su propio cultivo; el resto, el promedio de su familia.";
@@ -3906,6 +3913,10 @@ function ir(hash) {
     vistaEmpresa(mE[1]);
     return;
   }
+  /* `#estacionalidad` se fusionó en `#canasta`. Quien tenga el enlace viejo
+     —un correo, un marcador— aterriza donde está ahora la respuesta en vez de
+     rebotar al resumen sin explicación. */
+  if (id === "estacionalidad") id = "canasta";
   if (!document.getElementById("v-" + id)) id = "resumen";
   document.querySelectorAll(".view").forEach(function (v) {
     v.classList.toggle("on", v.id === "v-" + id); });
@@ -3919,7 +3930,6 @@ function ir(hash) {
     CARGADO[id] = true;
     if (id === "territorios") vistaTerritorios();
     if (id === "empresas") vistaEmpresas();
-    if (id === "estacionalidad") vistaEstacionalidad();
     if (id === "departamentos") vistaDepartamentos();
     if (id === "comercio") vistaComercio();
     if (id === "productos") vistaProductos();

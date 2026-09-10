@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-09T21:00:16",
+ "generado": "2026-09-09T21:28:26",
  "motivo": "cada decisión con la cifra que la sostiene, la alternativa que se midió y se descartó, y lo que tendría que cambiar para darla vuelta; las cifras salen de los archivos del pipeline y no de este texto",
  "abiertas": 4,
  "decididas": 5,
@@ -97,12 +97,12 @@
    "estado": "abierta",
    "familia": "Quién atiende a quién",
    "pregunta": "¿Con qué puntos de venta conviene trabajar primero?",
-   "respuesta": "Sin decidir. 517 de 3270 puntos tienen mercado propio —clientes que no le quedan más cerca a otro—, US$ 240 MM de SAM exclusivo. El mayor deja US$ 15,260 al año en el escenario base.",
-   "alternativa": "Abrir almacén propio donde ya hay quien vende, que es competir con el canal en vez de usarlo.",
-   "bisagra": "La penetración: el escenario base supone 1.5% del mercado del punto. Con la mitad, el mayor deja US$ 5,087.",
-   "cifra": 517,
-   "unidad": "puntos con mercado",
-   "fuente": "out/canal.json bloque viabilidad · canal_punto.csv"
+   "respuesta": "Sin decidir, pero la lista está ordenada y acortada. De 3,270 puntos que ya venden, 517 tienen mercado propio, y de esos 333 se pueden resurtir dentro de la promesa: US$ 557,308 al año de margen y 52,213 clientes detrás. El primero es AGROSERVICIOS LA CASA DEL CAMPESINO S.R.L. (JUNIN, Satipo) con US$ 15,260 al año a 0.1 h de su centro.",
+   "alternativa": "Trabajar la lista entera por margen, sin mirar el resurtido: 184 puntos más y US$ 199,734 al año que hoy no se pueden abastecer a tiempo.",
+   "bisagra": "El resurtido, que es el mismo examen que a un centro nuevo: reclutar a quien no se alcanza dentro de la promesa es prometer una entrega que no se sostiene, y eso no da cero sino negativo. Esos 184 puntos son la carta que justifica mover la promesa, no clientes a visitar.",
+   "cifra": 333,
+   "unidad": "puntos reclutables",
+   "fuente": "out/reclutar.json · build_reclutar.py"
   },
   {
    "id": "exportadores-nuevos",

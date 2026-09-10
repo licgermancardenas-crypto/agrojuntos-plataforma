@@ -3949,6 +3949,53 @@ function pintarCoberturaMes() {
   }).catch(fallo);
 }
 
+/* --------------------------------------------------- a quién reclutar -----
+   Los puntos de venta que ya tienen mercado propio, ordenados por el margen
+   que dejarían, y **acortados por el resurtido**.
+
+   Ese segundo filtro es el que importa y es el mismo examen que se le hace a
+   un centro nuevo: si el centro que lo abastece no lo alcanza dentro de su
+   promesa, reclutarlo es prometer una entrega que no se sostiene, y eso no da
+   cero sino negativo —el comerciante queda mal con su cliente y con
+   AgroJuntos—. Los 184 que no pasan el examen no se esconden: se cuentan
+   aparte, porque son la carta que justifica mover la promesa. */
+function pintarReclutar() {
+  var caja = document.getElementById("tReclutar");
+  if (!caja) return;
+  cargar("reclutar").then(function (R) {
+    var si = R.resurtibles, no = R.fuera_de_promesa;
+    document.getElementById("recEyebrow").textContent =
+      si.puntos + " reclutables de " + R.con_mercado + " con mercado propio";
+    document.getElementById("recIntro").innerHTML =
+      "De <b>" + nf(R.puntos_que_venden) + "</b> puntos que ya venden, <b>" +
+      R.con_mercado + "</b> tienen mercado que no le queda más cerca a otro. " +
+      "De esos, <b>" + si.puntos + " se pueden resurtir dentro de la " +
+      "promesa</b>: " + usd(si.margen_anual) + " al año de margen y " +
+      nf(si.clientes, 0) + " clientes detrás. Los otros <b>" + no.puntos +
+      "</b> tienen mercado pero su centro no los alcanza a tiempo — " +
+      usd(no.margen_anual) + " al año que hoy no se puede prometer.";
+
+    tabla(caja, [
+      { k: "nombre", t: "Punto", l: 1, f: function (r) {
+          return "<b>" + esc(r.nombre) + "</b>"; } },
+      { k: "dep", t: "Región", l: 1, f: function (r) {
+          return "<span class='sub2'>" + esc(cap(r.dep)) + "</span>"; } },
+      { k: "hub", t: "Se surte de", l: 1, f: function (r) {
+          return esc(r.hub); } },
+      { k: "horas_reparto", t: "Horas", f: function (r) {
+          return '<span class="mono">' + nf(r.horas_reparto, 1) + "</span>"; } },
+      { k: "clientes", t: "Clientes", f: function (r) {
+          return '<span class="mono">' + nf(r.clientes, 0) + "</span>"; } },
+      { k: "margen_anual", t: "US$/año", f: function (r) {
+          return '<span class="mono">' + nf(r.margen_anual, 0) + "</span>"; } },
+    ], R.lista, { sort: "margen_anual" });
+
+    document.getElementById("recNota").textContent = R.salvedad +
+      " Los " + no.puntos + " que quedan fuera de promesa no son clientes a " +
+      "visitar: son el argumento para mover la promesa o abrir un centro.";
+  }).catch(fallo);
+}
+
 function ir(hash) {
   var id = (hash || "#resumen").replace("#", "");
   /* El perfil no es una vista mas: lleva el RUC en el propio hash, de modo
@@ -3986,6 +4033,7 @@ function ir(hash) {
     if (id === "exportacion") vistaExportacion();
     if (id === "logistica") { vistaLogistica(); pintarCoberturaMes(); }
     if (id === "metodo") vistaMetodo();
+    if (id === "expansion") pintarReclutar();
     if (id === "canasta") vistaCanasta();
     if (id === "decisiones") vistaDecisiones();
   }

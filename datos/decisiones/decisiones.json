@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-10T01:43:20",
+ "generado": "2026-09-10T02:27:58",
  "motivo": "cada decisión con la cifra que la sostiene, la alternativa que se midió y se descartó, y lo que tendría que cambiar para darla vuelta; las cifras salen de los archivos del pipeline y no de este texto",
  "abiertas": 4,
  "decididas": 5,
@@ -75,10 +75,10 @@
    "pregunta": "¿Conviene un noveno centro, y dónde?",
    "respuesta": "Sin decidir. La cobertura no es un número sino una banda: 64.4% en el año, pero entre 60.8% en May y 70.9% en Ene según el mes, y 8 de los doce por debajo del promedio. Hoy 2,437 de 3,097 puntos de venta están dentro de la promesa del centro que los surte (79%), y detrás hay 53,360 clientes con la cadena completa. El candidato que más compraría es Barranca: +265 puntos y +3,563 clientes.",
    "alternativa": "No abrir y prometer seis horas parejas: 2,601 puntos (+164) y 56,938 clientes con la cadena completa (+3,578). Un centro nuevo compra casi lo mismo que mover la cadencia, y el alquiler lo paga solo uno de los dos.",
-   "bisagra": "Que el candidato pueda abastecerse. Barranca, el que más compra, no tiene ningún centro dentro de su promesa: no sería un satélite sino otro almacén. El primero que sí se abastece es Santa, a 4.6 h de la red, y compra +196 puntos.",
+   "bisagra": "El punto de equilibrio, que ahora tiene número: un centro cuesta US$ 80,414 al año y Santa se paga solo desde el 1.52% de penetración. El escenario base es 1.5%, así que queda en el filo —US$ -821— y la decisión se juega en la penetración y no en el mapa. Y que el candidato pueda abastecerse: Barranca, el que más compra, no tiene ningún centro dentro de su promesa: no sería un satélite sino otro almacén. El primero que sí se abastece es Santa, a 4.6 h de la red, y compra +196 puntos.",
    "cifra": 3563,
    "unidad": "clientes que compra el mejor candidato",
-   "fuente": "out/satelite.json · build_satelite.py"
+   "fuente": "out/satelite.json · out/costos.json"
   },
   {
    "id": "canal-sin-resurtido",

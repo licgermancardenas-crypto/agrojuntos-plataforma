@@ -84,6 +84,7 @@ def main():
     amp = leer("out/ampliacion.json")
     cmes = leer("out/cobertura_mes.json")
     rec = leer("out/reclutar.json")
+    cos = leer("out/costos.json")
     mer = leer(EXP)
     uni = mer["universo"]
     cob = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
@@ -263,19 +264,29 @@ def main():
                           f"{seis['clientes_cadena']:,}",
                           f"{seis['clientes_cadena'] - hoy_s['clientes_cadena']:,}")
                        if seis else "No abrir y mover la promesa.",
-        "bisagra": ("Que el candidato pueda abastecerse. %s, el que más "
+        "bisagra": ("El punto de equilibrio, que ahora tiene número: un "
+                    "centro cuesta %s al año y %s se paga solo desde el "
+                    "%.2f%% de penetración. El escenario base es %.1f%%, así "
+                    "que queda en el filo —%s— y la decisión se juega en la "
+                    "penetración y no en el mapa. Y que el candidato pueda "
+                    "abastecerse: %s, el que más "
                     "compra, no tiene ningún centro dentro de su promesa: no "
                     "sería un satélite sino otro almacén. El primero que sí "
                     "se abastece es %s, a %.1f h de la red, y compra +%d "
                     "puntos."
-                    % (mejor["candidato"], mejor_surt["candidato"],
+                    % ("US$ %s" % f"{cos['centro']['usd_ano']:,.0f}",
+                       cos["noveno_centro"]["candidato"],
+                       100 * cos["noveno_centro"]["penetracion_de_equilibrio"],
+                       100 * cos["noveno_centro"]["escenarios"][1]["penetracion"],
+                       "US$ %s" % f"{cos['noveno_centro']['escenarios'][1]['resultado']:,.0f}",
+                       mejor["candidato"], mejor_surt["candidato"],
                        mejor_surt["h_a_la_red"], mejor_surt["puntos_nuevos"]))
                    if mejor and mejor_surt and mejor.get("h_a_la_red") is None
                    else "Que el candidato pueda abastecerse de la red que ya "
                         "existe: si no, no es un satélite sino otro almacén.",
         "cifra": mejor["clientes_nuevos"] if mejor else 0,
         "unidad": "clientes que compra el mejor candidato",
-        "fuente": "out/satelite.json · build_satelite.py",
+        "fuente": "out/satelite.json · out/costos.json",
     })
 
     _bloq = rec["fuera_de_promesa"]

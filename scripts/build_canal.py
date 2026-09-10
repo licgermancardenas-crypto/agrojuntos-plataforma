@@ -488,10 +488,15 @@ sec_out["cubierto_greedy"] = cubierto
 sec_out.to_csv("out/canal_sector.csv", index=False, encoding="utf-8-sig")
 
 cand["elegido"] = [j in sel for j in range(len(cand))]
-cols = ["dep", "nombre", "tipo", "clase", "lat", "lon", "sectores_1h",
-        "hub", "horas_reparto", "reparto_en_promesa", "sam_exclusivo",
-        "clientes_exclusivos", "venta_base", "margen_base", "elegido"] + [c for c in cand.columns
-                      if c.startswith(("clientes_", "sam_"))]
+# El comodín de la segunda mitad barre también `sam_exclusivo` y
+# `clientes_exclusivos`, que ya están nombrados arriba: el CSV salía con las
+# dos columnas repetidas y pandas las lee como `sam_exclusivo.1`. Se descartan
+# las que ya están en la lista.
+_fijas = ["dep", "nombre", "tipo", "clase", "lat", "lon", "sectores_1h",
+          "hub", "horas_reparto", "reparto_en_promesa", "sam_exclusivo",
+          "clientes_exclusivos", "venta_base", "margen_base", "elegido"]
+cols = _fijas + [c for c in cand.columns
+                 if c.startswith(("clientes_", "sam_")) and c not in _fijas]
 cand[cols].to_csv("out/canal_punto.csv", index=False, encoding="utf-8-sig")
 
 red = json.load(io.open("out/red_elegida.json", encoding="utf-8"))

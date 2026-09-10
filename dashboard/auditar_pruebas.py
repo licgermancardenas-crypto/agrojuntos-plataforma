@@ -107,6 +107,8 @@ CASOS = [
     # muestra y no por la conclusion.
     ("decision_sin_alternativa", "SE MUESTRA SIN SU ALTERNATIVA",
      "una decisión se publica sin la alternativa contra la que se decidió"),
+    ("reclutar_sin_resurtido", "NO DICE CUANTOS QUEDAN FUERA DE PROMESA",
+     "la lista de reclutamiento deja de distinguir a quién se puede resurtir"),
     ("cobertura_sin_banda", "NO SE MUESTRA O SALE PLANA",
      "la cobertura pierde la banda mensual y queda solo el promedio"),
     ("canasta_sin_temporada", "EL MISMO CORTE POR CULTIVO",

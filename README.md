@@ -84,6 +84,8 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/decisiones/ampliacion.json` | Qué importan los 769 exportadores que trajo el universo ampliado |
 | `datos/insumos/canasta.json` | Qué insumo se compra, para qué cultivo, en qué región y en qué mes |
 | `datos/logistica/cobertura_mes.json` | La cobertura de la promesa mes a mes, pesada por la demanda |
+| `datos/canal/reclutar.json` | Con qué puntos de venta trabajar primero, y cuáles no se pueden resurtir |
+| `datos/canal/reclutar.csv` | Los 517 puntos con mercado propio, ordenados por margen |
 | `datos/insumos/canasta_detalle.csv` | El mismo cruce, fila por fila: insumo × cultivo × departamento × mes |
 | `datos/territorio/cartera_territorio.csv` | Qué cartera cae en cada territorio y a qué centro responde |
 | `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
@@ -217,6 +219,33 @@ de sierra no alcanza. Dice **a qué se destina el gasto y cuándo**; el cuánto
 sale del modelo de mercado, que sí corrige por tamaño con las tasas del
 CENAGRO. El 95% del gasto usa la estructura de su propio cultivo; el resto, el
 promedio de su familia, y la salida lo marca fila por fila.
+
+### Con qué puntos de canal trabajar primero
+
+`build_canal.py` mide el mercado exclusivo de cada punto que ya vende —el que no
+le queda más cerca a ningún otro— y lo lleva a margen: de 3,270 puntos, **517
+tienen mercado propio**. Esa lista vivía en un CSV de 9,467 filas ordenado por
+nada.
+
+Ordenarla por margen es lo obvio y no alcanza, porque deja fuera la pregunta que
+decide: **¿se le puede resurtir?** Es el mismo examen que a un centro nuevo.
+Reclutar a quien su centro no alcanza dentro de la promesa es prometer una
+entrega que no se va a cumplir, y eso no da cero sino negativo: el comerciante
+queda mal con su cliente y con AgroJuntos.
+
+| | puntos | margen/año | clientes |
+|---|---|---|---|
+| resurtibles en promesa | **333** | US$ 557,308 | 52,213 |
+| fuera de promesa | 184 | US$ 199,734 | 16,627 |
+
+El 36% de los puntos con mercado propio —y una cuarta parte del margen— está
+detrás de una entrega que hoy no se sostiene. No se borran: se publican aparte,
+porque son la carta que justifica mover la promesa o abrir un centro, y
+confundirlos con los reclutables es lo que haría fracasar la campaña.
+
+El primero de la lista es Agroservicios La Casa del Campesino, en Junín, a 0.1 h
+de Satipo, con US$ 15,260 al año. Por centro, Chiclayo concentra 65 puntos
+reclutables y US$ 156 mil.
 
 ### La cobertura no es un número, es una banda
 

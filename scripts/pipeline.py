@@ -170,6 +170,14 @@ ETAPAS = [
       "../../../_repo/dashboard/data/logistica.json"],
      "los JSON que sirve el sitio"),
 
+    # Con qué puntos de canal trabajar primero. El margen ordena la lista; el
+    # resurtido la acorta, y es el mismo examen que a un centro nuevo.
+    ("reclutar", "build_reclutar.py",
+     ["out/canal_punto.csv", "out/canal.json"],
+     ["out/reclutar.json", "out/reclutar.csv",
+      "../../../_repo/dashboard/data/reclutar.json"],
+     "con qué puntos de venta trabajar primero"),
+
     # La cobertura de la red pesada por la demanda de cada mes. La cifra plana
     # pesa el año entero, y las regiones mal cubiertas son justo las que
     # concentran su compra: el promedio anual esconde una banda de diez puntos.
@@ -213,7 +221,8 @@ ETAPAS = [
     ("decisiones", "build_decisiones.py",
      ["out/red_elegida.json", "out/canal.json", "out/clusters_absorcion.json",
       "out/acopio.json", "out/hubs_cobertura.csv", "out/satelite.json",
-      "out/ampliacion.json", "out/cobertura_mes.json", EXP + "mercado.json"],
+      "out/ampliacion.json", "out/cobertura_mes.json", "out/reclutar.json",
+      EXP + "mercado.json"],
      ["out/decisiones.json",
       "../../../_repo/dashboard/data/decisiones.json"],
      "cada decisión con su alternativa medida y su bisagra"),

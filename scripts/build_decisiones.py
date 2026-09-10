@@ -83,6 +83,7 @@ def main():
     sat = leer("out/satelite.json")
     amp = leer("out/ampliacion.json")
     cmes = leer("out/cobertura_mes.json")
+    rec = leer("out/reclutar.json")
     mer = leer(EXP)
     uni = mer["universo"]
     cob = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
@@ -299,24 +300,37 @@ def main():
         "fuente": "out/canal.json bloque reparto",
     })
 
+    _si, _no = rec["resurtibles"], rec["fuera_de_promesa"]
+    _pri = rec["lista"][0] if rec["lista"] else None
     D.append({
         "id": "canal-a-reclutar", "estado": "abierta",
         "familia": "Quién atiende a quién",
         "pregunta": "¿Con qué puntos de venta conviene trabajar primero?",
-        "respuesta": "Sin decidir. %d de %d puntos tienen mercado propio "
-                     "—clientes que no le quedan más cerca a otro—, %s de SAM "
-                     "exclusivo. El mayor deja %s al año en el escenario base."
-                     % (via["puntos_con_mercado"], via["puntos_que_venden"],
-                        "US$ %.0f MM" % via["sam_exclusivo_mm"],
-                        "US$ %s" % f"{base['margen_mayor']:,.0f}"),
-        "alternativa": "Abrir almacén propio donde ya hay quien vende, que es "
-                       "competir con el canal en vez de usarlo.",
-        "bisagra": "La penetración: el escenario base supone %.1f%% del "
-                   "mercado del punto. Con la mitad, el mayor deja %s."
-                   % (100 * via["penetracion"],
-                      "US$ %s" % f"{via['escenarios'][0]['margen_mayor']:,.0f}"),
-        "cifra": via["puntos_con_mercado"], "unidad": "puntos con mercado",
-        "fuente": "out/canal.json bloque viabilidad · canal_punto.csv",
+        "respuesta": "Sin decidir, pero la lista está ordenada y acortada. De "
+                     "%s puntos que ya venden, %d tienen mercado propio, y de "
+                     "esos %d se pueden resurtir dentro de la promesa: %s "
+                     "al año de margen y %s clientes detrás. El primero es %s "
+                     "(%s, %s) con %s al año a %.1f h de su centro."
+                     % (f"{rec['puntos_que_venden']:,}", rec["con_mercado"],
+                        _si["puntos"],
+                        "US$ %s" % f"{_si['margen_anual']:,.0f}",
+                        f"{_si['clientes']:,.0f}",
+                        _pri["nombre"] if _pri else "—",
+                        _pri["dep"] if _pri else "", _pri["hub"] if _pri else "",
+                        "US$ %s" % f"{_pri['margen_anual']:,.0f}" if _pri else "",
+                        _pri["horas_reparto"] if _pri else 0),
+        "alternativa": "Trabajar la lista entera por margen, sin mirar el "
+                       "resurtido: %d puntos más y %s al año que hoy no se "
+                       "pueden abastecer a tiempo."
+                       % (_no["puntos"], "US$ %s" % f"{_no['margen_anual']:,.0f}"),
+        "bisagra": "El resurtido, que es el mismo examen que a un centro "
+                   "nuevo: reclutar a quien no se alcanza dentro de la promesa "
+                   "es prometer una entrega que no se sostiene, y eso no da "
+                   "cero sino negativo. Esos %d puntos son la carta que "
+                   "justifica mover la promesa, no clientes a visitar."
+                   % _no["puntos"],
+        "cifra": _si["puntos"], "unidad": "puntos reclutables",
+        "fuente": "out/reclutar.json · build_reclutar.py",
     })
 
     _ins = amp["industria_del_insumo"]

@@ -345,6 +345,24 @@ MUTACIONES = {
       };
     })();""",
 
+    # La lista de reclutamiento deja de distinguir a quién se puede resurtir:
+    # los 184 que su centro no alcanza entran como si fueran clientes a
+    # visitar, y la pantalla ya no dice que quedan fuera.
+    "reclutar_sin_resurtido": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('reclutar.json') < 0) return r;
+        const d = await r.clone().json();
+        d.lista = d.lista.concat(d.en_espera || []);
+        d.resurtibles.puntos = d.con_mercado;
+        d.fuera_de_promesa.puntos = 0;
+        d.fuera_de_promesa.margen_anual = 0;
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
     # La cobertura pierde la banda: todos los meses dan el promedio, y la red
     # vuelve a juzgarse con una cifra plana que ocho meses del año no cumplen.
     "cobertura_sin_banda": """(() => {
@@ -1849,6 +1867,37 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  Ica sale como uva, que es lo que embarca: ok")
+
+    # ------------------------------------------------ a quién reclutar ------
+    # La lista vale por lo que deja fuera. Un punto con mercado propio al que
+    # su centro no alcanza dentro de la promesa no es un cliente a visitar: es
+    # una entrega que no se va a cumplir. Se comprueba que la pantalla diga
+    # cuántos quedan fuera y que la tabla sean los reclutables y no los 517.
+    print("")
+    print("reclutar · la lista que el resurtido acorta")
+    REC = json.load(io.open(os.path.join("data", "reclutar.json"),
+                            encoding="utf-8"))
+    pg.evaluate("() => location.hash = '#expansion'")
+    pg.wait_for_selector("#tReclutar tbody tr td", timeout=25000)
+    pg.wait_for_timeout(400)
+    _ri = " ".join((pg.text_content("#recIntro") or "").split())
+    _fuera = REC["fuera_de_promesa"]["puntos"]
+    if str(_fuera) not in _ri or str(REC["resurtibles"]["puntos"]) not in _ri:
+        print("  LA PANTALLA NO DICE CUANTOS QUEDAN FUERA DE PROMESA")
+        ok = False
+    else:
+        print("  declara %d reclutables y %d fuera de promesa: ok"
+              % (REC["resurtibles"]["puntos"], _fuera))
+    _nom = pg.eval_on_selector_all("#tReclutar tbody tr td:first-child",
+                                   "b => b.map(x => x.textContent.trim())")
+    _esp = {x["nombre"] for x in REC["lista"]}
+    _cuela = [n for n in _nom if n and n not in _esp]
+    if _cuela:
+        print("  LA TABLA TRAE PUNTOS QUE NO SON RECLUTABLES: «%s»"
+              % _cuela[0][:40])
+        ok = False
+    else:
+        print("  los %d de la tabla son todos resurtibles: ok" % len(_nom))
 
     # ------------------------------------------- la cobertura, mes a mes ----
     # El sitio publica una cifra plana de cobertura y al lado la banda mensual.

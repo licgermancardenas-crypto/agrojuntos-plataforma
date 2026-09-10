@@ -4014,6 +4014,65 @@ function pintarReclutar() {
   }).catch(fallo);
 }
 
+/* ------------------------------------------------ las rutas de visita -----
+   El proyecto tenía la red mapeada y los tiempos punto a punto, pero ninguna
+   ruta: nada que dijera «salir de Chiclayo, visitar estos siete en este orden
+   y volver». `visitable_en_dia` era un proxy —la caja del territorio mide
+   menos de 120 km—, que dice que el territorio es compacto y no que exista
+   una vuelta que lo recorra en un día.
+
+   Aquí está la vuelta. Y sobre todo: aquí están **los supuestos**, en un
+   recuadro de advertencia y no en una nota al pie. La jornada, el tiempo de
+   visita y el tope de lejanía no salen del dato —nadie los midió— y una ruta
+   vale lo que valga su supuesto. Lo medido es el viaje, ruteado con pendiente
+   y en el sentido correcto. */
+function pintarRutas() {
+  var caja = document.getElementById("tRutas");
+  if (!caja) return;
+  cargar("rutas").then(function (R) {
+    var S = R.supuestos;
+    document.getElementById("rutEyebrow").textContent =
+      R.rutas + " rutas · " + R.en_ruta + " de " + R.puntos + " puntos";
+    document.getElementById("rutIntro").innerHTML =
+      "<b>" + R.rutas + " jornadas</b> cubren <b>" + R.en_ruta + "</b> de los " +
+      R.puntos + " puntos reclutables, saliendo y volviendo al centro. Los " +
+      "otros <b>" + R.sueltos.length + "</b> no caben en una jornada y se " +
+      "listan aparte en el archivo: no se reparten a la fuerza en una ruta " +
+      "que no se puede cumplir.";
+    document.getElementById("rutSupuestos").innerHTML =
+      "<span class='h'>Con qué se armaron</span>" +
+      "<p><b>Medido:</b> " + esc(S.medido) + ".</p>" +
+      "<p><b>Supuesto:</b> jornada de " + nf(S.jornada_h, 0) + " h, " +
+      Math.round(S.visita_h * 60) + " min por visita, tope de " +
+      nf(S.tope_h, 0) + " h de lejanía. " + esc(S.supuesto) + ".</p>" +
+      "<p class='sub'>" + esc(S.sensibilidad) + ". No se modela " +
+      esc(S.sin_modelar) + ". " + esc(R.metodo) + ".</p>";
+
+    tabla(caja, [
+      { k: "hub", t: "Centro", l: 1, f: function (r) {
+          return "<b>" + esc(r.hub) + "</b>"; } },
+      { k: "rutas", t: "Jornadas", f: function (r) {
+          return '<span class="mono">' + r.rutas + "</span>"; } },
+      { k: "puntos", t: "Puntos", f: function (r) {
+          return '<span class="mono">' + r.puntos + "</span>"; } },
+      { k: "horas_total", t: "Horas", f: function (r) {
+          return '<span class="mono">' + nf(r.horas_total, 1) + "</span>"; } },
+      { k: "margen_anual", t: "US$/año", f: function (r) {
+          return '<span class="mono">' + nf(r.margen_anual, 0) + "</span>"; } },
+    ], R.por_hub.filter(function (h) { return h.rutas > 0; }),
+       { sort: "margen_anual" });
+
+    var ej = R.lista.slice().sort(function (a, b) {
+      return b.margen_anual - a.margen_anual; })[0];
+    document.getElementById("rutNota").textContent = ej
+      ? "La que más deja: " + ej.hub + ", ruta " + ej.ruta + " — " +
+        ej.puntos + " paradas en " + nf(ej.horas_total, 1) + " h por " +
+        usd(ej.margen_anual) + " al año. El orden de cada parada está en " +
+        "rutas.csv."
+      : "";
+  }).catch(fallo);
+}
+
 function ir(hash) {
   var id = (hash || "#resumen").replace("#", "");
   /* El perfil no es una vista mas: lleva el RUC en el propio hash, de modo
@@ -4051,7 +4110,7 @@ function ir(hash) {
     if (id === "exportacion") vistaExportacion();
     if (id === "logistica") { vistaLogistica(); pintarCoberturaMes(); }
     if (id === "metodo") vistaMetodo();
-    if (id === "expansion") pintarReclutar();
+    if (id === "expansion") { pintarReclutar(); pintarRutas(); }
     if (id === "canasta") vistaCanasta();
     if (id === "decisiones") vistaDecisiones();
   }

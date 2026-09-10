@@ -178,6 +178,15 @@ ETAPAS = [
       "../../../_repo/dashboard/data/reclutar.json"],
      "con qué puntos de venta trabajar primero"),
 
+    # En qué orden se recorren los puntos reclutables. Los tiempos son
+    # medidos; la jornada y el tiempo de visita son supuestos declarados.
+    ("rutas", "build_rutas.py",
+     ["out/reclutar.json", "out/canal_punto.csv", "out/red_elegida.json",
+      "data/vial/compacto/PE-LIM.npz"],
+     ["out/rutas.json", "out/rutas.csv",
+      "../../../_repo/dashboard/data/rutas.json"],
+     "las rutas de visita, en jornadas que vuelven al centro"),
+
     # La cobertura de la red pesada por la demanda de cada mes. La cifra plana
     # pesa el año entero, y las regiones mal cubiertas son justo las que
     # concentran su compra: el promedio anual esconde una banda de diez puntos.

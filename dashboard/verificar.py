@@ -363,6 +363,24 @@ MUTACIONES = {
       };
     })();""",
 
+    # Las rutas se publican sin decir con qué supuestos se armaron: la jornada
+    # y el tiempo de visita desaparecen, y una heuristica con parametros que
+    # nadie midio pasa a leerse como un hecho operativo.
+    "rutas_sin_supuestos": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('rutas.json') < 0) return r;
+        const d = await r.clone().json();
+        d.supuestos = {jornada_h: 9, visita_h: 0.67, tope_h: 6,
+                       medido: '', supuesto: '', sensibilidad: '',
+                       sin_modelar: '', origen: ''};
+        d.metodo = '';
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
     # La cobertura pierde la banda: todos los meses dan el promedio, y la red
     # vuelve a juzgarse con una cifra plana que ocho meses del año no cumplen.
     "cobertura_sin_banda": """(() => {
@@ -1913,6 +1931,32 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  el precio de alargar la promesa y su límite: ok")
+
+    # Las rutas se arman con supuestos que nadie midió —jornada, tiempo de
+    # visita, tope de lejanía— y eso tiene que estar a la vista, no en una
+    # nota al pie. Una ruta sin su supuesto se lee como un hecho.
+    print("")
+    print("rutas · los supuestos con que se armaron")
+    RUT = json.load(io.open(os.path.join("data", "rutas.json"),
+                            encoding="utf-8"))
+    pg.wait_for_selector("#tRutas tbody tr td", timeout=25000)
+    pg.wait_for_timeout(300)
+    _su = " ".join((pg.text_content("#rutSupuestos") or "").split())
+    _falta = [q for q in ("Medido", "Supuesto", "jornada",
+                          str(int(RUT["supuestos"]["visita_h"] * 60)))
+              if q.lower() not in _su.lower()]
+    if _falta:
+        print("  LA PANTALLA NO DECLARA LOS SUPUESTOS DE LA RUTA: falta %s"
+              % ", ".join(_falta))
+        ok = False
+    else:
+        print("  jornada, visita y qué es medido contra qué es supuesto: ok")
+    _fil = pg.eval_on_selector_all("#tRutas tbody tr", "b => b.length")
+    print("  %d rutas sobre %d puntos · %d no caben en una jornada"
+          % (RUT["rutas"], RUT["puntos"], len(RUT["sueltos"])))
+    if not _fil:
+        print("  LA TABLA DE RUTAS NO PINTA")
+        ok = False
 
     # ------------------------------------------- la cobertura, mes a mes ----
     # El sitio publica una cifra plana de cobertura y al lado la banda mensual.

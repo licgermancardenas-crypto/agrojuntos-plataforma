@@ -86,6 +86,8 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/logistica/cobertura_mes.json` | La cobertura de la promesa mes a mes, pesada por la demanda |
 | `datos/canal/reclutar.json` | Con qué puntos de venta trabajar primero, y cuáles no se pueden resurtir |
 | `datos/canal/reclutar.csv` | Los 517 puntos con mercado propio, ordenados por margen |
+| `datos/canal/rutas.json` | Las rutas de visita, con los supuestos con que se armaron |
+| `datos/canal/rutas.csv` | Cada parada en su orden: centro, ruta, punto, coordenada |
 | `datos/insumos/canasta_detalle.csv` | El mismo cruce, fila por fila: insumo × cultivo × departamento × mes |
 | `datos/territorio/cartera_territorio.csv` | Qué cartera cae en cada territorio y a qué centro responde |
 | `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
@@ -261,6 +263,33 @@ Con una salvedad que va escrita en la propia decisión: **solo está medido el l
 del beneficio**. Lo que se pierde al servir peor la costa —donde está el mercado
 que hoy sí se cumple— no lo modela este proyecto, así que la comparación está
 coja de un lado y no se cierra con esto solo.
+
+### Las rutas de visita, y los supuestos que las sostienen
+
+El proyecto tenía la red mapeada —88,962 vías, grafo dirigido con pendiente— y
+los tiempos punto a punto de 1,826 distritos y 8,523 puntos de venta. Lo que no
+tenía era una **ruta**: nada que dijera «salir de Chiclayo, visitar estos siete
+en este orden y volver». `visitable_en_dia` era un proxy —la caja del territorio
+mide menos de 120 km—, que dice que el territorio es compacto y no que exista
+una vuelta que lo recorra en un día.
+
+`build_rutas.py` arma esa vuelta sobre los 333 puntos reclutables: **100
+jornadas cubren 289**, y 44 no caben en ninguna y se listan aparte en vez de
+repartirse a la fuerza en una ruta que no se puede cumplir.
+
+**Los supuestos van en un recuadro de advertencia, no en una nota al pie**,
+porque no salen del dato:
+
+| | |
+|---|---|
+| **medido** | el tiempo de viaje, ruteado con pendiente y en el sentido correcto |
+| **supuesto** | jornada de 9 h, 40 min por visita, tope de 6 h de lejanía |
+
+Bajar la visita de 40 a 25 minutos mete alrededor de un punto más por ruta;
+subir la jornada de 9 a 10 horas, otro. Son sensibles, y por eso se declaran:
+**una ruta vale lo que valga su supuesto.** No se modelan ventanas horarias ni
+capacidad de vehículo —la visita comercial no carga producto—, y el método es
+vecino más cercano con 2-opt: promete una vuelta factible, no la óptima.
 
 ### La cobertura no es un número, es una banda
 

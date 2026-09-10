@@ -264,6 +264,39 @@ del beneficio**. Lo que se pierde al servir peor la costa —donde está el merc
 que hoy sí se cumple— no lo modela este proyecto, así que la comparación está
 coja de un lado y no se cierra con esto solo.
 
+### El puente entre el mapa y la venta real
+
+Treinta y dos etapas miden un mercado de 156,880 clientes y US$ 512 MM. El libro
+de ventas tiene **15 clientes y US$ 24,787** en trece meses. Nadie había cruzado
+las dos cosas, y al cruzarlas aparece lo que ninguna dice sola.
+
+**Once de los quince no están en el padrón** que la plataforma usa como cartera:
+son personas naturales, una universidad, una empresa de seguridad. El padrón se
+filtra a empresas con razón social agraria, así que por construcción no puede
+contenerlos — y el **32% del ingreso** viene de personas naturales. La lista
+accionable que el sitio le entrega a un vendedor no las tiene.
+
+**Y se vende donde la red no llega.** Áncash es el 11.5% del ingreso, la región
+que los centros cubren al **6.4%** dentro de la promesa, y **no tiene un solo
+punto de canal reclutable**. No es error de nadie: el mapa se dibujó por tamaño
+de mercado y la venta ocurrió por contacto.
+
+Para cada departamento donde ya se vende, el puente pone al lado lo que la
+plataforma sabe —canasta, cobertura, mes pico, qué se compra y para qué cultivo—
+y los puntos de canal reclutables más cercanos, que es el siguiente anillo.
+
+Dos cosas del libro que hubo que resolver y quedan declaradas. `ventas_lineas.csv`
+**mezcla soles y dólares en la misma columna** —29 líneas y 14— y sumarla sin
+convertir da US$ 75,719 donde los documentos dicen 24,787; convertida a 3.75,
+cuadra en 24,710. Y tres documentos traen `3076.465590484282` donde va el
+departamento —una columna corrida en la planilla de origen, que es confidencial
+y no está en el repositorio—: no se les inventa un departamento, y a dos de los
+tres los salva el padrón, que es justamente para lo que sirve tener dos fuentes.
+
+**La salida no se publica.** Lleva nombres de clientes y montos facturados: se
+queda en `out/`, como el resto del libro de ventas, y el `.gitignore` la nombra
+por si alguien la mueve de sitio sin pensarlo.
+
 ### Las rutas de visita, y los supuestos que las sostienen
 
 El proyecto tenía la red mapeada —88,962 vías, grafo dirigido con pendiente— y

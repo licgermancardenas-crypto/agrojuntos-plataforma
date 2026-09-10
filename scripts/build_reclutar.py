@@ -57,6 +57,9 @@ PUNTOS = "out/canal_punto.csv"
 CANAL = "out/canal.json"
 SALIDA = "out/reclutar.json"
 TOPE = 60          # cuántos van con nombre a la salida publicada
+# Las varas con que se prueba alargar la promesa. No son propuestas: son el
+# precio de cada una, para poder comparar contra abrir un centro.
+VARAS = (5.0, 6.0, 8.0, 12.0)
 
 
 def main():
@@ -102,6 +105,23 @@ def main():
                  "horas_mediana": round(float(r.horas), 2)}
                 for i, r in g.iterrows()]
 
+    # ¿Y si en vez de abrir se promete más largo? Es la alternativa barata y
+    # hay que ponerle número antes de descartarla. La respuesta es que compra
+    # poco: los puntos bloqueados no están apenas fuera de la línea sino
+    # lejos —medianas de seis a diez horas—, así que alargar la promesa
+    # desbloquea una cuarta parte del margen y a cambio empeora el servicio
+    # donde sí se cumple.
+    cad = []
+    for h in VARAS:
+        m = no.horas_reparto <= h
+        cad.append({
+            "promesa_h": h,
+            "puntos": int(m.sum()),
+            "pct": round(100 * float(m.mean()), 1) if len(no) else 0.0,
+            "margen_anual": round(float(no.loc[m, "margen_base"].sum()), 2),
+            "clientes": round(float(no.loc[m, "clientes_exclusivos"].sum()), 1),
+        })
+
     salida = {
         "generado": pd.Timestamp.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "motivo": ("con qué puntos de venta conviene trabajar primero: los que "
@@ -128,7 +148,13 @@ def main():
                        "dentro de la promesa: reclutarlos es prometer una "
                        "entrega que no se sostiene"),
         },
+        "si_se_promete_mas_largo": cad,
+        "limite": ("solo está medido el lado del beneficio. Lo que cuesta "
+                   "servir peor —alargar la promesa en la costa, que es donde "
+                   "está el mercado que hoy sí se cumple— no lo modela este "
+                   "proyecto, así que la comparación está coja de un lado"),
         "por_hub": por_hub(si),
+        "por_hub_bloqueado": por_hub(no),
         "lista": lista,
         "en_espera": espera,
     }
@@ -167,6 +193,20 @@ def main():
         print("  %-12s %3d puntos · US$ %8s/año · %s clientes · %.1f h"
               % (h["hub"], h["puntos"], f"{h['margen_anual']:,.0f}",
                  f"{h['clientes']:,.0f}", h["horas_mediana"]))
+    print()
+    print("si en vez de abrir se promete más largo, de los %d bloqueados:"
+          % len(no))
+    print("  %8s %8s %14s" % ("promesa", "puntos", "US$/año"))
+    for c in cad:
+        print("  %6.0f h %8d %14s"
+              % (c["promesa_h"], c["puntos"], f"{c['margen_anual']:,.0f}"))
+    print("  —de US$ %s bloqueados en total—" % f"{no.margen_base.sum():,.0f}")
+    print()
+    print("los centros con más margen bloqueado detrás")
+    for h in salida["por_hub_bloqueado"][:4]:
+        print("  %-12s %3d puntos · US$ %8s/año · mediana %.1f h"
+              % (h["hub"], h["puntos"], f"{h['margen_anual']:,.0f}",
+                 h["horas_mediana"]))
     print()
     print("%s · out/reclutar.csv" % SALIDA)
     return 0

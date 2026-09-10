@@ -278,26 +278,41 @@ def main():
         "fuente": "out/satelite.json · build_satelite.py",
     })
 
+    _bloq = rec["fuera_de_promesa"]
+    _c6 = next((c for c in rec["si_se_promete_mas_largo"]
+                if c["promesa_h"] == 6.0), None)
+    _c8 = next((c for c in rec["si_se_promete_mas_largo"]
+                if c["promesa_h"] == 8.0), None)
+    _hb = rec["por_hub_bloqueado"][0] if rec["por_hub_bloqueado"] else None
     D.append({
         "id": "canal-sin-resurtido", "estado": "abierta",
         "familia": "Cómo servimos",
         "pregunta": "¿Qué se hace con el canal que su centro no alcanza?",
         "respuesta": "Sin decidir. %d puntos de venta quedan fuera de la "
-                     "promesa del centro que los surte. El peor no es el que "
-                     "deja más puntos fuera sino el que peor proporción "
-                     "alcanza: %s llega al %.0f%% de los suyos, con mediana "
-                     "de %.1f horas."
-                     % (fuera_tot, peor["hub"], peor["pct_en_promesa"],
-                        peor["horas_mediana"]),
-        "alternativa": "Esperar. La promesa de seis horas ya rescató parte "
-                       "del sur al abrir Sicuani, y el resto no paga todavía "
-                       "un alquiler.",
-        "bisagra": "Los %s clientes que hay detrás del canal de %s: es el "
-                   "centro con más gente detrás de sus puntos y el que peor "
-                   "puede abastecerlos."
-                   % (f"{int(peor['clientes']):,}", peor["hub"]),
-        "cifra": fuera_tot, "unidad": "puntos fuera de promesa",
-        "fuente": "out/canal.json bloque reparto",
+                     "promesa del centro que los surte, y %d de ellos tienen "
+                     "mercado propio: %s al año de margen bloqueado detrás de "
+                     "una entrega que hoy no se sostiene. El peor caso es %s, "
+                     "con %d puntos a %.1f h de mediana."
+                     % (fuera_tot, _bloq["puntos"],
+                        "US$ %s" % f"{_bloq['margen_anual']:,.0f}",
+                        _hb["hub"] if _hb else "—",
+                        _hb["puntos"] if _hb else 0,
+                        _hb["horas_mediana"] if _hb else 0),
+        "alternativa": "Prometer más largo en vez de abrir, que es lo barato. "
+                       "Compra poco: con seis horas parejas entran %d de los "
+                       "%d bloqueados —%s de %s— y con ocho, %d. No están "
+                       "apenas fuera de la línea: están lejos."
+                       % (_c6["puntos"] if _c6 else 0, _bloq["puntos"],
+                          "US$ %s" % f"{(_c6 or {}).get('margen_anual', 0):,.0f}",
+                          "US$ %s" % f"{_bloq['margen_anual']:,.0f}",
+                          _c8["puntos"] if _c8 else 0),
+        "bisagra": "Que aparezca el lado del costo. Solo está medido el "
+                   "beneficio de alargar la promesa; lo que se pierde al "
+                   "servir peor la costa —donde está el mercado que hoy sí se "
+                   "cumple— no lo modela el proyecto, así que la comparación "
+                   "está coja de un lado y no se puede cerrar con esto solo.",
+        "cifra": _bloq["margen_anual"], "unidad": "US$/año bloqueados",
+        "fuente": "out/reclutar.json · build_reclutar.py",
     })
 
     _si, _no = rec["resurtibles"], rec["fuera_de_promesa"]

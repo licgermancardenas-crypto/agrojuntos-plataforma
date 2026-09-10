@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-09T21:28:14",
+ "generado": "2026-09-09T22:12:25",
  "motivo": "con qué puntos de venta conviene trabajar primero: los que tienen mercado propio y además se pueden resurtir dentro de la promesa del centro que los abastece",
  "salvedad": "el margen es lo que capturaria AgroJuntos a traves del punto en el escenario base, no lo que vende la tienda: la penetracion del 1.5% es la del proyecto sobre el mercado y no la participacion del comerciante",
  "escenarios": [
@@ -36,6 +36,37 @@
   "sam": 63407617.94,
   "motivo": "tienen mercado propio pero su centro no los alcanza dentro de la promesa: reclutarlos es prometer una entrega que no se sostiene"
  },
+ "si_se_promete_mas_largo": [
+  {
+   "promesa_h": 5.0,
+   "puntos": 14,
+   "pct": 7.6,
+   "margen_anual": 10743.44,
+   "clientes": 980.7
+  },
+  {
+   "promesa_h": 6.0,
+   "puntos": 43,
+   "pct": 23.4,
+   "margen_anual": 51738.92,
+   "clientes": 3938.1
+  },
+  {
+   "promesa_h": 8.0,
+   "puntos": 115,
+   "pct": 62.5,
+   "margen_anual": 129795.27,
+   "clientes": 10404.1
+  },
+  {
+   "promesa_h": 12.0,
+   "puntos": 164,
+   "pct": 89.1,
+   "margen_anual": 166004.12,
+   "clientes": 13873.5
+  }
+ ],
+ "limite": "solo está medido el lado del beneficio. Lo que cuesta servir peor —alargar la promesa en la costa, que es donde está el mercado que hoy sí se cumple— no lo modela este proyecto, así que la comparación está coja de un lado",
  "por_hub": [
   {
    "hub": "Chiclayo",
@@ -92,6 +123,57 @@
    "margen_anual": 31782.06,
    "clientes": 3450.8,
    "horas_mediana": 1.56
+  }
+ ],
+ "por_hub_bloqueado": [
+  {
+   "hub": "Juliaca",
+   "puntos": 29,
+   "margen_anual": 45318.23,
+   "clientes": 3050.3,
+   "horas_mediana": 7.21
+  },
+  {
+   "hub": "Chiclayo",
+   "puntos": 26,
+   "margen_anual": 40669.17,
+   "clientes": 3015.2,
+   "horas_mediana": 6.97
+  },
+  {
+   "hub": "Pisco",
+   "puntos": 41,
+   "margen_anual": 38371.54,
+   "clientes": 2844.5,
+   "horas_mediana": 5.8
+  },
+  {
+   "hub": "Tarma",
+   "puntos": 25,
+   "margen_anual": 29267.3,
+   "clientes": 2780.3,
+   "horas_mediana": 9.42
+  },
+  {
+   "hub": "Huamachuco",
+   "puntos": 31,
+   "margen_anual": 11140.31,
+   "clientes": 2200.8,
+   "horas_mediana": 7.14
+  },
+  {
+   "hub": "Sicuani",
+   "puntos": 13,
+   "margen_anual": 5413.21,
+   "clientes": 356.2,
+   "horas_mediana": 9.66
+  },
+  {
+   "hub": "Bellavista",
+   "puntos": 3,
+   "margen_anual": 3705.72,
+   "clientes": 276.3,
+   "horas_mediana": 9.32
   }
  ],
  "lista": [

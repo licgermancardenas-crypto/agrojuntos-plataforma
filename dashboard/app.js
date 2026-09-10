@@ -3994,9 +3994,23 @@ function pintarReclutar() {
           return '<span class="mono">' + nf(r.margen_anual, 0) + "</span>"; } },
     ], R.lista, { sort: "margen_anual" });
 
-    document.getElementById("recNota").textContent = R.salvedad +
-      " Los " + no.puntos + " que quedan fuera de promesa no son clientes a " +
-      "visitar: son el argumento para mover la promesa o abrir un centro.";
+    /* Y cuánto compra ese argumento, que es la pregunta siguiente. Poco: los
+       bloqueados no están apenas fuera de la línea sino lejos, así que
+       alargar la promesa desbloquea una cuarta parte del margen. Va con su
+       límite escrito: el costo de servir peor no está medido. */
+    var cad = R.si_se_promete_mas_largo || [];
+    document.getElementById("recNota").innerHTML = esc(R.salvedad) +
+      " Los <b>" + no.puntos + "</b> que quedan fuera de promesa no son " +
+      "clientes a visitar: son el argumento para mover la promesa o abrir un " +
+      "centro." +
+      (cad.length
+        ? " Y ese argumento compra menos de lo que parece — " +
+          cad.map(function (c) {
+            return nf(c.promesa_h, 0) + " h: " + c.puntos + " puntos, " +
+              usd(c.margen_anual); }).join(" · ") +
+          ", de " + usd(no.margen_anual) + " bloqueados. No están apenas " +
+          "fuera de la línea: están lejos. <b>" + esc(R.limite) + "</b>."
+        : "");
   }).catch(fallo);
 }
 

@@ -40,7 +40,8 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   </div>
 </header>
 
-<nav id="nav">
+<div class="cuerpo">
+<nav id="nav" aria-label="Módulos">
   <a href="#resumen" class="on">Resumen</a>
   <a href="#decisiones">Decisiones</a>
   <a href="#canasta">Canasta</a>
@@ -57,6 +58,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   <a href="#metodo">Método</a>
 </nav>
 
+<main id="vistas">
 <!-- ------------------------------------------------------------ resumen -->
 <section class="view on" id="v-resumen">
   <div class="kpis" id="kpis"><div class="load">Cargando…</div></div>
@@ -673,6 +675,9 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="b" id="metLimites"></div>
   </div>
 </section>
+
+</main>
+</div>
 
 <footer>
   <b>Fuentes.</b> MIDAGRI (sectores estadísticos 2024, anuario de producción

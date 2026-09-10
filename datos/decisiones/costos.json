@@ -1,0 +1,147 @@
+{
+ "generado": "2026-09-10T02:27:53",
+ "motivo": "lo que cuesta cada opción, para poder cerrar decisiones que hasta ahora solo comparaban beneficios",
+ "advertencia": "ningún costo de aquí sale del dato del proyecto: son parámetros de operación. El único medido es el margen por cliente, que viene del libro de ventas real y de quince clientes",
+ "supuestos": {
+  "rmv_soles_mes": 1025.0,
+  "carga_laboral": 1.55,
+  "alquiler_soles_mes": 6000.0,
+  "vehiculo_usd_ano": 12000.0,
+  "otros_usd_ano": 6000.0,
+  "tipo_de_cambio": 3.75,
+  "dias_habiles_ano": 240.0,
+  "jornada_h": 9.0,
+  "fuente": {
+   "RMV_SOLES": "remuneración mínima vital vigente, dato público",
+   "CARGA": "14 sueldos al año más 9% de EsSalud y CTS; es la carga laboral peruana estándar, redondeada",
+   "PLANILLA": "supuesto: cinco personas por centro, sin medir",
+   "ALQUILER_SOLES_MES": "supuesto: nadie coticé un local",
+   "VEHICULO_USD_ANO": "supuesto",
+   "OTROS_USD_ANO": "supuesto",
+   "margen_por_cliente": "medido: del libro de ventas real, vía build_som.py"
+  }
+ },
+ "margen_por_cliente_usd_ano": 1694.19,
+ "centro": {
+  "planilla": [
+   {
+    "cargo": "jefe de almacén",
+    "personas": 1,
+    "rmv": 3.0,
+    "usd_ano": 15252.0
+   },
+   {
+    "cargo": "almacenero",
+    "personas": 2,
+    "rmv": 1.3,
+    "usd_ano": 13218.4
+   },
+   {
+    "cargo": "vendedor",
+    "personas": 1,
+    "rmv": 1.5,
+    "usd_ano": 7626.0
+   },
+   {
+    "cargo": "chofer",
+    "personas": 1,
+    "rmv": 1.4,
+    "usd_ano": 7117.6
+   }
+  ],
+  "usd_planilla": 43214.0,
+  "usd_alquiler": 19200.0,
+  "usd_vehiculo": 12000.0,
+  "usd_otros": 6000.0,
+  "usd_ano": 80414.0
+ },
+ "noveno_centro": {
+  "candidato": "Santa",
+  "clientes_de_mercado": 3132,
+  "advertencia": "son clientes del mercado que ganan cadena completa, no clientes capturados: se les aplica la penetración",
+  "escenarios": [
+   {
+    "escenario": "Conservador",
+    "penetracion": 0.005,
+    "clientes_capturados": 15.7,
+    "margen_ano": 26531.05,
+    "resultado": -53882.95
+   },
+   {
+    "escenario": "Base",
+    "penetracion": 0.015,
+    "clientes_capturados": 47.0,
+    "margen_ano": 79593.14,
+    "resultado": -820.86
+   },
+   {
+    "escenario": "Agresivo",
+    "penetracion": 0.03,
+    "clientes_capturados": 94.0,
+    "margen_ano": 159186.29,
+    "resultado": 78772.29
+   }
+  ],
+  "penetracion_de_equilibrio": 0.0152
+ },
+ "jornada_usd": 111.43,
+ "campana_de_reclutamiento": [
+  {
+   "hub": "Chiclayo",
+   "jornadas": 20,
+   "costo_una_vuelta": 2228.63,
+   "margen_ano": 144258.51,
+   "vueltas_que_paga": 64.7
+  },
+  {
+   "hub": "Pisco",
+   "jornadas": 20,
+   "costo_una_vuelta": 2228.63,
+   "margen_ano": 87877.32,
+   "vueltas_que_paga": 39.4
+  },
+  {
+   "hub": "Bellavista",
+   "jornadas": 15,
+   "costo_una_vuelta": 1671.47,
+   "margen_ano": 81177.02,
+   "vueltas_que_paga": 48.6
+  },
+  {
+   "hub": "Tarma",
+   "jornadas": 14,
+   "costo_una_vuelta": 1560.04,
+   "margen_ano": 53638.11,
+   "vueltas_que_paga": 34.4
+  },
+  {
+   "hub": "Juliaca",
+   "jornadas": 4,
+   "costo_una_vuelta": 445.73,
+   "margen_ano": 48178.98,
+   "vueltas_que_paga": 108.1
+  },
+  {
+   "hub": "Huamachuco",
+   "jornadas": 13,
+   "costo_una_vuelta": 1448.61,
+   "margen_ano": 35583.11,
+   "vueltas_que_paga": 24.6
+  },
+  {
+   "hub": "Sicuani",
+   "jornadas": 11,
+   "costo_una_vuelta": 1225.75,
+   "margen_ano": 33141.11,
+   "vueltas_que_paga": 27.0
+  },
+  {
+   "hub": "Satipo",
+   "jornadas": 3,
+   "costo_una_vuelta": 334.29,
+   "margen_ano": 31782.06,
+   "vueltas_que_paga": 95.1
+  }
+ ],
+ "falta": "el costo de servir peor —lo que se pierde al alargar la promesa— sigue sin modelarse, así que esa comparación sigue coja"
+}

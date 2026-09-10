@@ -226,6 +226,14 @@ ETAPAS = [
      ["out/ampliacion.json"],
      "qué compran los exportadores que trajo el universo ampliado"),
 
+    # Lo que cuesta cada opción. Todos los costos son supuestos declarados;
+    # el único número medido es el margen por cliente, del libro real.
+    ("costos", "build_costos.py",
+     ["out/som_escenarios.csv", "out/satelite.json", "out/reclutar.json",
+      "out/rutas.json"],
+     ["out/costos.json"],
+     "lo que cuesta un centro y una campaña"),
+
     # El puente entre el mapa y la venta real. No publica: su salida lleva
     # nombres de clientes y montos facturados, y se queda en out/.
     ("puente", "build_puente.py",
@@ -240,7 +248,7 @@ ETAPAS = [
      ["out/red_elegida.json", "out/canal.json", "out/clusters_absorcion.json",
       "out/acopio.json", "out/hubs_cobertura.csv", "out/satelite.json",
       "out/ampliacion.json", "out/cobertura_mes.json", "out/reclutar.json",
-      EXP + "mercado.json"],
+      "out/costos.json", EXP + "mercado.json"],
      ["out/decisiones.json",
       "../../../_repo/dashboard/data/decisiones.json"],
      "cada decisión con su alternativa medida y su bisagra"),

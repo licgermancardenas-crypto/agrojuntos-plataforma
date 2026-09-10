@@ -170,6 +170,15 @@ ETAPAS = [
       "../../../_repo/dashboard/data/logistica.json"],
      "los JSON que sirve el sitio"),
 
+    # La cobertura de la red pesada por la demanda de cada mes. La cifra plana
+    # pesa el año entero, y las regiones mal cubiertas son justo las que
+    # concentran su compra: el promedio anual esconde una banda de diez puntos.
+    ("cobertura-mes", "build_cobertura_mes.py",
+     ["out/hubs_asignacion.csv", "out/estacionalidad_region.csv"],
+     ["out/cobertura_mes.json",
+      "../../../_repo/dashboard/data/cobertura_mes.json"],
+     "la cobertura mes a mes, pesada por la demanda"),
+
     # Qué compra un centro más sobre la red vigente. Era un diagnóstico de una
     # vez; es etapa desde que el módulo de decisiones publica esa pregunta como
     # abierta, porque una decisión abierta cuyo número solo existe en la
@@ -204,7 +213,7 @@ ETAPAS = [
     ("decisiones", "build_decisiones.py",
      ["out/red_elegida.json", "out/canal.json", "out/clusters_absorcion.json",
       "out/acopio.json", "out/hubs_cobertura.csv", "out/satelite.json",
-      "out/ampliacion.json", EXP + "mercado.json"],
+      "out/ampliacion.json", "out/cobertura_mes.json", EXP + "mercado.json"],
      ["out/decisiones.json",
       "../../../_repo/dashboard/data/decisiones.json"],
      "cada decisión con su alternativa medida y su bisagra"),

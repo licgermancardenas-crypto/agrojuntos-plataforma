@@ -83,6 +83,7 @@ agro_insumos_pe_data/          proyecto autocontenido de comercio exterior
 | `datos/territorio/satelite.json` | Qué compra un centro más, cuántos cerrarían el sur y qué pasaría con otra promesa |
 | `datos/decisiones/ampliacion.json` | Qué importan los 769 exportadores que trajo el universo ampliado |
 | `datos/insumos/canasta.json` | Qué insumo se compra, para qué cultivo, en qué región y en qué mes |
+| `datos/logistica/cobertura_mes.json` | La cobertura de la promesa mes a mes, pesada por la demanda |
 | `datos/insumos/canasta_detalle.csv` | El mismo cruce, fila por fila: insumo × cultivo × departamento × mes |
 | `datos/territorio/cartera_territorio.csv` | Qué cartera cae en cada territorio y a qué centro responde |
 | `datos/territorio/hubs_cobertura.csv` | Los centros elegidos por cobertura máxima, en tres umbrales de horas |
@@ -216,6 +217,28 @@ de sierra no alcanza. Dice **a qué se destina el gasto y cuándo**; el cuánto
 sale del modelo de mercado, que sí corrige por tamaño con las tasas del
 CENAGRO. El 95% del gasto usa la estructura de su propio cultivo; el resto, el
 promedio de su familia, y la salida lo marca fila por fila.
+
+### La cobertura no es un número, es una banda
+
+El sitio publica **64.4% del mercado dentro de la promesa**, y esa cifra pesa
+cada celda por su SAM anual: como si el país comprara parejo los doce meses. La
+canasta acaba de mostrar que no. Pesada por la demanda de cada mes, la cobertura
+va de **60.8% en mayo a 70.9% en enero**, y **ocho de los doce meses quedan por
+debajo del promedio** con que se juzga la red.
+
+**La hipótesis con que se empezó era la contraria y era falsa.** Se esperaba que
+la red se viera peor en los meses grandes, porque las regiones mal cubiertas
+—sierra y selva— son las que más concentran su compra en la siembra. Un primer
+cálculo pareció confirmarlo: octubre al 60.8%. Ese cálculo pesaba la cobertura
+departamental por los montos de la canasta, mezclando dos construcciones
+distintas del mismo mercado y contando el supuesto dos veces. Hecho por celda y
+tomando del calendario solo la forma, **octubre da 65.1%**: enero, diciembre y
+octubre están entre los mejores meses, y los peores son los flojos de mayo a
+agosto.
+
+Queda en pie lo que importa: el promedio anual esconde diez puntos de banda, y
+la decisión del noveno centro pasa de leerse «35.6% fuera de la promesa» a
+«entre 29% y 39% según el mes».
 
 ## Decisiones
 

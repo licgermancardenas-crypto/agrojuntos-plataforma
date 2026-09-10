@@ -345,6 +345,22 @@ MUTACIONES = {
       };
     })();""",
 
+    # La cobertura pierde la banda: todos los meses dan el promedio, y la red
+    # vuelve a juzgarse con una cifra plana que ocho meses del año no cumplen.
+    "cobertura_sin_banda": """(() => {
+      const orig = window.fetch;
+      window.fetch = async function (u, o) {
+        const r = await orig.call(this, u, o);
+        if (String(u).indexOf('cobertura_mes.json') < 0) return r;
+        const d = await r.clone().json();
+        d.meses.forEach(m => { m.cubierto_pct = d.plano_pct; });
+        d.peor = d.meses[0]; d.mejor = d.meses[0];
+        d.brecha_puntos = 0; d.meses_bajo_el_plano = 0;
+        return new Response(JSON.stringify(d),
+                            {headers: {'Content-Type': 'application/json'}});
+      };
+    })();""",
+
     # La canasta pierde el calendario: todos los meses pesan lo mismo, de modo
     # que la temporada de compra desaparece y el vendedor sale cuando quiere.
     "canasta_sin_temporada": """(() => {
@@ -1833,6 +1849,35 @@ with sync_playwright() as pw:
         ok = False
     else:
         print("  Ica sale como uva, que es lo que embarca: ok")
+
+    # ------------------------------------------- la cobertura, mes a mes ----
+    # El sitio publica una cifra plana de cobertura y al lado la banda mensual.
+    # Lo que hay que impedir es que la banda se pierda y quede solo el
+    # promedio: es la cifra con la que se juzga la red, y ocho de los doce
+    # meses están por debajo. Se comprueba contra el archivo en disco.
+    print("")
+    print("cobertura · la banda mensual junto a la cifra plana")
+    CM = json.load(io.open(os.path.join("data", "cobertura_mes.json"),
+                           encoding="utf-8"))
+    pg.evaluate("() => location.hash = '#logistica'")
+    pg.wait_for_selector("#cmCal button", timeout=25000)
+    pg.wait_for_timeout(400)
+    _cm = pg.eval_on_selector_all("#cmCal button .mono",
+                                  "b => b.map(x => x.textContent)")
+    print("  %d meses en pantalla · banda %.1f puntos · %d bajo el promedio"
+          % (len(_cm), CM["brecha_puntos"], CM["meses_bajo_el_plano"]))
+    if len(_cm) != 12 or len(set(_cm)) < 6:
+        print("  LA BANDA MENSUAL NO SE MUESTRA O SALE PLANA")
+        ok = False
+    else:
+        print("  los doce meses con su cobertura, y no son iguales: ok")
+    _ci = " ".join((pg.text_content("#cmIntro") or "").split())
+    if "%.1f%%" % CM["peor"]["cubierto_pct"] not in _ci.replace(",", "."):
+        print("  LA PANTALLA NO DICE EL PEOR MES DE LA BANDA")
+        ok = False
+    else:
+        print("  declara el peor mes (%s %.1f%%): ok"
+              % (CM["peor"]["mes"], CM["peor"]["cubierto_pct"]))
 
     # ---------------------------------------------------------- canasta -----
     # La vista existe para contestar «en Piura, en marzo, qué llevo», y eso

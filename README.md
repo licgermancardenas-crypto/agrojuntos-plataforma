@@ -247,6 +247,21 @@ El primero de la lista es Agroservicios La Casa del Campesino, en Junín, a 0.1 
 de Satipo, con US$ 15,260 al año. Por centro, Chiclayo concentra 65 puntos
 reclutables y US$ 156 mil.
 
+**Y la alternativa barata compra menos de lo que parece.** Antes de proponer
+abrir un centro hay que ponerle número a lo que cuesta nada: alargar la promesa.
+De los 184 bloqueados, con seis horas parejas entran **43** —US$ 51,739 de los
+US$ 199,734 bloqueados— y con ocho horas, 115. **No están apenas fuera de la
+línea: están lejos**, con medianas de 5.8 h en Pisco a 9.7 h en Sicuani. Para el
+canal que vale, la única palanca es la proximidad.
+
+Eso afina una comparación que el proyecto ya publicaba: mover la cadencia compra
++164 puntos de venta en general, pero solo 43 de los que tienen mercado propio.
+
+Con una salvedad que va escrita en la propia decisión: **solo está medido el lado
+del beneficio**. Lo que se pierde al servir peor la costa —donde está el mercado
+que hoy sí se cumple— no lo modela este proyecto, así que la comparación está
+coja de un lado y no se cierra con esto solo.
+
 ### La cobertura no es un número, es una banda
 
 El sitio publica **64.4% del mercado dentro de la promesa**, y esa cifra pesa

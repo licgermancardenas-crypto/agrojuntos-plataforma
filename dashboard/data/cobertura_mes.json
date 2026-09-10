@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-09T21:28:16",
+ "generado": "2026-09-09T22:12:27",
  "motivo": "la cobertura de la promesa pesada por la demanda de cada mes; la cifra plana pesa el año entero y le da peso a demanda que no está cuando no está",
  "metodo": "cobertura por celda H3 de hubs_asignacion.csv, calendario por departamento de estacionalidad_region.csv; del calendario se toma solo la forma y el tamaño sigue siendo el SAM del modelo de mercado",
  "plano_pct": 64.4,

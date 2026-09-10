@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-09T21:28:26",
+ "generado": "2026-09-09T22:12:42",
  "motivo": "cada decisión con la cifra que la sostiene, la alternativa que se midió y se descartó, y lo que tendría que cambiar para darla vuelta; las cifras salen de los archivos del pipeline y no de este texto",
  "abiertas": 4,
  "decididas": 5,
@@ -85,12 +85,12 @@
    "estado": "abierta",
    "familia": "Cómo servimos",
    "pregunta": "¿Qué se hace con el canal que su centro no alcanza?",
-   "respuesta": "Sin decidir. 660 puntos de venta quedan fuera de la promesa del centro que los surte. El peor no es el que deja más puntos fuera sino el que peor proporción alcanza: Huamachuco llega al 61% de los suyos, con mediana de 3.0 horas.",
-   "alternativa": "Esperar. La promesa de seis horas ya rescató parte del sur al abrir Sicuani, y el resto no paga todavía un alquiler.",
-   "bisagra": "Los 7,122 clientes que hay detrás del canal de Huamachuco: es el centro con más gente detrás de sus puntos y el que peor puede abastecerlos.",
-   "cifra": 660,
-   "unidad": "puntos fuera de promesa",
-   "fuente": "out/canal.json bloque reparto"
+   "respuesta": "Sin decidir. 660 puntos de venta quedan fuera de la promesa del centro que los surte, y 184 de ellos tienen mercado propio: US$ 199,734 al año de margen bloqueado detrás de una entrega que hoy no se sostiene. El peor caso es Juliaca, con 29 puntos a 7.2 h de mediana.",
+   "alternativa": "Prometer más largo en vez de abrir, que es lo barato. Compra poco: con seis horas parejas entran 43 de los 184 bloqueados —US$ 51,739 de US$ 199,734— y con ocho, 115. No están apenas fuera de la línea: están lejos.",
+   "bisagra": "Que aparezca el lado del costo. Solo está medido el beneficio de alargar la promesa; lo que se pierde al servir peor la costa —donde está el mercado que hoy sí se cumple— no lo modela el proyecto, así que la comparación está coja de un lado y no se puede cerrar con esto solo.",
+   "cifra": 199734.0,
+   "unidad": "US$/año bloqueados",
+   "fuente": "out/reclutar.json · build_reclutar.py"
   },
   {
    "id": "canal-a-reclutar",

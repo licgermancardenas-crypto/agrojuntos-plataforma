@@ -1899,6 +1899,21 @@ with sync_playwright() as pw:
     else:
         print("  los %d de la tabla son todos resurtibles: ok" % len(_nom))
 
+    # La alternativa barata —prometer más largo— tiene que salir con su
+    # precio y con su límite. Publicar el beneficio sin decir que el costo no
+    # está medido es presentar media comparación como si fuera entera.
+    _rn = " ".join((pg.text_content("#recNota") or "").split())
+    _c6 = next((c for c in REC.get("si_se_promete_mas_largo", [])
+                if c["promesa_h"] == 6.0), None)
+    if _c6 and str(_c6["puntos"]) not in _rn:
+        print("  LA PANTALLA NO DICE CUANTO COMPRA ALARGAR LA PROMESA")
+        ok = False
+    elif "no lo modela" not in _rn:
+        print("  LA PANTALLA NO DECLARA QUE EL COSTO NO ESTA MEDIDO")
+        ok = False
+    else:
+        print("  el precio de alargar la promesa y su límite: ok")
+
     # ------------------------------------------- la cobertura, mes a mes ----
     # El sitio publica una cifra plana de cobertura y al lado la banda mensual.
     # Lo que hay que impedir es que la banda se pierda y quede solo el

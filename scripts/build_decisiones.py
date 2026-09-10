@@ -82,6 +82,7 @@ def main():
     aco = leer("out/acopio.json")
     sat = leer("out/satelite.json")
     amp = leer("out/ampliacion.json")
+    cmes = leer("out/cobertura_mes.json")
     mer = leer(EXP)
     uni = mer["universo"]
     cob = pd.read_csv("out/hubs_cobertura.csv", encoding="utf-8-sig")
@@ -235,12 +236,18 @@ def main():
         "id": "noveno-centro", "estado": "abierta",
         "familia": "Dónde estar",
         "pregunta": "¿Conviene un noveno centro, y dónde?",
-        "respuesta": "Sin decidir. Hoy %s de %s puntos de venta están dentro "
+        "respuesta": "Sin decidir. La cobertura no es un número sino una "
+                     "banda: %.1f%% en el año, pero entre %.1f%% en %s y "
+                     "%.1f%% en %s según el mes, y %d de los doce por debajo "
+                     "del promedio. Hoy %s de %s puntos de venta están dentro "
                      "de la promesa del centro que los surte (%.0f%%), y "
                      "detrás hay %s clientes con la cadena completa. El "
                      "candidato que más compraría es %s: +%d puntos y +%s "
                      "clientes."
-                     % (f"{hoy_s['puntos_en_promesa']:,}",
+                     % (cmes["plano_pct"], cmes["peor"]["cubierto_pct"],
+                        cmes["peor"]["mes"], cmes["mejor"]["cubierto_pct"],
+                        cmes["mejor"]["mes"], cmes["meses_bajo_el_plano"],
+                        f"{hoy_s['puntos_en_promesa']:,}",
                         f"{hoy_s['puntos']:,}", hoy_s["pct"],
                         f"{hoy_s['clientes_cadena']:,}",
                         mejor["candidato"] if mejor else "—",

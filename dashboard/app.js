@@ -3900,6 +3900,55 @@ function vistaCanasta() {
   });
 }
 
+/* ------------------------------------------- la cobertura, mes a mes ------
+   El sitio publicaba «64.4% del mercado dentro de la promesa» y esa cifra pesa
+   cada celda por su SAM anual, como si el país comprara parejo los doce meses.
+   No compra: cada región tiene su pico, y el promedio esconde una banda de
+   diez puntos.
+
+   La corazonada era que la red se vería peor en los meses grandes —las
+   regiones mal cubiertas son las que más concentran—. Salió al revés: enero,
+   diciembre y octubre son de los mejores, y los flojos de mayo a agosto son
+   los peores. Se publica igual, porque lo que importa no es la dirección sino
+   que ocho de los doce meses quedan por debajo del promedio con que se juzga
+   la red. */
+function pintarCoberturaMes() {
+  var caja = document.getElementById("cmCal");
+  if (!caja) return;
+  cargar("cobertura_mes").then(function (C) {
+    document.getElementById("cmEyebrow").textContent =
+      "plano " + pct(C.plano_pct, 1) + " · banda de " +
+      C.brecha_puntos.toFixed(1) + " puntos";
+    document.getElementById("cmIntro").innerHTML =
+      "La cifra que el sitio publica —<b>" + pct(C.plano_pct, 1) + "</b>— pesa " +
+      "el año entero. Pesada por la demanda de cada mes va de <b>" +
+      pct(C.peor.cubierto_pct, 1) + " en " + esc(C.peor.mes) + "</b> a <b>" +
+      pct(C.mejor.cubierto_pct, 1) + " en " + esc(C.mejor.mes) + "</b>, y <b>" +
+      C.meses_bajo_el_plano + " de los doce</b> quedan por debajo del promedio. " +
+      "El mes que más pesa es " + esc(C.mes_pico.mes) + ", con el " +
+      pct(C.mes_pico.peso_pct, 1) + " del año.";
+
+    var mx = Math.max.apply(null, C.meses.map(function (m) {
+      return m.cubierto_pct; }));
+    caja.innerHTML = '<div class="chips" style="flex-wrap:wrap">' +
+      C.meses.map(function (m) {
+        var bajo = m.cubierto_pct < C.plano_pct;
+        return '<button class="chip" type="button" disabled title="' +
+          esc(m.mes) + ": " + pct(m.peso_pct, 1) + ' de la demanda del año">' +
+          esc(m.mes) + ' <span class="mono">' + pct(m.cubierto_pct, 1) +
+          "</span>" +
+          '<span class="bt" style="display:block;height:4px;margin-top:3px">' +
+          '<i style="width:' + (100 * m.cubierto_pct / mx).toFixed(0) +
+          '%"></i></span>' +
+          '<span class="sub2" style="display:block">' +
+          (bajo ? "bajo el promedio" : "sobre el promedio") + "</span></button>";
+      }).join("") + "</div>";
+
+    document.getElementById("cmNota").textContent = C.metodo +
+      ". " + C.motivo + ".";
+  }).catch(fallo);
+}
+
 function ir(hash) {
   var id = (hash || "#resumen").replace("#", "");
   /* El perfil no es una vista mas: lleva el RUC en el propio hash, de modo
@@ -3935,7 +3984,7 @@ function ir(hash) {
     if (id === "productos") vistaProductos();
     if (id === "importacion") vistaImportacion();
     if (id === "exportacion") vistaExportacion();
-    if (id === "logistica") vistaLogistica();
+    if (id === "logistica") { vistaLogistica(); pintarCoberturaMes(); }
     if (id === "metodo") vistaMetodo();
     if (id === "canasta") vistaCanasta();
     if (id === "decisiones") vistaDecisiones();

@@ -1,0 +1,3844 @@
+{
+ "generado": "2026-09-09T22:29:24",
+ "motivo": "en qué orden se recorren los puntos reclutables de cada centro, en jornadas que salen y vuelven al centro",
+ "supuestos": {
+  "jornada_h": 9.0,
+  "visita_h": 0.667,
+  "tope_h": 6.0,
+  "origen": "el centro de distribución; la ruta sale y vuelve a él",
+  "medido": "el tiempo de viaje, ruteado sobre la red vial con pendiente y en el sentido correcto —subir no cuesta lo que bajar—",
+  "supuesto": "la jornada, el tiempo de visita y el tope de lejanía. No salen del dato: son parámetros de operación que nadie midió todavía, y una ruta vale lo que valga su supuesto",
+  "sensibilidad": "bajar la visita de 40 a 25 minutos mete alrededor de un punto más por ruta; subir la jornada de 9 a 10 horas, otro",
+  "sin_modelar": "ventanas horarias y capacidad de vehículo. La visita comercial no carga producto; para reparto físico haría falta lo segundo"
+ },
+ "metodo": "vecino más cercano con vuelta comprobada y una pasada de 2-opt; es una heurística y promete una vuelta factible, no la óptima",
+ "puntos": 333,
+ "en_ruta": 289,
+ "rutas": 100,
+ "sueltos": [
+  {
+   "punto": "AGROSERVICIOS TORRES SRL",
+   "dep": "AMAZONAS",
+   "hub": "Chiclayo",
+   "horas_ida": 5.07,
+   "margen_anual": 2368.42,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROVETERINARIA EL SEMBRADOR E.I.R.L.",
+   "dep": "AMAZONAS",
+   "hub": "Chiclayo",
+   "horas_ida": null,
+   "margen_anual": 1206.36,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROVETERINARIA EL PROGRESO E.I.R.L",
+   "dep": "CAJAMARCA",
+   "hub": "Chiclayo",
+   "horas_ida": 4.96,
+   "margen_anual": 219.37,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROSERVICIOS COAXA S.A.C.",
+   "dep": "CAJAMARCA",
+   "hub": "Chiclayo",
+   "horas_ida": null,
+   "margen_anual": 136.18,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROSERVICIOS BRISVILLA S.A.C.",
+   "dep": "AMAZONAS",
+   "hub": "Chiclayo",
+   "horas_ida": 5.75,
+   "margen_anual": 749.69,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROSERVICIOS SANTA ISABEL S.A.C.",
+   "dep": "CAJAMARCA",
+   "hub": "Chiclayo",
+   "horas_ida": 4.94,
+   "margen_anual": 1730.38,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROSERVICIOS EL LABRADOR DE UTCUBAMBA E.I.R.L.",
+   "dep": "AMAZONAS",
+   "hub": "Chiclayo",
+   "horas_ida": 5.6,
+   "margen_anual": 950.63,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "SEMILLEROS DEL REINO ETERNO - YAUYUCAN",
+   "dep": "CAJAMARCA",
+   "hub": "Chiclayo",
+   "horas_ida": 4.55,
+   "margen_anual": 392.55,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Vivero Municipal Hbba",
+   "dep": "PIURA",
+   "hub": "Chiclayo",
+   "horas_ida": 5.89,
+   "margen_anual": 3890.89,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "ASOCIACION DE PRODUCTORES AGROPECUARIOS SEMILLEROS DE QUICLL",
+   "dep": "HUANCAVELICA",
+   "hub": "Pisco",
+   "horas_ida": null,
+   "margen_anual": 902.33,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "TOP AGROVETERINARIA EL CAMPESINO S.A.C",
+   "dep": "SAN MARTIN",
+   "hub": "Bellavista",
+   "horas_ida": 4.85,
+   "margen_anual": 3892.2,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGRO SERVICIOS MAS COSECHA EIRL",
+   "dep": "HUANUCO",
+   "hub": "Bellavista",
+   "horas_ida": 5.48,
+   "margen_anual": 4001.05,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGRO VETERINARIA EL ENGORDE E.I.R.L.",
+   "dep": "SAN MARTIN",
+   "hub": "Bellavista",
+   "horas_ida": 4.46,
+   "margen_anual": 3686.27,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "SEMILLEROS DEL REINO DE DIOS",
+   "dep": "HUANUCO",
+   "hub": "Tarma",
+   "horas_ida": 4.84,
+   "margen_anual": 198.45,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGRO SERVICIOS CANCHAN PERÚ S.A.C.",
+   "dep": "HUANUCO",
+   "hub": "Tarma",
+   "horas_ida": 5.37,
+   "margen_anual": 195.51,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Maderera Huánuco",
+   "dep": "HUANUCO",
+   "hub": "Tarma",
+   "horas_ida": 4.14,
+   "margen_anual": 2465.44,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Maderera Burgos",
+   "dep": "HUANUCO",
+   "hub": "Tarma",
+   "horas_ida": 4.1,
+   "margen_anual": 863.7,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Negociaciones Prusia",
+   "dep": "PASCO",
+   "hub": "Tarma",
+   "horas_ida": 4.85,
+   "margen_anual": 3272.03,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "DISTRIBUCIONES AGROVETERINARIAS DEL SUR E.I.R.L.",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.48,
+   "margen_anual": 45.15,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "COMPANIA SEMILLERA MONTOYA FAKHYE EIRL",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.45,
+   "margen_anual": 70.8,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROVETERINARIA DON JORGE E.I.R.L.",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.55,
+   "margen_anual": 162.84,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGRO SERVICIOS SEÑOR DE YATO S.R.L.",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.33,
+   "margen_anual": 42.92,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGRO DISTRIBUCIONES SJ FERTIL E.I.R.L.",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.75,
+   "margen_anual": 1490.84,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROCOMERCIAL R & Z S.R.L.",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.51,
+   "margen_anual": 162.7,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Viveros Arcoiris",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.45,
+   "margen_anual": 172.42,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Vida Animal",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.43,
+   "margen_anual": 72.02,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "San Pedro",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.31,
+   "margen_anual": 1401.47,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Ferreteria Cornejo",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.58,
+   "margen_anual": 356.58,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Vivero Municipal",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.56,
+   "margen_anual": 330.46,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "El Nazareno",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.52,
+   "margen_anual": 415.76,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Spa Pequeños",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.59,
+   "margen_anual": 128.58,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Pimentel",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.58,
+   "margen_anual": 372.17,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Home Depot Perú Yura",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.64,
+   "margen_anual": 300.61,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Sideperu",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.41,
+   "margen_anual": 225.31,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Perno centro Condorito",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.37,
+   "margen_anual": 586.03,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Aceros Industriales Mersur s.r.l.",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.74,
+   "margen_anual": 1025.72,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Ferretería Montañez",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.48,
+   "margen_anual": 185.35,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "FERRETERIA Y TRANSPORTE ESCORPION",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.51,
+   "margen_anual": 210.4,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "San Luis",
+   "dep": "AREQUIPA",
+   "hub": "Juliaca",
+   "horas_ida": 4.29,
+   "margen_anual": 264.37,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROVETERINARIA MIRAFLORES S.A.C.",
+   "dep": "APURIMAC",
+   "hub": "Sicuani",
+   "horas_ida": 5.85,
+   "margen_anual": 261.23,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROSERVICIOS GENERALES REGALADO SAC",
+   "dep": "CAJAMARCA",
+   "hub": "Huamachuco",
+   "horas_ida": 5.06,
+   "margen_anual": 463.54,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "AGROSERVICIOS EL CHORRO E.I.R.L.",
+   "dep": "CAJAMARCA",
+   "hub": "Huamachuco",
+   "horas_ida": 5.52,
+   "margen_anual": 150.62,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Ferretería Central",
+   "dep": "ANCASH",
+   "hub": "Huamachuco",
+   "horas_ida": null,
+   "margen_anual": 321.49,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  },
+  {
+   "punto": "Ferretería Marrufo",
+   "dep": "CAJAMARCA",
+   "hub": "Huamachuco",
+   "horas_ida": 4.81,
+   "margen_anual": 1330.88,
+   "motivo": "no cabe en una jornada de 9 h con vuelta al centro"
+  }
+ ],
+ "por_hub": [
+  {
+   "hub": "Chiclayo",
+   "rutas": 20,
+   "puntos": 56,
+   "horas_total": 167.0,
+   "margen_anual": 144258.51
+  },
+  {
+   "hub": "Pisco",
+   "rutas": 20,
+   "puntos": 77,
+   "horas_total": 167.6,
+   "margen_anual": 87877.32
+  },
+  {
+   "hub": "Bellavista",
+   "rutas": 15,
+   "puntos": 30,
+   "horas_total": 119.1,
+   "margen_anual": 81177.02
+  },
+  {
+   "hub": "Tarma",
+   "rutas": 14,
+   "puntos": 40,
+   "horas_total": 107.2,
+   "margen_anual": 53638.11
+  },
+  {
+   "hub": "Juliaca",
+   "rutas": 4,
+   "puntos": 17,
+   "horas_total": 33.8,
+   "margen_anual": 48178.98
+  },
+  {
+   "hub": "Sicuani",
+   "rutas": 11,
+   "puntos": 35,
+   "horas_total": 87.4,
+   "margen_anual": 33141.11
+  },
+  {
+   "hub": "Huamachuco",
+   "rutas": 13,
+   "puntos": 28,
+   "horas_total": 109.0,
+   "margen_anual": 35583.11
+  },
+  {
+   "hub": "Satipo",
+   "rutas": 3,
+   "puntos": 6,
+   "horas_total": 19.1,
+   "margen_anual": 31782.06
+  }
+ ],
+ "lista": [
+  {
+   "hub": "Chiclayo",
+   "ruta": 1,
+   "puntos": 11,
+   "horas_viaje": 1.21,
+   "horas_total": 8.54,
+   "margen_anual": 19863.05,
+   "clientes": 1416.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Y&L",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.77995,
+     "lon": -79.83477,
+     "margen_anual": 1684.49
+    },
+    {
+     "orden": 2,
+     "punto": "H&C Ferromateriales",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.77165,
+     "lon": -79.79511,
+     "margen_anual": 2099.96
+    },
+    {
+     "orden": 3,
+     "punto": "AGRO SERVICIOS VALLE VERDE EIRL",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.77847,
+     "lon": -79.81663,
+     "margen_anual": 249.47
+    },
+    {
+     "orden": 4,
+     "punto": "Ferretería Inversiones San Miguel",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.76403,
+     "lon": -79.83157,
+     "margen_anual": 2320.71
+    },
+    {
+     "orden": 5,
+     "punto": "Corporación BIM s.a.c.",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.76048,
+     "lon": -79.84228,
+     "margen_anual": 50.2
+    },
+    {
+     "orden": 6,
+     "punto": "Negocios El Triunfo",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.70514,
+     "lon": -79.90181,
+     "margen_anual": 2961.04
+    },
+    {
+     "orden": 7,
+     "punto": "AGRO DISTRIBUIDOR SAN FRANCISCO SOCIEDAD COMERCIAL DE RESPON",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.65918,
+     "lon": -79.9006,
+     "margen_anual": 7164.75
+    },
+    {
+     "orden": 8,
+     "punto": "Sodimac",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.74832,
+     "lon": -79.87212,
+     "margen_anual": 254.23
+    },
+    {
+     "orden": 9,
+     "punto": "Veterinaria Yanapaqui",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.77845,
+     "lon": -79.88328,
+     "margen_anual": 821.39
+    },
+    {
+     "orden": 10,
+     "punto": "AGRO SERVICIOS MIGUEL ANGEL E.I.R.L.",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.79413,
+     "lon": -79.90092,
+     "margen_anual": 513.83
+    },
+    {
+     "orden": 11,
+     "punto": "Los Leones",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.77785,
+     "lon": -79.84407,
+     "margen_anual": 1742.98
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 2,
+   "puntos": 7,
+   "horas_viaje": 4.17,
+   "horas_total": 8.84,
+   "margen_anual": 32219.36,
+   "clientes": 2304.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS PERU E.I.R.L",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.73661,
+     "lon": -79.84224,
+     "margen_anual": 461.97
+    },
+    {
+     "orden": 2,
+     "punto": "Vivero Las Palmeras Piscoya",
+     "dep": "LAMBAYEQUE",
+     "lat": -5.99235,
+     "lon": -79.72637,
+     "margen_anual": 5913.83
+    },
+    {
+     "orden": 3,
+     "punto": "AGRO SERVICIOS HERNANDEZ E.I.R.L.",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.14812,
+     "lon": -79.69034,
+     "margen_anual": 5798.4
+    },
+    {
+     "orden": 4,
+     "punto": "AGROSERVICIOS VALLE DEL NORTE E.I.R.L.",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.35185,
+     "lon": -79.79381,
+     "margen_anual": 5955.01
+    },
+    {
+     "orden": 5,
+     "punto": "INSUMOS AGRICOLAS J & K S.R.L.",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.50272,
+     "lon": -79.87877,
+     "margen_anual": 9283.66
+    },
+    {
+     "orden": 6,
+     "punto": "NEGOCIOS Y AGROSERVICIOS JOLSA E.I.R.L.",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.62812,
+     "lon": -79.82482,
+     "margen_anual": 618.54
+    },
+    {
+     "orden": 7,
+     "punto": "AGROCOMERCIAL IZUMI EMPRESA INDIVIDUAL DE RESPONSABILIDAD LI",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.6139,
+     "lon": -79.79465,
+     "margen_anual": 4187.95
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 3,
+   "puntos": 6,
+   "horas_viaje": 3.94,
+   "horas_total": 7.94,
+   "margen_anual": 29345.54,
+   "clientes": 2257.9,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS JHUNIOR HC S.R.L.",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.78885,
+     "lon": -79.69288,
+     "margen_anual": 8947.25
+    },
+    {
+     "orden": 2,
+     "punto": "AGROSERVICIOS GREYSSI & JOSUE S.A.C.",
+     "dep": "LA LIBERTAD",
+     "lat": -7.28028,
+     "lon": -79.47137,
+     "margen_anual": 5947.33
+    },
+    {
+     "orden": 3,
+     "punto": "JC AGRO COMERCIALIZADORA E.I.R.L.",
+     "dep": "LA LIBERTAD",
+     "lat": -7.24239,
+     "lon": -79.38433,
+     "margen_anual": 1340.26
+    },
+    {
+     "orden": 4,
+     "punto": "Ferreteria William",
+     "dep": "LA LIBERTAD",
+     "lat": -7.15609,
+     "lon": -79.44443,
+     "margen_anual": 5279.35
+    },
+    {
+     "orden": 5,
+     "punto": "AGROSERVICIOS LA PRADERA S.R.L.",
+     "dep": "LA LIBERTAD",
+     "lat": -7.11882,
+     "lon": -79.46094,
+     "margen_anual": 2324.22
+    },
+    {
+     "orden": 6,
+     "punto": "AGROVETERINARIA EL TAMBO E.I.R.L.",
+     "dep": "LAMBAYEQUE",
+     "lat": -7.02568,
+     "lon": -79.65379,
+     "margen_anual": 5507.13
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 4,
+   "puntos": 4,
+   "horas_viaje": 6.18,
+   "horas_total": 8.85,
+   "margen_anual": 18927.68,
+   "clientes": 1515.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Casa Blanca",
+     "dep": "LAMBAYEQUE",
+     "lat": -6.47824,
+     "lon": -79.68236,
+     "margen_anual": 4441.34
+    },
+    {
+     "orden": 2,
+     "punto": "AGROVETERINARIA COMERCIALIZADORA REAL SRL",
+     "dep": "LA LIBERTAD",
+     "lat": -7.39991,
+     "lon": -79.54782,
+     "margen_anual": 2405.4
+    },
+    {
+     "orden": 3,
+     "punto": "Al Kosto",
+     "dep": "LA LIBERTAD",
+     "lat": -7.40107,
+     "lon": -79.56639,
+     "margen_anual": 171.64
+    },
+    {
+     "orden": 4,
+     "punto": "AGROCOMERCIAL LEYDI & NAISHA E.I.R.L.",
+     "dep": "LA LIBERTAD",
+     "lat": -7.73154,
+     "lon": -79.29556,
+     "margen_anual": 11909.3
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 5,
+   "puntos": 4,
+   "horas_viaje": 5.95,
+   "horas_total": 8.62,
+   "margen_anual": 3655.83,
+   "clientes": 296.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA RABANAL CURA MORI SOCIEDAD ANONIMA CERRADA",
+     "dep": "PIURA",
+     "lat": -5.35834,
+     "lon": -80.61801,
+     "margen_anual": 1428.78
+    },
+    {
+     "orden": 2,
+     "punto": "Clínica Veterinaria MaskVet",
+     "dep": "PIURA",
+     "lat": -5.18501,
+     "lon": -80.63323,
+     "margen_anual": 188.09
+    },
+    {
+     "orden": 3,
+     "punto": "Sodimac",
+     "dep": "PIURA",
+     "lat": -5.18206,
+     "lon": -80.62299,
+     "margen_anual": 1516.85
+    },
+    {
+     "orden": 4,
+     "punto": "Ferretería Eleodoro Quiroga Ramos",
+     "dep": "PIURA",
+     "lat": -5.21273,
+     "lon": -80.62259,
+     "margen_anual": 522.1
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 6,
+   "puntos": 2,
+   "horas_viaje": 6.45,
+   "horas_total": 7.79,
+   "margen_anual": 6953.48,
+   "clientes": 575.6,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA CASA GRANDE E.I.R.L.",
+     "dep": "LA LIBERTAD",
+     "lat": -7.63059,
+     "lon": -79.1993,
+     "margen_anual": 1929.28
+    },
+    {
+     "orden": 2,
+     "punto": "Ferreteria Errezeta",
+     "dep": "LA LIBERTAD",
+     "lat": -7.9887,
+     "lon": -79.07145,
+     "margen_anual": 5024.2
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 7,
+   "puntos": 3,
+   "horas_viaje": 6.61,
+   "horas_total": 8.61,
+   "margen_anual": 3401.44,
+   "clientes": 276.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Sodimac",
+     "dep": "PIURA",
+     "lat": -5.178,
+     "lon": -80.66483,
+     "margen_anual": 847.97
+    },
+    {
+     "orden": 2,
+     "punto": "AGROVETERINARIA RABANAL PIURA EMPRESA INDIVIDUAL DE RESPONSA",
+     "dep": "PIURA",
+     "lat": -5.11528,
+     "lon": -80.65308,
+     "margen_anual": 1196.61
+    },
+    {
+     "orden": 3,
+     "punto": "AGROSERVICIOS A & S - PIURA E.I.R.L.",
+     "dep": "PIURA",
+     "lat": -5.10622,
+     "lon": -80.52711,
+     "margen_anual": 1356.86
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 8,
+   "puntos": 2,
+   "horas_viaje": 6.55,
+   "horas_total": 7.88,
+   "margen_anual": 2550.0,
+   "clientes": 207.1,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Depósito de Materiales DINO",
+     "dep": "PIURA",
+     "lat": -5.40282,
+     "lon": -80.74971,
+     "margen_anual": 1625.47
+    },
+    {
+     "orden": 2,
+     "punto": "AGROVETERINARIA RABANAL E.I.R.L.",
+     "dep": "PIURA",
+     "lat": -5.4613,
+     "lon": -80.71065,
+     "margen_anual": 924.53
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 9,
+   "puntos": 2,
+   "horas_viaje": 7.38,
+   "horas_total": 8.71,
+   "margen_anual": 2105.69,
+   "clientes": 171.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA RABANAL PUENTE MOCHO S.A.C.",
+     "dep": "PIURA",
+     "lat": -5.31903,
+     "lon": -80.74447,
+     "margen_anual": 1100.15
+    },
+    {
+     "orden": 2,
+     "punto": "Promart",
+     "dep": "PIURA",
+     "lat": -4.91838,
+     "lon": -80.69625,
+     "margen_anual": 1005.54
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 10,
+   "puntos": 1,
+   "horas_viaje": 6.12,
+   "horas_total": 6.79,
+   "margen_anual": 16.52,
+   "clientes": 2.9,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA NATH & MULTISERVICIOS GENERALES E.I.R.L.",
+     "dep": "CAJAMARCA",
+     "lat": -7.27075,
+     "lon": -78.94833,
+     "margen_anual": 16.52
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 11,
+   "puntos": 2,
+   "horas_viaje": 7.52,
+   "horas_total": 8.85,
+   "margen_anual": 2190.14,
+   "clientes": 177.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Vivero OL & AS",
+     "dep": "PIURA",
+     "lat": -5.11958,
+     "lon": -80.9194,
+     "margen_anual": 1719.89
+    },
+    {
+     "orden": 2,
+     "punto": "Sodimac",
+     "dep": "PIURA",
+     "lat": -4.90616,
+     "lon": -80.70486,
+     "margen_anual": 470.25
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 12,
+   "puntos": 1,
+   "horas_viaje": 6.6,
+   "horas_total": 7.27,
+   "margen_anual": 1508.9,
+   "clientes": 231.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS MULTIPLES GONSAF S.A.C",
+     "dep": "CAJAMARCA",
+     "lat": -6.0299,
+     "lon": -79.1245,
+     "margen_anual": 1508.9
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 13,
+   "puntos": 2,
+   "horas_viaje": 6.95,
+   "horas_total": 8.28,
+   "margen_anual": 4286.42,
+   "clientes": 348.1,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Vivero Forestal de Marcavelica",
+     "dep": "PIURA",
+     "lat": -4.88067,
+     "lon": -80.69844,
+     "margen_anual": 2821.01
+    },
+    {
+     "orden": 2,
+     "punto": "Vivero Pulache",
+     "dep": "PIURA",
+     "lat": -4.91856,
+     "lon": -80.64793,
+     "margen_anual": 1465.41
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 14,
+   "puntos": 2,
+   "horas_viaje": 7.39,
+   "horas_total": 8.73,
+   "margen_anual": 6454.51,
+   "clientes": 524.1,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Señor de los milagros",
+     "dep": "PIURA",
+     "lat": -4.92979,
+     "lon": -80.34333,
+     "margen_anual": 3338.84
+    },
+    {
+     "orden": 2,
+     "punto": "Vivero El Huerto",
+     "dep": "PIURA",
+     "lat": -4.90813,
+     "lon": -80.34229,
+     "margen_anual": 3115.66
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 15,
+   "puntos": 2,
+   "horas_viaje": 7.35,
+   "horas_total": 8.68,
+   "margen_anual": 2971.53,
+   "clientes": 241.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Vivero Municipal",
+     "dep": "PIURA",
+     "lat": -5.31784,
+     "lon": -79.78615,
+     "margen_anual": 2226.7
+    },
+    {
+     "orden": 2,
+     "punto": "Jhosept",
+     "dep": "PIURA",
+     "lat": -5.31822,
+     "lon": -79.78124,
+     "margen_anual": 744.82
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 16,
+   "puntos": 1,
+   "horas_viaje": 7.58,
+   "horas_total": 8.25,
+   "margen_anual": 1447.95,
+   "clientes": 117.6,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA RABANAL CRUCETA S.A.C.",
+     "dep": "PIURA",
+     "lat": -4.86289,
+     "lon": -80.2997,
+     "margen_anual": 1447.95
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 17,
+   "puntos": 1,
+   "horas_viaje": 7.8,
+   "horas_total": 8.47,
+   "margen_anual": 1658.56,
+   "clientes": 134.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROCOMERCIALIZADORA Y DE SERVICIOS EMA S.A.C.",
+     "dep": "PIURA",
+     "lat": -4.83641,
+     "lon": -80.57625,
+     "margen_anual": 1658.56
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 18,
+   "puntos": 1,
+   "horas_viaje": 7.54,
+   "horas_total": 8.21,
+   "margen_anual": 439.75,
+   "clientes": 76.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS MÚLTIPLES JUANITA E.I.R.L.- AGRO JUANITA E.I.R",
+     "dep": "CAJAMARCA",
+     "lat": -7.08471,
+     "lon": -78.78337,
+     "margen_anual": 439.75
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 19,
+   "puntos": 1,
+   "horas_viaje": 8.1,
+   "horas_total": 8.77,
+   "margen_anual": 1571.4,
+   "clientes": 272.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGRO SERVICIOS BLANCO S.A.C.",
+     "dep": "CAJAMARCA",
+     "lat": -6.37929,
+     "lon": -78.83682,
+     "margen_anual": 1571.4
+    }
+   ]
+  },
+  {
+   "hub": "Chiclayo",
+   "ruta": 20,
+   "puntos": 1,
+   "horas_viaje": 8.25,
+   "horas_total": 8.92,
+   "margen_anual": 2690.76,
+   "clientes": 466.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA Y REPRESENTACIONES SANTIAGO ALTAMIRANO EIRL",
+     "dep": "CAJAMARCA",
+     "lat": -6.56393,
+     "lon": -78.64512,
+     "margen_anual": 2690.76
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 1,
+   "puntos": 11,
+   "horas_viaje": 1.55,
+   "horas_total": 8.89,
+   "margen_anual": 26825.87,
+   "clientes": 1157.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Clínica Veterinaria",
+     "dep": "ICA",
+     "lat": -13.71134,
+     "lon": -76.2048,
+     "margen_anual": 343.06
+    },
+    {
+     "orden": 2,
+     "punto": "Maderera Luisa de la Torre",
+     "dep": "ICA",
+     "lat": -13.71733,
+     "lon": -76.20816,
+     "margen_anual": 865.29
+    },
+    {
+     "orden": 3,
+     "punto": "Progresol",
+     "dep": "ICA",
+     "lat": -13.41759,
+     "lon": -76.15795,
+     "margen_anual": 286.02
+    },
+    {
+     "orden": 4,
+     "punto": "Muebles & Acabados Benaute",
+     "dep": "ICA",
+     "lat": -13.41425,
+     "lon": -76.14827,
+     "margen_anual": 548.43
+    },
+    {
+     "orden": 5,
+     "punto": "Ferreteria En Gral",
+     "dep": "ICA",
+     "lat": -13.40301,
+     "lon": -76.1295,
+     "margen_anual": 303.53
+    },
+    {
+     "orden": 6,
+     "punto": "Clinica Veterinaria",
+     "dep": "ICA",
+     "lat": -13.40079,
+     "lon": -76.12856,
+     "margen_anual": 911.34
+    },
+    {
+     "orden": 7,
+     "punto": "Aceros Arequipa",
+     "dep": "ICA",
+     "lat": -13.41239,
+     "lon": -76.12125,
+     "margen_anual": 2587.13
+    },
+    {
+     "orden": 8,
+     "punto": "Ferreteria el Progreso",
+     "dep": "ICA",
+     "lat": -13.43482,
+     "lon": -76.13454,
+     "margen_anual": 81.23
+    },
+    {
+     "orden": 9,
+     "punto": "Facasa",
+     "dep": "ICA",
+     "lat": -13.44454,
+     "lon": -76.13585,
+     "margen_anual": 4841.38
+    },
+    {
+     "orden": 10,
+     "punto": "Global Vet",
+     "dep": "ICA",
+     "lat": -13.45864,
+     "lon": -76.16187,
+     "margen_anual": 923.04
+    },
+    {
+     "orden": 11,
+     "punto": "Promart",
+     "dep": "ICA",
+     "lat": -13.71119,
+     "lon": -76.19579,
+     "margen_anual": 15135.42
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 2,
+   "puntos": 6,
+   "horas_viaje": 4.54,
+   "horas_total": 8.54,
+   "margen_anual": 7194.7,
+   "clientes": 397.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS Y NEGOCIOS R & A EMPRESA INDIVIDUAL DE RESPONS",
+     "dep": "ICA",
+     "lat": -13.53207,
+     "lon": -76.09022,
+     "margen_anual": 1983.16
+    },
+    {
+     "orden": 2,
+     "punto": "AGRO SERVICIOS EL COLORADO E.I.R.L.",
+     "dep": "ICA",
+     "lat": -13.35615,
+     "lon": -76.16477,
+     "margen_anual": 1242.11
+    },
+    {
+     "orden": 3,
+     "punto": "AGROSERVICIOS TINCO E.I.R.L.",
+     "dep": "LIMA",
+     "lat": -13.04848,
+     "lon": -76.42218,
+     "margen_anual": 519.4
+    },
+    {
+     "orden": 4,
+     "punto": "Guadalupe",
+     "dep": "LIMA",
+     "lat": -13.05368,
+     "lon": -76.42922,
+     "margen_anual": 508.85
+    },
+    {
+     "orden": 5,
+     "punto": "Sodimac",
+     "dep": "LIMA",
+     "lat": -13.07548,
+     "lon": -76.37261,
+     "margen_anual": 2461.6
+    },
+    {
+     "orden": 6,
+     "punto": "Vivero Galan de Noche",
+     "dep": "LIMA",
+     "lat": -13.21341,
+     "lon": -76.22374,
+     "margen_anual": 479.59
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 3,
+   "puntos": 9,
+   "horas_viaje": 2.51,
+   "horas_total": 8.51,
+   "margen_anual": 18163.89,
+   "clientes": 783.9,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Vet House",
+     "dep": "ICA",
+     "lat": -13.98531,
+     "lon": -75.77297,
+     "margen_anual": 8498.64
+    },
+    {
+     "orden": 2,
+     "punto": "Grupo AYG Fortaleza SRL",
+     "dep": "ICA",
+     "lat": -14.06195,
+     "lon": -75.74093,
+     "margen_anual": 62.37
+    },
+    {
+     "orden": 3,
+     "punto": "Colors Fish",
+     "dep": "ICA",
+     "lat": -14.08501,
+     "lon": -75.72363,
+     "margen_anual": 6975.09
+    },
+    {
+     "orden": 4,
+     "punto": "Fatima Nicoll",
+     "dep": "ICA",
+     "lat": -14.07075,
+     "lon": -75.72107,
+     "margen_anual": 228.64
+    },
+    {
+     "orden": 5,
+     "punto": "Industrias Acerinox",
+     "dep": "ICA",
+     "lat": -14.05983,
+     "lon": -75.71684,
+     "margen_anual": 190.79
+    },
+    {
+     "orden": 6,
+     "punto": "Ferreteria Rosita",
+     "dep": "ICA",
+     "lat": -14.04883,
+     "lon": -75.70135,
+     "margen_anual": 749.81
+    },
+    {
+     "orden": 7,
+     "punto": "Ferremar",
+     "dep": "ICA",
+     "lat": -14.05975,
+     "lon": -75.72208,
+     "margen_anual": 95.09
+    },
+    {
+     "orden": 8,
+     "punto": "Aceros Arequipa",
+     "dep": "ICA",
+     "lat": -14.05634,
+     "lon": -75.73273,
+     "margen_anual": 1188.2
+    },
+    {
+     "orden": 9,
+     "punto": "Ica Verde",
+     "dep": "ICA",
+     "lat": -14.03493,
+     "lon": -75.75491,
+     "margen_anual": 175.26
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 4,
+   "puntos": 5,
+   "horas_viaje": 4.46,
+   "horas_total": 7.79,
+   "margen_anual": 10329.47,
+   "clientes": 445.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGRO SERVICIOS SANTA CRUZ S.A.C.",
+     "dep": "ICA",
+     "lat": -14.04683,
+     "lon": -76.15788,
+     "margen_anual": 1242.74
+    },
+    {
+     "orden": 2,
+     "punto": "Yupanqui",
+     "dep": "ICA",
+     "lat": -14.11475,
+     "lon": -75.67016,
+     "margen_anual": 6040.74
+    },
+    {
+     "orden": 3,
+     "punto": "Ferreteria Rosita II",
+     "dep": "ICA",
+     "lat": -14.03508,
+     "lon": -75.70691,
+     "margen_anual": 582.67
+    },
+    {
+     "orden": 4,
+     "punto": "AGROSERVICIOS M & R E.I.R.L.",
+     "dep": "ICA",
+     "lat": -14.01163,
+     "lon": -75.69781,
+     "margen_anual": 2130.94
+    },
+    {
+     "orden": 5,
+     "punto": "Ferreteria Huaman",
+     "dep": "ICA",
+     "lat": -14.03292,
+     "lon": -75.7099,
+     "margen_anual": 332.38
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 5,
+   "puntos": 6,
+   "horas_viaje": 4.6,
+   "horas_total": 8.6,
+   "margen_anual": 6408.7,
+   "clientes": 416.6,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Grupo el Álamo",
+     "dep": "LIMA",
+     "lat": -13.02411,
+     "lon": -76.4764,
+     "margen_anual": 846.27
+    },
+    {
+     "orden": 2,
+     "punto": "MAX",
+     "dep": "LIMA",
+     "lat": -12.72843,
+     "lon": -76.61978,
+     "margen_anual": 947.63
+    },
+    {
+     "orden": 3,
+     "punto": "Mirasur garden",
+     "dep": "LIMA",
+     "lat": -12.69787,
+     "lon": -76.64303,
+     "margen_anual": 402.5
+    },
+    {
+     "orden": 4,
+     "punto": "AGROVETERINARIA MALENIC S.A.C.",
+     "dep": "LIMA",
+     "lat": -12.9568,
+     "lon": -76.38261,
+     "margen_anual": 1558.17
+    },
+    {
+     "orden": 5,
+     "punto": "AGRO VETERINARIA CHALLCO S.A.C.",
+     "dep": "LIMA",
+     "lat": -13.03134,
+     "lon": -76.36796,
+     "margen_anual": 1293.87
+    },
+    {
+     "orden": 6,
+     "punto": "AGRO VETERINARIA L & T S.A.C.",
+     "dep": "LIMA",
+     "lat": -13.04054,
+     "lon": -76.28175,
+     "margen_anual": 1360.25
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 6,
+   "puntos": 4,
+   "horas_viaje": 6.1,
+   "horas_total": 8.77,
+   "margen_anual": 10176.56,
+   "clientes": 441.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS VALERY S.A.C.",
+     "dep": "ICA",
+     "lat": -14.1404,
+     "lon": -75.83562,
+     "margen_anual": 1646.36
+    },
+    {
+     "orden": 2,
+     "punto": "Coliseo de Gallos Santa María",
+     "dep": "ICA",
+     "lat": -14.53107,
+     "lon": -75.19098,
+     "margen_anual": 3818.42
+    },
+    {
+     "orden": 3,
+     "punto": "Ferretería Jesús",
+     "dep": "ICA",
+     "lat": -14.53414,
+     "lon": -75.18795,
+     "margen_anual": 4261.51
+    },
+    {
+     "orden": 4,
+     "punto": "C & C INSUMOS AGRICOLAS SOCIEDAD ANONIMA CERRADA",
+     "dep": "ICA",
+     "lat": -14.51566,
+     "lon": -75.16391,
+     "margen_anual": 450.26
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 7,
+   "puntos": 6,
+   "horas_viaje": 4.72,
+   "horas_total": 8.72,
+   "margen_anual": 2251.99,
+   "clientes": 146.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferretería Maderera El Oriente",
+     "dep": "LIMA",
+     "lat": -12.65741,
+     "lon": -76.63651,
+     "margen_anual": 502.59
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretería Sofemac",
+     "dep": "LIMA",
+     "lat": -12.66057,
+     "lon": -76.63291,
+     "margen_anual": 256.06
+    },
+    {
+     "orden": 3,
+     "punto": "Ferreteria Miguelito",
+     "dep": "LIMA",
+     "lat": -12.65274,
+     "lon": -76.63386,
+     "margen_anual": 462.69
+    },
+    {
+     "orden": 4,
+     "punto": "Fertisem",
+     "dep": "LIMA",
+     "lat": -12.6542,
+     "lon": -76.63581,
+     "margen_anual": 181.65
+    },
+    {
+     "orden": 5,
+     "punto": "Juan Pablo",
+     "dep": "LIMA",
+     "lat": -12.51587,
+     "lon": -76.73431,
+     "margen_anual": 831.38
+    },
+    {
+     "orden": 6,
+     "punto": "AGROSERVICIOS BYM S.A.C.",
+     "dep": "LIMA",
+     "lat": -12.46584,
+     "lon": -76.77562,
+     "margen_anual": 17.63
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 8,
+   "puntos": 1,
+   "horas_viaje": 3.95,
+   "horas_total": 4.61,
+   "margen_anual": 578.71,
+   "clientes": 36.1,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Agroceterinaria Huaytará",
+     "dep": "HUANCAVELICA",
+     "lat": -13.60413,
+     "lon": -75.34961,
+     "margen_anual": 578.71
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 9,
+   "puntos": 5,
+   "horas_viaje": 5.49,
+   "horas_total": 8.83,
+   "margen_anual": 925.24,
+   "clientes": 60.1,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "ZID",
+     "dep": "LIMA",
+     "lat": -12.33238,
+     "lon": -76.82501,
+     "margen_anual": 141.97
+    },
+    {
+     "orden": 2,
+     "punto": "San Lorenzo",
+     "dep": "LIMA",
+     "lat": -12.29472,
+     "lon": -76.85289,
+     "margen_anual": 406.79
+    },
+    {
+     "orden": 3,
+     "punto": "Vivero de plantas",
+     "dep": "LIMA",
+     "lat": -12.2542,
+     "lon": -76.87763,
+     "margen_anual": 116.68
+    },
+    {
+     "orden": 4,
+     "punto": "El Comedero",
+     "dep": "LIMA",
+     "lat": -12.255,
+     "lon": -76.88954,
+     "margen_anual": 25.14
+    },
+    {
+     "orden": 5,
+     "punto": "Demetrio's",
+     "dep": "LIMA",
+     "lat": -12.22376,
+     "lon": -76.90375,
+     "margen_anual": 234.65
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 10,
+   "puntos": 3,
+   "horas_viaje": 6.26,
+   "horas_total": 8.26,
+   "margen_anual": 0.73,
+   "clientes": 0.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "EL SEMILLERO",
+     "dep": "LIMA",
+     "lat": -12.12699,
+     "lon": -76.98431,
+     "margen_anual": 0.4
+    },
+    {
+     "orden": 2,
+     "punto": "Promart",
+     "dep": "LIMA",
+     "lat": -12.18014,
+     "lon": -76.94252,
+     "margen_anual": 0.18
+    },
+    {
+     "orden": 3,
+     "punto": "AGROSERVICIOS WALBERT EMPRESA INDIVIDUAL DE RESPONSABILIDAD ",
+     "dep": "LIMA",
+     "lat": -12.08809,
+     "lon": -76.92573,
+     "margen_anual": 0.15
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 11,
+   "puntos": 3,
+   "horas_viaje": 6.73,
+   "horas_total": 8.73,
+   "margen_anual": 110.95,
+   "clientes": 7.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferretería Cañon",
+     "dep": "LIMA",
+     "lat": -12.09944,
+     "lon": -76.88331,
+     "margen_anual": 22.47
+    },
+    {
+     "orden": 2,
+     "punto": "Promart",
+     "dep": "LIMA",
+     "lat": -12.01595,
+     "lon": -76.88707,
+     "margen_anual": 17.67
+    },
+    {
+     "orden": 3,
+     "punto": "Ferreteria Huamani",
+     "dep": "LIMA",
+     "lat": -11.98575,
+     "lon": -76.93781,
+     "margen_anual": 70.81
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 12,
+   "puntos": 3,
+   "horas_viaje": 6.69,
+   "horas_total": 8.69,
+   "margen_anual": 81.19,
+   "clientes": 5.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA FATIMA E.I.R.L.",
+     "dep": "LIMA",
+     "lat": -11.99283,
+     "lon": -77.08841,
+     "margen_anual": 63.31
+    },
+    {
+     "orden": 2,
+     "punto": "Veterinaria Argos",
+     "dep": "LIMA",
+     "lat": -11.93655,
+     "lon": -77.04899,
+     "margen_anual": 12.16
+    },
+    {
+     "orden": 3,
+     "punto": "Veterinaraia Clinican",
+     "dep": "LIMA",
+     "lat": -11.91373,
+     "lon": -77.02591,
+     "margen_anual": 5.73
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 13,
+   "puntos": 2,
+   "horas_viaje": 7.1,
+   "horas_total": 8.43,
+   "margen_anual": 1276.87,
+   "clientes": 83.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "SEMILLERO DEPORTIVO CANTO GRANDE",
+     "dep": "LIMA",
+     "lat": -11.94596,
+     "lon": -76.97149,
+     "margen_anual": 1.78
+    },
+    {
+     "orden": 2,
+     "punto": "San Martín 33 Veterinaria",
+     "dep": "LIMA",
+     "lat": -11.87319,
+     "lon": -77.01513,
+     "margen_anual": 1275.1
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 14,
+   "puntos": 3,
+   "horas_viaje": 6.75,
+   "horas_total": 8.75,
+   "margen_anual": 384.45,
+   "clientes": 25.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferreteria Ramirez",
+     "dep": "LIMA",
+     "lat": -11.88062,
+     "lon": -77.07429,
+     "margen_anual": 30.38
+    },
+    {
+     "orden": 2,
+     "punto": "Maestro",
+     "dep": "LIMA",
+     "lat": -11.86257,
+     "lon": -77.06424,
+     "margen_anual": 75.99
+    },
+    {
+     "orden": 3,
+     "punto": "Veterinaria Gavet",
+     "dep": "LIMA",
+     "lat": -11.85195,
+     "lon": -77.06875,
+     "margen_anual": 278.08
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 15,
+   "puntos": 2,
+   "horas_viaje": 7.18,
+   "horas_total": 8.51,
+   "margen_anual": 1156.09,
+   "clientes": 75.1,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA AQUATERRA S.A.C.",
+     "dep": "LIMA",
+     "lat": -12.18541,
+     "lon": -76.8422,
+     "margen_anual": 401.04
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretería \"Silvanita\"",
+     "dep": "LIMA",
+     "lat": -12.06999,
+     "lon": -76.75638,
+     "margen_anual": 755.05
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 16,
+   "puntos": 2,
+   "horas_viaje": 7.46,
+   "horas_total": 8.79,
+   "margen_anual": 69.83,
+   "clientes": 4.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Pernos Lupita",
+     "dep": "LIMA",
+     "lat": -11.8508,
+     "lon": -77.09236,
+     "margen_anual": 15.13
+    },
+    {
+     "orden": 2,
+     "punto": "Vivero Chaclacayo",
+     "dep": "LIMA",
+     "lat": -11.97723,
+     "lon": -76.77434,
+     "margen_anual": 54.69
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 17,
+   "puntos": 3,
+   "horas_viaje": 6.89,
+   "horas_total": 8.89,
+   "margen_anual": 41.14,
+   "clientes": 2.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferreteria Chaclacayo",
+     "dep": "LIMA",
+     "lat": -11.97613,
+     "lon": -76.77221,
+     "margen_anual": 0.08
+    },
+    {
+     "orden": 2,
+     "punto": "Los Mejores Precios",
+     "dep": "LIMA",
+     "lat": -11.9706,
+     "lon": -76.75206,
+     "margen_anual": 39.02
+    },
+    {
+     "orden": 3,
+     "punto": "Señor de Muruhuay",
+     "dep": "LIMA",
+     "lat": -11.9396,
+     "lon": -76.7128,
+     "margen_anual": 2.05
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 18,
+   "puntos": 1,
+   "horas_viaje": 7.13,
+   "horas_total": 7.8,
+   "margen_anual": 595.14,
+   "clientes": 38.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Distribuidora Atencio",
+     "dep": "LIMA",
+     "lat": -11.92084,
+     "lon": -76.67308,
+     "margen_anual": 595.14
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 19,
+   "puntos": 1,
+   "horas_viaje": 7.91,
+   "horas_total": 8.58,
+   "margen_anual": 500.25,
+   "clientes": 32.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "San Juan",
+     "dep": "LIMA",
+     "lat": -11.59412,
+     "lon": -77.25809,
+     "margen_anual": 500.25
+    }
+   ]
+  },
+  {
+   "hub": "Pisco",
+   "ruta": 20,
+   "puntos": 1,
+   "horas_viaje": 8.22,
+   "horas_total": 8.88,
+   "margen_anual": 805.55,
+   "clientes": 52.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGRO SERVICIOS FAST S.A.C. - AGROSER FAST S.A.C.",
+     "dep": "LIMA",
+     "lat": -11.5509,
+     "lon": -77.13207,
+     "margen_anual": 805.55
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 1,
+   "puntos": 6,
+   "horas_viaje": 3.1,
+   "horas_total": 7.1,
+   "margen_anual": 15243.44,
+   "clientes": 1053.9,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS DEL HUALLAGA E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -6.99984,
+     "lon": -76.58721,
+     "margen_anual": 2858.77
+    },
+    {
+     "orden": 2,
+     "punto": "CONSTRUCCIONES & AGROSERVICIOS FYM S.A.C.",
+     "dep": "SAN MARTIN",
+     "lat": -6.8307,
+     "lon": -76.58153,
+     "margen_anual": 4546.77
+    },
+    {
+     "orden": 3,
+     "punto": "AGROSERVICIOS & MAQUINARIA AGRICOLA MARY SOCIEDAD ANONIMA CE",
+     "dep": "SAN MARTIN",
+     "lat": -6.96142,
+     "lon": -76.4719,
+     "margen_anual": 569.51
+    },
+    {
+     "orden": 4,
+     "punto": "AGROVETERINARIA GUEVARA E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -6.97126,
+     "lon": -76.32615,
+     "margen_anual": 3055.84
+    },
+    {
+     "orden": 5,
+     "punto": "AGRO COMERCIALIZADORA PLATO FINO S.A.C.",
+     "dep": "SAN MARTIN",
+     "lat": -6.92317,
+     "lon": -76.41933,
+     "margen_anual": 2623.36
+    },
+    {
+     "orden": 6,
+     "punto": "EMPRESA DE AGROSERVICIOS MALON SAC",
+     "dep": "SAN MARTIN",
+     "lat": -7.01872,
+     "lon": -76.4993,
+     "margen_anual": 1589.18
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 2,
+   "puntos": 3,
+   "horas_viaje": 5.76,
+   "horas_total": 7.76,
+   "margen_anual": 12137.56,
+   "clientes": 839.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGRO SERVICIOS PACASMAYO S.A.C.",
+     "dep": "SAN MARTIN",
+     "lat": -7.15936,
+     "lon": -76.40707,
+     "margen_anual": 7095.16
+    },
+    {
+     "orden": 2,
+     "punto": "SOFY SEMILLERO DEL EXITO E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -7.26311,
+     "lon": -76.74738,
+     "margen_anual": 2591.67
+    },
+    {
+     "orden": 3,
+     "punto": "AGROSERVICIOS UCAYALI S.A.C.",
+     "dep": "SAN MARTIN",
+     "lat": -6.61484,
+     "lon": -76.34926,
+     "margen_anual": 2450.73
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 3,
+   "puntos": 6,
+   "horas_viaje": 3.44,
+   "horas_total": 7.44,
+   "margen_anual": 9955.8,
+   "clientes": 688.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Conselva de la villa",
+     "dep": "SAN MARTIN",
+     "lat": -6.50759,
+     "lon": -76.34732,
+     "margen_anual": 1859.23
+    },
+    {
+     "orden": 2,
+     "punto": "Ferro selva",
+     "dep": "SAN MARTIN",
+     "lat": -6.51131,
+     "lon": -76.35997,
+     "margen_anual": 1224.94
+    },
+    {
+     "orden": 3,
+     "punto": "AGRO COMERCIALIZADORA AP E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -6.49914,
+     "lon": -76.41091,
+     "margen_anual": 545.05
+    },
+    {
+     "orden": 4,
+     "punto": "AGROPECUARIA & AGROVETERINARIA EL CORRAL E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -6.46627,
+     "lon": -76.43876,
+     "margen_anual": 5818.77
+    },
+    {
+     "orden": 5,
+     "punto": "Santa Rosa",
+     "dep": "SAN MARTIN",
+     "lat": -6.47788,
+     "lon": -76.38648,
+     "margen_anual": 406.04
+    },
+    {
+     "orden": 6,
+     "punto": "Promart",
+     "dep": "SAN MARTIN",
+     "lat": -6.48268,
+     "lon": -76.37746,
+     "margen_anual": 101.76
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 4,
+   "puntos": 2,
+   "horas_viaje": 7.53,
+   "horas_total": 8.86,
+   "margen_anual": 8875.46,
+   "clientes": 613.6,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS E INVERSIONES JIBAJA S.A.C.",
+     "dep": "SAN MARTIN",
+     "lat": -6.60861,
+     "lon": -76.7158,
+     "margen_anual": 4923.35
+    },
+    {
+     "orden": 2,
+     "punto": "Vivero Municipal",
+     "dep": "SAN MARTIN",
+     "lat": -6.04684,
+     "lon": -76.97481,
+     "margen_anual": 3952.11
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 5,
+   "puntos": 1,
+   "horas_viaje": 3.3,
+   "horas_total": 3.96,
+   "margen_anual": 4012.22,
+   "clientes": 277.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS VELA E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -7.01024,
+     "lon": -76.12003,
+     "margen_anual": 4012.22
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 6,
+   "puntos": 2,
+   "horas_viaje": 7.52,
+   "horas_total": 8.86,
+   "margen_anual": 4422.22,
+   "clientes": 319.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS PALMAS DEL ORIENTE E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -6.2288,
+     "lon": -76.30091,
+     "margen_anual": 3803.36
+    },
+    {
+     "orden": 2,
+     "punto": "Cerámicas San Lorenzo",
+     "dep": "LORETO",
+     "lat": -5.89397,
+     "lon": -76.10533,
+     "margen_anual": 618.87
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 7,
+   "puntos": 2,
+   "horas_viaje": 7.23,
+   "horas_total": 8.56,
+   "margen_anual": 3980.02,
+   "clientes": 279.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Cobos",
+     "dep": "SAN MARTIN",
+     "lat": -6.03496,
+     "lon": -76.97641,
+     "margen_anual": 2627.69
+    },
+    {
+     "orden": 2,
+     "punto": "AGROCOMERCIAL ELIZABETH E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -6.08918,
+     "lon": -77.10088,
+     "margen_anual": 1352.33
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 8,
+   "puntos": 1,
+   "horas_viaje": 7.23,
+   "horas_total": 7.9,
+   "margen_anual": 163.27,
+   "clientes": 14.9,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROCOMERCIALIZADORA EL PLATANAL E.I.R.L",
+     "dep": "LORETO",
+     "lat": -5.86003,
+     "lon": -76.14739,
+     "margen_anual": 163.27
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 9,
+   "puntos": 1,
+   "horas_viaje": 7.35,
+   "horas_total": 8.02,
+   "margen_anual": 1076.58,
+   "clientes": 74.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "FERRETERIA AGROCOMERCIAL QUINTANA E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -6.07878,
+     "lon": -77.19875,
+     "margen_anual": 1076.58
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 10,
+   "puntos": 1,
+   "horas_viaje": 7.37,
+   "horas_total": 8.03,
+   "margen_anual": 11209.49,
+   "clientes": 775.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS AMAZONICOS E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -8.2552,
+     "lon": -76.52506,
+     "margen_anual": 11209.49
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 11,
+   "puntos": 1,
+   "horas_viaje": 7.46,
+   "horas_total": 8.12,
+   "margen_anual": 1933.15,
+   "clientes": 138.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGRO COMERCIALIZADORA E INVERSIONES NUCAR S.A.C.",
+     "dep": "SAN MARTIN",
+     "lat": -6.02113,
+     "lon": -77.28344,
+     "margen_anual": 1933.15
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 12,
+   "puntos": 1,
+   "horas_viaje": 7.61,
+   "horas_total": 8.28,
+   "margen_anual": 469.02,
+   "clientes": 32.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGRO VETERINARIA BUSTAMANTE E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -5.98978,
+     "lon": -77.16787,
+     "margen_anual": 469.02
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 13,
+   "puntos": 1,
+   "horas_viaje": 7.84,
+   "horas_total": 8.51,
+   "margen_anual": 2180.95,
+   "clientes": 150.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA RUBIO S.A.C.",
+     "dep": "SAN MARTIN",
+     "lat": -5.90309,
+     "lon": -77.35915,
+     "margen_anual": 2180.95
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 14,
+   "puntos": 1,
+   "horas_viaje": 8.17,
+   "horas_total": 8.83,
+   "margen_anual": 4949.36,
+   "clientes": 342.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS CHAVEZ EIRL",
+     "dep": "SAN MARTIN",
+     "lat": -5.82154,
+     "lon": -77.40676,
+     "margen_anual": 4949.36
+    }
+   ]
+  },
+  {
+   "hub": "Bellavista",
+   "ruta": 15,
+   "puntos": 1,
+   "horas_viaje": 8.25,
+   "horas_total": 8.92,
+   "margen_anual": 568.48,
+   "clientes": 39.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS LLOJA E.I.R.L.",
+     "dep": "SAN MARTIN",
+     "lat": -5.93982,
+     "lon": -77.2323,
+     "margen_anual": 568.48
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 1,
+   "puntos": 5,
+   "horas_viaje": 2.89,
+   "horas_total": 6.22,
+   "margen_anual": 14457.06,
+   "clientes": 1569.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferreteria Maranatha",
+     "dep": "JUNIN",
+     "lat": -11.41886,
+     "lon": -75.69211,
+     "margen_anual": 1680.32
+    },
+    {
+     "orden": 2,
+     "punto": "AGRO VETERINARIA CESAR´S E.I.R.L.",
+     "dep": "JUNIN",
+     "lat": -11.43415,
+     "lon": -75.72653,
+     "margen_anual": 1218.05
+    },
+    {
+     "orden": 3,
+     "punto": "La Económica",
+     "dep": "JUNIN",
+     "lat": -11.12363,
+     "lon": -75.35536,
+     "margen_anual": 6085.61
+    },
+    {
+     "orden": 4,
+     "punto": "ASOCIACION DE PRODUCTORES AGROPECUARIOS Y SERVICIOS MULTIPLE",
+     "dep": "JUNIN",
+     "lat": -11.32114,
+     "lon": -75.5244,
+     "margen_anual": 3329.58
+    },
+    {
+     "orden": 5,
+     "punto": "Ferreteria Rosales",
+     "dep": "JUNIN",
+     "lat": -11.41774,
+     "lon": -75.68826,
+     "margen_anual": 2143.51
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 2,
+   "puntos": 8,
+   "horas_viaje": 3.36,
+   "horas_total": 8.7,
+   "margen_anual": 12467.15,
+   "clientes": 1353.6,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "La Hacienda",
+     "dep": "JUNIN",
+     "lat": -11.77916,
+     "lon": -75.49651,
+     "margen_anual": 4162.59
+    },
+    {
+     "orden": 2,
+     "punto": "Maestrlto",
+     "dep": "JUNIN",
+     "lat": -11.78054,
+     "lon": -75.49619,
+     "margen_anual": 2854.66
+    },
+    {
+     "orden": 3,
+     "punto": "Ferretería Profer San Jerónimo",
+     "dep": "JUNIN",
+     "lat": -11.94796,
+     "lon": -75.28581,
+     "margen_anual": 2523.71
+    },
+    {
+     "orden": 4,
+     "punto": "Ferretería Señor de la Divina Misericordia",
+     "dep": "JUNIN",
+     "lat": -11.9642,
+     "lon": -75.27226,
+     "margen_anual": 231.22
+    },
+    {
+     "orden": 5,
+     "punto": "Clinica Veterinaria",
+     "dep": "JUNIN",
+     "lat": -11.92034,
+     "lon": -75.31601,
+     "margen_anual": 139.79
+    },
+    {
+     "orden": 6,
+     "punto": "Siderperu",
+     "dep": "JUNIN",
+     "lat": -11.91519,
+     "lon": -75.31607,
+     "margen_anual": 1537.97
+    },
+    {
+     "orden": 7,
+     "punto": "Ferretería J&L",
+     "dep": "JUNIN",
+     "lat": -11.91459,
+     "lon": -75.3254,
+     "margen_anual": 188.35
+    },
+    {
+     "orden": 8,
+     "punto": "Ferretería Los Angeles",
+     "dep": "JUNIN",
+     "lat": -11.86646,
+     "lon": -75.3728,
+     "margen_anual": 828.85
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 3,
+   "puntos": 4,
+   "horas_viaje": 6.33,
+   "horas_total": 8.99,
+   "margen_anual": 3670.23,
+   "clientes": 408.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferreteria Arenas",
+     "dep": "JUNIN",
+     "lat": -11.52142,
+     "lon": -75.90144,
+     "margen_anual": 165.88
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretera Yuri",
+     "dep": "JUNIN",
+     "lat": -11.55724,
+     "lon": -75.94743,
+     "margen_anual": 20.48
+    },
+    {
+     "orden": 3,
+     "punto": "AGROVETERINARIA GAMARRA EIRL",
+     "dep": "JUNIN",
+     "lat": -11.18879,
+     "lon": -76.01191,
+     "margen_anual": 2822.35
+    },
+    {
+     "orden": 4,
+     "punto": "AGROVETERINARIA CENTRAL NITSUGA SOCIEDAD COMERCIAL DE RESPON",
+     "dep": "PASCO",
+     "lat": -10.70117,
+     "lon": -76.24659,
+     "margen_anual": 661.51
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 4,
+   "puntos": 7,
+   "horas_viaje": 3.63,
+   "horas_total": 8.3,
+   "margen_anual": 5659.25,
+   "clientes": 614.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Inversiones y Ferretería Corazón de Jesús",
+     "dep": "JUNIN",
+     "lat": -11.97716,
+     "lon": -75.26551,
+     "margen_anual": 123.79
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretería Nuñez",
+     "dep": "JUNIN",
+     "lat": -12.01417,
+     "lon": -75.24431,
+     "margen_anual": 141.06
+    },
+    {
+     "orden": 3,
+     "punto": "Electroferreteria",
+     "dep": "JUNIN",
+     "lat": -12.02918,
+     "lon": -75.23161,
+     "margen_anual": 459.08
+    },
+    {
+     "orden": 4,
+     "punto": "Mateco",
+     "dep": "JUNIN",
+     "lat": -12.03881,
+     "lon": -75.22873,
+     "margen_anual": 251.69
+    },
+    {
+     "orden": 5,
+     "punto": "EMPRESA LOS SEMILLEROS DE GUINDA HUAMANCACA CHICO S.A.C.",
+     "dep": "JUNIN",
+     "lat": -12.07682,
+     "lon": -75.24886,
+     "margen_anual": 3275.2
+    },
+    {
+     "orden": 6,
+     "punto": "Dorita",
+     "dep": "JUNIN",
+     "lat": -12.0523,
+     "lon": -75.24174,
+     "margen_anual": 311.16
+    },
+    {
+     "orden": 7,
+     "punto": "CORPORACIÓN AGROINDUSTRIAL SEMILLERISTA HERMANOS DIAL S.A.C.",
+     "dep": "JUNIN",
+     "lat": -12.04792,
+     "lon": -75.25368,
+     "margen_anual": 1097.27
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 5,
+   "puntos": 5,
+   "horas_viaje": 4.51,
+   "horas_total": 7.85,
+   "margen_anual": 6355.98,
+   "clientes": 677.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Meza",
+     "dep": "JUNIN",
+     "lat": -12.0876,
+     "lon": -75.2107,
+     "margen_anual": 95.03
+    },
+    {
+     "orden": 2,
+     "punto": "DISTRIBUIDORA AGROPECUARIA MAURICIO S.A.C.",
+     "dep": "JUNIN",
+     "lat": -12.1379,
+     "lon": -75.22377,
+     "margen_anual": 3827.45
+    },
+    {
+     "orden": 3,
+     "punto": "Romero",
+     "dep": "JUNIN",
+     "lat": -12.08747,
+     "lon": -75.19867,
+     "margen_anual": 1979.12
+    },
+    {
+     "orden": 4,
+     "punto": "Ferretería Noemi",
+     "dep": "JUNIN",
+     "lat": -12.05079,
+     "lon": -75.18841,
+     "margen_anual": 119.15
+    },
+    {
+     "orden": 5,
+     "punto": "AGROVETERINARIA HUAYTAPALLANA EIRL",
+     "dep": "JUNIN",
+     "lat": -12.01999,
+     "lon": -75.13048,
+     "margen_anual": 335.23
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 6,
+   "puntos": 2,
+   "horas_viaje": 6.09,
+   "horas_total": 7.43,
+   "margen_anual": 1404.69,
+   "clientes": 125.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA GRUPO RIVERA S.A.C.",
+     "dep": "JUNIN",
+     "lat": -12.06836,
+     "lon": -75.29055,
+     "margen_anual": 112.59
+    },
+    {
+     "orden": 2,
+     "punto": "SEMILLEROS AGRO-BIOORGANIC S.R.L.",
+     "dep": "HUANCAVELICA",
+     "lat": -12.2609,
+     "lon": -75.02855,
+     "margen_anual": 1292.09
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 7,
+   "puntos": 1,
+   "horas_viaje": 4.45,
+   "horas_total": 5.12,
+   "margen_anual": 117.6,
+   "clientes": 12.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "ASOCIACION LOS SEMILLEROS DE HUASAHUASI",
+     "dep": "JUNIN",
+     "lat": -11.18101,
+     "lon": -75.64371,
+     "margen_anual": 117.6
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 8,
+   "puntos": 1,
+   "horas_viaje": 5.87,
+   "horas_total": 6.54,
+   "margen_anual": 335.13,
+   "clientes": 21.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Cochachis",
+     "dep": "LIMA",
+     "lat": -11.7594,
+     "lon": -76.30069,
+     "margen_anual": 335.13
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 9,
+   "puntos": 2,
+   "horas_viaje": 6.18,
+   "horas_total": 7.51,
+   "margen_anual": 4170.37,
+   "clientes": 512.9,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferretería Loechle",
+     "dep": "PASCO",
+     "lat": -10.57426,
+     "lon": -75.40368,
+     "margen_anual": 1987.41
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretería Nicoll",
+     "dep": "PASCO",
+     "lat": -10.57214,
+     "lon": -75.40651,
+     "margen_anual": 2182.95
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 10,
+   "puntos": 1,
+   "horas_viaje": 6.43,
+   "horas_total": 7.09,
+   "margen_anual": 1083.47,
+   "clientes": 133.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "INVERSIONES AGROVETERINARIAS SOMY E.I.R.L.",
+     "dep": "PASCO",
+     "lat": -10.68008,
+     "lon": -75.22024,
+     "margen_anual": 1083.47
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 11,
+   "puntos": 1,
+   "horas_viaje": 7.01,
+   "horas_total": 7.68,
+   "margen_anual": 693.51,
+   "clientes": 85.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA TOLENTINO B EMPRESA INDIVIDUAL DE RESPONSABI",
+     "dep": "PASCO",
+     "lat": -10.51557,
+     "lon": -76.54042,
+     "margen_anual": 693.51
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 12,
+   "puntos": 1,
+   "horas_viaje": 7.45,
+   "horas_total": 8.12,
+   "margen_anual": 2575.12,
+   "clientes": 276.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Fernández",
+     "dep": "HUANUCO",
+     "lat": -10.13831,
+     "lon": -76.19692,
+     "margen_anual": 2575.12
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 13,
+   "puntos": 1,
+   "horas_viaje": 8.01,
+   "horas_total": 8.68,
+   "margen_anual": 270.02,
+   "clientes": 28.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGRO VETERINARIA JCRA SOCIEDAD COMERCIAL DE RESPONSABILIDAD ",
+     "dep": "HUANUCO",
+     "lat": -10.15981,
+     "lon": -76.15909,
+     "margen_anual": 270.02
+    }
+   ]
+  },
+  {
+   "hub": "Tarma",
+   "ruta": 14,
+   "puntos": 1,
+   "horas_viaje": 8.32,
+   "horas_total": 8.99,
+   "margen_anual": 378.53,
+   "clientes": 40.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferretería V&R",
+     "dep": "HUANUCO",
+     "lat": -9.94481,
+     "lon": -76.24404,
+     "margen_anual": 378.53
+    }
+   ]
+  },
+  {
+   "hub": "Juliaca",
+   "ruta": 1,
+   "puntos": 8,
+   "horas_viaje": 3.19,
+   "horas_total": 8.52,
+   "margen_anual": 20529.04,
+   "clientes": 3881.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Promart",
+     "dep": "PUNO",
+     "lat": -15.49614,
+     "lon": -70.12936,
+     "margen_anual": 4742.75
+    },
+    {
+     "orden": 2,
+     "punto": "INDUSTRIA & COMERCIALIZADORA AGROREGION SOCIEDAD COMERCIAL D",
+     "dep": "PUNO",
+     "lat": -15.88985,
+     "lon": -70.01578,
+     "margen_anual": 442.54
+    },
+    {
+     "orden": 3,
+     "punto": "Comercial y Ferretería Hervas",
+     "dep": "PUNO",
+     "lat": -15.84487,
+     "lon": -70.02298,
+     "margen_anual": 801.3
+    },
+    {
+     "orden": 4,
+     "punto": "Solar",
+     "dep": "PUNO",
+     "lat": -15.83379,
+     "lon": -70.02652,
+     "margen_anual": 1171.96
+    },
+    {
+     "orden": 5,
+     "punto": "Ferretería Checa",
+     "dep": "PUNO",
+     "lat": -15.63941,
+     "lon": -70.34717,
+     "margen_anual": 4853.44
+    },
+    {
+     "orden": 6,
+     "punto": "IMPORTACIONES DISTRIBUCIONES AGRO VETERINARIA PERU SOCIEDAD ",
+     "dep": "PUNO",
+     "lat": -15.4684,
+     "lon": -70.20194,
+     "margen_anual": 1564.89
+    },
+    {
+     "orden": 7,
+     "punto": "San Pedro",
+     "dep": "PUNO",
+     "lat": -15.48917,
+     "lon": -70.13277,
+     "margen_anual": 6841.06
+    },
+    {
+     "orden": 8,
+     "punto": "El Altiplano",
+     "dep": "PUNO",
+     "lat": -15.49069,
+     "lon": -70.13326,
+     "margen_anual": 111.1
+    }
+   ]
+  },
+  {
+   "hub": "Juliaca",
+   "ruta": 2,
+   "puntos": 5,
+   "horas_viaje": 5.11,
+   "horas_total": 8.44,
+   "margen_anual": 14050.39,
+   "clientes": 2656.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Mundo Animal",
+     "dep": "PUNO",
+     "lat": -15.04516,
+     "lon": -70.36748,
+     "margen_anual": 5245.76
+    },
+    {
+     "orden": 2,
+     "punto": "ASOCIACION DE PRODUCTORES SEMILLERISTAS Y SERVICIOS MULTIPLE",
+     "dep": "PUNO",
+     "lat": -14.91774,
+     "lon": -70.58911,
+     "margen_anual": 5374.57
+    },
+    {
+     "orden": 3,
+     "punto": "Ferretex",
+     "dep": "PUNO",
+     "lat": -14.91432,
+     "lon": -69.86479,
+     "margen_anual": 151.96
+    },
+    {
+     "orden": 4,
+     "punto": "Ferreteria La Economica",
+     "dep": "PUNO",
+     "lat": -14.91407,
+     "lon": -69.8608,
+     "margen_anual": 569.15
+    },
+    {
+     "orden": 5,
+     "punto": "Ferreteria Vidreria San Antonio",
+     "dep": "PUNO",
+     "lat": -14.91652,
+     "lon": -69.86764,
+     "margen_anual": 2708.95
+    }
+   ]
+  },
+  {
+   "hub": "Juliaca",
+   "ruta": 3,
+   "puntos": 3,
+   "horas_viaje": 6.78,
+   "horas_total": 8.78,
+   "margen_anual": 13099.29,
+   "clientes": 2476.9,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "K & R AGROVETERINARIA Y DISTRIBUCIONES S.A.C.",
+     "dep": "PUNO",
+     "lat": -16.06821,
+     "lon": -69.75709,
+     "margen_anual": 1539.04
+    },
+    {
+     "orden": 2,
+     "punto": "COMERCIAL DISTRIBUIDORA AGROPEZ SOCIEDAD COMERCIAL DE RESPON",
+     "dep": "PUNO",
+     "lat": -16.11892,
+     "lon": -69.61076,
+     "margen_anual": 7097.79
+    },
+    {
+     "orden": 3,
+     "punto": "AGROCOMERCIALIZADORA FENIX DEL SUR U & M SOCIEDAD ANONIMA CE",
+     "dep": "PUNO",
+     "lat": -16.27985,
+     "lon": -69.0862,
+     "margen_anual": 4462.46
+    }
+   ]
+  },
+  {
+   "hub": "Juliaca",
+   "ruta": 4,
+   "puntos": 1,
+   "horas_viaje": 7.41,
+   "horas_total": 8.08,
+   "margen_anual": 500.26,
+   "clientes": 30.6,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "SEMILLERA DE AGRICULTOR S.A.C.",
+     "dep": "AREQUIPA",
+     "lat": -16.13866,
+     "lon": -71.61949,
+     "margen_anual": 500.26
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 1,
+   "puntos": 3,
+   "horas_viaje": 3.06,
+   "horas_total": 5.06,
+   "margen_anual": 9123.31,
+   "clientes": 1368.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Totty's",
+     "dep": "CUSCO",
+     "lat": -14.18656,
+     "lon": -71.34306,
+     "margen_anual": 4269.91
+    },
+    {
+     "orden": 2,
+     "punto": "Agroveterinaria \"Sur Andino\"",
+     "dep": "CUSCO",
+     "lat": -14.21808,
+     "lon": -71.43108,
+     "margen_anual": 4551.2
+    },
+    {
+     "orden": 3,
+     "punto": "SEMILLEROS EN JESUS",
+     "dep": "CUSCO",
+     "lat": -14.24923,
+     "lon": -71.17178,
+     "margen_anual": 302.2
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 2,
+   "puntos": 6,
+   "horas_viaje": 4.51,
+   "horas_total": 8.51,
+   "margen_anual": 5174.95,
+   "clientes": 776.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "A construir",
+     "dep": "CUSCO",
+     "lat": -13.59135,
+     "lon": -71.78757,
+     "margen_anual": 3868.02
+    },
+    {
+     "orden": 2,
+     "punto": "AGROVETERINARIA TECNO CAMPO SOCIEDAD COMERCIAL DE RESPONSABI",
+     "dep": "CUSCO",
+     "lat": -13.54002,
+     "lon": -71.92415,
+     "margen_anual": 321.42
+    },
+    {
+     "orden": 3,
+     "punto": "Ferretería Don Bosco",
+     "dep": "CUSCO",
+     "lat": -13.52772,
+     "lon": -71.94642,
+     "margen_anual": 167.99
+    },
+    {
+     "orden": 4,
+     "punto": "Sodimac",
+     "dep": "CUSCO",
+     "lat": -13.54268,
+     "lon": -71.8994,
+     "margen_anual": 574.26
+    },
+    {
+     "orden": 5,
+     "punto": "JBH",
+     "dep": "CUSCO",
+     "lat": -13.54144,
+     "lon": -71.8843,
+     "margen_anual": 108.28
+    },
+    {
+     "orden": 6,
+     "punto": "John Deere",
+     "dep": "CUSCO",
+     "lat": -13.58225,
+     "lon": -71.81047,
+     "margen_anual": 134.99
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 3,
+   "puntos": 5,
+   "horas_viaje": 5.21,
+   "horas_total": 8.54,
+   "margen_anual": 2509.28,
+   "clientes": 376.4,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Tornillo",
+     "dep": "CUSCO",
+     "lat": -13.42219,
+     "lon": -71.85028,
+     "margen_anual": 834.8
+    },
+    {
+     "orden": 2,
+     "punto": "Agrovet Sura Andina",
+     "dep": "CUSCO",
+     "lat": -13.42221,
+     "lon": -71.84896,
+     "margen_anual": 858.5
+    },
+    {
+     "orden": 3,
+     "punto": "El Punto",
+     "dep": "CUSCO",
+     "lat": -13.42279,
+     "lon": -71.85213,
+     "margen_anual": 70.8
+    },
+    {
+     "orden": 4,
+     "punto": "Ausangate",
+     "dep": "CUSCO",
+     "lat": -13.36441,
+     "lon": -71.92085,
+     "margen_anual": 554.71
+    },
+    {
+     "orden": 5,
+     "punto": "FerreCusco",
+     "dep": "CUSCO",
+     "lat": -13.32288,
+     "lon": -71.9589,
+     "margen_anual": 190.48
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 4,
+   "puntos": 5,
+   "horas_viaje": 5.44,
+   "horas_total": 8.77,
+   "margen_anual": 2872.66,
+   "clientes": 430.9,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Comercial Punto Azul",
+     "dep": "CUSCO",
+     "lat": -13.52429,
+     "lon": -71.97088,
+     "margen_anual": 260.36
+    },
+    {
+     "orden": 2,
+     "punto": "Acuarios",
+     "dep": "CUSCO",
+     "lat": -13.52245,
+     "lon": -71.97716,
+     "margen_anual": 118.46
+    },
+    {
+     "orden": 3,
+     "punto": "Pernería - Ferretería Pekasur",
+     "dep": "CUSCO",
+     "lat": -13.45985,
+     "lon": -72.14848,
+     "margen_anual": 1623.73
+    },
+    {
+     "orden": 4,
+     "punto": "Chacón",
+     "dep": "CUSCO",
+     "lat": -13.47807,
+     "lon": -72.0679,
+     "margen_anual": 633.78
+    },
+    {
+     "orden": 5,
+     "punto": "Ferresur",
+     "dep": "CUSCO",
+     "lat": -13.50759,
+     "lon": -71.99615,
+     "margen_anual": 236.32
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 5,
+   "puntos": 4,
+   "horas_viaje": 6.24,
+   "horas_total": 8.91,
+   "margen_anual": 5378.21,
+   "clientes": 806.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA BELEN S.R.L.",
+     "dep": "CUSCO",
+     "lat": -13.48817,
+     "lon": -71.97455,
+     "margen_anual": 501.32
+    },
+    {
+     "orden": 2,
+     "punto": "Verito",
+     "dep": "CUSCO",
+     "lat": -13.38265,
+     "lon": -72.11743,
+     "margen_anual": 1722.66
+    },
+    {
+     "orden": 3,
+     "punto": "Agroveterinaria Andino",
+     "dep": "CUSCO",
+     "lat": -13.42985,
+     "lon": -72.12986,
+     "margen_anual": 280.97
+    },
+    {
+     "orden": 4,
+     "punto": "AGROSERVICIOS SAMBOR  S.A.C",
+     "dep": "CUSCO",
+     "lat": -13.47359,
+     "lon": -72.1595,
+     "margen_anual": 2873.25
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 6,
+   "puntos": 4,
+   "horas_viaje": 5.81,
+   "horas_total": 8.48,
+   "margen_anual": 788.23,
+   "clientes": 118.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Rosa Ventura",
+     "dep": "CUSCO",
+     "lat": -13.31154,
+     "lon": -72.0165,
+     "margen_anual": 186.28
+    },
+    {
+     "orden": 2,
+     "punto": "Virgen de Lourdes Materiales de Construcción",
+     "dep": "CUSCO",
+     "lat": -13.31249,
+     "lon": -72.11059,
+     "margen_anual": 424.26
+    },
+    {
+     "orden": 3,
+     "punto": "Multiservicios Alex",
+     "dep": "CUSCO",
+     "lat": -13.32279,
+     "lon": -72.08221,
+     "margen_anual": 114.83
+    },
+    {
+     "orden": 4,
+     "punto": "Agro Tocre",
+     "dep": "CUSCO",
+     "lat": -13.33665,
+     "lon": -72.06363,
+     "margen_anual": 62.87
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 7,
+   "puntos": 3,
+   "horas_viaje": 6.43,
+   "horas_total": 8.43,
+   "margen_anual": 2627.09,
+   "clientes": 394.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Santa Rosita de Lima",
+     "dep": "CUSCO",
+     "lat": -13.39399,
+     "lon": -72.05101,
+     "margen_anual": 1222.87
+    },
+    {
+     "orden": 2,
+     "punto": "Miriam",
+     "dep": "CUSCO",
+     "lat": -13.33586,
+     "lon": -72.15635,
+     "margen_anual": 1055.35
+    },
+    {
+     "orden": 3,
+     "punto": "Vivero Sr. De Torrechayoc",
+     "dep": "CUSCO",
+     "lat": -13.29949,
+     "lon": -72.11745,
+     "margen_anual": 348.88
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 8,
+   "puntos": 2,
+   "horas_viaje": 6.52,
+   "horas_total": 7.85,
+   "margen_anual": 1791.33,
+   "clientes": 268.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS PARACCAY E.I.R.L.",
+     "dep": "CUSCO",
+     "lat": -13.34054,
+     "lon": -72.0468,
+     "margen_anual": 156.92
+    },
+    {
+     "orden": 2,
+     "punto": "Gonzales",
+     "dep": "CUSCO",
+     "lat": -13.27583,
+     "lon": -72.18655,
+     "margen_anual": 1634.41
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 9,
+   "puntos": 1,
+   "horas_viaje": 6.39,
+   "horas_total": 7.06,
+   "margen_anual": 2136.92,
+   "clientes": 320.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Agrovetarina Altiplano",
+     "dep": "CUSCO",
+     "lat": -13.3172,
+     "lon": -71.59655,
+     "margen_anual": 2136.92
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 10,
+   "puntos": 1,
+   "horas_viaje": 6.61,
+   "horas_total": 7.28,
+   "margen_anual": 515.57,
+   "clientes": 77.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Vivero de Pucyura",
+     "dep": "CUSCO",
+     "lat": -13.47544,
+     "lon": -72.11306,
+     "margen_anual": 515.57
+    }
+   ]
+  },
+  {
+   "hub": "Sicuani",
+   "ruta": 11,
+   "puntos": 1,
+   "horas_viaje": 7.8,
+   "horas_total": 8.47,
+   "margen_anual": 223.56,
+   "clientes": 33.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "MUNDO AGROVETERINARIA EMMA E.I.R.L",
+     "dep": "CUSCO",
+     "lat": -14.33006,
+     "lon": -71.86005,
+     "margen_anual": 223.56
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 1,
+   "puntos": 3,
+   "horas_viaje": 4.75,
+   "horas_total": 6.75,
+   "margen_anual": 13589.13,
+   "clientes": 1369.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "ASOCIACION DE PRODUCTORES AGROPECUARIOS Y SEMILLERISTAS LA P",
+     "dep": "LA LIBERTAD",
+     "lat": -7.81196,
+     "lon": -78.01877,
+     "margen_anual": 10891.47
+    },
+    {
+     "orden": 2,
+     "punto": "AGROVETERINARIA EL VALLE CONDEBAMBA S.R.L.",
+     "dep": "CAJAMARCA",
+     "lat": -7.52838,
+     "lon": -78.08754,
+     "margen_anual": 1480.41
+    },
+    {
+     "orden": 3,
+     "punto": "AGROCOMERCIALIZADORA HERMANOS FLORES S.R.L.",
+     "dep": "CAJAMARCA",
+     "lat": -7.32931,
+     "lon": -78.16303,
+     "margen_anual": 1217.24
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 2,
+   "puntos": 4,
+   "horas_viaje": 6.27,
+   "horas_total": 8.94,
+   "margen_anual": 3489.43,
+   "clientes": 288.8,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Elder",
+     "dep": "LA LIBERTAD",
+     "lat": -8.01093,
+     "lon": -78.76907,
+     "margen_anual": 1123.63
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretería Pelaez",
+     "dep": "LA LIBERTAD",
+     "lat": -8.08798,
+     "lon": -78.99894,
+     "margen_anual": 2103.85
+    },
+    {
+     "orden": 3,
+     "punto": "Ferreteria Bodega",
+     "dep": "LA LIBERTAD",
+     "lat": -8.11068,
+     "lon": -79.01289,
+     "margen_anual": 144.72
+    },
+    {
+     "orden": 4,
+     "punto": "Clinica Veterinaria",
+     "dep": "LA LIBERTAD",
+     "lat": -8.11806,
+     "lon": -79.03887,
+     "margen_anual": 117.24
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 3,
+   "puntos": 4,
+   "horas_viaje": 6.31,
+   "horas_total": 8.97,
+   "margen_anual": 2456.62,
+   "clientes": 203.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Davisa",
+     "dep": "LA LIBERTAD",
+     "lat": -8.1487,
+     "lon": -79.01205,
+     "margen_anual": 228.75
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretería y Materiales de Construcción Rocky",
+     "dep": "LA LIBERTAD",
+     "lat": -8.17426,
+     "lon": -78.9975,
+     "margen_anual": 2091.39
+    },
+    {
+     "orden": 3,
+     "punto": "Depostito de Materiales",
+     "dep": "LA LIBERTAD",
+     "lat": -8.14251,
+     "lon": -79.05015,
+     "margen_anual": 65.44
+    },
+    {
+     "orden": 4,
+     "punto": "Ferretería Caleb",
+     "dep": "LA LIBERTAD",
+     "lat": -8.13375,
+     "lon": -79.05264,
+     "margen_anual": 71.05
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 4,
+   "puntos": 3,
+   "horas_viaje": 6.55,
+   "horas_total": 8.55,
+   "margen_anual": 208.17,
+   "clientes": 17.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "EMPRESA DE AGROSERVICIOS ROSITA TRACTOR E.I.R.L.",
+     "dep": "LA LIBERTAD",
+     "lat": -8.05269,
+     "lon": -78.98527,
+     "margen_anual": 0.07
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretería Villa Del Mar",
+     "dep": "LA LIBERTAD",
+     "lat": -8.09854,
+     "lon": -79.06208,
+     "margen_anual": 207.8
+    },
+    {
+     "orden": 3,
+     "punto": "AGRO DISTRIBUIDOR JNM S.A.C.",
+     "dep": "LA LIBERTAD",
+     "lat": -8.0634,
+     "lon": -79.05544,
+     "margen_anual": 0.3
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 5,
+   "puntos": 3,
+   "horas_viaje": 5.88,
+   "horas_total": 7.88,
+   "margen_anual": 2541.94,
+   "clientes": 440.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Maestro",
+     "dep": "CAJAMARCA",
+     "lat": -7.1614,
+     "lon": -78.50319,
+     "margen_anual": 1726.3
+    },
+    {
+     "orden": 2,
+     "punto": "Ferretería Mejía",
+     "dep": "CAJAMARCA",
+     "lat": -7.16786,
+     "lon": -78.50742,
+     "margen_anual": 141.52
+    },
+    {
+     "orden": 3,
+     "punto": "Dr. Valdivia",
+     "dep": "CAJAMARCA",
+     "lat": -7.15051,
+     "lon": -78.51257,
+     "margen_anual": 674.12
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 6,
+   "puntos": 2,
+   "horas_viaje": 7.13,
+   "horas_total": 8.47,
+   "margen_anual": 462.79,
+   "clientes": 80.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS VIQUITO E.I.R.L.",
+     "dep": "CAJAMARCA",
+     "lat": -7.10314,
+     "lon": -78.44869,
+     "margen_anual": 226.25
+    },
+    {
+     "orden": 2,
+     "punto": "AGROVETERINARIA MEVELIN S.R.L.",
+     "dep": "CAJAMARCA",
+     "lat": -7.13396,
+     "lon": -78.54251,
+     "margen_anual": 236.53
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 7,
+   "puntos": 2,
+   "horas_viaje": 7.35,
+   "horas_total": 8.69,
+   "margen_anual": 3837.13,
+   "clientes": 317.6,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Ferretería Los Ángeles",
+     "dep": "LA LIBERTAD",
+     "lat": -8.4082,
+     "lon": -78.81518,
+     "margen_anual": 3278.53
+    },
+    {
+     "orden": 2,
+     "punto": "Agroveterinaria Horizonte",
+     "dep": "LA LIBERTAD",
+     "lat": -8.4233,
+     "lon": -78.78285,
+     "margen_anual": 558.61
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 8,
+   "puntos": 2,
+   "horas_viaje": 7.33,
+   "horas_total": 8.67,
+   "margen_anual": 2794.05,
+   "clientes": 231.3,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Agropec Mendoza",
+     "dep": "LA LIBERTAD",
+     "lat": -8.42346,
+     "lon": -78.78258,
+     "margen_anual": 968.03
+    },
+    {
+     "orden": 2,
+     "punto": "Agrotecnología Integral",
+     "dep": "LA LIBERTAD",
+     "lat": -8.42649,
+     "lon": -78.78018,
+     "margen_anual": 1826.02
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 9,
+   "puntos": 1,
+   "horas_viaje": 7.88,
+   "horas_total": 8.55,
+   "margen_anual": 1002.75,
+   "clientes": 83.0,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Inversiones Emmanuel",
+     "dep": "LA LIBERTAD",
+     "lat": -8.51336,
+     "lon": -78.68585,
+     "margen_anual": 1002.75
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 10,
+   "puntos": 1,
+   "horas_viaje": 7.96,
+   "horas_total": 8.62,
+   "margen_anual": 428.83,
+   "clientes": 35.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Agromen Group",
+     "dep": "LA LIBERTAD",
+     "lat": -8.53865,
+     "lon": -78.67771,
+     "margen_anual": 428.83
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 11,
+   "puntos": 1,
+   "horas_viaje": 7.0,
+   "horas_total": 7.67,
+   "margen_anual": 648.67,
+   "clientes": 53.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROVETERINARIA LA YUNTA LA LIBERTAD S.A.C.",
+     "dep": "LA LIBERTAD",
+     "lat": -8.29431,
+     "lon": -78.22745,
+     "margen_anual": 648.67
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 12,
+   "puntos": 1,
+   "horas_viaje": 7.96,
+   "horas_total": 8.63,
+   "margen_anual": 1513.16,
+   "clientes": 125.2,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "D' Mars",
+     "dep": "LA LIBERTAD",
+     "lat": -8.54078,
+     "lon": -78.67741,
+     "margen_anual": 1513.16
+    }
+   ]
+  },
+  {
+   "hub": "Huamachuco",
+   "ruta": 13,
+   "puntos": 1,
+   "horas_viaje": 7.97,
+   "horas_total": 8.64,
+   "margen_anual": 2610.44,
+   "clientes": 216.1,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "Maderera Selva",
+     "dep": "LA LIBERTAD",
+     "lat": -8.54192,
+     "lon": -78.67509,
+     "margen_anual": 2610.44
+    }
+   ]
+  },
+  {
+   "hub": "Satipo",
+   "ruta": 1,
+   "puntos": 3,
+   "horas_viaje": 4.02,
+   "horas_total": 6.02,
+   "margen_anual": 26603.68,
+   "clientes": 2888.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS LA CASA DEL CAMPESINO S.R.L.",
+     "dep": "JUNIN",
+     "lat": -11.19604,
+     "lon": -74.61806,
+     "margen_anual": 15260.17
+    },
+    {
+     "orden": 2,
+     "punto": "AGROSERVICIOS ORO VERDE SOCIEDAD ANONIMA CERRADA - AGROSERVI",
+     "dep": "JUNIN",
+     "lat": -10.98928,
+     "lon": -74.83262,
+     "margen_anual": 9795.88
+    },
+    {
+     "orden": 3,
+     "punto": "AGROSERVICIOS PERENE EMPRESA INDIVIDUAL DE RESPONSABILIDAD L",
+     "dep": "JUNIN",
+     "lat": -10.92146,
+     "lon": -75.05655,
+     "margen_anual": 1547.63
+    }
+   ]
+  },
+  {
+   "hub": "Satipo",
+   "ruta": 2,
+   "puntos": 2,
+   "horas_viaje": 4.64,
+   "horas_total": 5.97,
+   "margen_anual": 4537.91,
+   "clientes": 492.7,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGRO SERVICIOS TORRES SOCIEDAD COMERCIAL DE RESPONSABILIDAD ",
+     "dep": "JUNIN",
+     "lat": -11.34938,
+     "lon": -74.38682,
+     "margen_anual": 1748.59
+    },
+    {
+     "orden": 2,
+     "punto": "AGROCOMERCIAL LUCHO S.A.C.",
+     "dep": "JUNIN",
+     "lat": -11.6257,
+     "lon": -74.37676,
+     "margen_anual": 2789.32
+    }
+   ]
+  },
+  {
+   "hub": "Satipo",
+   "ruta": 3,
+   "puntos": 1,
+   "horas_viaje": 6.44,
+   "horas_total": 7.1,
+   "margen_anual": 640.47,
+   "clientes": 69.5,
+   "paradas": [
+    {
+     "orden": 1,
+     "punto": "AGROSERVICIOS ESDIE S.A.C.",
+     "dep": "JUNIN",
+     "lat": -11.38203,
+     "lon": -73.91359,
+     "margen_anual": 640.47
+    }
+   ]
+  }
+ ]
+}

@@ -39,3 +39,8 @@ data/importaciones/processed/operaciones*.csv
 # agregado por empresa, `datos/comercio/aduanas_agroexportadores.csv`, que es
 # lo que el sitio lee. Se regenera con build_aduanas.py.
 datos/comercio/aduanas_exportaciones.csv
+
+# El puente entre el mapa y el libro de ventas: lleva nombres de clientes y
+# montos facturados, igual que el libro del que sale. Vive en out/ y no debería
+# llegar aqui nunca; se nombra por si alguien lo mueve de sitio sin pensarlo.
+puente.json

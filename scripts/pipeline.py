@@ -226,6 +226,15 @@ ETAPAS = [
      ["out/ampliacion.json"],
      "qué compran los exportadores que trajo el universo ampliado"),
 
+    # El puente entre el mapa y la venta real. No publica: su salida lleva
+    # nombres de clientes y montos facturados, y se queda en out/.
+    ("puente", "build_puente.py",
+     ["out/ventas_cliente.csv", "out/ventas_doc.csv", "out/ventas_lineas.csv",
+      "out/cartera_empresa.csv", "out/canasta.json", "out/reclutar.json",
+      "out/cobertura_mes.json"],
+     ["out/puente.json"],
+     "dónde se vende hoy y qué hay al lado"),
+
     # Las decisiones se arman al final: leen lo que todas las demás dejaron.
     ("decisiones", "build_decisiones.py",
      ["out/red_elegida.json", "out/canal.json", "out/clusters_absorcion.json",

@@ -3979,7 +3979,11 @@ function pintarReclutar() {
       { k: "nombre", t: "Punto", l: 1, f: function (r) {
           return "<b>" + esc(r.nombre) + "</b>"; } },
       { k: "dep", t: "Región", l: 1, f: function (r) {
-          return "<span class='sub2'>" + esc(cap(r.dep)) + "</span>"; } },
+          /* El departamento viene en mayúsculas del padrón; aquí se lee al
+             lado de nombres de empresa en caja mixta y grita. */
+          return "<span class='sub2'>" + esc(
+            String(r.dep).charAt(0) + String(r.dep).slice(1).toLowerCase()) +
+            "</span>"; } },
       { k: "hub", t: "Se surte de", l: 1, f: function (r) {
           return esc(r.hub); } },
       { k: "horas_reparto", t: "Horas", f: function (r) {

@@ -44,6 +44,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 <nav id="nav" aria-label="Módulos">
   <a href="#resumen" class="on">Resumen</a>
   <a href="#decisiones">Decisiones</a>
+  <a href="#fichas">Fichas</a>
   <a href="#canasta">Canasta</a>
   <a href="#territorios">Territorios</a>
   <a href="#empresas">Empresas</a>
@@ -296,6 +297,27 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
   <div class="card" style="margin-top:16px">
     <div class="b"><p class="sub" id="canNota"></p></div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------- fichas -->
+<section class="view" id="v-fichas">
+  <div class="card">
+    <div class="h"><h3>La misma molécula, distinto precio</h3>
+      <span class="eyebrow" id="fchMeta"></span></div>
+    <div class="b">
+      <p id="fchIntro"></p>
+      <p><input type="search" id="fchQ" autocomplete="off"
+                placeholder="Buscar molécula, producto, cultivo o plaga…"
+                style="width:100%;max-width:420px"></p>
+      <div id="fchSug"></div>
+    </div>
+  </div>
+
+  <div class="card" id="fchFicha" style="margin-top:16px"></div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="b"><p class="sub" id="fchNota"></p></div>
   </div>
 </section>
 

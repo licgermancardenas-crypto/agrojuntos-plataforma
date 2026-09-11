@@ -3715,6 +3715,279 @@ var CARGADO = {};
    lo que separa este módulo de una lámina de conclusiones: una decisión abierta
    se publica con su cifra y su bisagra, nunca con un adjetivo. «Conviene
    expandir al sur» no es un dato aunque se le ponga tipografía de dato. */
+/* -------------------------------------------------------------- fichas -- */
+/* El padrón de SENASA enlazado con el precio de tienda y la dosis registrada.
+   Contesta tres preguntas que hasta ahora vivían en tres archivos distintos:
+   qué productos comparten molécula y cuánto se paga de más por la misma
+   química, qué usos tiene un producto y a cuánto sale la hectárea, y qué
+   conviene usar contra una plaga en un cultivo.
+
+   Los enlaces se guardan una sola vez, hacia arriba —el producto conoce su
+   molécula, su cultivo y su plaga— y las listas inversas se arman acá al
+   cargar. Guardar las dos direcciones duplicaría el archivo sin agregar nada. */
+var FCH = null, FCH_IDX = [], FCH_CUL = {}, FCH_PLA = {};
+
+function fchEtiqueta(t) {
+  return { molecula: "Molécula", producto: "Producto",
+           cultivo: "Cultivo", plaga: "Plaga" }[t] || t;
+}
+
+function fchLink(tipo, clave, texto, extra) {
+  return '<a href="#fichas/' + tipo + "/" + encodeURIComponent(clave) + '">' +
+         esc(texto || clave) +
+         (extra ? ' <span class="sub">' + esc(extra) + "</span>" : "") + "</a>";
+}
+
+function fchUsd(v) {
+  return v == null ? "" : "US$ " + nf(v, 2);
+}
+
+function fchMolecula(k) {
+  var m = FCH.moleculas[k];
+  if (!m) return "<div class='b'><p>Sin ficha.</p></div>";
+  var prods = m.l.map(function (c) { return FCH.productos[c]; })
+                 .filter(Boolean);
+  var conp = prods.filter(function (p) { return p.p != null; });
+  var h = ['<div class="h"><h3>' + esc(k) + "</h3>" +
+           '<span class="eyebrow">Molécula</span></div><div class="b">'];
+  var t = "<b>" + nf(m.n) + " productos registrados</b> en Perú la llevan " +
+          "como ingrediente activo";
+  if (m.p && m.P && m.p > 0) {
+    t += ", y entre el más barato y el más caro hay <b>" +
+         nf(m.P / m.p, 1) + "×</b> por los mismos gramos";
+  }
+  h.push("<p>" + t + ".</p></div>");
+
+  if (conp.length) {
+    h.push('<div class="tw"><table id="tFchMol"></table></div>');
+  } else {
+    h.push('<div class="b"><p class="sub">Ninguno de sus productos tiene ' +
+           "precio público todavía: la comparación se puede hacer cuando " +
+           "alguno aparezca en una de las tiendas relevadas.</p></div>");
+  }
+  h.push('<div class="b"><p class="sub">Todos los registrados: ' +
+         prods.map(function (p) {
+           return fchLink("producto", p.n.toUpperCase(), p.n);
+         }).join(" · ") + "</p></div>");
+  return { html: h.join(""), tabla: conp };
+}
+
+function fchProducto(k) {
+  var p = FCH.productos[k];
+  if (!p) return { html: "<div class='b'><p>No está en el padrón.</p></div>" };
+  var h = ['<div class="h"><h3>' + esc(p.n) + "</h3>" +
+           '<span class="eyebrow">' + esc(p.c || "Producto") +
+           "</span></div><div class=\"b\">"];
+  h.push("<p>" + (p.f ? esc(p.f) + " · " : "") +
+         (p.t ? "titular <b>" + esc(p.t) + "</b> · " : "") +
+         "registro <code>" + esc(p.g || "sin dato") + "</code>.</p>");
+  if (p.p != null) {
+    h.push("<p>Se importa a <b>" + fchUsd(p.fob) + " el kilo</b> y se vende " +
+           "a <b>" + fchUsd(p.p) + "</b>" +
+           (p.v ? ", <b>" + nf(p.v, 1) + "×</b> el FOB" : "") + ".</p>");
+  } else {
+    h.push('<p class="sub">Sin precio público relevado, así que no tiene ' +
+           "margen ni costo por hectárea calculado.</p>");
+  }
+  h.push("<p>Ingrediente activo: " +
+         (p.a.length ? p.a.map(function (a) {
+           return fchLink("molecula", a);
+         }).join(" · ") : "sin dato") + "</p></div>");
+  if (p.u && p.u.length) {
+    h.push('<div class="tw"><table id="tFchUsos"></table></div>');
+    h.push('<div class="b"><p class="sub">El costo por hectárea marcado ' +
+           "<b>est</b> se estimó desde la dosis por cilindro y no compite en " +
+           "el orden por precio.</p></div>");
+  }
+  return { html: h.join(""), usos: p.u || [] };
+}
+
+function fchCultivo(k) {
+  var ops = FCH_CUL[k] || [];
+  var h = ['<div class="h"><h3>' + esc(k) + "</h3>" +
+           '<span class="eyebrow">Cultivo</span></div><div class="b">' +
+           "<p><b>" + ops.length + " plagas</b> con tratamiento registrado " +
+           "y precio público.</p></div>"];
+  h.push('<div class="tw"><table id="tFchCul"></table></div>');
+  return { html: h.join(""), pares: ops };
+}
+
+function fchPlaga(k) {
+  var ops = FCH_PLA[k] || [];
+  var h = ['<div class="h"><h3>' + esc(k) + "</h3>" +
+           '<span class="eyebrow">Plaga</span></div><div class="b">' +
+           "<p>Aparece en <b>" + ops.length + " cultivos</b>: " +
+           ops.map(function (o) { return fchLink("cultivo", o.c); })
+              .join(" · ") + "</p></div>"];
+  ops.forEach(function (o, i) {
+    h.push('<div class="b"><p class="sub">En ' + esc(o.c) +
+           ", de lo más barato a lo más caro</p></div>");
+    h.push('<div class="tw"><table id="tFchPla' + i + '"></table></div>');
+  });
+  return { html: h.join(""), pares: ops };
+}
+
+function fchVer(tipo, clave) {
+  var caja = document.getElementById("fchFicha");
+  var r;
+  if (tipo === "molecula") r = fchMolecula(clave);
+  else if (tipo === "producto") r = fchProducto(clave);
+  else if (tipo === "cultivo") r = fchCultivo(clave);
+  else if (tipo === "plaga") r = fchPlaga(clave);
+  else { caja.innerHTML = "<div class='b'><p>Sin ficha.</p></div>"; return; }
+
+  caja.innerHTML = r.html;
+  document.getElementById("fchSug").innerHTML = "";
+
+  if (tipo === "molecula" && r.tabla && r.tabla.length) {
+    tabla(document.getElementById("tFchMol"), [
+      { k: "n", t: "Producto", l: 1,
+        v: function (p) { return p.n; },
+        f: function (p) {
+          return fchLink("producto", p.n.toUpperCase(), p.n); } },
+      { k: "t", t: "Titular", l: 1, v: function (p) { return p.t || ""; },
+        f: function (p) { return esc(p.t || ""); } },
+      { k: "p", t: "Tienda US$/kg", v: function (p) { return p.p || 0; },
+        f: function (p) { return nf(p.p, 2); } },
+      { k: "fob", t: "FOB US$/kg", v: function (p) { return p.fob || 0; },
+        f: function (p) { return p.fob == null ? "" : nf(p.fob, 2); } },
+      { k: "v", t: "Veces FOB", v: function (p) { return p.v || 0; },
+        f: function (p) { return p.v == null ? "" : nf(p.v, 1) + "×"; } },
+    ], r.tabla, { sort: "p", asc: true });
+  }
+
+  if (tipo === "producto" && r.usos && r.usos.length) {
+    tabla(document.getElementById("tFchUsos"), [
+      { k: "c", t: "Cultivo", l: 1, v: function (u) { return u[0]; },
+        f: function (u) { return fchLink("cultivo", u[0]); } },
+      { k: "p", t: "Plaga", l: 1, v: function (u) { return u[1]; },
+        f: function (u) { return fchLink("plaga", u[1]); } },
+      { k: "co", t: "Costo/ha", v: function (u) { return u[2]; },
+        f: function (u) {
+          return fchUsd(u[2]) + (u[4] ? ' <span class="sub">est</span>' : ""); } },
+      { k: "ca", t: "Carencia", v: function (u) { return +u[3] || 0; },
+        f: function (u) { return u[3] ? u[3] + " d" : ""; } },
+    ], r.usos, { sort: "co", asc: true });
+  }
+
+  if (tipo === "cultivo" && r.pares && r.pares.length) {
+    tabla(document.getElementById("tFchCul"), [
+      { k: "p", t: "Plaga", l: 1, v: function (o) { return o.p; },
+        f: function (o) { return fchLink("plaga", o.p); } },
+      { k: "n", t: "Opciones", v: function (o) { return o.n; },
+        f: function (o) { return nf(o.n); } },
+      { k: "b", t: "Más barato", l: 1,
+        v: function (o) { return fchMejor(o) ? fchMejor(o)[0] : ""; },
+        f: function (o) {
+          var m = fchMejor(o);
+          return m ? fchLink("producto", m[0].toUpperCase(), m[0]) : ""; } },
+      { k: "co", t: "Costo/ha",
+        v: function (o) { var m = fchMejor(o); return m ? m[2] : 0; },
+        f: function (o) { var m = fchMejor(o); return m ? fchUsd(m[2]) : ""; } },
+    ], r.pares, { sort: "n" });
+  }
+
+  if (tipo === "plaga" && r.pares) {
+    r.pares.forEach(function (o, i) {
+      tabla(document.getElementById("tFchPla" + i), [
+        { k: "n", t: "Producto", l: 1, v: function (x) { return x[0]; },
+          f: function (x) {
+            return fchLink("producto", x[0].toUpperCase(), x[0]); } },
+        { k: "a", t: "Activo", l: 1, v: function (x) { return x[1] || ""; },
+          f: function (x) { return esc(x[1] || ""); } },
+        { k: "co", t: "Costo/ha", v: function (x) { return x[2]; },
+          f: function (x) {
+            return fchUsd(x[2]) +
+                   (x[5] ? ' <span class="sub">est</span>' : ""); } },
+        { k: "ca", t: "Carencia", v: function (x) { return +x[3] || 0; },
+          f: function (x) { return x[3] ? x[3] + " d" : ""; } },
+        { k: "t", t: "Toxicidad", l: 1, v: function (x) { return x[4] || ""; },
+          f: function (x) { return esc(x[4] || ""); } },
+      ], o.o, { sort: "co", asc: true });
+    });
+  }
+}
+
+/* El más barato es el más barato **con dosis directa**. Las estimadas se
+   muestran en la lista pero no encabezan: se midió que dan 0.83 de la directa
+   en la mediana, así que premiarían a la que se estimó y no a la que cuesta
+   menos. */
+function fchMejor(o) {
+  var d = o.o.filter(function (x) { return !x[5]; });
+  return (d.length ? d : o.o)[0];
+}
+
+function fchBuscar() {
+  var q = document.getElementById("fchQ").value.trim().toLowerCase();
+  var caja = document.getElementById("fchSug");
+  if (q.length < 2) { caja.innerHTML = ""; return; }
+  var hits = [];
+  for (var i = 0; i < FCH_IDX.length && hits.length < 30; i++) {
+    if (FCH_IDX[i].n.toLowerCase().indexOf(q) >= 0) hits.push(FCH_IDX[i]);
+  }
+  caja.innerHTML = hits.length
+    ? "<p>" + hits.map(function (h) {
+        return fchLink(h.t, h.k, h.n, fchEtiqueta(h.t));
+      }).join(" · ") + "</p>"
+    : '<p class="sub">Nada con ese nombre.</p>';
+}
+
+function vistaFichas() {
+  cargar("fichas").then(function (D) {
+    FCH = D;
+    D.decisiones.forEach(function (o) {
+      (FCH_CUL[o.c] = FCH_CUL[o.c] || []).push(o);
+      (FCH_PLA[o.p] = FCH_PLA[o.p] || []).push(o);
+    });
+    Object.keys(D.moleculas).forEach(function (k) {
+      FCH_IDX.push({ t: "molecula", k: k, n: k, x: D.moleculas[k].n }); });
+    Object.keys(D.productos).forEach(function (k) {
+      FCH_IDX.push({ t: "producto", k: k, n: D.productos[k].n,
+                     x: D.productos[k].u.length }); });
+    Object.keys(FCH_CUL).forEach(function (k) {
+      FCH_IDX.push({ t: "cultivo", k: k, n: k, x: FCH_CUL[k].length }); });
+    Object.keys(FCH_PLA).forEach(function (k) {
+      FCH_IDX.push({ t: "plaga", k: k, n: k, x: FCH_PLA[k].length }); });
+    FCH_IDX.sort(function (a, b) { return b.x - a.x; });
+
+    document.getElementById("fchMeta").textContent =
+      nf(D.cuenta.moleculas) + " moléculas · " +
+      nf(D.cuenta.productos) + " productos · " +
+      nf(D.cuenta.pares) + " pares cultivo-plaga";
+    document.getElementById("fchIntro").innerHTML =
+      "Todo plaguicida que puede venderse legalmente en el Perú, enlazado con " +
+      "<b>lo que cuesta traerlo</b>, <b>lo que cuesta en la tienda</b> y " +
+      "<b>la dosis que SENASA le registró</b> para cada cultivo y cada plaga. " +
+      "Parado en una molécula se ve cuánto se paga de más por la misma " +
+      "química; parado en una plaga, qué conviene usar. Es la misma pregunta " +
+      "desde cualquier lado.";
+    document.getElementById("fchNota").innerHTML =
+      "Padrón de SENASA (SIGIA), aduana de SUNAT bajo la Ley 27806 y precio " +
+      "público con IGV de cuatro comercios peruanos. De los " +
+      nf(D.cuenta.productos) + " productos registrados, " +
+      nf(D.cuenta.con_precio) + " tienen precio relevado: el resto aparece " +
+      "en el catálogo sin margen ni costo por hectárea, porque no se puede " +
+      "calcular lo que no se midió.";
+
+    document.getElementById("fchQ").oninput = fchBuscar;
+    fchRutear();
+  });
+}
+
+/* La ficha vive en el hash igual que la vista, así que un enlace a una
+   molécula se puede mandar por correo y abre donde tiene que abrir. */
+function fchRutear() {
+  if (!FCH) return;
+  var h = decodeURIComponent(location.hash.replace(/^#/, ""));
+  var p = h.split("/");
+  if (p[0] === "fichas" && p.length >= 3) {
+    fchVer(p[1], p.slice(2).join("/"));
+  } else {
+    var m = FCH_IDX.filter(function (x) { return x.t === "molecula"; })[0];
+    if (m) fchVer("molecula", m.k);
+  }
+}
+
 function vistaDecisiones() {
   cargar("decisiones").then(function (D) {
     var A = D.decisiones.filter(function (d) { return d.estado === "abierta"; });
@@ -4075,6 +4348,10 @@ function pintarRutas() {
 
 function ir(hash) {
   var id = (hash || "#resumen").replace("#", "");
+  /* Una ficha lleva su entidad en el propio hash —"fichas/molecula/ABAMECTIN"—
+     para que el enlace a una molecula se pueda mandar por correo y abra ahi.
+     La vista es el primer tramo; el resto lo atiende fchRutear. */
+  if (id.indexOf("/") > 0) id = id.split("/")[0];
   /* El perfil no es una vista mas: lleva el RUC en el propio hash, de modo
      que cada empresa tiene su direccion y se comparte como cualquier pagina. */
   var mE = /^empresa=(\d+)$/.exec(id);
@@ -4113,9 +4390,15 @@ function ir(hash) {
     if (id === "expansion") { pintarReclutar(); pintarRutas(); }
     if (id === "canasta") vistaCanasta();
     if (id === "decisiones") vistaDecisiones();
+    if (id === "fichas") vistaFichas();
   }
 }
-window.addEventListener("hashchange", function () { ir(location.hash); });
+window.addEventListener("hashchange", function () {
+  ir(location.hash);
+  /* Un hash de ficha —"#fichas/molecula/X"— tiene que mover la
+     ficha ademas de la vista. `ir` se queda con el primer tramo. */
+  if (location.hash.indexOf("#fichas/") === 0) fchRutear();
+});
 
 vistaResumen();
 ir(location.hash);

@@ -3789,10 +3789,31 @@ function fchProducto(k) {
     h.push('<p class="sub">Sin precio público relevado, así que no tiene ' +
            "margen ni costo por hectárea calculado.</p>");
   }
+  /* El padron de SENASA nombra las moleculas pero no dice cuanto lleva:
+     "ABAMECTINA 18 g/L" y "ABAMECTINA 36 g/L" son el mismo renglon del
+     registro y dos productos distintos en la gondola. El numero sale de la
+     etiqueta oficial, leida aparte, y se muestra pegado a cada molecula.
+     El padron manda sobre QUE lleva; la etiqueta, sobre CUANTO. */
+  var conc = {};
+  (p.k || []).forEach(function (c) {
+    if (c[1] != null) conc[c[0]] =
+      (+c[1]).toLocaleString("es-PE", { maximumFractionDigits: 2 }) +
+      " " + (c[2] || "");
+  });
+  var activos = p.a.slice();
+  (p.k || []).forEach(function (c) {
+    if (activos.indexOf(c[0]) === -1) activos.push(c[0]);
+  });
   h.push("<p>Ingrediente activo: " +
-         (p.a.length ? p.a.map(function (a) {
-           return fchLink("molecula", a);
-         }).join(" · ") : "sin dato") + "</p></div>");
+         (activos.length ? activos.map(function (a) {
+           return fchLink("molecula", a) +
+             (conc[a] ? ' <b class="conc">' + esc(conc[a]) + "</b>" : "");
+         }).join(" · ") : "sin dato") + "</p>");
+  if (p.k && p.k.length) {
+    h.push('<p class="sub">La concentración sale de la etiqueta oficial ' +
+           "registrada en SENASA, no del padrón.</p>");
+  }
+  h.push("</div>");
   if (p.u && p.u.length) {
     h.push('<div class="tw"><table id="tFchUsos"></table></div>');
     h.push('<div class="b"><p class="sub">El costo por hectárea marcado ' +

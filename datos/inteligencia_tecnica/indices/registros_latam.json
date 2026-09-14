@@ -1,0 +1,340 @@
+{
+ "generado": "2026-09-10T13:33:17",
+ "motivo": "qué sirve hoy cada registro nacional; un portal caído es un dato del proyecto y se anota con su evidencia en vez de esconderse",
+ "profundidad": 1,
+ "registros": [
+  {
+   "pais": "Colombia",
+   "fuente": "ICA Colombia",
+   "puertas": [
+    "https://www.ica.gov.co/areas/agricola/servicios/regulacion-y-control-de-plaguicidas-quimicos",
+    "https://www.ica.gov.co/areas/agricola/servicios/fertilizantes-y-bioinsumos-agricolas"
+   ],
+   "paginas_vistas": 35,
+   "archivos": [
+    {
+     "url": "https://www.ica.gov.co/getdoc/b2e5ff99-bd80-45e8-aa7a-e55f0b5b42dc/PLAGUICIDAS-PROHIBIDOS.aspx",
+     "sha256": "242b77c48af9d1216b880ed9e244bfc05c0cda509b13556a7b7402457796719d",
+     "bytes": 775302
+    },
+    {
+     "url": "https://www.ica.gov.co/getdoc/67fb9443-5c24-4418-86f5-d393546d3e2e/carta_solicitud_plaguicidas.aspx",
+     "sha256": "a8ecbdc9c06d3cafa329c47cfadef402bb723d0b683f8335d4b619cb8cc52795",
+     "bytes": 26921
+    },
+    {
+     "url": "https://www.ica.gov.co/Areas/Agricola/Servicios/Regulacion-y-Control-de-Plaguicidas-Quimicos/Manual-protocolos-ensayos-eficacia-PQUA-1.aspx",
+     "sha256": "ddaeedc216f78a9ab89cc29baff18b35851606d4de72c98bb19f7c8032ef0f4f",
+     "bytes": 5955163
+    },
+    {
+     "url": "https://www.ica.gov.co/Areas/Agricola/Servicios/Regulacion-y-Control-de-Plaguicidas-Quimicos/Calculadora-Final-Presentacion.aspx",
+     "sha256": "b622a39c687820d61a0febf96890b9ef229e34befd5d8cc2d52ed3bee74ece2b",
+     "bytes": 3881392
+    }
+   ],
+   "archivos_n": 4,
+   "veredicto": "parcial",
+   "notas": [
+    "https://www.ica.gov.co/areas/agricola/servicios/fertilizantes-y-bioinsumos-agricolas → sin respuesta",
+    "https://www.ica.gov.co/areas/agricola/servicios/direccion.insumosagr@ica.gov.co → sin respuesta",
+    "corté en 35 páginas; quedaban 4 en cola"
+   ],
+   "descarga": {
+    "bajados": 4,
+    "repetidos": 15,
+    "fallados": 0,
+    "prohibidos": 0,
+    "en_indice": 453
+   }
+  },
+  {
+   "pais": "Ecuador",
+   "fuente": "Agrocalidad Ecuador",
+   "puertas": [
+    "https://www.agrocalidad.gob.ec/",
+    "https://www.agrocalidad.gob.ec/registro-de-insumos-agropecuarios/"
+   ],
+   "paginas_vistas": 4,
+   "archivos": [],
+   "archivos_n": 0,
+   "veredicto": "sin_datos",
+   "notas": [
+    "https://www.agrocalidad.gob.ec/registro-de-insumos-agropecuarios/ → HTTP 404"
+   ],
+   "descarga": {
+    "bajados": 0,
+    "repetidos": 0,
+    "fallados": 0,
+    "prohibidos": 0,
+    "en_indice": 453
+   }
+  },
+  {
+   "pais": "Bolivia",
+   "fuente": "SENASAG Bolivia",
+   "puertas": [
+    "https://www.senasag.gob.bo/"
+   ],
+   "paginas_vistas": 35,
+   "archivos": [
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA_v2021_1%20biologicos.pdf",
+     "sha256": "07a6c25b81097e501a22fa78af247f459b57585a5fdb3ae553f3f44097f53384",
+     "bytes": 164832
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA_v2021_S.A-%20ANRIP%20-%202%20farmacologicos.pdf",
+     "sha256": "2a54fad981e3b31e783f271498f95aeb591265740aa4473d211b07c6f5950ae3",
+     "bytes": 173052
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA_v2021_S.A-%20ANRIP%20-%203%20alimentos.pdf",
+     "sha256": "abd5dd91adf909c913d2f752018497496a211353d8088ab720692ccfd0e36968",
+     "bytes": 214434
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20renovacion%20de%20(PUVs)%202.2.8.pdf",
+     "sha256": "2c54d7f184db77519525d24188c98fafce053c4767031f0954a51fb3f8ec4526",
+     "bytes": 91495
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20Modificacion(PUVs)%20-2.2.10.pdf",
+     "sha256": "4c1d0e5c6cafe577a85c35f5d5281e37f4533ee581c88a3f37f8b2ad83ed579d",
+     "bytes": 138515
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20registro%20de%20empresas%20veterinaria%20(PUVs)%202.1.2.pdf",
+     "sha256": "c9b36d5a2bf1b79c981a174028c79e3448f9c3b6f122e672bb1e486b2926fc52",
+     "bytes": 131410
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20registo%20de%20establecimientos%20veterinario%20(PUVs)-2.3.2.pdf",
+     "sha256": "d74aa18764c0e77ca9d591e8805bc0ee4ea44befb3a81e9d4aeb2e94b23c0e08",
+     "bytes": 167032
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20renobacion%20de%20empresas%20veterinario%20(PUVs)-2.1.6.pdf",
+     "sha256": "c3dbea5a752e80c7f08f9ed85af221ffd710b879abf942199502e0c1896e4f88",
+     "bytes": 167033
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20modificacion%20de%20empresas%20%20veterinarias-2.1.7.pdf",
+     "sha256": "10ae1c357c66a1a461cb3370a356f9708d15489759a7a1cec5e70cba85e14108",
+     "bytes": 134735
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20renovacion%20de%20establecimientos%20veterinarios%20-2.3.4.pdf",
+     "sha256": "0c8b64615a4722b514c41b6d859b6105232e25b5469668b015c0973c196be9f4",
+     "bytes": 119861
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20modificacion%20de%20establecimientos%20veterinarios%20-2.3.5.pdf",
+     "sha256": "f061fc38386ae549e33258c6a1e07c3bfe2bdccb27abf250c3cf63534bc54451",
+     "bytes": 124405
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/REGENSA-v2021%20producto%20de%20uso%20veterinario%20prohibido%20y%20restringido%202.2.11.pdf",
+     "sha256": "2afa4410ed7bd28edfa254adcd93e7e8b32e08caf1b6b6e0b439e8ed6de282d8",
+     "bytes": 204956
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/areas_senasag/SA/registro_insumos/AREA%20NACIONAL%20REGISTRO%20DE%20INSUMOS%20PECUARIOS.pdf",
+     "sha256": "d3d39152d608708238fe0613007b493b3dd865e2d3df6773820d16c548cf580b",
+     "bytes": 433483
+    },
+    {
+     "url": "https://www.senasag.gob.bo/phocadownload/Sanidad_Vegetal/INSPECTORES_FITOSANITARIOS_NO_OFICIALES_ACREDITADOSS/INSPECTORES%20FITOSANITARIOS%20NO%20OFICIALES%20ACREDITADOS%2027%20AGOSTO%202026.pdf",
+     "sha256": "244ca9a04ee0a346a0a968f2051093107f902282b1e914a09c4a8ca47e73486e",
+     "bytes": 223481
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/micro_agricola/REGISTRÓ%20%20DE%20PLAGUICIDAS%20BIOLOGICOS%20DE%20ORIGEN%20MICROBIANO.pdf",
+     "sha256": "517c91e9c4258441efeb1ce5f52445b8a5826f982450ee3ea51f9aa0b86a9ba6",
+     "bytes": 340435
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/micro_agricola/ANEXO%20II_RA%20055_2002.pdf",
+     "sha256": "4c10cdf8b74ce2dd145e6fa27bff9530032e489c0198138397f43f69b1896ab4",
+     "bytes": 737248
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/DECISION%20804%20COMUNIDAD%20ANDINA%20DE%20NACIONES%20(CAN).pdf",
+     "sha256": "0a4f662e3f3a92754f08ee4c5ee3df5e7aca89be500880909626f7e56a5a6c8c",
+     "bytes": 347422
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/reglamento/REGLAMENTO%20DE%20REGISTRO%20Y%20CONTROL%20DE%20PLAGUICIDAS%20QUÍMICOS%20DE%20USO%20AGRÍCOLA%20(PQUA).pdf",
+     "sha256": "d374495326851366a2f617ec34a364de8d8ec7078d8a474854cb9a93d5a2afe9",
+     "bytes": 21499351
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/reglamento/MANUAL%20TECNICO%20ANDINO%20(MTA)%20Resolución.%202075.pdf",
+     "sha256": "e4b03278ff6680f8bcf0910019e19c4ed274a958540b9374c4e209d439adb592",
+     "bytes": 12823501
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/reglamento/RESOLUCION%20MULTIMINISTERIAL%20R.M.%200012016.pdf",
+     "sha256": "73878f85f4d63d1d4ecda2012af389322d5f2a78dd2495d3e4ffcd166c566ade",
+     "bytes": 3606909
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/reglamento/RESOLUCION%20MULTIMINISTERIAL%20RM%2002_2018.pdf",
+     "sha256": "43e1ead33aa4223459eecc786b6ecaabed1734f5e94b7a0242d1b13f273dc85a",
+     "bytes": 549583
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/requisitos/Registro%20de%20un%20plaguicida%20químico%20de%20uso%20agrícola%20(PQUA)%20Art%2018%20(RA%200412018).pdf",
+     "sha256": "7148a059f24950f1c9bf1342fb4da0937111bc1573a900a2f2e2d2c7fac0a4e4",
+     "bytes": 711220
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/requisitos/Registro%20de%20un%20PQUA%20igual%20a%20uno%20ya%20registrado.pdf",
+     "sha256": "ebe1aaef7993d3b9002d3b98593a51c1c6e9a9f99d737af28aa2ab4655a09562",
+     "bytes": 713302
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/requisitos/Modificaciones%20Administrativas%20a%20los%20Registros.pdf",
+     "sha256": "1aca950cb46f626fec153505292784efeb07038b0b8b4dce4c3886739f24e168",
+     "bytes": 1531004
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/Plaguicidas%20Prohibidos/R.A.%20024_2015,%20ENDOSULFAN.pdf",
+     "sha256": "b0698c3a886f28d10c4c8e723d859bee257b69e35846ff970c61842bd6acb66d",
+     "bytes": 2350048
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/Plaguicidas%20Prohibidos/R.A.%20170_2015%20Metamidofos.pdf",
+     "sha256": "0cced0cae89f46a585b4b4db346385c7bcb39659827e9531bab5e41ab947af9a",
+     "bytes": 1405939
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/Plaguicidas%20Prohibidos/R.A.025_2015,%20Monocrotophos.pdf",
+     "sha256": "ba989c8c9c0c891f7bb2a5142cb09f82bb1d160d3015af65dae36fa09d86b305",
+     "bytes": 2513180
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/Plaguicidas%20Restringidos/R.%20A.186_2015%20METHOMYL.pdf",
+     "sha256": "80ecd78c1f6ede33e133f0e5379a3ebcd06706d10147e631ced3945960f1e323",
+     "bytes": 1438468
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/otros%20resoluciones/RA_176_2016%20Reglamentos%20de%20Ventas%20de%20Categoria%20IB.pdf",
+     "sha256": "578de0a879b88b16c3c37c554614104fb9f50fc675051b196006362f7c1f6cda",
+     "bytes": 1950935
+    },
+    {
+     "url": "https://www.senasag.gob.bo/images/sv/registroInsumo/otros%20resoluciones/RA_33_2017_Reglamento%20de%20Ventas%20Ib.pdf",
+     "sha256": "d7988c2498a1779b65835a4b5d6c00da63c4f2bceb2c2fd66a5a569a5af7c770",
+     "bytes": 1379701
+    }
+   ],
+   "archivos_n": 30,
+   "veredicto": "sirve",
+   "notas": [
+    "corté en 35 páginas; quedaban 16 en cola"
+   ],
+   "descarga": {
+    "bajados": 30,
+    "repetidos": 0,
+    "fallados": 0,
+    "prohibidos": 0,
+    "en_indice": 483
+   }
+  },
+  {
+   "pais": "Alemania",
+   "fuente": "BVL Alemania",
+   "puertas": [
+    "https://www.bvl.bund.de/EN/Home/home_node.html",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/psm_ZulassungPSM_node.html"
+   ],
+   "paginas_vistas": 35,
+   "archivos": [],
+   "archivos_n": 0,
+   "veredicto": "parcial",
+   "notas": [
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/DE/Meta/Impressum/impressum_node.html → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/DE/Service/05_Glossar/glossar_node.html → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/DE/Meta/Hilfe/hilfe_node.html → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/DE/Home/home_node.html → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/DE/Meta/Sitemap/sitemap_node.html → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/DE/Meta/Suche/suche_node.html → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/SiteGlobals/Frontend/Styles/normalize.css?v=2 → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/SiteGlobals/Frontend/Styles/_libs.css?v=2 → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/SiteGlobals/Frontend/Styles/small.css?v=2 → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/SiteGlobals/Frontend/Styles/medium.css?v=2 → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/SiteGlobals/Frontend/Styles/large.css?v=2 → HTTP 404",
+    "https://www.bvl.bund.de/DE/Arbeitsbereiche/04_Pflanzenschutzmittel/01_Aufgaben/02_ZulassungPSM/SiteGlobals/Frontend/Styles/xlarge.css?v=2 → HTTP 404"
+   ],
+   "descarga": {
+    "bajados": 0,
+    "repetidos": 0,
+    "fallados": 0,
+    "prohibidos": 0,
+    "en_indice": 483
+   }
+  },
+  {
+   "pais": "Chile",
+   "fuente": "SAG Chile",
+   "puertas": [
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas-y-fertilizantes-0/registros",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas/registros"
+   ],
+   "paginas_vistas": 12,
+   "archivos": [
+    {
+     "url": "https://www.sag.gob.cl/sites/default/files/Borrador-de-resolucion-consulta-publica.pdf",
+     "sha256": "6be951754010a420293c813e053536bed5d6348899dfb1b1f32acb41301deba4",
+     "bytes": 544874
+    }
+   ],
+   "archivos_n": 1,
+   "veredicto": "en_mantenimiento",
+   "notas": [
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas-y-fertilizantes-0/registros → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas/registros → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas-y-fertilizantes-0 → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas-y-fertilizantes-0/normativas → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas-y-fertilizantes-0/procedimientos → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas-y-fertilizantes-0/publicaciones → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/quienes-somos/consultas-publicas → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas/normativas → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas/procedimientos → el sitio se declara en mantención",
+    "https://www.sag.gob.cl/ambitos-de-accion/plaguicidas/publicaciones → el sitio se declara en mantención"
+   ],
+   "descarga": {
+    "bajados": 1,
+    "repetidos": 0,
+    "fallados": 0,
+    "prohibidos": 0,
+    "en_indice": 484
+   }
+  },
+  {
+   "pais": "Brasil",
+   "fuente": "Agrofit Brasil",
+   "puertas": [
+    "https://agrofit.agricultura.gov.br/agrofit_cons/principal_agrofit_cons"
+   ],
+   "paginas_vistas": 1,
+   "archivos": [],
+   "archivos_n": 0,
+   "veredicto": "bloqueada",
+   "notas": [
+    "https://agrofit.agricultura.gov.br/agrofit_cons/principal_agrofit_cons → HTTP 403"
+   ],
+   "descarga": {
+    "bajados": 0,
+    "repetidos": 0,
+    "fallados": 0,
+    "prohibidos": 0,
+    "en_indice": 484
+   }
+  }
+ ],
+ "archivos_totales": 35,
+ "segundos": 1408.3
+}

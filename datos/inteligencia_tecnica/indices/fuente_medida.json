@@ -1,0 +1,230 @@
+{
+ "generado": "2026-09-10T02:48:28",
+ "motivo": "cuánto hay en el punto de partida, contado y no citado; el plan de replicación trae cifras de una versión previa de la fuente",
+ "publicado": {
+  "archivos_perfil": 101,
+  "importadores_de_insumos": 921,
+  "lineas_de_despacho_reales": 75570,
+  "descripciones_publicadas": 6876,
+  "cobertura_pct": 9.1,
+  "productos_declarados_unicos": 2923,
+  "tope_por_empresa": 12
+ },
+ "local": {
+  "archivo": "E:\\LENOVO ideapad Flex5\\AGRO EXPORTACIONES\\AGRO JUNTOS\\MAPEO\\data\\importaciones\\processed\\operaciones_clasificadas.csv",
+  "lineas": 102080,
+  "importadores_ruc": 1430,
+  "desde": "2021-12-27",
+  "hasta": "2026-08-30",
+  "fob_usd": 5523920975.3,
+  "toneladas": 8378178.1,
+  "productos_declarados_unicos": 15549,
+  "marcas_declaradas_unicas": 4622,
+  "partidas": 91,
+  "paises_de_origen": 88,
+  "lineas_con_concentracion_en_el_texto": 11477,
+  "concentracion_pct": 11.2,
+  "familias": [
+   {
+    "familia": "Proteccion de cultivos",
+    "lineas": 47615
+   },
+   {
+    "familia": "Semilla para siembra",
+    "lineas": 17117
+   },
+   {
+    "familia": "Fertilizante compuesto y foliar",
+    "lineas": 12651
+   },
+   {
+    "familia": "Plantines y plantas vivas",
+    "lineas": 9655
+   },
+   {
+    "familia": "Fertilizante nitrogenado",
+    "lineas": 5788
+   },
+   {
+    "familia": "Fertilizante organico",
+    "lineas": 3444
+   },
+   {
+    "familia": "Bulbos y tuberculos para plantar",
+    "lineas": 3078
+   },
+   {
+    "familia": "Fertilizante potasico",
+    "lineas": 2598
+   },
+   {
+    "familia": "Fertilizante fosfatado",
+    "lineas": 134
+   }
+  ],
+  "top_productos": [
+   {
+    "nombre": "SEMILLA DE TOMATE",
+    "lineas": 1629
+   },
+   {
+    "nombre": "GEL ANTIBACTERIAL",
+    "lineas": 1539
+   },
+   {
+    "nombre": "BULBO DE LILIUM",
+    "lineas": 1150
+   },
+   {
+    "nombre": "SEMILLA DE SANDIA",
+    "lineas": 1099
+   },
+   {
+    "nombre": "SEMILLA DE LECHUGA",
+    "lineas": 966
+   },
+   {
+    "nombre": "NITRATO DE SODIO",
+    "lineas": 934
+   },
+   {
+    "nombre": "SEMILLA DE PIMIENTO",
+    "lineas": 823
+   },
+   {
+    "nombre": "SULFATO DE POTASIO",
+    "lineas": 796
+   },
+   {
+    "nombre": "ORQUIDEA",
+    "lineas": 782
+   },
+   {
+    "nombre": "GERBERA",
+    "lineas": 760
+   },
+   {
+    "nombre": "ORQUIDEA PLANTA",
+    "lineas": 738
+   },
+   {
+    "nombre": "BULBOS DE FLORES",
+    "lineas": 732
+   },
+   {
+    "nombre": "SEMILLAS",
+    "lineas": 731
+   },
+   {
+    "nombre": "UREA GRANULADA",
+    "lineas": 722
+   },
+   {
+    "nombre": "ARANDANO",
+    "lineas": 676
+   },
+   {
+    "nombre": "PLANTAS DE ARANDANOS",
+    "lineas": 660
+   },
+   {
+    "nombre": "SEMILLA DE PEPINILLO",
+    "lineas": 631
+   },
+   {
+    "nombre": "PLANTA DE ARANDANOS",
+    "lineas": 618
+   },
+   {
+    "nombre": "ANTURIO PLANTA",
+    "lineas": 549
+   },
+   {
+    "nombre": "SEMILLA DE ESPINACA",
+    "lineas": 454
+   }
+  ],
+  "top_marcas": [
+   {
+    "marca": "ANTHURA",
+    "lineas": 1927
+   },
+   {
+    "marca": "BATH AND BODY WORKS",
+    "lineas": 1746
+   },
+   {
+    "marca": "SEMILLA",
+    "lineas": 1667
+   },
+   {
+    "marca": "PLANTA",
+    "lineas": 1649
+   },
+   {
+    "marca": "RIJK ZWAAN",
+    "lineas": 1412
+   },
+   {
+    "marca": "SYNGENTA",
+    "lineas": 1075
+   },
+   {
+    "marca": "PROTEKU",
+    "lineas": 614
+   },
+   {
+    "marca": "PLANTA IN VITRO",
+    "lineas": 596
+   },
+   {
+    "marca": "TROPICA",
+    "lineas": 564
+   },
+   {
+    "marca": "BEJO ZADEN",
+    "lineas": 557
+   },
+   {
+    "marca": "BASF",
+    "lineas": 542
+   },
+   {
+    "marca": "ECOLAB",
+    "lineas": 530
+   },
+   {
+    "marca": "RAMIRO ARNEDO",
+    "lineas": 498
+   },
+   {
+    "marca": "ADAMA",
+    "lineas": 422
+   },
+   {
+    "marca": "LYSOL",
+    "lineas": 341
+   },
+   {
+    "marca": "YPFB",
+    "lineas": 332
+   },
+   {
+    "marca": "S/MARCA",
+    "lineas": 330
+   },
+   {
+    "marca": "SUBA SEEDS",
+    "lineas": 307
+   },
+   {
+    "marca": "PLYMAG",
+    "lineas": 305
+   },
+   {
+    "marca": "YARA",
+    "lineas": 294
+   }
+  ]
+ }
+}

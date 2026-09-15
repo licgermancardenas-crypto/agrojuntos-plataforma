@@ -55,6 +55,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   <a href="#comercio">Comercio</a>
   <a href="#importacion">Importación</a>
   <a href="#exportacion">Exportación</a>
+  <a href="#registro">Registro</a>
   <a href="/mapa">Mapa</a>
   <a href="#metodo">Método</a>
 </nav>
@@ -475,6 +476,67 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </section>
 
 <!-- -------------------------------------------------------- exportación -->
+<!-- ----------------------------------------------------------- registro -->
+<section class="view" id="v-registro">
+  <div class="kpis" id="regKpis"><div class="load">Cargando…</div></div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>El padrón técnico, y qué dice la etiqueta</h3>
+      <span class="eyebrow" id="regMeta"></span></div>
+    <div class="b">
+      <p>Todo plaguicida que puede venderse legalmente en el Perú, con su
+      ingrediente activo, su formulación y su categoría toxicológica. SENASA
+      publica <b>qué</b> lleva cada producto pero no <b>cuánto</b>: la
+      concentración se leyó de la etiqueta oficial, documento por documento, y
+      aparece junto a la molécula cuando se pudo leer.</p>
+      <p><input type="search" id="regQ" autocomplete="off"
+                placeholder="Buscar producto, ingrediente activo o titular…"
+                style="width:100%;max-width:420px"></p>
+    </div>
+    <div class="tw"><table id="tReg"></table></div>
+    <div class="b"><p class="sub" id="regPie"></p></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>De qué documento sale cada dato</h3>
+      <span class="eyebrow">Cómo se leyó el corpus</span></div>
+    <div class="b">
+      <p>Cada documento entró con su URL, su SHA-256 y la fecha en que se
+      consultó, y se leyó con el método que el archivo permitía. Lo que no se
+      pudo leer también está contado: <b>un corpus sin esa fila no se puede
+      auditar</b>.</p>
+    </div>
+    <div class="tw"><table id="tRegLectura"></table></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Qué respalda cada composición</h3>
+      <span class="eyebrow">Veredicto por fila leída</span></div>
+    <div class="b">
+      <p id="regVer"></p>
+    </div>
+    <div class="tw"><table id="tRegVer"></table></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>España, que sí publica la concentración</h3>
+      <span class="eyebrow" id="regEsMeta"></span></div>
+    <div class="b">
+      <p>El registro del MAPA trae el campo <b>Formulado</b>, que es la
+      composición con su porcentaje. Sirve para el mismo producto vendido en
+      Perú con otro nombre comercial.</p>
+      <p><input type="search" id="regEsQ" autocomplete="off"
+                placeholder="Buscar producto, titular o molécula…"
+                style="width:100%;max-width:420px"></p>
+    </div>
+    <div class="tw"><table id="tRegEs"></table></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="b"><p class="sub" id="regNota"></p></div>
+  </div>
+</section>
+
 <section class="view" id="v-exportacion">
   <div class="kpis" id="expKpis"><div class="load">Cargando…</div></div>
   <div class="note warn" id="expAviso"></div>

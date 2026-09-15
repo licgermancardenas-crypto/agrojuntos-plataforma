@@ -465,6 +465,186 @@ function panelImportadores(mostrar) {
     .catch(function () { IMP_PANEL = false; });
 }
 
+/* -------------------------------------------------------------- registro */
+/* El padron tecnico y su respaldo documental. Es la vista que contesta «y esto
+   como lo saben»: cada producto con lo que declara el registro, la
+   concentracion leida de su etiqueta, y el recuento de como se leyo cada
+   documento del corpus —incluido lo que no se pudo leer—. */
+function vistaRegistro() {
+  cargar("registro").then(function (D) {
+    REPINTAR.registro = function () { pintarRegistro(D); };
+    pintarRegistro(D);
+  }).catch(fallo);
+}
+
+function regConc(p) {
+  /* La molecula y, pegado, cuanto lleva. El padron manda sobre que lleva; la
+     etiqueta, sobre cuanto. Cuando la etiqueta trajo un activo de los dos que
+     el registro declara, se muestran los dos y el numero solo donde lo hay. */
+  var conc = {};
+  (p.k || []).forEach(function (c) {
+    if (c[1] != null) {
+      conc[c[0]] = (+c[1]).toLocaleString("es-PE", { maximumFractionDigits: 2 }) +
+                   " " + (c[2] || "");
+    }
+  });
+  var lista = (p.a || []).slice();
+  (p.k || []).forEach(function (c) {
+    if (lista.indexOf(c[0]) === -1) lista.push(c[0]);
+  });
+  if (!lista.length) return "<span class='sub'>sin dato</span>";
+  return lista.map(function (a) {
+    return esc(a) + (conc[a] ? ' <b class="conc">' + esc(conc[a]) + "</b>" : "");
+  }).join(" · ");
+}
+
+function pintarRegistro(D) {
+  var c = D.cuenta;
+
+  document.getElementById("regKpis").innerHTML = [
+    kpi(nf(c.registrados), "productos en el padrón de SENASA",
+        nf(c.activos) + " ingredientes activos distintos"),
+    kpi(nf(c.con_concentracion), "con la concentración leída de su etiqueta",
+        pct(100 * c.con_concentracion / c.registrados, 0) + " del padrón"),
+    kpi(nf(c.documentos), "documentos en el corpus",
+        "cada uno con su SHA-256 y su fecha"),
+    kpi(pct(100 * c.con_texto / c.documentos, 1), "del corpus está leído",
+        nf(c.documentos - c.con_texto) + " sin texto, contados aparte"),
+  ].join("");
+
+  document.getElementById("regMeta").textContent =
+    nf(c.registrados) + " productos";
+  document.getElementById("regEsMeta").textContent =
+    nf(c.espana) + " productos";
+
+  /* ── padron peruano ── */
+  var cols = [
+    { k: "n", t: "Producto", l: 1, f: function (r) { return esc(r.n); } },
+    { k: "a", t: "Ingrediente activo · concentración", l: 1,
+      v: function (r) { return (r.a || [])[0] || "zzz"; }, f: regConc },
+    { k: "c", t: "Clase", l: 1,
+      f: function (r) { return esc(r.c || "—"); } },
+    { k: "f", t: "Formulación", l: 1,
+      f: function (r) { return esc(r.f || "—"); } },
+    { k: "x", t: "Toxicidad", l: 1,
+      f: function (r) { return esc(r.x || "—"); } },
+    { k: "g", t: "Registro", l: 1,
+      f: function (r) { return "<code>" + esc(r.g || "—") + "</code>"; } },
+    { k: "t", t: "Titular", l: 1,
+      f: function (r) { return esc(r.t || "—"); } },
+  ];
+  var TOPE = 150;
+
+  function pintarPadron() {
+    var q = (document.getElementById("regQ").value || "").trim().toLowerCase();
+    var filas = !q ? D.productos : D.productos.filter(function (p) {
+      return (p.n || "").toLowerCase().indexOf(q) >= 0 ||
+             (p.t || "").toLowerCase().indexOf(q) >= 0 ||
+             (p.a || []).join(" ").toLowerCase().indexOf(q) >= 0;
+    });
+    tabla(document.getElementById("tReg"), cols, filas,
+          { sort: "n", asc: true, limite: TOPE });
+    document.getElementById("regPie").textContent = filas.length > TOPE
+      ? "Se muestran " + nf(TOPE) + " de " + nf(filas.length) +
+        " productos. Escribí en el buscador para acotar."
+      : nf(filas.length) + (filas.length === 1 ? " producto" : " productos") +
+        (q ? " para «" + q + "»" : "");
+  }
+  document.getElementById("regQ").oninput = pintarPadron;
+  pintarPadron();
+
+  /* ── como se leyo el corpus ── */
+  var ETIQUETA = {
+    capa_fitz: "Capa de texto del PDF",
+    ocr_windows: "OCR sobre el escaneo",
+    ole2_ocr: "Word 97 con la etiqueta escaneada",
+    ole2_word_texto: "Word 97 con el texto escrito",
+    ole2_excel: "Planilla de Office 97",
+    ooxml_ocr_pobre: "Word moderno, escaneo de baja resolución",
+    ooxml_excel: "Planilla moderna",
+    ooxml_texto: "Word moderno con texto",
+    xlsx: "Planilla",
+    docx: "Word moderno",
+    dato_estructurado: "Respuesta de API, ya estructurada",
+    ocr_sin_texto: "Imagen leída, sin letras adentro",
+    formato_no_soportado: "Ilegible: roto, vacío o en otro formato",
+    necesita_ocr: "Pendiente de OCR",
+    sin_lector: "Sin lector para ese formato",
+  };
+  var lect = Object.keys(D.lectura).map(function (k) {
+    return { k: k, n: ETIQUETA[k] || k, v: D.lectura[k] };
+  });
+  var totalLect = lect.reduce(function (a, b) { return a + b.v; }, 0);
+  tabla(document.getElementById("tRegLectura"), [
+    { k: "n", t: "Cómo se leyó", l: 1, f: function (r) { return esc(r.n); } },
+    { k: "v", t: "Documentos", f: function (r) { return nf(r.v); } },
+    { k: "p", t: "Parte del corpus", v: function (r) { return r.v; },
+      f: function (r) { return pct(100 * r.v / totalLect, 1); } },
+    { k: "k", t: "Método", l: 1,
+      f: function (r) { return "<code>" + esc(r.k) + "</code>"; } },
+  ], lect, { sort: "v" });
+
+  /* ── veredictos de composicion ── */
+  var VER = {
+    coincide_producto: ["El padrón confirma ese activo para ese producto",
+                        "es el respaldo más fuerte"],
+    coincide_registro: ["Es un activo registrado, pero el padrón no lo ata a este producto",
+                        "probable, no verificado"],
+    sin_respaldo: ["Tiene forma de composición y no lo respalda nadie",
+                   "se publica como tal y no se promueve"],
+    aditivo: ["Relleno hasta completar el envase (c.s.p.)",
+              "no es ingrediente activo"],
+  };
+  var ver = Object.keys(D.veredictos).map(function (k) {
+    return { k: k, v: D.veredictos[k],
+             d: (VER[k] || [k, ""])[0], s: (VER[k] || ["", ""])[1] };
+  });
+  var totalVer = ver.reduce(function (a, b) { return a + b.v; }, 0);
+  document.getElementById("regVer").innerHTML =
+    "Cada línea leída de una etiqueta se contrasta contra el vocabulario de " +
+    "ingredientes activos registrados y sale con un veredicto. <b>" +
+    nf(totalVer) + " filas</b> en total: publicar las que no tienen respaldo " +
+    "es lo que hace que las otras signifiquen algo.";
+  tabla(document.getElementById("tRegVer"), [
+    { k: "k", t: "Veredicto", l: 1,
+      f: function (r) { return "<code>" + esc(r.k) + "</code>"; } },
+    { k: "d", t: "Qué significa", l: 1,
+      f: function (r) {
+        return esc(r.d) + (r.s ? " <span class='sub'>· " + esc(r.s) + "</span>" : "");
+      } },
+    { k: "v", t: "Filas", f: function (r) { return nf(r.v); } },
+    { k: "p", t: "Parte", v: function (r) { return r.v; },
+      f: function (r) { return pct(100 * r.v / totalVer, 1); } },
+  ], ver, { sort: "v" });
+
+  /* ── registro de Espana ── */
+  var colsEs = [
+    { k: "n", t: "Producto", l: 1, f: function (r) { return esc(r.n); } },
+    { k: "F", t: "Formulado", l: 1,
+      f: function (r) { return esc(r.F || "—"); } },
+    { k: "e", t: "Estado", l: 1,
+      f: function (r) { return esc(r.e || "—"); } },
+    { k: "g", t: "Registro", l: 1,
+      f: function (r) { return "<code>" + esc(r.g || "—") + "</code>"; } },
+    { k: "t", t: "Titular", l: 1, f: function (r) { return esc(r.t || "—"); } },
+  ];
+  function pintarEs() {
+    var q = (document.getElementById("regEsQ").value || "").trim().toLowerCase();
+    var filas = !q ? D.espana : D.espana.filter(function (p) {
+      return (p.n + " " + p.t + " " + p.F).toLowerCase().indexOf(q) >= 0;
+    });
+    tabla(document.getElementById("tRegEs"), colsEs, filas,
+          { sort: "n", asc: true, limite: TOPE });
+  }
+  document.getElementById("regEsQ").oninput = pintarEs;
+  pintarEs();
+
+  document.getElementById("regNota").textContent =
+    D.motivo + ". Fuente: " + D.fuente + ". Generado el " +
+    D.generado.slice(8, 10) + "/" + D.generado.slice(5, 7) + "/" +
+    D.generado.slice(0, 4) + ".";
+}
+
 /* ------------------------------------------------------------ importacion */
 function vistaImportacion() {
   cargar("importacion").then(function (D) {
@@ -4412,6 +4592,7 @@ function ir(hash) {
     if (id === "canasta") vistaCanasta();
     if (id === "decisiones") vistaDecisiones();
     if (id === "fichas") vistaFichas();
+    if (id === "registro") vistaRegistro();
   }
 }
 window.addEventListener("hashchange", function () {

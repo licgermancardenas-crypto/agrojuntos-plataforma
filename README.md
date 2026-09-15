@@ -668,6 +668,7 @@ JavaScript plano sobre los JSON precalculados. Se despliega con
 | Logística | Horas al centro provincial y al puerto, y el costo de servir cada región |
 | Expansión | Orden óptimo de apertura de centros según el radio que se acepte |
 | Perfil de empresa | Una página por RUC: qué importa, de qué origen, con qué continuidad, sus cinco años de embarques y el origen declarado en el manifiesto |
+| Registro | El padrón técnico de SENASA con la concentración leída de cada etiqueta, cómo se leyó cada documento del corpus y qué respalda cada composición |
 | Método | Cadena de cálculo, fuentes y limitaciones declaradas |
 | Mapa | Atlas geoespacial con seis representaciones, y un mapa propio por departamento, territorio y provincia |
 

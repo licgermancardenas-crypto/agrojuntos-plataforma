@@ -41,23 +41,42 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </header>
 
 <div class="cuerpo">
+<!-- Dieciséis módulos en cinco grupos. El orden de dentro de cada grupo va de
+     lo general a lo particular, que es como se leen: primero cuánto mercado
+     hay, después dónde está, después quién lo compone. Los enlaces no cambian:
+     un marcador viejo a «#registro» sigue cayendo donde caía. -->
 <nav id="nav" aria-label="Módulos">
-  <a href="#resumen" class="on">Resumen</a>
-  <a href="#decisiones">Decisiones</a>
-  <a href="#fichas">Fichas</a>
-  <a href="#canasta">Canasta</a>
-  <a href="#territorios">Territorios</a>
-  <a href="#empresas">Empresas</a>
-  <a href="#logistica">Logística</a>
-  <a href="#expansion">Expansión</a>
-  <a href="#departamentos">Departamentos</a>
-  <a href="#productos">Productos</a>
-  <a href="#comercio">Comercio</a>
-  <a href="#importacion">Importación</a>
-  <a href="#exportacion">Exportación</a>
-  <a href="#registro">Registro</a>
-  <a href="/mapa">Mapa</a>
-  <a href="#metodo">Método</a>
+  <div class="grupo" data-g="mercado">
+    <span class="gt">Mercado</span>
+    <a href="#resumen" class="on">Resumen</a>
+    <a href="#canasta">Canasta</a>
+    <a href="#productos">Productos</a>
+    <a href="#departamentos">Departamentos</a>
+  </div>
+  <div class="grupo" data-g="territorio">
+    <span class="gt">Territorio</span>
+    <a href="#territorios">Territorios</a>
+    <a href="/mapa">Mapa</a>
+    <a href="#logistica">Logística</a>
+    <a href="#expansion">Expansión</a>
+  </div>
+  <div class="grupo" data-g="empresas">
+    <span class="gt">Empresas</span>
+    <a href="#empresas">Directorio</a>
+    <a href="#fichas">Fichas</a>
+    <a href="#registro">Registro</a>
+  </div>
+  <div class="grupo" data-g="comercio">
+    <span class="gt">Comercio exterior</span>
+    <a href="#comercio">Comercio</a>
+    <a href="#importacion">Importación</a>
+    <a href="#exportacion">Exportación</a>
+  </div>
+  <div class="grupo" data-g="metodologia">
+    <span class="gt">Metodología</span>
+    <a href="#metodo">Método</a>
+    <a href="#decisiones">Decisiones</a>
+  </div>
 </nav>
 
 <main id="vistas">

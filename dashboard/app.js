@@ -188,6 +188,61 @@ function dibujarCurva(curva) {
   });
 }
 
+/* ------------------------------------------------------------ grupos -- */
+/* La barra de grupos de pantalla angosta se construye leyendo el menú, no
+   repitiéndolo: si mañana se mueve un módulo de grupo en el HTML, la barra se
+   entera sola. Duplicar la lista aquí sería garantizar que un día discrepen. */
+var GRUPO_DE = {};
+(function armarGrupos() {
+  var nav = document.getElementById("nav");
+  if (!nav) return;
+  var grupos = [].slice.call(nav.querySelectorAll(".grupo"));
+  if (!grupos.length) return;
+
+  var barra = document.createElement("div");
+  barra.className = "gbar";
+  barra.setAttribute("role", "tablist");
+  barra.setAttribute("aria-label", "Grupos de módulos");
+
+  grupos.forEach(function (g) {
+    var clave = g.dataset.g;
+    g.querySelectorAll("a").forEach(function (a) {
+      var href = a.getAttribute("href");
+      GRUPO_DE[href.indexOf("#") === 0 ? href.slice(1) : href] = clave;
+    });
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = g.querySelector(".gt").textContent;
+    b.dataset.g = clave;
+    b.setAttribute("role", "tab");
+    b.onclick = function () { abrirGrupo(clave); };
+    barra.appendChild(b);
+  });
+
+  nav.parentNode.insertBefore(barra, nav);
+
+  /* Los desvanecidos de los bordes se encienden según lo que quede fuera, a un
+     píxel de tolerancia porque el navegador redondea el desplazamiento. */
+  function bordes() {
+    var x = barra.scrollLeft;
+    var resto = barra.scrollWidth - barra.clientWidth - x;
+    barra.classList.toggle("masini", x > 1);
+    barra.classList.toggle("masfin", resto > 1);
+  }
+  barra.addEventListener("scroll", bordes);
+  window.addEventListener("resize", bordes);
+  bordes();
+})();
+
+function abrirGrupo(clave) {
+  document.querySelectorAll("#nav .grupo").forEach(function (g) {
+    g.classList.toggle("abierto", g.dataset.g === clave);
+  });
+  document.querySelectorAll(".gbar button").forEach(function (b) {
+    b.setAttribute("aria-selected", String(b.dataset.g === clave));
+  });
+}
+
 /* --------------------------------------------------------- esqueletos -- */
 /* Reemplaza los «Cargando…» por bloques de la forma y el tamaño que tendrá el
    dato. Se ejecuta al abrir la vista, antes de pedir nada, y cada trozo se
@@ -4657,6 +4712,7 @@ function ir(hash) {
       v.classList.toggle("on", v.id === "v-empresa"); });
     document.querySelectorAll("nav a").forEach(function (a) {
       a.classList.toggle("on", a.getAttribute("href") === "#empresas"); });
+    abrirGrupo("empresas");
     vistaEmpresa(mE[1]);
     return;
   }
@@ -4669,6 +4725,9 @@ function ir(hash) {
     v.classList.toggle("on", v.id === "v-" + id); });
   document.querySelectorAll("nav a").forEach(function (a) {
     a.classList.toggle("on", a.getAttribute("href") === "#" + id); });
+  /* El grupo se abre solo: llegar a una vista por enlace, por marcador o por
+     el buscador tiene que dejar el menú mostrando dónde está uno. */
+  if (GRUPO_DE[id]) abrirGrupo(GRUPO_DE[id]);
 
   var slot = document.querySelector("#v-" + id + " .mapaslot");
   if (slot) mapaEn(slot.id, slot.dataset.hash);

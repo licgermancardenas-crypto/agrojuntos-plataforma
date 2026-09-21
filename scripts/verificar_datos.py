@@ -238,7 +238,9 @@ def huellas_de_assets():
                 falla("%s referencia %s, que no existe" % (pagina, asset))
                 continue
             with open(aruta, "rb") as f:
-                real = hashlib.sha256(f.read()).hexdigest()[:len(puesta)]
+                # Mismos finales de linea que en `versionar_assets.py`: LF.
+                crudo = f.read().replace(b"\r\n", b"\n")
+            real = hashlib.sha256(crudo).hexdigest()[:len(puesta)]
             if real == puesta:
                 print("  %-12s %-14s %s: ok" % (pagina, asset, puesta))
             else:

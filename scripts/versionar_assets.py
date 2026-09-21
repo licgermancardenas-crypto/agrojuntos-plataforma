@@ -37,8 +37,17 @@ PAGINAS = ["index.html", "mapa.html"]
 
 
 def huella(ruta: Path) -> str:
-    """Seis caracteres bastan: distinguen versiones, no resisten ataques."""
-    return hashlib.sha256(ruta.read_bytes()).hexdigest()[:8]
+    """Ocho caracteres bastan: distinguen versiones, no resisten ataques.
+
+    Se normalizan los finales de linea antes de medir. Git guarda LF y en
+    Windows entrega CRLF a la copia de trabajo, de modo que el mismo archivo
+    tiene bytes distintos segun donde se mire: la huella calculada en un
+    portatil no coincidia con la del mismo archivo en el runner, y la
+    verificacion fallaba sin que nada estuviera mal. Lo que identifica al
+    archivo es su contenido, no como lo termina de escribir cada sistema.
+    """
+    crudo = ruta.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(crudo).hexdigest()[:8]
 
 
 def referencias(texto: str, asset: str):

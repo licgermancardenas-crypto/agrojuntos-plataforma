@@ -542,7 +542,11 @@ td.faint{color:var(--muted)}
   border-radius:var(--r-xs); background:var(--surf2); display:flex;
   align-items:center; justify-content:center; overflow:hidden}
 .mapaslot iframe{width:100%; height:100%; border:0; display:block}
-.mapabtn{border:1px solid var(--line); background:var(--surf); color:var(--ink);
+/* El lienzo de la vista previa va detrás del botón, que queda flotando
+   encima con su propia sombra para despegarse del dibujo. */
+.previa{position:absolute; inset:0; width:100%; height:100%; display:block}
+.mapabtn{position:relative; z-index:1; box-shadow:var(--shadow);
+  border:1px solid var(--line); background:var(--surf); color:var(--ink);
   font:inherit; font-size:var(--t-base); padding:9px 18px; border-radius:var(--r-xs);
   cursor:pointer}
 .mapabtn:hover{border-color:var(--forest); color:var(--forest)}

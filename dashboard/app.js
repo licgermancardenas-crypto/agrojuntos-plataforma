@@ -831,6 +831,10 @@ function mapaEn(cid, hash) {
       btn.dataset.listo = "1";
       btn.onclick = function () { montarMapa(cid); };
     }
+    /* Se redibuja cada vez que el hueco cambia de destino —la ficha de un
+       departamento mueve el suyo al cambiar de región—, para que la vista
+       previa no se quede mostrando el departamento anterior. */
+    previaMapa(cont);
     return;
   }
   try {
@@ -839,6 +843,80 @@ function mapaEn(cid, hash) {
   } catch (e) {
     f.src = "/mapa?e=1" + hash;
   }
+}
+
+/* La vista previa del mapa.
+
+   El hueco donde vive el atlas medía 520px de alto y estaba vacío, con un
+   botón en el medio. Quinientos veinte píxeles de nada es mucho pedirle al
+   lector para que adivine qué va a salir si pulsa, y en once vistas.
+
+   La vista previa no es una imagen nueva: se dibuja con `geo_min.json`, los
+   contornos de los 25 departamentos que el proyecto ya usa para el localizador
+   de las fichas de empresa. Treinta y cuatro kilobytes que además ya están en
+   caché en varias vistas. Una captura por unidad habría sido otro build, otro
+   formato y doce archivos que se desactualizan solos.
+
+   Cuando el hueco apunta a un departamento, ese departamento va resaltado: la
+   vista previa dice de qué mapa se trata y no solo que hay un mapa. Para un
+   territorio o una provincia se dibuja el país, porque `geo_min` no tiene esas
+   geometrías y dibujar una aproximación sería mentir sobre un mapa. */
+function previaMapa(cont) {
+  if (!cont || MAPAS[cont.id]) return;
+  cargar("geo_min").then(function (GEO) {
+    if (MAPAS[cont.id]) return;
+    var cv = cont.querySelector("canvas.previa");
+    if (!cv) {
+      cv = document.createElement("canvas");
+      cv.className = "previa";
+      cv.setAttribute("aria-hidden", "true");
+      cont.insertBefore(cv, cont.firstChild);
+    }
+    var W = cont.clientWidth, H = cont.clientHeight;
+    if (!W || !H) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.width = W + "px"; cv.style.height = H + "px";
+    var g = cv.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, W, H);
+
+    var mDep = /#dep=([a-z0-9]+)/.exec(cont.dataset.hash || "");
+    var destacado = mDep ? mDep[1] : null;
+
+    var bb = [1e9, 1e9, -1e9, -1e9];
+    GEO.forEach(function (d) {
+      d.r.forEach(function (a) {
+        a.forEach(function (q) {
+          if (q[0] < bb[0]) bb[0] = q[0]; if (q[1] < bb[1]) bb[1] = q[1];
+          if (q[0] > bb[2]) bb[2] = q[0]; if (q[1] > bb[3]) bb[3] = q[1];
+        });
+      });
+    });
+    var pad = 18;
+    var k = Math.min((W - pad * 2) / (bb[2] - bb[0]), (H - pad * 2) / (bb[3] - bb[1]));
+    var ox = (W - (bb[2] - bb[0]) * k) / 2, oy = (H - (bb[3] - bb[1]) * k) / 2;
+    var px = function (x) { return ox + (x - bb[0]) * k; };
+    var py = function (y) { return H - oy - (y - bb[1]) * k; };
+
+    GEO.forEach(function (d) {
+      var esto = destacado && slugU(d.k) === destacado;
+      g.beginPath();
+      d.r.forEach(function (a) {
+        a.forEach(function (q, i) {
+          if (i) g.lineTo(px(q[0]), py(q[1])); else g.moveTo(px(q[0]), py(q[1]));
+        });
+        g.closePath();
+      });
+      g.fillStyle = esto ? css("--forest") : css("--line2");
+      g.globalAlpha = esto ? 0.55 : 1;
+      g.fill();
+      g.globalAlpha = 1;
+      g.strokeStyle = esto ? css("--forest") : css("--line");
+      g.lineWidth = esto ? 1.4 : 0.7;
+      g.stroke();
+    });
+  }).catch(function () { /* sin contornos no hay previa; el botón sigue ahí */ });
 }
 
 function montarMapa(cid) {
@@ -3050,9 +3128,28 @@ function aplicarTema(t) {
     b.setAttribute("aria-pressed", String(b.dataset.tema === t));
   });
   /* El tema cambia los colores pero no el ancho, así que aquí se fuerza: el
-     repintado normal se salta los anchos repetidos. */
+     repintado normal se salta los anchos repetidos. Lo mismo vale para las
+     vistas previas del mapa, que también leen los colores del CSS. */
   repintarCurva(true);
+  repintarPrevias();
 }
+
+/* Las vistas previas son píxeles: no se enteran de un cambio de tema ni de un
+   cambio de ancho. Se vuelven a dibujar las que están montadas y visibles; las
+   que ya tienen el atlas dentro se saltan solas. */
+function repintarPrevias() {
+  document.querySelectorAll(".mapaslot").forEach(function (c) {
+    if (c.clientWidth) previaMapa(c);
+  });
+}
+
+(function previasAlRedimensionar() {
+  var t = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(t);
+    t = setTimeout(repintarPrevias, 160);
+  });
+})();
 
 (function initTema() {
   var guardado = "auto";

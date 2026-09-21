@@ -15,17 +15,31 @@ function cargar(nombre) {
 }
 
 /* ------------------------------------------------------------- formato -- */
+/* Un dato que falta se escribe como raya, nunca como «NaN» ni «undefined».
+   La diferencia importa: «NaN» parece un error del sitio y hace dudar de todas
+   las demás cifras de la página; una raya dice lo que pasa, que ese dato no
+   está. Todo formateador pasa por aquí antes de imprimir. */
+var SIN_DATO = "—";
+function hayDato(v) {
+  if (v === null || v === undefined || v === "") return false;
+  return isFinite(typeof v === "number" ? v : +v);
+}
 function nf(v, d) {
+  if (!hayDato(v)) return SIN_DATO;
   return (+v).toLocaleString("es-PE",
     { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
 }
 function usd(v) {
+  if (!hayDato(v)) return SIN_DATO;
   if (v >= 1e9) return "US$ " + nf(v / 1e9, 2) + " mil MM";
   if (v >= 1e6) return "US$ " + nf(v / 1e6, 1) + " MM";
   if (v >= 1e3) return "US$ " + nf(v / 1e3) + " mil";
   return "US$ " + nf(v);
 }
-function pct(v, d) { return nf(v, d === undefined ? 1 : d) + "%"; }
+function pct(v, d) {
+  if (!hayDato(v)) return SIN_DATO;
+  return nf(v, d === undefined ? 1 : d) + "%";
+}
 function esc(s) {
   return String(s).replace(/[&<>"]/g, function (c) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
@@ -140,9 +154,19 @@ function vistaResumen() {
   }).catch(fallo);
 }
 
+/* Un canvas no se entera de nada. Si se dibuja mientras su sección está oculta,
+   el contenedor mide cero y las barras salen aplastadas para siempre: el canvas
+   guarda píxeles, no una descripción de lo que había que pintar, así que
+   mostrar la sección después no lo arregla.
+
+   De ahí las dos defensas. Aquí se sale sin pintar cuando no hay ancho —pintar
+   en cero solo serviría para dejar basura—, y más abajo `alMostrar` vuelve a
+   llamar a esta función cuando la vista aparece o cambia de tamaño. */
 function dibujarCurva(curva) {
   var cv = document.getElementById("curva");
+  if (!cv) return;
   var w = cv.parentNode.clientWidth - 30, h = 150;
+  if (w <= 0) return;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   cv.width = w * dpr; cv.height = h * dpr;
   cv.style.width = w + "px"; cv.style.height = h + "px";
@@ -165,6 +189,43 @@ function dibujarCurva(curva) {
     c.fillText(x.m, pad / 2 + i * bw + bw / 2, h - 7);
   });
 }
+
+/* Lo que hay que volver a pintar cuando una vista se muestra.
+
+   Se registra por vista y no se dispara a ciegas en cada cambio de hash: las
+   vistas pesadas no tienen por qué repintarse porque el usuario pasó por otra.
+   `ir` llama a `repintarVista` justo después de mostrar la sección, cuando el
+   contenedor ya tiene ancho. */
+var REPINTAR_VISTA = {};
+function alMostrar(vista, fn) {
+  (REPINTAR_VISTA[vista] = REPINTAR_VISTA[vista] || []).push(fn);
+}
+function repintarVista(id) {
+  (REPINTAR_VISTA[id] || []).forEach(function (f) { f(); });
+}
+
+/* La curva del resumen: se repinta al mostrar la vista y cuando su contenedor
+   cambia de ancho. El ResizeObserver cubre los dos casos que `resize` no ve
+   —la vista que pasa de oculta a visible, y la barra lateral o el zoom que
+   mueven el ancho sin mover la ventana—, y recuerda el último ancho pintado
+   para no entrar en bucle consigo mismo. */
+var ANCHO_CURVA = 0;
+function repintarCurva(forzar) {
+  var cv = document.getElementById("curva");
+  if (!cv || !cache.resumen) return;
+  var w = cv.parentNode.clientWidth;
+  if (!w) return;
+  if (!forzar && w === ANCHO_CURVA) return;
+  ANCHO_CURVA = w;
+  cache.resumen.then(function (D) { dibujarCurva(D.curva); });
+}
+alMostrar("resumen", function () { repintarCurva(false); });
+
+(function observarCurva() {
+  var cv = document.getElementById("curva");
+  if (!cv || !window.ResizeObserver) return;
+  new ResizeObserver(function () { repintarCurva(false); }).observe(cv.parentNode);
+})();
 
 /* Cada unidad del mapa tiene su propia direccion: el mapa de un departamento,
    de un territorio o de una provincia se comparte como cualquier pagina. El
@@ -2425,9 +2486,9 @@ function aplicarTema(t) {
   document.querySelectorAll(".tema button").forEach(function (b) {
     b.setAttribute("aria-pressed", String(b.dataset.tema === t));
   });
-  if (cache.resumen) {
-    cache.resumen.then(function (D) { dibujarCurva(D.curva); });
-  }
+  /* El tema cambia los colores pero no el ancho, así que aquí se fuerza: el
+     repintado normal se salta los anchos repetidos. */
+  repintarCurva(true);
 }
 
 (function initTema() {
@@ -2440,9 +2501,7 @@ function aplicarTema(t) {
   // Si el usuario dejó "auto", seguir los cambios del sistema en vivo.
   var mq = window.matchMedia("(prefers-color-scheme: dark)");
   var cb = function () {
-    if (!document.documentElement.dataset.theme && cache.resumen) {
-      cache.resumen.then(function (D) { dibujarCurva(D.curva); });
-    }
+    if (!document.documentElement.dataset.theme) repintarCurva(true);
   };
   if (mq.addEventListener) mq.addEventListener("change", cb);
   else if (mq.addListener) mq.addListener(cb);
@@ -3107,7 +3166,7 @@ function vistaMetodo() {
       "</dd></dl>" +
       "<p>El paso del TAM al SAM es el que más recorta y el que más se " +
       "discute: de " + nf(k.productores) + " productores agropecuarios, solo " +
-      nf(k.sobre5) + " superan las cinco hectáreas —debajo de ese umbral la " +
+      nf(k.sobre5ha) + " superan las cinco hectáreas —debajo de ese umbral la " +
       "agricultura es de autoconsumo— y " + nf(k.credito) + " compran a " +
       "crédito, que es la forma en que AgroJuntos vende.</p>" +
       "<p>El ordenamiento de las regiones (v3) suma al tamaño dos factores " +
@@ -4594,17 +4653,49 @@ function ir(hash) {
     if (id === "fichas") vistaFichas();
     if (id === "registro") vistaRegistro();
   }
+
+  /* Después de mostrar la sección, no antes: recién ahora el contenedor tiene
+     ancho y un canvas puede medirse. */
+  repintarVista(id);
 }
+
+/* El scroll al cambiar de vista.
+
+   Cambiar de pestaña y aterrizar a mitad de página es desorientador: se llega
+   al medio de una tabla que no se pidió. Así que se vuelve arriba. La excepción
+   es el botón «atrás», donde lo que el lector espera es reencontrar lo que
+   estaba mirando.
+
+   Distinguir una cosa de otra es simple porque el navegador ya lo hace:
+   `popstate` solo se dispara al navegar por el historial, nunca al poner un
+   hash nuevo, y llega antes que `hashchange`. La bandera dura lo que tarda el
+   siguiente evento. */
+var POS = {};
+var HASH_ACTUAL = location.hash || "#resumen";
+var VOLVIENDO = false;
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+window.addEventListener("popstate", function () { VOLVIENDO = true; });
+
 window.addEventListener("hashchange", function () {
+  /* En este momento el scroll todavía es el de la vista que se deja. */
+  POS[HASH_ACTUAL] = window.scrollY;
+  HASH_ACTUAL = location.hash || "#resumen";
+
   ir(location.hash);
   /* Un hash de ficha —"#fichas/molecula/X"— tiene que mover la
      ficha ademas de la vista. `ir` se queda con el primer tramo. */
   if (location.hash.indexOf("#fichas/") === 0) fchRutear();
+
+  var guardado = POS[HASH_ACTUAL];
+  window.scrollTo(0, VOLVIENDO && guardado !== undefined ? guardado : 0);
+  VOLVIENDO = false;
 });
 
 vistaResumen();
 ir(location.hash);
-window.addEventListener("resize", function () {
-  if (cache.resumen) cache.resumen.then(function (D) { dibujarCurva(D.curva); });
-});
+/* Respaldo para navegadores sin ResizeObserver; donde lo hay, el observador
+   del contenedor ya cubre este caso. */
+if (!window.ResizeObserver) {
+  window.addEventListener("resize", function () { repintarCurva(true); });
+}
 })();

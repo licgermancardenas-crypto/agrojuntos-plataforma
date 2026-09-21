@@ -176,7 +176,11 @@ html.embed .barra{margin-top:0}
 .tip dd{margin:0; font-family:"IBM Plex Mono",monospace; font-size:11.5px;
   text-align:right; font-variant-numeric:tabular-nums}
 
-.list{overflow-y:auto; max-height:620px; flex:1}
+/* `overscroll-behavior:contain` corta la cadena del scroll: al llegar al final
+   de la lista la rueda deja de heredarse a la página. Sin eso, el puntero que
+   pasa por encima de las zonas atrapa el gesto y no hay forma de bajar hasta el
+   mapa sin sacar el ratón de la lista primero. */
+.list{overflow-y:auto; overscroll-behavior:contain; max-height:620px; flex:1}
 .item{display:grid; grid-template-columns:24px 1fr auto; gap:8px;
   align-items:center; width:100%; text-align:left; padding:7px 12px;
   background:none; border:0; border-bottom:1px solid var(--line2);

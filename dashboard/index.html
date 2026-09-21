@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="/styles.css?v=b46617bc">
+<link rel="stylesheet" href="/styles.css?v=1c2b7c3b">
 <link rel="stylesheet" href="/buscador.css?v=6fb250a7">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
 <script>
@@ -25,7 +25,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 <div class="buscador" id="buscador" hidden>
   <div class="bfondo" data-cerrar></div>
   <div class="bcaja" role="dialog" aria-modal="true" aria-labelledby="bTitulo">
-    <h2 id="bTitulo" class="vh">Buscar en AgroJuntos</h2>
+    <p id="bTitulo" class="vh">Buscar en AgroJuntos</p>
     <input id="bq" type="search" autocomplete="off" spellcheck="false"
            placeholder="Empresa, RUC, provincia, región o territorio…"
            aria-controls="bres" aria-describedby="bCuenta">
@@ -35,6 +35,8 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
        <kbd>Esc</kbd> cerrar</p>
   </div>
 </div>
+
+<a class="saltar" href="#vistas">Saltar al contenido</a>
 
 <div class="wrap">
 
@@ -101,7 +103,10 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
   </div>
 </nav>
 
-<main id="vistas">
+<!-- `tabindex="-1"` para que el enlace de salto pueda dejar el foco aquí:
+     sin esto el navegador desplaza la página pero el foco se queda atrás y el
+     siguiente tabulador vuelve al menú, que es de donde se venía huyendo. -->
+<main id="vistas" tabindex="-1">
 <!-- ------------------------------------------------------------ resumen -->
 <section class="view on" id="v-resumen">
   <div class="kpis" id="kpis" data-sk="6"></div>
@@ -185,9 +190,9 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="filters">
       <input type="search" id="q" placeholder="Buscar por razón social, RUC o región…"
              autocomplete="off" spellcheck="false">
-      <select id="fReg"><option value="">Todas las regiones</option></select>
-      <select id="fTer"><option value="">Todos los territorios</option></select>
-      <span class="count" id="cCount"></span>
+      <select id="fReg" aria-label="Filtrar por región"><option value="">Todas las regiones</option></select>
+      <select id="fTer" aria-label="Filtrar por territorio de venta"><option value="">Todos los territorios</option></select>
+      <span class="count" id="cCount" role="status" aria-live="polite"></span>
     </div>
     <div class="filters" style="border-top:0">
       <div class="chips" id="fClase"></div>
@@ -302,7 +307,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="h"><h3>Qué se compra, para qué cultivo y cuándo</h3>
       <span class="eyebrow" id="canMeta"></span></div>
     <div class="filters">
-      <select id="fCanDep"></select>
+      <select id="fCanDep" aria-label="Elegir departamento"></select>
       <span class="count" id="canDepMeta"></span>
     </div>
     <div class="b"><p id="canIntro"></p></div>
@@ -444,7 +449,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="h"><h3>Ficha por departamento</h3>
       <span class="eyebrow" id="depMeta"></span></div>
     <div class="filters">
-      <select id="fDepto"></select>
+      <select id="fDepto" aria-label="Elegir departamento"></select>
       <div class="chips" id="fDeptoOrden"></div>
       <span class="count" id="depPos"></span>
     </div>
@@ -665,7 +670,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="h"><h3>Qué se cultiva</h3>
       <span class="eyebrow">Superficie cosechada · MIDAGRI 2023</span></div>
     <div class="filters">
-      <select id="fProDep"></select>
+      <select id="fProDep" aria-label="Elegir departamento"></select>
       <span class="count" id="proDepMeta"></span>
     </div>
     <div class="b">
@@ -817,6 +822,6 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
 <!-- El buscador va antes: `app.js` lo monta al arrancar. -->
 <script src="/buscador.js?v=db8e20e1"></script>
-<script src="/app.js?v=a45bf8a9"></script>
+<script src="/app.js?v=0ae45f93"></script>
 </body>
 </html>

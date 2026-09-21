@@ -101,6 +101,23 @@ function medirDesborde(tablaEl) {
   }
   if (tablaEl.scrollWidth > caja.clientWidth + 1) caja.classList.add("desborda");
 
+  /* Una region que se desplaza con el raton tiene que poder desplazarse con el
+     teclado. Solo cuando de verdad desborda: un `tabindex` en una caja que no
+     se mueve agrega una parada inutil al recorrido del tabulador. */
+  if (caja.classList.contains("desborda")) {
+    caja.setAttribute("tabindex", "0");
+    caja.setAttribute("role", "region");
+    if (!caja.getAttribute("aria-label")) {
+      var t = caja.closest(".card") && caja.closest(".card").querySelector("h3");
+      caja.setAttribute("aria-label",
+        "Tabla" + (t ? ": " + t.textContent.trim() : "") + ", desplazable en horizontal");
+    }
+  } else {
+    caja.removeAttribute("tabindex");
+    caja.removeAttribute("role");
+    caja.removeAttribute("aria-label");
+  }
+
   /* Y se dice cuántas se soltaron. Una columna que desaparece sin aviso es una
      columna que el lector cree que no existe; sabiendo que está, sabe que
      puede ensanchar la ventana o bajarse el CSV, donde van todas. */
@@ -286,13 +303,26 @@ function tabla(el, cols, filas, opts) {
       d = d.slice(0, opts.limite);
     }
 
-    el.innerHTML =
+    /* La tabla se presenta a sí misma. Un lector de pantalla que cae en una
+       tabla suelta anuncia «tabla, 9 columnas» y nada más; con el título de su
+       tarjeta dentro, anuncia de qué tabla se trata. Va oculta a la vista
+       porque en pantalla ese título ya está escrito arriba. */
+    var titulo = "";
+    var tarj = el.closest ? el.closest(".card") : null;
+    var h3 = tarj ? tarj.querySelector("h3") : null;
+    if (h3) titulo = '<caption class="vh">' + esc(h3.textContent.trim()) + "</caption>";
+
+    el.innerHTML = titulo +
       "<thead><tr>" + cols.map(function (c) {
+        /* Los valores validos de `aria-sort` son «ascending» y «descending».
+           Con «asc» el atributo existe pero no significa nada, y el lector de
+           pantalla no anuncia el orden: peor que no ponerlo, porque parece
+           puesto. */
         var a = c.k === estado.k
-          ? ' aria-sort="' + (estado.asc ? "asc" : "desc") + '"' : "";
+          ? ' aria-sort="' + (estado.asc ? "ascending" : "descending") + '"' : "";
         var cls = (c.l ? "l" : "") + (c.p > 1 ? " p" + c.p : "");
-        return "<th" + (cls.trim() ? ' class="' + cls.trim() + '"' : "") + a +
-               ' data-k="' + c.k + '">' + c.t + "</th>";
+        return "<th scope=\"col\"" + (cls.trim() ? ' class="' + cls.trim() + '"' : "") +
+               a + ' data-k="' + c.k + '">' + c.t + "</th>";
       }).join("") + "</tr></thead><tbody>" +
       d.map(function (row) {
         return "<tr>" + cols.map(function (c) {
@@ -598,6 +628,25 @@ function aplicarDesdeURL(vista, params) {
       setTimeout(escribirURL, 0);
     }
   }, true);
+})();
+
+/* Cada vista se encabeza con su nombre.
+
+   La página iba de H1 —el nombre del sitio— a los H3 de cada tarjeta, sin
+   escalón intermedio. Quien recorre una página por sus encabezados, que es
+   como se navega con lector de pantalla, no tenía forma de saber dónde empieza
+   una vista y dónde termina. El nombre sale del propio menú, para que no haya
+   dos sitios donde mantenerlo. */
+(function titularVistas() {
+  document.querySelectorAll("#nav a[href^='#']").forEach(function (a) {
+    var id = a.getAttribute("href").slice(1);
+    var sec = document.getElementById("v-" + id);
+    if (!sec || sec.querySelector("h2")) return;
+    var h = document.createElement("h2");
+    h.className = "vh";
+    h.textContent = a.textContent.trim();
+    sec.insertBefore(h, sec.firstChild);
+  });
 })();
 
 /* ------------------------------------------------------------ grupos -- */
@@ -5306,7 +5355,11 @@ function ir(hash) {
     document.querySelectorAll(".view").forEach(function (v) {
       v.classList.toggle("on", v.id === "v-empresa"); });
     document.querySelectorAll("nav a").forEach(function (a) {
-      a.classList.toggle("on", a.getAttribute("href") === "#empresas"); });
+      var act = a.getAttribute("href") === "#empresas";
+      a.classList.toggle("on", act);
+      if (act) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
     abrirGrupo("empresas");
     vistaEmpresa(mE[1]);
     return;
@@ -5319,7 +5372,13 @@ function ir(hash) {
   document.querySelectorAll(".view").forEach(function (v) {
     v.classList.toggle("on", v.id === "v-" + id); });
   document.querySelectorAll("nav a").forEach(function (a) {
-    a.classList.toggle("on", a.getAttribute("href") === "#" + id); });
+    var activa = a.getAttribute("href") === "#" + id;
+    a.classList.toggle("on", activa);
+    /* `aria-current` y no solo una clase: el color dice cuál es la vista
+       abierta a quien lo ve, y esto lo dice a quien no. */
+    if (activa) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
   /* El grupo se abre solo: llegar a una vista por enlace, por marcador o por
      el buscador tiene que dejar el menú mostrando dónde está uno. */
   if (GRUPO_DE[id]) abrirGrupo(GRUPO_DE[id]);

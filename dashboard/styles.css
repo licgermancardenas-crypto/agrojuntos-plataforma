@@ -250,6 +250,32 @@ input[type="search"]::placeholder{color:var(--faint)}
 .sub{font-size:11px; color:var(--muted); line-height:1.5; margin-top:8px}
 .load{padding:40px; text-align:center; color:var(--muted); font-size:13px}
 
+/* -------------------------------------------------------------- esqueleto */
+/* Un «Cargando…» centrado ocupa una línea y el dato que llega ocupa seis: la
+   página salta y lo que el lector estaba por pulsar se le mueve debajo del
+   dedo. El esqueleto ocupa de entrada el sitio exacto que tendrá el dato, así
+   que cuando llega no se mueve nada.
+
+   El brillo desaparece con `prefers-reduced-motion`, pero el bloque se queda:
+   quien pidió menos movimiento no pidió menos información. */
+.skel{background:var(--line); border-radius:4px; color:transparent;
+  position:relative; overflow:hidden}
+.skel::after{content:""; position:absolute; inset:0; transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,var(--surf3),transparent);
+  animation:brillo 1.5s infinite}
+@keyframes brillo{to{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){
+  .skel::after{animation:none}
+}
+/* Las mismas medidas que la celda real de KPI: 20px de cifra, 10px de rótulo,
+   para que la altura de la parrilla no cambie al llegar el dato. */
+.kpis .sk{background:var(--surf); padding:13px 15px}
+.kpis .sk .v{display:block; height:23px; width:72%; margin-bottom:5px}
+.kpis .sk .l{display:block; height:11px; width:90%}
+.skfila{height:27px; margin-bottom:1px}
+.skbloque{height:14px; margin-bottom:9px}
+.skbloque:nth-child(3n){width:78%}
+
 footer{margin-top:30px; padding-top:14px; border-top:1px solid var(--line);
   color:var(--muted); font-size:11px; line-height:1.7}
 footer b{color:var(--ink2); font-weight:500}

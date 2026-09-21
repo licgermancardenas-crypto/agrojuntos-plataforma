@@ -149,8 +149,6 @@ function vistaResumen() {
                  r.score.toFixed(0) + '%"></i></span>'; } }
     ], D.regiones, { sort: "rank", asc: true });
 
-    /* expansión usa los mismos datos */
-    vistaExpansion(D);
   }).catch(fallo);
 }
 
@@ -188,6 +186,44 @@ function dibujarCurva(curva) {
     c.textAlign = "center";
     c.fillText(x.m, pad / 2 + i * bw + bw / 2, h - 7);
   });
+}
+
+/* --------------------------------------------------------- esqueletos -- */
+/* Reemplaza los «Cargando…» por bloques de la forma y el tamaño que tendrá el
+   dato. Se ejecuta al abrir la vista, antes de pedir nada, y cada trozo se
+   reconoce por dónde está: dentro de una parrilla de KPI hacen falta celdas,
+   dentro de una tabla hacen falta filas, y en cualquier otro sitio, líneas.
+
+   El número de celdas no se adivina: va escrito en `data-sk` junto al
+   contenedor, con la cantidad que esa vista pinta de verdad. Una parrilla que
+   promete cuatro y entrega seis salta igual que si no hubiera esqueleto. */
+function esqueleto(el) {
+  var n = +(el.dataset.sk || 0);
+  var i, out = [];
+  if (el.classList.contains("kpis")) {
+    for (i = 0; i < (n || 4); i++) {
+      out.push('<div class="sk"><span class="v skel"></span>' +
+               '<span class="l skel"></span></div>');
+    }
+  } else if (el.tagName === "TABLE") {
+    /* La barra va dentro de la celda y no en la celda misma: la primera columna
+       de una tabla lleva fondo propio para poder quedarse fija al desplazar en
+       lateral, y ese fondo taparía el esqueleto. */
+    for (i = 0; i < (n || 8); i++) {
+      out.push('<tr><td><div class="skel skfila"></div></td></tr>');
+    }
+    el.innerHTML = "<tbody>" + out.join("") + "</tbody>";
+    return;
+  } else {
+    for (i = 0; i < (n || 5); i++) out.push('<div class="skel skbloque"></div>');
+  }
+  el.innerHTML = out.join("");
+}
+
+function esqueletosDe(vista) {
+  var sec = document.getElementById("v-" + vista);
+  if (!sec) return;
+  sec.querySelectorAll("[data-sk]").forEach(esqueleto);
 }
 
 /* Lo que hay que volver a pintar cuando una vista se muestra.
@@ -385,7 +421,8 @@ var EMP = null;
 function vistaEmpresas() {
   if (EMP) return;
   var tbl = document.getElementById("tEmpresas");
-  tbl.innerHTML = '<tbody><tr><td class="load">Cargando 22 mil empresas…</td></tr></tbody>';
+  tbl.dataset.sk = "12";
+  esqueleto(tbl);
 
   cargar("empresas").then(function (D) {
     /* El índice de búsqueda se arma aquí y no en el servidor: duplicar el
@@ -1955,7 +1992,7 @@ function pintarSerie(el, valores, fechas, elTitulo, elNota) {
 
 function vistaEmpresa(ruc) {
   var caja = document.getElementById("empPerfil");
-  caja.innerHTML = '<div class="load">Cargando el perfil…</div>';
+  esqueleto(caja);
   var grupo = ruc.slice(-2);
   Promise.all([cargar("perfil/" + grupo), cargar("perfil_idx"),
                cargar("geo_min")]).then(function (r) {
@@ -4638,6 +4675,10 @@ function ir(hash) {
 
   if (!CARGADO[id]) {
     CARGADO[id] = true;
+    /* Antes de pedir nada: el hueco con la forma del dato se ve enseguida y no
+       se mueve cuando el dato llega. Solo la primera vez —después la vista ya
+       está pintada y repintar esqueletos sería borrarla. */
+    esqueletosDe(id);
     if (id === "territorios") vistaTerritorios();
     if (id === "empresas") vistaEmpresas();
     if (id === "departamentos") vistaDepartamentos();
@@ -4647,7 +4688,14 @@ function ir(hash) {
     if (id === "exportacion") vistaExportacion();
     if (id === "logistica") { vistaLogistica(); pintarCoberturaMes(); }
     if (id === "metodo") vistaMetodo();
-    if (id === "expansion") { pintarReclutar(); pintarRutas(); }
+    /* Expansión se dibuja con los datos del resumen, pero no se dibuja desde
+       el resumen: hacerlo ahí arrastraba `canal.json` y `red.json` —30 KB— a
+       todo el que abría la portada sin pisar esta vista. `cargar` cachea, así
+       que al que ya pasó por el resumen esto no le cuesta una petición. */
+    if (id === "expansion") {
+      cargar("resumen").then(vistaExpansion).catch(fallo);
+      pintarReclutar(); pintarRutas();
+    }
     if (id === "canasta") vistaCanasta();
     if (id === "decisiones") vistaDecisiones();
     if (id === "fichas") vistaFichas();
@@ -4691,6 +4739,13 @@ window.addEventListener("hashchange", function () {
   VOLVIENDO = false;
 });
 
+/* El resumen se pinta siempre al arrancar, se entre por donde se entre, y por
+   eso queda fuera del arranque perezoso de `ir`. Hay que decírselo a `CARGADO`
+   igualmente: si no, la primera vez que el lector llegue al resumen desde otra
+   vista, `ir` lo tomaría por recién abierto y pintaría esqueletos encima de los
+   datos que ya estaban puestos. */
+esqueletosDe("resumen");
+CARGADO.resumen = true;
 vistaResumen();
 ir(location.hash);
 /* Respaldo para navegadores sin ResizeObserver; donde lo hay, el observador

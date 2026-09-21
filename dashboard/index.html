@@ -18,6 +18,23 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </script>
 </head>
 <body>
+<!-- El buscador vive fuera de `.wrap` porque se pinta por encima de todo y no
+     debe heredar el ancho máximo de la página. Arranca oculto; lo abre Ctrl/Cmd+K
+     o el botón del encabezado. -->
+<div class="buscador" id="buscador" hidden>
+  <div class="bfondo" data-cerrar></div>
+  <div class="bcaja" role="dialog" aria-modal="true" aria-labelledby="bTitulo">
+    <h2 id="bTitulo" class="vh">Buscar en AgroJuntos</h2>
+    <input id="bq" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Empresa, RUC, provincia, región o territorio…"
+           aria-controls="bres" aria-describedby="bCuenta">
+    <p id="bCuenta" class="bcuenta" role="status" aria-live="polite"></p>
+    <div class="bres" id="bres" role="listbox" aria-label="Resultados"></div>
+    <p class="bpie"><kbd>↑</kbd><kbd>↓</kbd> moverse · <kbd>↵</kbd> abrir ·
+       <kbd>Esc</kbd> cerrar</p>
+  </div>
+</div>
+
 <div class="wrap">
 
 <header class="top">
@@ -33,6 +50,10 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <button data-p="mensual" title="Promedio mensual">Mensual</button>
     <button data-p="anual" aria-pressed="true" title="Anualizado">Anual</button>
   </div>
+  <button class="bbtn" id="bAbrir" type="button"
+          aria-label="Buscar empresas, provincias, regiones y territorios">
+    <span aria-hidden="true">⌕</span> Buscar <kbd>Ctrl K</kbd>
+  </button>
   <div class="tema" role="group" aria-label="Tema de la interfaz">
     <button data-tema="auto" title="Seguir al sistema">Auto</button>
     <button data-tema="light" title="Modo claro" aria-label="Modo claro">☀</button>

@@ -201,6 +201,179 @@ if (window.montarBuscador) {
   });
 }
 
+/* ------------------------------------------------------- filtros en URL -- */
+/* Una pantalla filtrada tiene que poder mandarse por correo. Hasta ahora la
+   dirección solo decía la vista: quien filtraba el directorio por Ica y
+   territorio 9 y pasaba el enlace, mandaba el directorio entero.
+
+   Los filtros viajan después de «?» dentro del propio hash —
+   «#empresas?reg=Ica&ter=9»— y no en la query de la página, que se la lleva el
+   servidor y obligaría a recargar.
+
+   Esta capa no toca las vistas. Cada filtro se describe una vez con su control
+   y su forma de accionarse; leer y escribir la URL es todo lo que hace. Si
+   mañana una vista cambia por dentro, mientras el control siga ahí esto sigue
+   funcionando. */
+var FILTROS = {
+  empresas: [
+    { id: "q", p: "q", tipo: "campo" },
+    { id: "fReg", p: "reg", tipo: "select" },
+    { id: "fTer", p: "ter", tipo: "select" },
+    { id: "fClase", p: "clase", tipo: "chips", attr: "c" }
+  ],
+  canasta: [{ id: "fCanDep", p: "dep", tipo: "select" }],
+  productos: [{ id: "fProDep", p: "dep", tipo: "select" }],
+  expansion: [{ id: "fUmbral", p: "h", tipo: "chips", attr: "u" }],
+  departamentos: [{ id: "fDeptoOrden", p: "orden", tipo: "chips", attr: "o" }],
+  registro: [
+    { id: "regQ", p: "q", tipo: "campo" },
+    { id: "regEsQ", p: "es", tipo: "campo" }
+  ]
+};
+
+/* El periodo vale para todo el sitio, no para una vista: un enlace que muestre
+   cifras anualizadas tiene que abrirse anualizado, se mande la vista que se
+   mande. */
+var FILTRO_GLOBAL = { id: "fPeriodo", p: "cifras", tipo: "chips", attr: "p" };
+
+function leerHash(hash) {
+  var h = (hash || "").replace(/^#/, "");
+  var i = h.indexOf("?");
+  var params = {};
+  if (i >= 0) {
+    h.slice(i + 1).split("&").forEach(function (par) {
+      if (!par) return;
+      var t = par.split("=");
+      params[decodeURIComponent(t[0])] = decodeURIComponent((t[1] || "").replace(/\+/g, " "));
+    });
+    h = h.slice(0, i);
+  }
+  return { ruta: h, tramos: h.split("/"), params: params };
+}
+
+/* Espera a que exista lo que se va a accionar. Los desplegables y los chips se
+   llenan cuando llegan sus datos, así que aplicar un filtro al abrir la vista
+   es pedirle algo a un control todavía vacío. Se observa en vez de sondear, y
+   se abandona a los ocho segundos para no dejar un observador vivo si el dato
+   nunca llega. */
+function cuandoExista(cont, selector, fn) {
+  if (!cont) return;
+  if (cont.querySelector(selector)) { fn(); return; }
+  if (!window.MutationObserver) return;
+  var obs = new MutationObserver(function () {
+    if (!cont.querySelector(selector)) return;
+    obs.disconnect();
+    fn();
+  });
+  obs.observe(cont, { childList: true, subtree: true });
+  setTimeout(function () { obs.disconnect(); }, 8000);
+}
+
+function aplicarFiltro(f, valor) {
+  var el = document.getElementById(f.id);
+  if (!el) return;
+  if (f.tipo === "campo") {
+    if (el.value === valor) return;
+    el.value = valor;
+    el.dispatchEvent(new Event("input"));
+    return;
+  }
+  if (f.tipo === "select") {
+    cuandoExista(el, 'option[value="' + valor.replace(/"/g, '\\"') + '"]', function () {
+      if (el.value === valor) return;
+      el.value = valor;
+      el.dispatchEvent(new Event("change"));
+    });
+    return;
+  }
+  var sel = "[data-" + f.attr + '="' + valor.replace(/"/g, '\\"') + '"]';
+  cuandoExista(el, sel, function () {
+    var b = el.querySelector(sel);
+    if (b && b.getAttribute("aria-pressed") !== "true") b.click();
+  });
+}
+
+function leerFiltro(f) {
+  var el = document.getElementById(f.id);
+  if (!el) return "";
+  if (f.tipo === "campo" || f.tipo === "select") return el.value || "";
+  var b = el.querySelector('[aria-pressed="true"]');
+  return b ? b.dataset[f.attr] || "" : "";
+}
+
+/* Los valores que el sitio muestra por defecto no se escriben en la dirección:
+   «#empresas» y «#empresas?clase=-1» son la misma pantalla, y cargar la barra
+   de direcciones con lo que ya se ve solo hace el enlace más difícil de leer. */
+var POR_DEFECTO = { clase: "-1", orden: "rank", cifras: "anual", h: "2" };
+
+function escribirURL() {
+  var act = leerHash(location.hash);
+  var lista = (FILTROS[act.tramos[0]] || []).concat([FILTRO_GLOBAL]);
+  var partes = [];
+  lista.forEach(function (f) {
+    var v = leerFiltro(f);
+    if (!v || v === POR_DEFECTO[f.p]) return;
+    partes.push(encodeURIComponent(f.p) + "=" + encodeURIComponent(v));
+  });
+  var nuevo = "#" + act.ruta + (partes.length ? "?" + partes.join("&") : "");
+  if (nuevo === location.hash) return;
+  /* `replaceState` y no asignar el hash: asignarlo dispararía `hashchange`,
+     que repintaría la vista entera cada vez que se teclea una letra en el
+     buscador del directorio. Y `replace` y no `push` para que el botón
+     «atrás» no tenga que deshacer letra por letra. */
+  history.replaceState(history.state, "", nuevo);
+  HASH_ACTUAL = nuevo;
+}
+
+/* Cuándo una vista está lista para que le pongan un filtro.
+
+   No basta con que el control exista. Los campos de texto están en el HTML
+   desde el principio, pero su manejador se engancha cuando llegan los datos:
+   escribir en el campo antes de eso deja el texto puesto y la tabla sin
+   enterarse, que fue exactamente lo que pasó la primera vez. El selector
+   apunta a algo que solo existe cuando la vista ya pintó de verdad —una celda
+   con nombre, no una fila de esqueleto—. */
+var LISTA_LA_VISTA = {
+  empresas: "#tEmpresas tbody td.name",
+  registro: "#tReg tbody td",
+  productos: "#tProductos tbody tr td",
+  expansion: "#fUmbral .chip",
+  departamentos: "#fDeptoOrden .chip",
+  canasta: "#fCanDep option"
+};
+
+function aplicarDesdeURL(vista, params) {
+  var lista = (FILTROS[vista] || []).concat([FILTRO_GLOBAL]);
+  var hay = lista.some(function (f) { return params[f.p] !== undefined; });
+  if (!hay) return;
+
+  function poner() {
+    lista.forEach(function (f) {
+      if (params[f.p] === undefined) return;
+      aplicarFiltro(f, params[f.p]);
+    });
+  }
+
+  var señal = LISTA_LA_VISTA[vista];
+  if (señal) cuandoExista(document.body, señal, poner);
+  else poner();
+}
+
+/* Un solo oyente en la raíz en vez de uno por control: los chips y las opciones
+   de los desplegables se crean después, y un oyente puesto al arrancar no los
+   habría visto nacer. */
+(function escucharFiltros() {
+  var t = null;
+  function pronto() { clearTimeout(t); t = setTimeout(escribirURL, 60); }
+  document.addEventListener("input", pronto, true);
+  document.addEventListener("change", pronto, true);
+  document.addEventListener("click", function (e) {
+    if (e.target && e.target.closest && e.target.closest(".chip, .periodo button")) {
+      setTimeout(escribirURL, 0);
+    }
+  }, true);
+})();
+
 /* ------------------------------------------------------------ grupos -- */
 /* La barra de grupos de pantalla angosta se construye leyendo el menú, no
    repitiéndolo: si mañana se mueve un módulo de grupo en el HTML, la barra se
@@ -376,7 +549,7 @@ function aplicarPeriodo(p) {
   try { localStorage.setItem("periodo", p); } catch (e) {}
   document.querySelectorAll("#fPeriodo button").forEach(function (b) {
     b.setAttribute("aria-pressed", String(b.dataset.p === p)); });
-  var id = (location.hash || "#resumen").replace("#", "");
+  var id = leerHash(location.hash || "#resumen").ruta || "resumen";
   var mE = /^empresa=(\d+)$/.exec(id);
   if (mE) { vistaEmpresa(mE[1]); return; }
   if (REPINTAR[id]) REPINTAR[id]();
@@ -4343,7 +4516,10 @@ function vistaFichas() {
    molécula se puede mandar por correo y abre donde tiene que abrir. */
 function fchRutear() {
   if (!FCH) return;
-  var h = decodeURIComponent(location.hash.replace(/^#/, ""));
+  /* La ruta va antes de «?»: el periodo de las cifras puede venir pegado al
+     hash en cualquier vista, y sin apartarlo la última pieza de la ficha se
+     llevaría el «?cifras=medido» dentro del nombre. */
+  var h = decodeURIComponent(leerHash(location.hash).ruta);
   var p = h.split("/");
   if (p[0] === "fichas" && p.length >= 3) {
     fchVer(p[1], p.slice(2).join("/"));
@@ -4718,7 +4894,10 @@ function pintarRutas() {
 }
 
 function ir(hash) {
-  var id = (hash || "#resumen").replace("#", "");
+  /* Los filtros viajan tras «?» dentro del hash y no forman parte de la ruta:
+     se apartan antes de decidir qué vista se abre. */
+  var dir = leerHash(hash || "#resumen");
+  var id = dir.ruta || "resumen";
   /* Una ficha lleva su entidad en el propio hash —"fichas/molecula/ABAMECTIN"—
      para que el enlace a una molecula se pueda mandar por correo y abra ahi.
      La vista es el primer tramo; el resto lo atiende fchRutear. */
@@ -4789,8 +4968,11 @@ function ir(hash) {
      había forma de enlazar a una: ni desde el buscador, ni desde un correo. El
      segundo tramo del hash la nombra, igual que «#fichas/molecula/X» nombra su
      molécula. */
-  var tramos = (hash || "").replace("#", "").split("/");
-  if (id === "departamentos" && tramos[1]) elegirDepartamento(tramos[1]);
+  if (id === "departamentos" && dir.tramos[1]) elegirDepartamento(dir.tramos[1]);
+
+  /* Después de que la vista arrancó: los controles pueden estar todavía
+     vacíos, y `aplicarFiltro` sabe esperarlos. */
+  aplicarDesdeURL(id, dir.params);
 }
 
 /* Se encadena a la misma promesa de datos que usa la vista: cuando esto corre,
@@ -4831,7 +5013,7 @@ window.addEventListener("hashchange", function () {
   ir(location.hash);
   /* Un hash de ficha —"#fichas/molecula/X"— tiene que mover la
      ficha ademas de la vista. `ir` se queda con el primer tramo. */
-  if (location.hash.indexOf("#fichas/") === 0) fchRutear();
+  if (leerHash(location.hash).ruta.indexOf("fichas/") === 0) fchRutear();
 
   var guardado = POS[HASH_ACTUAL];
   window.scrollTo(0, VOLVIENDO && guardado !== undefined ? guardado : 0);

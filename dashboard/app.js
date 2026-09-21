@@ -2837,14 +2837,26 @@ function vistaEmpresa(ruc) {
       dibujarLocalizador(cv, P, GEO);
       if (!window.__locObs) {
         window.__locObs = true;
-        window.addEventListener("resize", function () {
-          var c = document.getElementById("empMapa");
-          if (c && PERFIL) cargar("geo_min").then(function (G) {
-            dibujarLocalizador(c, PERFIL, G); });
-        });
+        window.addEventListener("resize", repintarLocalizador);
       }
     }
   }).catch(fallo);
+}
+
+/* El localizador de la ficha, repintado.
+
+   Es un canvas y lee sus colores del CSS, así que un cambio de tema lo deja
+   con la paleta anterior hasta que algo más lo obligue a redibujarse. Tenía
+   ya el caso del redimensionado cubierto, y por eso pasó desapercibido: la
+   ventana se mueve y parece que funciona. El tema no mueve nada.
+
+   Es el mismo defecto que la curva del resumen y las vistas previas del mapa
+   —píxeles que no se enteran de que cambió el entorno—, y se arregla igual:
+   avisándole. */
+function repintarLocalizador() {
+  var c = document.getElementById("empMapa");
+  if (!c || !PERFIL) return;
+  cargar("geo_min").then(function (G) { dibujarLocalizador(c, PERFIL, G); });
 }
 
 /* -------------------------------------------------------- estacionalidad -*/
@@ -3189,6 +3201,7 @@ function aplicarTema(t) {
      vistas previas del mapa, que también leen los colores del CSS. */
   repintarCurva(true);
   repintarPrevias();
+  repintarLocalizador();
 }
 
 /* Las vistas previas son píxeles: no se enteran de un cambio de tema ni de un

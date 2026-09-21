@@ -173,6 +173,35 @@ input[type="search"]::placeholder{color:var(--faint)}
   white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--forest); color:#fff; font-weight:500}
 .seg button[disabled]{opacity:.5; cursor:progress}
+/* El panel de controles: una sola caja, plegable, con los grupos nombrados. */
+.ctrl{background:var(--surf); border:1px solid var(--line); border-radius:9px;
+  box-shadow:var(--shadow); padding:6px 8px 8px; pointer-events:auto;
+  max-width:min(420px,52vw)}
+.ctrl > summary{list-style:none; cursor:pointer; font-size:10px; font-weight:600;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+  display:flex; align-items:center; gap:5px; padding:2px 2px 6px}
+.ctrl > summary::-webkit-details-marker{display:none}
+.ctrl > summary::before{content:"▸"; color:var(--faint); font-size:11px}
+.ctrl[open] > summary::before{content:"▾"}
+.ctrl > summary:hover{color:var(--ink)}
+.cgrp{display:flex; align-items:center; gap:7px; margin-top:5px; flex-wrap:wrap}
+.ct{font-size:9.5px; font-weight:600; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--faint); min-width:62px}
+
+/* Elegir una entre varias, y encender varias a la vez, no son lo mismo y no
+   pueden verse igual. La metrica y la geometria son excluyentes: la elegida va
+   llena, como una pestana. Las capas se acumulan: van perfiladas y con una
+   marca de verificacion, como una casilla. Antes las tres filas eran botones
+   verdes identicos y no habia forma de saber, mirando, que «Mercado» apaga a
+   «Clientes» pero «Relieve» no apaga a «Ciudades». */
+.seg.capas{background:none; border:0; box-shadow:none; padding:0; gap:4px}
+.seg.capas button{border:1px solid var(--line); border-radius:20px;
+  padding:4px 10px 4px 8px; background:var(--surf)}
+.seg.capas button::before{content:"☐"; margin-right:4px; opacity:.6}
+.seg.capas button[aria-pressed="true"]{background:var(--surf2);
+  color:var(--forest); border-color:var(--forest)}
+.seg.capas button[aria-pressed="true"]::before{content:"☑"; opacity:1}
+
 .seg.cargando{position:relative}
 .seg.cargando::after{content:""; position:absolute; left:3px; right:3px;
   bottom:-2px; height:2px; border-radius:2px; background:var(--brass);
@@ -387,31 +416,50 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
   <div class="panel mapwrap" id="mapwrap">
     <canvas id="map"></canvas>
+    <!-- Los controles, agrupados y con nombre. Eran cuatro filas de botones
+         iguales encima del mapa, sin decir cuál manda sobre qué: «Mercado» y
+         «Sectores» parecían lo mismo y son dos preguntas distintas —qué se
+         mide y con qué geometría se dibuja—.
+
+         Y se pliegan. En el mapa, el mapa es el contenido; cuatro filas fijas
+         le comen la esquina donde justamente está la costa norte. -->
     <div class="tools">
-      <div class="seg" role="group" aria-label="Capa">
-        <button data-capa="sam" aria-pressed="true">Mercado</button>
-        <button data-capa="clientes">Clientes</button>
-        <button data-capa="acceso">Accesibilidad</button>
-        <button data-capa="territorios">Territorios</button>
-        <button data-capa="hubs">Centros</button>
-      </div>
-      <div class="seg" id="hubCtl" style="display:none">
-        <button data-um="2" aria-pressed="true">2 h</button>
-        <button data-um="4">4 h</button>
-        <button data-um="6">6 h</button>
-      </div>
-      <div class="seg" id="vistaCtl" role="group" aria-label="Representación">
-        <button data-vista="area" aria-pressed="true">Sectores</button>
-        <button data-vista="hex">Hexágonos</button>
-        <button data-vista="pts">Puntos</button>
-        <button data-vista="prov">Provincias</button>
-        <button data-vista="calor">Calor</button>
-      </div>
-      <div class="seg">
-        <button id="tRelieve" aria-pressed="true">Relieve</button>
-        <button id="tCiudades" aria-pressed="true">Ciudades</button>
-        <button id="tPuertos" aria-pressed="true">Puertos</button>
-      </div>
+      <details class="ctrl" open>
+        <summary>Controles</summary>
+        <div class="cgrp">
+          <span class="ct">Métrica</span>
+          <div class="seg" role="group" aria-label="Métrica">
+            <button data-capa="sam" aria-pressed="true">Mercado</button>
+            <button data-capa="clientes">Clientes</button>
+            <button data-capa="acceso">Accesibilidad</button>
+            <button data-capa="territorios">Territorios</button>
+            <button data-capa="hubs">Centros</button>
+          </div>
+        </div>
+        <div class="seg" id="hubCtl" style="display:none">
+          <button data-um="2" aria-pressed="true">2 h</button>
+          <button data-um="4">4 h</button>
+          <button data-um="6">6 h</button>
+        </div>
+        <div class="cgrp">
+          <span class="ct">Geometría</span>
+          <div class="seg" id="vistaCtl" role="group" aria-label="Geometría">
+            <button data-vista="area" aria-pressed="true">Sectores</button>
+            <button data-vista="hex">Hexágonos</button>
+            <button data-vista="pts">Puntos</button>
+            <button data-vista="prov">Provincias</button>
+            <button data-vista="calor">Calor</button>
+          </div>
+        </div>
+        <div class="cgrp">
+          <span class="ct">Capas</span>
+          <div class="seg capas" role="group" aria-label="Capas superpuestas">
+            <button id="tRelieve" aria-pressed="true">Relieve</button>
+            <button id="tCiudades" aria-pressed="true">Ciudades</button>
+            <button id="tPuertos" aria-pressed="true">Puertos</button>
+          </div>
+        </div>
+      </details>
     </div>
     <div class="zoom">
       <button id="zin" aria-label="Acercar">+</button>
@@ -1346,20 +1394,57 @@ function draw(){
   }
 
   /* ciudades: solo las relevantes, y más con el zoom */
+  /* Las etiquetas no se pisan.
+
+     Antes se dibujaban una tras otra donde cayera, y en la costa norte
+     —Chiclayo, Ascope, Huamachuco, Trujillo, todas juntas— salian tres nombres
+     encimados que no se leia ninguno. Peor que no poner el nombre es ponerlo
+     ilegible: el lector no sabe que ahi dice algo.
+
+     Ahora cada etiqueta busca sitio. Se prueban cuatro posiciones alrededor del
+     punto -derecha, izquierda, arriba, abajo- y se toma la primera que no pise
+     una ya puesta. Si ninguna esta libre, se dibuja el punto sin nombre: la
+     ciudad sigue estando, y al acercar el zoom entran menos ciudades en
+     pantalla, se libera sitio y el nombre aparece solo.
+
+     El orden manda: `CIU` viene ordenado por importancia, asi que quien llega
+     primero se queda el lugar. Es prioridad por tamano, sin tener que
+     declararla aparte. */
   if(st.ciudades){
     var cuantas = view.k<1.5?14 : (view.k<3?40 : (view.k<6?90 : CIU.length));
-    ctx.font="600 9.5px 'IBM Plex Sans',sans-serif"; ctx.textAlign="left";
+    ctx.font="600 10.5px 'IBM Plex Sans',sans-serif"; ctx.textAlign="left";
+    var ocupadas=[];
+    function chocan(a,b){
+      return !(a.x2<b.x1 || b.x2<a.x1 || a.y2<b.y1 || b.y2<a.y1);
+    }
+    function sitio(caja){
+      for(var i=0;i<ocupadas.length;i++) if(chocan(caja,ocupadas[i])) return false;
+      return true;
+    }
     CIU.slice(0,cuantas).forEach(function(c){
       if(st.dep>=0 && c.k!==st.dep) return;
       var X=sx(c.lon), Y=sy(c.lat);
       if(X<-20||X>W+20||Y<-20||Y>H+20) return;
+
       ctx.beginPath(); ctx.arc(X,Y,2.6,0,6.2832);
       ctx.fillStyle=tok("--surf"); ctx.strokeStyle=ink; ctx.lineWidth=1;
       ctx.fill(); ctx.stroke();
-      ctx.fillStyle=ink;
-      ctx.strokeStyle=tok("--surf"); ctx.lineWidth=2.4;
-      ctx.strokeText(c.n,X+4.5,Y+3.2);
-      ctx.fillText(c.n,X+4.5,Y+3.2);
+
+      var an=ctx.measureText(c.n).width, al=11;
+      /* Derecha primero: es donde el ojo espera el nombre de un punto. */
+      var opciones=[[X+4.5,Y+3.2],[X-4.5-an,Y+3.2],[X-an/2,Y-6],[X-an/2,Y+13]];
+      for(var i=0;i<opciones.length;i++){
+        var tx=opciones[i][0], ty=opciones[i][1];
+        var caja={x1:tx-1,y1:ty-al+2,x2:tx+an+1,y2:ty+3};
+        if(!sitio(caja)) continue;
+        ocupadas.push(caja);
+        ctx.fillStyle=ink;
+        ctx.strokeStyle=tok("--surf"); ctx.lineWidth=2.4;
+        ctx.strokeText(c.n,tx,ty);
+        ctx.fillText(c.n,tx,ty);
+        return;
+      }
+      /* Sin sitio: queda el punto, que ya dice que ahi hay una ciudad. */
     });
   }
 
@@ -1566,8 +1651,12 @@ document.querySelectorAll(".seg [data-capa]").forEach(function(b){
       o.setAttribute("aria-pressed", String(o===b)); });
     document.getElementById("hubCtl").style.display =
       st.capa==="hubs" ? "flex" : "none";
-    document.getElementById("vistaCtl").style.display =
-      (st.capa==="territorios"||st.capa==="hubs") ? "none" : "flex";
+    /* Se esconde el grupo entero y no solo los botones: dejar el rotulo
+       «Geometria» solo sobre un hueco es peor que no mostrarlo. */
+    var _vc=document.getElementById("vistaCtl");
+    var _oculta=(st.capa==="territorios"||st.capa==="hubs");
+    _vc.style.display = _oculta ? "none" : "flex";
+    if(_vc.closest(".cgrp")) _vc.closest(".cgrp").style.display = _oculta ? "none" : "flex";
     st.sel=-1; st.hov=-1; st.hovP=-1; hideTip();
     renderKpis(); renderList(); renderLegend(); renderDet(); aplicarFiltros();
   };

@@ -680,7 +680,15 @@ var GRUPO_DE = {};
     barra.appendChild(b);
   });
 
-  nav.parentNode.insertBefore(barra, nav);
+  /* Barra de grupos y submenú viajan juntos: en pantalla angosta se van los
+     dos al pie, y para eso tienen que ser un solo bloque. En escritorio el
+     contenedor es `display:contents`, de modo que la columna del menú sigue
+     siendo un hijo directo de la grilla y el layout no se entera. */
+  var envoltura = document.createElement("div");
+  envoltura.className = "navmov";
+  nav.parentNode.insertBefore(envoltura, nav);
+  envoltura.appendChild(barra);
+  envoltura.appendChild(nav);
 
   /* Los desvanecidos de los bordes se encienden según lo que quede fuera, a un
      píxel de tolerancia porque el navegador redondea el desplazamiento. */

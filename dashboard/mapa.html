@@ -160,8 +160,27 @@ input[type="search"]::placeholder{color:var(--faint)}
 /* `.panel.mapwrap` y no `.mapwrap`: la regla base del mapa se declara más
    abajo y, con la misma especificidad, ganaría por orden. */
 @media (max-width:700px){
-  .panel.mapwrap{min-height:58vh}
+  /* El mapa se queda con la pantalla. En un teléfono, un atlas que ocupa media
+     pantalla y deja la otra media para una lista no es un atlas: es una lista
+     con una ilustración. */
+  .panel.mapwrap{min-height:76vh}
   .panel .list{max-height:260px}
+
+  /* Y los controles bajan al pie del mapa, que es donde llega el pulgar. En la
+     esquina superior izquierda tapaban justamente la costa norte, que es donde
+     está casi todo el mercado, y había que estirar la mano hasta el borde de
+     arriba para tocarlos. */
+  /* `.panel .tools` porque la regla base del panel de herramientas se declara
+     más abajo y, con la misma especificidad, ganaría por orden. */
+  .panel .tools{top:auto; bottom:10px; left:10px; right:10px;
+    align-items:stretch; max-height:60vh; overflow-y:auto}
+  .panel .ctrl{max-width:none}
+  .ctrl > summary{justify-content:space-between}
+  .cgrp{gap:4px}
+  .ct{min-width:0; flex:0 0 100%; margin-bottom:-2px}
+  /* Plegado por defecto: en esta pantalla el mapa manda, y los controles se
+     piden cuando se necesitan. */
+  .ctrl:not([open]){background:var(--surf)}
 }
 .panel{background:var(--surf); border:1px solid var(--line); border-radius:10px;
   box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column}
@@ -432,7 +451,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
          Y se pliegan. En el mapa, el mapa es el contenido; cuatro filas fijas
          le comen la esquina donde justamente está la costa norte. -->
     <div class="tools">
-      <details class="ctrl" open>
+      <details class="ctrl" id="ctrlPanel" open>
         <summary>Controles</summary>
         <div class="cgrp">
           <span class="ct">Métrica</span>
@@ -514,6 +533,12 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     }
     return cache[nombre];
   }
+  /* En un telefono el panel arranca plegado: el mapa es el contenido y cuatro
+     grupos de botones encima lo tapan antes de que nadie los pida. Solo al
+     cargar; si el lector lo abre, se queda abierto. */
+  var panel = document.getElementById("ctrlPanel");
+  if (panel && window.matchMedia("(max-width:700px)").matches) panel.open = false;
+
   var menu = document.querySelector("nav");
   if (menu) {
     var bordes = function () {

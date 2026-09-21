@@ -61,13 +61,213 @@ function css(n) {
 }
 
 /* --------------------------------------------------------------- tabla -- */
+/* El scroll lateral, solo cuando la tabla no cabe.
+
+   Esto cierra un problema que quedó declarado en el CSS y sin resolver: un
+   contenedor con `overflow-x:auto` es un contenedor de scroll, y entonces la
+   cabecera `sticky` se pega a él —que no se desplaza en vertical— en vez de al
+   borde de la ventana, y se pierde de vista al bajar. No había forma de tener
+   las dos cosas a la vez... mientras el contenedor tuviera scroll siempre.
+
+   Así que no lo tiene siempre. Se mide después de pintar: si la tabla cabe, el
+   contenedor se queda sin overflow y la cabecera se pega a la ventana, que es
+   lo que hace falta en una tabla larga. Si no cabe —pantalla angosta, o una
+   tabla de quince columnas— aparece el scroll lateral y con él la primera
+   columna fija, que es lo que hace falta ahí. Cada tabla elige, y lo vuelve a
+   elegir cuando cambia el ancho. */
+/* Columnas por prioridad. Una columna puede declararse con `p:2` o `p:3`, donde
+   3 es la primera que sobra. No se ocultan por ancho de pantalla sino por lo
+   que de verdad pasa: se muestran todas, se mide, y si no caben se va quitando
+   de menos importante a más hasta que quepan. Una pantalla de 1920 ve la tabla
+   entera; una de 1280 ve las que importan; ninguna decide por adelantado.
+
+   Lo que queda oculto no se pierde: se exporta igual en el CSV, porque lo que
+   sobra en una pantalla no sobra en una hoja de cálculo. */
+function medirDesborde(tablaEl) {
+  var caja = tablaEl.closest ? tablaEl.closest(".tw") : null;
+  if (!caja) return;
+  var maxP = +(tablaEl.dataset.maxp || 1);
+
+  /* Primero todo visible y sin overflow: medir con el scroll puesto haría que
+     una tabla que ya cabe siguiera pareciendo que no cabe, por el ancho de su
+     propia barra. */
+  caja.classList.remove("desborda");
+  for (var p = 2; p <= maxP; p++) tablaEl.classList.remove("sin-p" + p);
+
+  var quitada = maxP + 1;
+  while (tablaEl.scrollWidth > caja.clientWidth + 1 && quitada > 2) {
+    quitada--;
+    tablaEl.classList.add("sin-p" + quitada);
+  }
+  if (tablaEl.scrollWidth > caja.clientWidth + 1) caja.classList.add("desborda");
+
+  /* Y se dice cuántas se soltaron. Una columna que desaparece sin aviso es una
+     columna que el lector cree que no existe; sabiendo que está, sabe que
+     puede ensanchar la ventana o bajarse el CSV, donde van todas. */
+  var ocultas = tablaEl.querySelectorAll("thead th.p2, thead th.p3").length
+    ? [].filter.call(tablaEl.querySelectorAll("thead th"), function (th) {
+        return th.offsetParent === null;
+      }).length
+    : 0;
+  var nota = caja.querySelector(".ocultas");
+  if (!ocultas) { if (nota) nota.remove(); return; }
+  if (!nota) {
+    nota = document.createElement("p");
+    nota.className = "ocultas sub";
+    caja.appendChild(nota);
+  }
+  nota.textContent = ocultas === 1
+    ? "1 columna oculta porque no entra; está en el CSV."
+    : ocultas + " columnas ocultas porque no entran; están en el CSV.";
+}
+
+(function revisarDesbordes() {
+  var t = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(t);
+    t = setTimeout(function () {
+      document.querySelectorAll(".tw table").forEach(medirDesborde);
+    }, 120);
+  });
+})();
+
 /* Ordena por la columna que se pulse y recuerda el sentido. Las columnas se
    declaran con su extractor, de modo que ordenar usa el valor crudo y no el
    texto ya formateado —ordenar "US$ 1.2 MM" como cadena da resultados
    absurdos—. */
+/* El CSV de lo que se está viendo.
+
+   «Lo que se está viendo» quiere decir las filas que quedaron después de los
+   filtros y en el orden elegido, pero con TODAS las columnas: las que la
+   pantalla soltó por ancho y las que el tope de filas dejó fuera. Una hoja de
+   cálculo no tiene el problema de ancho que tiene una pantalla, y recortar ahí
+   lo mismo que aquí sería trasladar una limitación que allá no existe.
+
+   El valor va crudo, no formateado. `c.v` es el extractor que la tabla ya usa
+   para ordenar —el número, no «US$ 1.2 MM»—, y cuando no lo hay se limpia el
+   HTML del formateador. Un CSV con «US$ 1.2 MM» no se puede sumar. */
+function aTextoPlano(html) {
+  var d = document.createElement("div");
+  d.innerHTML = html;
+  return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function celdaCsv(v) {
+  var t = v === null || v === undefined ? "" : String(v);
+  return /[";\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+}
+
+function descargarCsv(nombre, cols, filas) {
+  var lineas = [cols.map(function (c) { return celdaCsv(aTextoPlano(c.t)); }).join(";")];
+  filas.forEach(function (r) {
+    lineas.push(cols.map(function (c) {
+      var crudo = c.v ? c.v(r) : (r[c.k] !== undefined ? r[c.k] : null);
+      var texto = aTextoPlano(c.f(r));
+      /* El valor crudo solo gana cuando la celda muestra de verdad un número:
+         así el FOB va sumable en vez de «US$ 1.2 MM». Cuando el extractor
+         devuelve un código porque con él ordena —la clase de empresa ordena
+         por su índice pero se lee «Productor»— manda lo que el lector ve, que
+         es lo que significa algo en una hoja de cálculo. */
+      if (typeof crudo === "number" && /\d/.test(texto)) return celdaCsv(crudo);
+      return celdaCsv(texto !== "" ? texto : crudo);
+    }).join(";"));
+  });
+  /* Punto y coma y BOM: es lo que Excel en español espera. Con coma y sin BOM,
+     el archivo se abre en una sola columna y con los acentos rotos, y entonces
+     el botón no sirvió de nada. */
+  var blob = new Blob(["﻿" + lineas.join("\r\n")],
+                      { type: "text/csv;charset=utf-8;" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = nombre;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+
+/* El botón vive en la cabecera de la tarjeta, junto al título, y no dentro de
+   la tabla: es una acción sobre la tabla entera y no sobre una fila. Se crea
+   una sola vez por tabla y después solo se le cambia a qué filas apunta, para
+   que repintar por un filtro no deje botones sueltos. */
+function ponerBotonCsv(el, cols, filas, opts) {
+  if (opts.sinCsv) return;
+  var tarjeta = el.closest ? el.closest(".card") : null;
+  var cabecera = tarjeta ? tarjeta.querySelector(".h") : null;
+  if (!cabecera) return;
+
+  var b = cabecera.querySelector(".csv");
+  if (!b) {
+    b = document.createElement("button");
+    b.type = "button";
+    b.className = "csv";
+    cabecera.appendChild(b);
+  }
+  var titulo = (tarjeta.querySelector("h3") || {}).textContent || "tabla";
+  b.textContent = "CSV";
+  b.title = "Descargar " + nf(filas.length) +
+            (filas.length === 1 ? " fila" : " filas") +
+            " con todas las columnas";
+  b.setAttribute("aria-label", b.title);
+  b.onclick = function () {
+    descargarCsv(slugU(titulo) + ".csv", cols, filas);
+  };
+}
+
+/* El paginador. Dice dónde está uno y cuánto hay, que es lo que el tope fijo
+   no decía: «se muestran 400» dejaba al lector sin saber si faltaban diez
+   filas o veinticinco mil, ni cómo llegar a ellas.
+
+   Va después de la tabla y fuera de su contenedor de scroll, para que no se
+   escape de vista cuando la tabla se desplaza en lateral. */
+function ponerPaginador(el, opts, pag, total, irA) {
+  var caja = el.closest ? el.closest(".tw") : null;
+  if (!caja) return;
+  var previo = caja.parentNode.querySelector(":scope > .pager");
+  if (!opts.pagina || total <= opts.pagina) {
+    if (previo) previo.remove();
+    return;
+  }
+  var paginas = Math.ceil(total / opts.pagina);
+  var desde = pag * opts.pagina + 1;
+  var hasta = Math.min(total, (pag + 1) * opts.pagina);
+
+  var nav = previo;
+  if (!nav) {
+    nav = document.createElement("nav");
+    nav.className = "pager";
+    nav.setAttribute("aria-label", "Paginación de la tabla");
+    caja.parentNode.insertBefore(nav, caja.nextSibling);
+  }
+  nav.innerHTML =
+    '<button type="button" class="pbtn" data-ir="' + (pag - 1) + '"' +
+      (pag === 0 ? " disabled" : "") + ">← Anteriores</button>" +
+    '<span class="pinfo" role="status" aria-live="polite">' +
+      nf(desde) + "–" + nf(hasta) + " de " + nf(total) +
+      '<span class="ppag"> · página ' + nf(pag + 1) + " de " + nf(paginas) +
+      "</span></span>" +
+    '<button type="button" class="pbtn" data-ir="' + (pag + 1) + '"' +
+      (pag + 1 >= paginas ? " disabled" : "") + ">Siguientes →</button>";
+
+  nav.querySelectorAll(".pbtn").forEach(function (b) {
+    b.onclick = function () {
+      if (b.disabled) return;
+      irA(+b.dataset.ir);
+      /* Al cambiar de página se vuelve al principio de la tabla: quedarse a
+         mitad de la página nueva, donde estaba el dedo, desorienta. */
+      caja.scrollIntoView({ block: "start", behavior: "auto" });
+    };
+  });
+}
+
 function tabla(el, cols, filas, opts) {
   opts = opts || {};
   var estado = { k: opts.sort || cols[0].k, asc: !!opts.asc };
+
+  el.dataset.maxp = Math.max.apply(null, cols.map(function (c) { return c.p || 1; }));
+  /* La página en curso vive en el cierre de esta tabla: cada vez que la vista
+     vuelve a llamar a `tabla` —porque cambió un filtro— se empieza de nuevo en
+     la primera, que es lo que el lector espera después de filtrar. */
+  var pag = 0;
 
   function pintar() {
     var d = filas.slice().sort(function (a, b) {
@@ -76,25 +276,40 @@ function tabla(el, cols, filas, opts) {
       var r = typeof va === "string" ? va.localeCompare(vb, "es") : (va - vb);
       return estado.asc ? r : -r;
     });
-    if (opts.limite) d = d.slice(0, opts.limite);
+    /* `todas` es lo filtrado y ordenado sin recortar: es lo que se lleva el
+       CSV. `d` es lo que cabe en pantalla. */
+    var todas = d;
+    if (opts.pagina) {
+      var desde = pag * opts.pagina;
+      d = d.slice(desde, desde + opts.pagina);
+    } else if (opts.limite) {
+      d = d.slice(0, opts.limite);
+    }
 
     el.innerHTML =
       "<thead><tr>" + cols.map(function (c) {
         var a = c.k === estado.k
           ? ' aria-sort="' + (estado.asc ? "asc" : "desc") + '"' : "";
-        return "<th" + (c.l ? ' class="l"' : "") + a + ' data-k="' + c.k + '">' +
-               c.t + "</th>";
+        var cls = (c.l ? "l" : "") + (c.p > 1 ? " p" + c.p : "");
+        return "<th" + (cls.trim() ? ' class="' + cls.trim() + '"' : "") + a +
+               ' data-k="' + c.k + '">' + c.t + "</th>";
       }).join("") + "</tr></thead><tbody>" +
       d.map(function (row) {
         return "<tr>" + cols.map(function (c) {
-          var cls = (c.l ? "l" : "n") + (c.cls ? " " + c.cls : "");
+          var cls = (c.l ? "l" : "n") + (c.cls ? " " + c.cls : "") +
+                    (c.p > 1 ? " p" + c.p : "");
           return '<td class="' + cls + '">' + c.f(row) + "</td>";
         }).join("") + "</tr>";
       }).join("") + "</tbody>";
 
+    medirDesborde(el);
+    ponerBotonCsv(el, cols, todas, opts);
+    ponerPaginador(el, opts, pag, todas.length, function (n) { pag = n; pintar(); });
+
     el.querySelectorAll("th").forEach(function (th) {
       th.onclick = function () {
         var k = th.dataset.k;
+        pag = 0;
         if (k === estado.k) estado.asc = !estado.asc;
         else { estado.k = k; estado.asc = !!cols.filter(function (c) {
           return c.k === k; })[0].l; }
@@ -649,23 +864,23 @@ function vistaTerritorios() {
       { k: "dep", t: "Región", l: true, f: function (r) { return esc(r.dep); } },
       { k: "sam", t: "Mercado anual", f: function (r) { return usd(r.sam); } },
       { k: "cli", t: "Clientes", f: function (r) { return nf(r.cli); } },
-      { k: "ha", t: "Hectáreas", f: function (r) { return nf(r.ha); } },
-      { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
-      { k: "exp", t: "Agroexport.", f: function (r) { return nf(r.exp); } },
+      { k: "ha", p: 2, t: "Hectáreas", f: function (r) { return nf(r.ha); } },
+      { k: "emp", p: 2, t: "Empresas", f: function (r) { return nf(r.emp); } },
+      { k: "exp", p: 2, t: "Agroexport.", f: function (r) { return nf(r.exp); } },
       { k: "hub", t: "Centro", l: true, f: function (r) {
           return r.hub ? esc(r.hub) : "—"; } },
       /* Dos columnas y no una. La promesa vigente es de cuatro horas, pero
          las cifras anteriores de este proyecto se publicaron con vara de dos
          y sin las dos al lado el cambio no se puede leer. */
-      { k: "dpr", t: "Cartera en promesa", f: function (r) {
+      { k: "dpr", p: 3, t: "Cartera en promesa", f: function (r) {
           return r.emp ? nf(r.dpr) + " · " +
                  Math.round(100 * r.dpr / r.emp) + "%" : "—"; } },
-      { k: "d2h", t: "Cartera a <2 h", cls: "faint", f: function (r) {
+      { k: "d2h", p: 3, t: "Cartera a <2 h", cls: "faint", f: function (r) {
           return r.emp ? nf(r.d2h) + " · " +
                  Math.round(100 * r.d2h / r.emp) + "%" : "—"; } },
-      { k: "horas", t: "Horas capital", f: function (r) { return nf(r.horas, 1); } },
-      { k: "ext", t: "Extensión km", f: function (r) { return nf(r.ext); } },
-      { k: "dia", t: "Ruta", l: true, f: function (r) {
+      { k: "horas", p: 2, t: "Horas capital", f: function (r) { return nf(r.horas, 1); } },
+      { k: "ext", p: 3, t: "Extensión km", f: function (r) { return nf(r.ext); } },
+      { k: "dia", p: 3, t: "Ruta", l: true, f: function (r) {
           return r.dia ? '<span class="tag P">un día</span>'
                        : '<span class="tag">pernocte</span>'; } },
       { k: "mapa", t: "Mapa", l: true, f: function (r) {
@@ -788,8 +1003,7 @@ function pintarEmpresas() {
     return true;
   });
   document.getElementById("cCount").textContent =
-    nf(f.length) + " de " + nf(EMP.filas.length) +
-    (f.length > 400 ? " · se muestran 400" : "");
+    nf(f.length) + " de " + nf(EMP.filas.length);
 
   tabla(document.getElementById("tEmpresas"), [
     { k: "n", t: "Razón social", l: true, cls: "name",
@@ -802,16 +1016,16 @@ function pintarEmpresas() {
         return '<span class="tag ' + CL[r.c] + '">' +
                esc(EMP.d.clases[r.c]) + "</span>"; } },
     { k: "dep", t: "Región", l: true, f: function (r) { return esc(r.dep); } },
-    { k: "prov", t: "Provincia", l: true, f: function (r) { return esc(r.prov); } },
-    { k: "z", t: "Territorio de venta", l: true, f: function (r) {
+    { k: "prov", p: 3, t: "Provincia", l: true, f: function (r) { return esc(r.prov); } },
+    { k: "z", p: 2, t: "Territorio de venta", l: true, f: function (r) {
         return r.z && r.z !== "Fuera de territorio" ? esc(r.z) : "—"; } },
-    { k: "h", t: "Centro", l: true, f: function (r) {
+    { k: "h", p: 3, t: "Centro", l: true, f: function (r) {
         return r.h ? esc(r.h) : "—"; } },
     { k: "x", t: "Exporta · " + pSuf(EMP.sem), f: function (r) {
         return r.x ? pFob(r.x, EMP.sem) : "—"; } },
     { k: "i", t: "Importa · " + pSuf(EMP.sem), f: function (r) {
         return r.i ? pFob(r.i, EMP.sem) : "—"; } }
-  ], f, { sort: "x", limite: 400 });
+  ], f, { sort: "x", pagina: 100 });
 }
 REPINTAR.empresas = function () { if (EMP) pintarEmpresas(); };
 
@@ -891,13 +1105,13 @@ function pintarRegistro(D) {
       v: function (r) { return (r.a || [])[0] || "zzz"; }, f: regConc },
     { k: "c", t: "Clase", l: 1,
       f: function (r) { return esc(r.c || "—"); } },
-    { k: "f", t: "Formulación", l: 1,
+    { k: "f", p: 2, t: "Formulación", l: 1,
       f: function (r) { return esc(r.f || "—"); } },
-    { k: "x", t: "Toxicidad", l: 1,
+    { k: "x", p: 2, t: "Toxicidad", l: 1,
       f: function (r) { return esc(r.x || "—"); } },
-    { k: "g", t: "Registro", l: 1,
+    { k: "g", p: 3, t: "Registro", l: 1,
       f: function (r) { return "<code>" + esc(r.g || "—") + "</code>"; } },
-    { k: "t", t: "Titular", l: 1,
+    { k: "t", p: 3, t: "Titular", l: 1,
       f: function (r) { return esc(r.t || "—"); } },
   ];
   var TOPE = 150;
@@ -910,12 +1124,13 @@ function pintarRegistro(D) {
              (p.a || []).join(" ").toLowerCase().indexOf(q) >= 0;
     });
     tabla(document.getElementById("tReg"), cols, filas,
-          { sort: "n", asc: true, limite: TOPE });
-    document.getElementById("regPie").textContent = filas.length > TOPE
-      ? "Se muestran " + nf(TOPE) + " de " + nf(filas.length) +
-        " productos. Escribí en el buscador para acotar."
-      : nf(filas.length) + (filas.length === 1 ? " producto" : " productos") +
-        (q ? " para «" + q + "»" : "");
+          { sort: "n", asc: true, pagina: 100 });
+    /* Ya no hace falta pedir que se acote la búsqueda: el paginador dice
+       cuántos hay y deja llegar a todos. El pie se queda con el recuento, que
+       sigue valiendo. */
+    document.getElementById("regPie").textContent =
+      nf(filas.length) + (filas.length === 1 ? " producto" : " productos") +
+      (q ? " para «" + q + "»" : "");
   }
   document.getElementById("regQ").oninput = pintarPadron;
   pintarPadron();
@@ -987,13 +1202,13 @@ function pintarRegistro(D) {
   /* ── registro de Espana ── */
   var colsEs = [
     { k: "n", t: "Producto", l: 1, f: function (r) { return esc(r.n); } },
-    { k: "F", t: "Formulado", l: 1,
+    { k: "F", p: 2, t: "Formulado", l: 1,
       f: function (r) { return esc(r.F || "—"); } },
     { k: "e", t: "Estado", l: 1,
       f: function (r) { return esc(r.e || "—"); } },
-    { k: "g", t: "Registro", l: 1,
+    { k: "g", p: 3, t: "Registro", l: 1,
       f: function (r) { return "<code>" + esc(r.g || "—") + "</code>"; } },
-    { k: "t", t: "Titular", l: 1, f: function (r) { return esc(r.t || "—"); } },
+    { k: "t", p: 3, t: "Titular", l: 1, f: function (r) { return esc(r.t || "—"); } },
   ];
   function pintarEs() {
     var q = (document.getElementById("regEsQ").value || "").trim().toLowerCase();
@@ -1001,7 +1216,7 @@ function pintarRegistro(D) {
       return (p.n + " " + p.t + " " + p.F).toLowerCase().indexOf(q) >= 0;
     });
     tabla(document.getElementById("tRegEs"), colsEs, filas,
-          { sort: "n", asc: true, limite: TOPE });
+          { sort: "n", asc: true, pagina: 100 });
   }
   document.getElementById("regEsQ").oninput = pintarEs;
   pintarEs();
@@ -2803,7 +3018,7 @@ function vistaExpansion(D) {
 
     tabla(document.getElementById("tSom"), [
       { k: "e", t: "Escenario", l: true, f: function (r) { return esc(r.e); } },
-      { k: "pen", t: "Penetración", f: function (r) {
+      { k: "pen", p: 3, t: "Penetración", f: function (r) {
           return pct(100 * r.pen); } },
       { k: "cli", t: "Clientes activos", f: function (r) { return nf(r.cli); } },
       { k: "ventas", t: "Ventas anuales", f: function (r) { return usd(r.ventas); } },
@@ -3264,12 +3479,12 @@ function pintarComercio(D, E, W) {
     { k: "n", t: "Empresa", l: 1, f: function (r) {
         return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
           (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
-    { k: "rubro", t: "Rubro", l: 1, f: function (r) {
+    { k: "rubro", p: 2, t: "Rubro", l: 1, f: function (r) {
         return "<span class='tag'>" + esc(r.rubro) + "</span>"; } },
     { k: "fob", t: "CIF " + pSuf(si), f: function (r) {
         return pFob(r.fob, si); } },
-    { k: "tn", t: "Toneladas", f: function (r) { return pNum(r.tn, si); } },
-    { k: "pct", t: "% del total", f: function (r) { return pct(r.pct, 2); } },
+    { k: "tn", p: 2, t: "Toneladas", f: function (r) { return pNum(r.tn, si); } },
+    { k: "pct", p: 3, t: "% del total", f: function (r) { return pct(r.pct, 2); } },
   ], D.importadores, { sort: "fob" });
 
   /* El ranking exportador sale del recorte de cinco años, no de la ventana.

@@ -186,11 +186,22 @@ nav a.on{color:var(--forest); border-left-color:var(--forest);
 
 
 /* ---------------------------------------------------------------- cards -- */
+/* `min-width:0` en los hijos no es decorativo. Una celda de grilla se mide
+   por su contenido salvo que sea contenedor de scroll, y las tarjetas dejaron
+   de serlo al pasar de `overflow:hidden` a `clip` —que es lo que permite que
+   la cabecera de una tabla se pegue a la ventana—. Sin esto, una tabla ancha
+   estira su celda y con ella la página entera. */
+.grid2 > *,.grid3 > *,.card{min-width:0}
 .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px}
 .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px}
 @media (max-width:1000px){.grid2,.grid3{grid-template-columns:1fr}}
 .card{background:var(--surf); border:1px solid var(--line); border-radius:var(--r-lg);
-  box-shadow:var(--shadow); overflow:hidden}
+  box-shadow:var(--shadow);
+  /* `clip` y no `hidden`: los dos recortan la esquina redondeada, pero
+     `hidden` convierte la tarjeta en contenedor de scroll y entonces la
+     cabecera `sticky` de una tabla se pega a la tarjeta en vez de al borde de
+     la ventana. `clip` recorta sin crear contenedor. */
+  overflow:clip}
 .card > .h{display:flex; align-items:baseline; justify-content:space-between;
   gap:10px; padding:11px 15px; border-bottom:1px solid var(--line2);
   background:var(--surf2)}
@@ -211,29 +222,37 @@ nav a.on{color:var(--forest); border-left-color:var(--forest);
 .fpct{grid-column:1/-1; font-size:var(--t-etiqueta); color:var(--muted); margin-top:-4px}
 
 /* ---------------------------------------------------------------- table -- */
-/* La tabla no tiene scroll vertical propio. Tenerlo obligaba a elegir con qué
-   rueda se estaba haciendo scroll —la de la página o la de la tabla— y cortaba
-   la tabla a 640px aunque hubiera sitio de sobra debajo. El scroll vertical lo
-   hace la página, como en cualquier documento.
+/* La tabla no tiene scroll vertical propio: lo hace la página, como en
+   cualquier documento. Tenerlo obligaba a elegir con qué rueda se estaba
+   desplazando y cortaba la tabla a 640px aunque hubiera sitio debajo.
 
-   El horizontal se queda, porque una tabla de doce columnas no entra en un
-   móvil, pero acotado: `overscroll-behavior-x:contain` impide que al llegar al
-   final del desplazamiento lateral el gesto se propague y el navegador lo lea
-   como «atrás».
-
-   Sin altura máxima, el eje vertical ya no desplaza nada: la tabla se muestra
-   entera y quien hace scroll es la página.
-
-   Una limitación que conviene dejar escrita, porque se intentó y no se puede:
-   mientras el horizontal esté en `auto`, `.tw` es un contenedor de scroll, y
-   una cabecera `sticky` se pega a él —que no se desplaza en vertical— en vez de
-   al borde de la ventana. Poner el vertical en `visible` o en `clip` no lo
-   evita: el CSS los convierte en `auto` y `hidden` respectivamente, y ambos
-   siguen creando contenedor. Para que la cabecera acompañe al lector al bajar
-   hace falta otra cosa —que la tabla quepa sin scroll lateral, o una cabecera
-   duplicada fuera del contenedor y sincronizada por JS—, y eso es trabajo de
-   la fase de tablas, no de un arreglo de CSS. */
-.tw{overflow-x:auto; overscroll-behavior-x:contain}
+   El horizontal aparece solo cuando hace falta, y lo decide una medición
+   después de pintar, no una suposición. La razón está en `medirDesborde`: un
+   contenedor con overflow es un contenedor de scroll, y mientras lo sea la
+   cabecera `sticky` se pega a él en vez de al borde de la ventana. Sin
+   overflow —la tabla cabe— la cabecera acompaña al lector al bajar. Con
+   overflow —no cabe— manda la primera columna fija, que es lo que sirve
+   cuando se desplaza en lateral. */
+.tw{overflow:visible}
+/* Una columna se oculta cuando su tabla lleva la marca de haberla soltado.
+   `sin-p3` quiere decir «esta tabla ya no muestra lo que sobra primero». */
+table.sin-p3 .p3,table.sin-p2 .p2{display:none}
+.ocultas{margin:8px 15px 12px; color:var(--faint)}
+.pager{display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:10px 15px; border-top:1px solid var(--line2); flex-wrap:wrap}
+.pinfo{font-size:var(--t-apoyo); color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.pbtn{background:var(--surf2); border:1px solid var(--line);
+  border-radius:var(--r-md); color:var(--ink2); font:inherit;
+  font-size:var(--t-apoyo); padding:7px 13px; cursor:pointer; min-height:36px}
+.pbtn:hover:not(:disabled){color:var(--forest); border-color:var(--forest)}
+.pbtn:disabled{opacity:.42; cursor:default}
+@media (max-width:560px){.ppag{display:none}}
+.csv{background:none; border:1px solid var(--line); border-radius:var(--r-sm);
+  color:var(--muted); font:inherit; font-size:var(--t-etiqueta); font-weight:600;
+  letter-spacing:.06em; padding:3px 9px; cursor:pointer; margin-left:auto}
+.csv:hover{color:var(--forest); border-color:var(--forest)}
+.tw.desborda{overflow-x:auto; overscroll-behavior-x:contain}
 table{border-collapse:collapse; width:100%; font-size:var(--t-dato)}
 thead th{position:sticky; top:0; z-index:2; background:var(--surf2);
   text-align:right; font-size:var(--t-etiqueta); font-weight:600; letter-spacing:.07em;
@@ -255,11 +274,11 @@ tbody td.name{max-width:280px; overflow:hidden; text-overflow:ellipsis}
    de qué habla cada fila, y sin ella las demás columnas son números sueltos.
    Necesita fondo propio —si no, el resto de la fila se transparenta por
    debajo— y por eso el hover de la fila también tiene que repintarla. */
-.tw thead th:first-child,
-.tw tbody td:first-child{position:sticky; left:0}
-.tw tbody td:first-child{background:var(--surf); z-index:1}
-.tw thead th:first-child{background:var(--surf2); z-index:3}
-.tw tbody tr:hover td:first-child{background:var(--surf2)}
+.tw.desborda thead th:first-child,
+.tw.desborda tbody td:first-child{position:sticky; left:0}
+.tw.desborda tbody td:first-child{background:var(--surf); z-index:1}
+.tw.desborda thead th:first-child{background:var(--surf2); z-index:3}
+.tw.desborda tbody tr:hover td:first-child{background:var(--surf2)}
 
 .tag{display:inline-block; padding:1.5px 7px; border-radius:var(--r-pill);
   font-size:var(--t-etiqueta); font-weight:600; background:var(--surf3); color:var(--ink2)}

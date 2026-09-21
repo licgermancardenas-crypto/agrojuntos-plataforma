@@ -1207,9 +1207,51 @@ function impVar(a, valAct, valPrev) {
     (f ? " (faltan " + f + " días entre ambos)" : "");
 }
 
-function kpi(v, l, s) {
+function kpi(v, l, s, extra) {
   return "<div><span class='v'>" + v + "</span><span class='l'>" + l +
-    "</span><span class='s'>" + esc(s || "") + "</span></div>";
+    "</span><span class='s'>" + esc(s || "") + "</span>" + (extra || "") +
+    "</div>";
+}
+
+/* Una sparkline de barras para meter dentro de un KPI.
+
+   Barras y no línea porque estas series son magnitudes anuales, no una
+   medición continua: unir 2022 con 2023 con una recta sugiere que hubo algo
+   entre medio, y no lo hay.
+
+   El año en curso va aparte, rayado. Es la misma regla que ya usa la serie
+   grande de la vista: un año con cinco meses medidos dibujado como los cerrados
+   parecería una caída, y no es una caída, es un año que todavía no terminó.
+   Quien mire de reojo tiene que ver la diferencia sin leer nada.
+
+   `puntos` es una lista de {n, v, parcial}. */
+function chispa(puntos, etiqueta) {
+  if (!puntos || puntos.length < 2) return "";
+  var W = 78, H = 24, hueco = 2;
+  var max = Math.max.apply(null, puntos.map(function (p) { return p.v || 0; }));
+  if (!max) return "";
+  var an = (W - hueco * (puntos.length - 1)) / puntos.length;
+
+  var barras = puntos.map(function (p, i) {
+    var h = Math.max(1, (H - 2) * (p.v || 0) / max);
+    var x = i * (an + hueco), y = H - h;
+    if (p.parcial) {
+      /* Rayado: el mismo recurso que la serie grande para «medido a medias». */
+      return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' +
+        an.toFixed(1) + '" height="' + h.toFixed(1) +
+        '" fill="url(#rayas)" stroke="currentColor" stroke-width=".6"' +
+        ' opacity=".85"/>';
+    }
+    return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' +
+      an.toFixed(1) + '" height="' + h.toFixed(1) + '" fill="currentColor"/>';
+  }).join("");
+
+  return '<svg class="chispa" viewBox="0 0 ' + W + " " + H + '" width="' + W +
+    '" height="' + H + '" role="img" aria-label="' + esc(etiqueta) + '">' +
+    '<defs><pattern id="rayas" width="3" height="3" patternUnits="userSpaceOnUse"' +
+    ' patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="3"' +
+    ' stroke="currentColor" stroke-width="1.4"/></pattern></defs>' +
+    barras + "</svg>";
 }
 
 /* Serie temporal de FOB por año. Tres estados de barra, que son tres cosas
@@ -3911,9 +3953,24 @@ function vistaExportacion() {
 function pintarExportacion() {
   var y = EXPQ.anio, yoy = EXPM.yoy;
 
+  /* La serie que acompaña a la cifra: FOB por año, con el año en curso
+     marcado. No se calcula aquí ninguna variación propia. El `yoy` del archivo
+     compara tramos equivalentes —solo los meses cuya maduración llega al
+     99.5%— y esa es la única comparación que significa algo mientras el año
+     esté abierto; una división entre el total de 2026 y el de 2025 daría una
+     caída inventada por el calendario. */
+  var anios = Object.keys(EXPM.por_anio).sort();
+  var puntos = anios.map(function (a) {
+    return { n: a, v: EXPM.por_anio[a].fob, parcial: expEnCurso(a) };
+  });
+  var leyenda = "FOB por año: " + puntos.map(function (p) {
+    return p.n + " " + usd(p.v) + (p.parcial ? " (año en curso)" : "");
+  }).join("; ");
+
   document.getElementById("expKpis").innerHTML = [
     [usd(EXPM.por_anio[y] ? EXPM.por_anio[y].fob : 0),
-     "agroexportado en " + expEt(y), expPie(y)],
+     "agroexportado en " + expEt(y), expPie(y),
+     chispa(puntos, leyenda)],
     [nf(EXPM.empresas_con_dato), "exportadores con RUC",
      "en " + EXPM.anios_con_dato.length + " años medidos"],
     [nf(EXPM.familias.length), "familias de producto",
@@ -3922,7 +3979,7 @@ function pintarExportacion() {
          : "N/D",
      yoy ? yoy.tramo.replace("-", " a ") + " de " + yoy.anios[1] : "variación",
      yoy ? "contra " + yoy.anios[0] + ", solo meses cerrados" : ""],
-  ].map(function (k) { return kpi(esc(k[0]), k[1], k[2]); }).join("");
+  ].map(function (k) { return kpi(esc(k[0]), k[1], k[2], k[3]); }).join("");
 
   // El total no coincide con el oficial y hay que decirlo donde se lee la
   // cifra, no en una nota al pie: es la diferencia entre publicar una

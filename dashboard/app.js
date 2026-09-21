@@ -15,17 +15,42 @@ function cargar(nombre) {
 }
 
 /* ------------------------------------------------------------- formato -- */
+/* Un dato que falta se escribe como raya, nunca como «NaN» ni «undefined».
+   La diferencia importa: «NaN» parece un error del sitio y hace dudar de todas
+   las demás cifras de la página; una raya dice lo que pasa, que ese dato no
+   está. Todo formateador pasa por aquí antes de imprimir. */
+var SIN_DATO = "—";
+function hayDato(v) {
+  if (v === null || v === undefined || v === "") return false;
+  return isFinite(typeof v === "number" ? v : +v);
+}
 function nf(v, d) {
+  if (!hayDato(v)) return SIN_DATO;
   return (+v).toLocaleString("es-PE",
     { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
 }
+/* Un solo sufijo por monto, nunca dos palabras.
+
+   «US$ 1.73 mil MM» medía quince caracteres y se partía en dos líneas en cuanto
+   la celda bajaba de 180px, que es lo que mide en una pantalla de 1024 y en
+   cualquier móvil. Y obligaba a comparar dos unidades distintas: el TAM en
+   «mil MM» contra el SAM en «MM», que es aritmética mental gratuita.
+
+   Ahora todo lo que pasa del millón se dice en millones. «US$ 1,734 MM» junto a
+   «US$ 512.3 MM» se comparan de un vistazo, y ninguno se parte. Por encima de
+   mil millones se deja el decimal: a esa escala, la décima de millón es ruido
+   y son dos caracteres que hacen la diferencia entre caber y no caber. */
 function usd(v) {
-  if (v >= 1e9) return "US$ " + nf(v / 1e9, 2) + " mil MM";
+  if (!hayDato(v)) return SIN_DATO;
+  if (v >= 1e9) return "US$ " + nf(v / 1e6) + " MM";
   if (v >= 1e6) return "US$ " + nf(v / 1e6, 1) + " MM";
   if (v >= 1e3) return "US$ " + nf(v / 1e3) + " mil";
   return "US$ " + nf(v);
 }
-function pct(v, d) { return nf(v, d === undefined ? 1 : d) + "%"; }
+function pct(v, d) {
+  if (!hayDato(v)) return SIN_DATO;
+  return nf(v, d === undefined ? 1 : d) + "%";
+}
 function esc(s) {
   return String(s).replace(/[&<>"]/g, function (c) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
@@ -36,13 +61,230 @@ function css(n) {
 }
 
 /* --------------------------------------------------------------- tabla -- */
+/* El scroll lateral, solo cuando la tabla no cabe.
+
+   Esto cierra un problema que quedó declarado en el CSS y sin resolver: un
+   contenedor con `overflow-x:auto` es un contenedor de scroll, y entonces la
+   cabecera `sticky` se pega a él —que no se desplaza en vertical— en vez de al
+   borde de la ventana, y se pierde de vista al bajar. No había forma de tener
+   las dos cosas a la vez... mientras el contenedor tuviera scroll siempre.
+
+   Así que no lo tiene siempre. Se mide después de pintar: si la tabla cabe, el
+   contenedor se queda sin overflow y la cabecera se pega a la ventana, que es
+   lo que hace falta en una tabla larga. Si no cabe —pantalla angosta, o una
+   tabla de quince columnas— aparece el scroll lateral y con él la primera
+   columna fija, que es lo que hace falta ahí. Cada tabla elige, y lo vuelve a
+   elegir cuando cambia el ancho. */
+/* Columnas por prioridad. Una columna puede declararse con `p:2` o `p:3`, donde
+   3 es la primera que sobra. No se ocultan por ancho de pantalla sino por lo
+   que de verdad pasa: se muestran todas, se mide, y si no caben se va quitando
+   de menos importante a más hasta que quepan. Una pantalla de 1920 ve la tabla
+   entera; una de 1280 ve las que importan; ninguna decide por adelantado.
+
+   Lo que queda oculto no se pierde: se exporta igual en el CSV, porque lo que
+   sobra en una pantalla no sobra en una hoja de cálculo. */
+function medirDesborde(tablaEl) {
+  var caja = tablaEl.closest ? tablaEl.closest(".tw") : null;
+  if (!caja) return;
+  var maxP = +(tablaEl.dataset.maxp || 1);
+
+  /* Primero todo visible y sin overflow: medir con el scroll puesto haría que
+     una tabla que ya cabe siguiera pareciendo que no cabe, por el ancho de su
+     propia barra. */
+  caja.classList.remove("desborda");
+  for (var p = 2; p <= maxP; p++) tablaEl.classList.remove("sin-p" + p);
+
+  var quitada = maxP + 1;
+  while (tablaEl.scrollWidth > caja.clientWidth + 1 && quitada > 2) {
+    quitada--;
+    tablaEl.classList.add("sin-p" + quitada);
+  }
+  if (tablaEl.scrollWidth > caja.clientWidth + 1) caja.classList.add("desborda");
+
+  /* Una region que se desplaza con el raton tiene que poder desplazarse con el
+     teclado. Solo cuando de verdad desborda: un `tabindex` en una caja que no
+     se mueve agrega una parada inutil al recorrido del tabulador. */
+  if (caja.classList.contains("desborda")) {
+    caja.setAttribute("tabindex", "0");
+    caja.setAttribute("role", "region");
+    if (!caja.getAttribute("aria-label")) {
+      var t = caja.closest(".card") && caja.closest(".card").querySelector("h3");
+      caja.setAttribute("aria-label",
+        "Tabla" + (t ? ": " + t.textContent.trim() : "") + ", desplazable en horizontal");
+    }
+  } else {
+    caja.removeAttribute("tabindex");
+    caja.removeAttribute("role");
+    caja.removeAttribute("aria-label");
+  }
+
+  /* Y se dice cuántas se soltaron. Una columna que desaparece sin aviso es una
+     columna que el lector cree que no existe; sabiendo que está, sabe que
+     puede ensanchar la ventana o bajarse el CSV, donde van todas. */
+  var ocultas = tablaEl.querySelectorAll("thead th.p2, thead th.p3").length
+    ? [].filter.call(tablaEl.querySelectorAll("thead th"), function (th) {
+        return th.offsetParent === null;
+      }).length
+    : 0;
+  var nota = caja.querySelector(".ocultas");
+  if (!ocultas) { if (nota) nota.remove(); return; }
+  if (!nota) {
+    nota = document.createElement("p");
+    nota.className = "ocultas sub";
+    caja.appendChild(nota);
+  }
+  nota.textContent = ocultas === 1
+    ? "1 columna oculta porque no entra; está en el CSV."
+    : ocultas + " columnas ocultas porque no entran; están en el CSV.";
+}
+
+(function revisarDesbordes() {
+  var t = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(t);
+    t = setTimeout(function () {
+      document.querySelectorAll(".tw table").forEach(medirDesborde);
+    }, 120);
+  });
+})();
+
 /* Ordena por la columna que se pulse y recuerda el sentido. Las columnas se
    declaran con su extractor, de modo que ordenar usa el valor crudo y no el
    texto ya formateado —ordenar "US$ 1.2 MM" como cadena da resultados
    absurdos—. */
+/* El CSV de lo que se está viendo.
+
+   «Lo que se está viendo» quiere decir las filas que quedaron después de los
+   filtros y en el orden elegido, pero con TODAS las columnas: las que la
+   pantalla soltó por ancho y las que el tope de filas dejó fuera. Una hoja de
+   cálculo no tiene el problema de ancho que tiene una pantalla, y recortar ahí
+   lo mismo que aquí sería trasladar una limitación que allá no existe.
+
+   El valor va crudo, no formateado. `c.v` es el extractor que la tabla ya usa
+   para ordenar —el número, no «US$ 1.2 MM»—, y cuando no lo hay se limpia el
+   HTML del formateador. Un CSV con «US$ 1.2 MM» no se puede sumar. */
+function aTextoPlano(html) {
+  var d = document.createElement("div");
+  d.innerHTML = html;
+  return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function celdaCsv(v) {
+  var t = v === null || v === undefined ? "" : String(v);
+  return /[";\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+}
+
+function descargarCsv(nombre, cols, filas) {
+  var lineas = [cols.map(function (c) { return celdaCsv(aTextoPlano(c.t)); }).join(";")];
+  filas.forEach(function (r) {
+    lineas.push(cols.map(function (c) {
+      var crudo = c.v ? c.v(r) : (r[c.k] !== undefined ? r[c.k] : null);
+      var texto = aTextoPlano(c.f(r));
+      /* El valor crudo solo gana cuando la celda muestra de verdad un número:
+         así el FOB va sumable en vez de «US$ 1.2 MM». Cuando el extractor
+         devuelve un código porque con él ordena —la clase de empresa ordena
+         por su índice pero se lee «Productor»— manda lo que el lector ve, que
+         es lo que significa algo en una hoja de cálculo. */
+      if (typeof crudo === "number" && /\d/.test(texto)) return celdaCsv(crudo);
+      return celdaCsv(texto !== "" ? texto : crudo);
+    }).join(";"));
+  });
+  /* Punto y coma y BOM: es lo que Excel en español espera. Con coma y sin BOM,
+     el archivo se abre en una sola columna y con los acentos rotos, y entonces
+     el botón no sirvió de nada. */
+  var blob = new Blob(["﻿" + lineas.join("\r\n")],
+                      { type: "text/csv;charset=utf-8;" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = nombre;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+
+/* El botón vive en la cabecera de la tarjeta, junto al título, y no dentro de
+   la tabla: es una acción sobre la tabla entera y no sobre una fila. Se crea
+   una sola vez por tabla y después solo se le cambia a qué filas apunta, para
+   que repintar por un filtro no deje botones sueltos. */
+function ponerBotonCsv(el, cols, filas, opts) {
+  if (opts.sinCsv) return;
+  var tarjeta = el.closest ? el.closest(".card") : null;
+  var cabecera = tarjeta ? tarjeta.querySelector(".h") : null;
+  if (!cabecera) return;
+
+  var b = cabecera.querySelector(".csv");
+  if (!b) {
+    b = document.createElement("button");
+    b.type = "button";
+    b.className = "csv";
+    cabecera.appendChild(b);
+  }
+  var titulo = (tarjeta.querySelector("h3") || {}).textContent || "tabla";
+  b.textContent = "CSV";
+  b.title = "Descargar " + nf(filas.length) +
+            (filas.length === 1 ? " fila" : " filas") +
+            " con todas las columnas";
+  b.setAttribute("aria-label", b.title);
+  b.onclick = function () {
+    descargarCsv(slugU(titulo) + ".csv", cols, filas);
+  };
+}
+
+/* El paginador. Dice dónde está uno y cuánto hay, que es lo que el tope fijo
+   no decía: «se muestran 400» dejaba al lector sin saber si faltaban diez
+   filas o veinticinco mil, ni cómo llegar a ellas.
+
+   Va después de la tabla y fuera de su contenedor de scroll, para que no se
+   escape de vista cuando la tabla se desplaza en lateral. */
+function ponerPaginador(el, opts, pag, total, irA) {
+  var caja = el.closest ? el.closest(".tw") : null;
+  if (!caja) return;
+  var previo = caja.parentNode.querySelector(":scope > .pager");
+  if (!opts.pagina || total <= opts.pagina) {
+    if (previo) previo.remove();
+    return;
+  }
+  var paginas = Math.ceil(total / opts.pagina);
+  var desde = pag * opts.pagina + 1;
+  var hasta = Math.min(total, (pag + 1) * opts.pagina);
+
+  var nav = previo;
+  if (!nav) {
+    nav = document.createElement("nav");
+    nav.className = "pager";
+    nav.setAttribute("aria-label", "Paginación de la tabla");
+    caja.parentNode.insertBefore(nav, caja.nextSibling);
+  }
+  nav.innerHTML =
+    '<button type="button" class="pbtn" data-ir="' + (pag - 1) + '"' +
+      (pag === 0 ? " disabled" : "") + ">← Anteriores</button>" +
+    '<span class="pinfo" role="status" aria-live="polite">' +
+      nf(desde) + "–" + nf(hasta) + " de " + nf(total) +
+      '<span class="ppag"> · página ' + nf(pag + 1) + " de " + nf(paginas) +
+      "</span></span>" +
+    '<button type="button" class="pbtn" data-ir="' + (pag + 1) + '"' +
+      (pag + 1 >= paginas ? " disabled" : "") + ">Siguientes →</button>";
+
+  nav.querySelectorAll(".pbtn").forEach(function (b) {
+    b.onclick = function () {
+      if (b.disabled) return;
+      irA(+b.dataset.ir);
+      /* Al cambiar de página se vuelve al principio de la tabla: quedarse a
+         mitad de la página nueva, donde estaba el dedo, desorienta. */
+      caja.scrollIntoView({ block: "start", behavior: "auto" });
+    };
+  });
+}
+
 function tabla(el, cols, filas, opts) {
   opts = opts || {};
   var estado = { k: opts.sort || cols[0].k, asc: !!opts.asc };
+
+  el.dataset.maxp = Math.max.apply(null, cols.map(function (c) { return c.p || 1; }));
+  /* La página en curso vive en el cierre de esta tabla: cada vez que la vista
+     vuelve a llamar a `tabla` —porque cambió un filtro— se empieza de nuevo en
+     la primera, que es lo que el lector espera después de filtrar. */
+  var pag = 0;
 
   function pintar() {
     var d = filas.slice().sort(function (a, b) {
@@ -51,25 +293,53 @@ function tabla(el, cols, filas, opts) {
       var r = typeof va === "string" ? va.localeCompare(vb, "es") : (va - vb);
       return estado.asc ? r : -r;
     });
-    if (opts.limite) d = d.slice(0, opts.limite);
+    /* `todas` es lo filtrado y ordenado sin recortar: es lo que se lleva el
+       CSV. `d` es lo que cabe en pantalla. */
+    var todas = d;
+    if (opts.pagina) {
+      var desde = pag * opts.pagina;
+      d = d.slice(desde, desde + opts.pagina);
+    } else if (opts.limite) {
+      d = d.slice(0, opts.limite);
+    }
 
-    el.innerHTML =
+    /* La tabla se presenta a sí misma. Un lector de pantalla que cae en una
+       tabla suelta anuncia «tabla, 9 columnas» y nada más; con el título de su
+       tarjeta dentro, anuncia de qué tabla se trata. Va oculta a la vista
+       porque en pantalla ese título ya está escrito arriba. */
+    var titulo = "";
+    var tarj = el.closest ? el.closest(".card") : null;
+    var h3 = tarj ? tarj.querySelector("h3") : null;
+    if (h3) titulo = '<caption class="vh">' + esc(h3.textContent.trim()) + "</caption>";
+
+    el.innerHTML = titulo +
       "<thead><tr>" + cols.map(function (c) {
+        /* Los valores validos de `aria-sort` son «ascending» y «descending».
+           Con «asc» el atributo existe pero no significa nada, y el lector de
+           pantalla no anuncia el orden: peor que no ponerlo, porque parece
+           puesto. */
         var a = c.k === estado.k
-          ? ' aria-sort="' + (estado.asc ? "asc" : "desc") + '"' : "";
-        return "<th" + (c.l ? ' class="l"' : "") + a + ' data-k="' + c.k + '">' +
-               c.t + "</th>";
+          ? ' aria-sort="' + (estado.asc ? "ascending" : "descending") + '"' : "";
+        var cls = (c.l ? "l" : "") + (c.p > 1 ? " p" + c.p : "");
+        return "<th scope=\"col\"" + (cls.trim() ? ' class="' + cls.trim() + '"' : "") +
+               a + ' data-k="' + c.k + '">' + c.t + "</th>";
       }).join("") + "</tr></thead><tbody>" +
       d.map(function (row) {
         return "<tr>" + cols.map(function (c) {
-          var cls = (c.l ? "l" : "n") + (c.cls ? " " + c.cls : "");
+          var cls = (c.l ? "l" : "n") + (c.cls ? " " + c.cls : "") +
+                    (c.p > 1 ? " p" + c.p : "");
           return '<td class="' + cls + '">' + c.f(row) + "</td>";
         }).join("") + "</tr>";
       }).join("") + "</tbody>";
 
+    medirDesborde(el);
+    ponerBotonCsv(el, cols, todas, opts);
+    ponerPaginador(el, opts, pag, todas.length, function (n) { pag = n; pintar(); });
+
     el.querySelectorAll("th").forEach(function (th) {
       th.onclick = function () {
         var k = th.dataset.k;
+        pag = 0;
         if (k === estado.k) estado.asc = !estado.asc;
         else { estado.k = k; estado.asc = !!cols.filter(function (c) {
           return c.k === k; })[0].l; }
@@ -135,14 +405,22 @@ function vistaResumen() {
                  r.score.toFixed(0) + '%"></i></span>'; } }
     ], D.regiones, { sort: "rank", asc: true });
 
-    /* expansión usa los mismos datos */
-    vistaExpansion(D);
   }).catch(fallo);
 }
 
+/* Un canvas no se entera de nada. Si se dibuja mientras su sección está oculta,
+   el contenedor mide cero y las barras salen aplastadas para siempre: el canvas
+   guarda píxeles, no una descripción de lo que había que pintar, así que
+   mostrar la sección después no lo arregla.
+
+   De ahí las dos defensas. Aquí se sale sin pintar cuando no hay ancho —pintar
+   en cero solo serviría para dejar basura—, y más abajo `alMostrar` vuelve a
+   llamar a esta función cuando la vista aparece o cambia de tamaño. */
 function dibujarCurva(curva) {
   var cv = document.getElementById("curva");
+  if (!cv) return;
   var w = cv.parentNode.clientWidth - 30, h = 150;
+  if (w <= 0) return;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   cv.width = w * dpr; cv.height = h * dpr;
   cv.style.width = w + "px"; cv.style.height = h + "px";
@@ -165,6 +443,366 @@ function dibujarCurva(curva) {
     c.fillText(x.m, pad / 2 + i * bw + bw / 2, h - 7);
   });
 }
+
+/* El buscador es el mismo archivo que usa el atlas. Aquí se le dice cómo cargar
+   —con el mismo caché que el resto del sitio, para que `empresas.json` no se
+   pida dos veces— y qué hacer con lo elegido. */
+if (window.montarBuscador) {
+  window.montarBuscador({
+    cargar: cargar,
+    irA: function (destino) {
+      if (destino.indexOf("/mapa") === 0) window.location.href = destino;
+      else location.hash = destino;
+    }
+  });
+}
+
+/* ------------------------------------------------------- filtros en URL -- */
+/* Una pantalla filtrada tiene que poder mandarse por correo. Hasta ahora la
+   dirección solo decía la vista: quien filtraba el directorio por Ica y
+   territorio 9 y pasaba el enlace, mandaba el directorio entero.
+
+   Los filtros viajan después de «?» dentro del propio hash —
+   «#empresas?reg=Ica&ter=9»— y no en la query de la página, que se la lleva el
+   servidor y obligaría a recargar.
+
+   Esta capa no toca las vistas. Cada filtro se describe una vez con su control
+   y su forma de accionarse; leer y escribir la URL es todo lo que hace. Si
+   mañana una vista cambia por dentro, mientras el control siga ahí esto sigue
+   funcionando. */
+var FILTROS = {
+  empresas: [
+    { id: "q", p: "q", tipo: "campo" },
+    { id: "fReg", p: "reg", tipo: "select" },
+    { id: "fTer", p: "ter", tipo: "select" },
+    { id: "fClase", p: "clase", tipo: "chips", attr: "c" }
+  ],
+  canasta: [{ id: "fCanDep", p: "dep", tipo: "select" }],
+  productos: [{ id: "fProDep", p: "dep", tipo: "select" }],
+  expansion: [{ id: "fUmbral", p: "h", tipo: "chips", attr: "u" }],
+  departamentos: [{ id: "fDeptoOrden", p: "orden", tipo: "chips", attr: "o" }],
+  registro: [
+    { id: "regQ", p: "q", tipo: "campo" },
+    { id: "regEsQ", p: "es", tipo: "campo" }
+  ]
+};
+
+/* El periodo vale para todo el sitio, no para una vista: un enlace que muestre
+   cifras anualizadas tiene que abrirse anualizado, se mande la vista que se
+   mande. */
+var FILTRO_GLOBAL = { id: "fPeriodo", p: "cifras", tipo: "chips", attr: "p" };
+
+function leerHash(hash) {
+  var h = (hash || "").replace(/^#/, "");
+  var i = h.indexOf("?");
+  var params = {};
+  if (i >= 0) {
+    h.slice(i + 1).split("&").forEach(function (par) {
+      if (!par) return;
+      var t = par.split("=");
+      params[decodeURIComponent(t[0])] = decodeURIComponent((t[1] || "").replace(/\+/g, " "));
+    });
+    h = h.slice(0, i);
+  }
+  return { ruta: h, tramos: h.split("/"), params: params };
+}
+
+/* Espera a que exista lo que se va a accionar. Los desplegables y los chips se
+   llenan cuando llegan sus datos, así que aplicar un filtro al abrir la vista
+   es pedirle algo a un control todavía vacío. Se observa en vez de sondear, y
+   se abandona a los ocho segundos para no dejar un observador vivo si el dato
+   nunca llega. */
+function cuandoExista(cont, selector, fn) {
+  if (!cont) return;
+  if (cont.querySelector(selector)) { fn(); return; }
+  if (!window.MutationObserver) return;
+  var obs = new MutationObserver(function () {
+    if (!cont.querySelector(selector)) return;
+    obs.disconnect();
+    fn();
+  });
+  obs.observe(cont, { childList: true, subtree: true });
+  setTimeout(function () { obs.disconnect(); }, 8000);
+}
+
+function aplicarFiltro(f, valor) {
+  var el = document.getElementById(f.id);
+  if (!el) return;
+  if (f.tipo === "campo") {
+    if (el.value === valor) return;
+    el.value = valor;
+    el.dispatchEvent(new Event("input"));
+    return;
+  }
+  if (f.tipo === "select") {
+    cuandoExista(el, 'option[value="' + valor.replace(/"/g, '\\"') + '"]', function () {
+      if (el.value === valor) return;
+      el.value = valor;
+      el.dispatchEvent(new Event("change"));
+    });
+    return;
+  }
+  var sel = "[data-" + f.attr + '="' + valor.replace(/"/g, '\\"') + '"]';
+  cuandoExista(el, sel, function () {
+    var b = el.querySelector(sel);
+    if (b && b.getAttribute("aria-pressed") !== "true") b.click();
+  });
+}
+
+function leerFiltro(f) {
+  var el = document.getElementById(f.id);
+  if (!el) return "";
+  if (f.tipo === "campo" || f.tipo === "select") return el.value || "";
+  var b = el.querySelector('[aria-pressed="true"]');
+  return b ? b.dataset[f.attr] || "" : "";
+}
+
+/* Los valores que el sitio muestra por defecto no se escriben en la dirección:
+   «#empresas» y «#empresas?clase=-1» son la misma pantalla, y cargar la barra
+   de direcciones con lo que ya se ve solo hace el enlace más difícil de leer. */
+var POR_DEFECTO = { clase: "-1", orden: "rank", cifras: "anual", h: "2" };
+
+function escribirURL() {
+  var act = leerHash(location.hash);
+  var lista = (FILTROS[act.tramos[0]] || []).concat([FILTRO_GLOBAL]);
+  var partes = [];
+  lista.forEach(function (f) {
+    var v = leerFiltro(f);
+    if (!v || v === POR_DEFECTO[f.p]) return;
+    partes.push(encodeURIComponent(f.p) + "=" + encodeURIComponent(v));
+  });
+  var nuevo = "#" + act.ruta + (partes.length ? "?" + partes.join("&") : "");
+  if (nuevo === location.hash) return;
+  /* `replaceState` y no asignar el hash: asignarlo dispararía `hashchange`,
+     que repintaría la vista entera cada vez que se teclea una letra en el
+     buscador del directorio. Y `replace` y no `push` para que el botón
+     «atrás» no tenga que deshacer letra por letra. */
+  history.replaceState(history.state, "", nuevo);
+  HASH_ACTUAL = nuevo;
+}
+
+/* Cuándo una vista está lista para que le pongan un filtro.
+
+   No basta con que el control exista. Los campos de texto están en el HTML
+   desde el principio, pero su manejador se engancha cuando llegan los datos:
+   escribir en el campo antes de eso deja el texto puesto y la tabla sin
+   enterarse, que fue exactamente lo que pasó la primera vez. El selector
+   apunta a algo que solo existe cuando la vista ya pintó de verdad —una celda
+   con nombre, no una fila de esqueleto—. */
+var LISTA_LA_VISTA = {
+  empresas: "#tEmpresas tbody td.name",
+  registro: "#tReg tbody td",
+  productos: "#tProductos tbody tr td",
+  expansion: "#fUmbral .chip",
+  departamentos: "#fDeptoOrden .chip",
+  canasta: "#fCanDep option"
+};
+
+function aplicarDesdeURL(vista, params) {
+  var lista = (FILTROS[vista] || []).concat([FILTRO_GLOBAL]);
+  var hay = lista.some(function (f) { return params[f.p] !== undefined; });
+  if (!hay) return;
+
+  function poner() {
+    lista.forEach(function (f) {
+      if (params[f.p] === undefined) return;
+      aplicarFiltro(f, params[f.p]);
+    });
+  }
+
+  var señal = LISTA_LA_VISTA[vista];
+  if (señal) cuandoExista(document.body, señal, poner);
+  else poner();
+}
+
+/* Un solo oyente en la raíz en vez de uno por control: los chips y las opciones
+   de los desplegables se crean después, y un oyente puesto al arrancar no los
+   habría visto nacer. */
+(function escucharFiltros() {
+  var t = null;
+  function pronto() { clearTimeout(t); t = setTimeout(escribirURL, 60); }
+  document.addEventListener("input", pronto, true);
+  document.addEventListener("change", pronto, true);
+  document.addEventListener("click", function (e) {
+    if (e.target && e.target.closest && e.target.closest(".chip, .periodo button")) {
+      setTimeout(escribirURL, 0);
+    }
+  }, true);
+})();
+
+/* Cada vista se encabeza con su nombre.
+
+   La página iba de H1 —el nombre del sitio— a los H3 de cada tarjeta, sin
+   escalón intermedio. Quien recorre una página por sus encabezados, que es
+   como se navega con lector de pantalla, no tenía forma de saber dónde empieza
+   una vista y dónde termina. El nombre sale del propio menú, para que no haya
+   dos sitios donde mantenerlo. */
+(function titularVistas() {
+  document.querySelectorAll("#nav a[href^='#']").forEach(function (a) {
+    var id = a.getAttribute("href").slice(1);
+    var sec = document.getElementById("v-" + id);
+    if (!sec || sec.querySelector("h2")) return;
+    var h = document.createElement("h2");
+    h.className = "vh";
+    h.textContent = a.textContent.trim();
+    sec.insertBefore(h, sec.firstChild);
+  });
+})();
+
+/* ------------------------------------------------------------ grupos -- */
+/* La barra de grupos de pantalla angosta se construye leyendo el menú, no
+   repitiéndolo: si mañana se mueve un módulo de grupo en el HTML, la barra se
+   entera sola. Duplicar la lista aquí sería garantizar que un día discrepen. */
+var GRUPO_DE = {};
+(function armarGrupos() {
+  var nav = document.getElementById("nav");
+  if (!nav) return;
+  var grupos = [].slice.call(nav.querySelectorAll(".grupo"));
+  if (!grupos.length) return;
+
+  var barra = document.createElement("div");
+  barra.className = "gbar";
+  barra.setAttribute("role", "tablist");
+  barra.setAttribute("aria-label", "Grupos de módulos");
+
+  grupos.forEach(function (g) {
+    var clave = g.dataset.g;
+    g.querySelectorAll("a").forEach(function (a) {
+      var href = a.getAttribute("href");
+      GRUPO_DE[href.indexOf("#") === 0 ? href.slice(1) : href] = clave;
+    });
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = g.querySelector(".gt").textContent;
+    b.dataset.g = clave;
+    b.setAttribute("role", "tab");
+    b.onclick = function () { abrirGrupo(clave); };
+    barra.appendChild(b);
+  });
+
+  /* Barra de grupos y submenú viajan juntos: en pantalla angosta se van los
+     dos al pie, y para eso tienen que ser un solo bloque. En escritorio el
+     contenedor es `display:contents`, de modo que la columna del menú sigue
+     siendo un hijo directo de la grilla y el layout no se entera. */
+  var envoltura = document.createElement("div");
+  envoltura.className = "navmov";
+  nav.parentNode.insertBefore(envoltura, nav);
+  envoltura.appendChild(barra);
+  envoltura.appendChild(nav);
+
+  /* Los desvanecidos de los bordes se encienden según lo que quede fuera, a un
+     píxel de tolerancia porque el navegador redondea el desplazamiento. */
+  function bordes() {
+    var x = barra.scrollLeft;
+    var resto = barra.scrollWidth - barra.clientWidth - x;
+    barra.classList.toggle("masini", x > 1);
+    barra.classList.toggle("masfin", resto > 1);
+  }
+  barra.addEventListener("scroll", bordes);
+  window.addEventListener("resize", bordes);
+  bordes();
+})();
+
+function abrirGrupo(clave) {
+  document.querySelectorAll("#nav .grupo").forEach(function (g) {
+    g.classList.toggle("abierto", g.dataset.g === clave);
+  });
+  document.querySelectorAll(".gbar button").forEach(function (b) {
+    b.setAttribute("aria-selected", String(b.dataset.g === clave));
+  });
+}
+
+/* --------------------------------------------------------- esqueletos -- */
+/* Reemplaza los «Cargando…» por bloques de la forma y el tamaño que tendrá el
+   dato. Se ejecuta al abrir la vista, antes de pedir nada, y cada trozo se
+   reconoce por dónde está: dentro de una parrilla de KPI hacen falta celdas,
+   dentro de una tabla hacen falta filas, y en cualquier otro sitio, líneas.
+
+   El número de celdas no se adivina: va escrito en `data-sk` junto al
+   contenedor, con la cantidad que esa vista pinta de verdad. Una parrilla que
+   promete cuatro y entrega seis salta igual que si no hubiera esqueleto. */
+function esqueleto(el) {
+  var n = +(el.dataset.sk || 0);
+  var i, out = [];
+  if (el.classList.contains("kpis")) {
+    for (i = 0; i < (n || 4); i++) {
+      out.push('<div class="sk"><span class="v skel"></span>' +
+               '<span class="l skel"></span></div>');
+    }
+  } else if (el.tagName === "TABLE") {
+    /* La barra va dentro de la celda y no en la celda misma: la primera columna
+       de una tabla lleva fondo propio para poder quedarse fija al desplazar en
+       lateral, y ese fondo taparía el esqueleto. */
+    for (i = 0; i < (n || 8); i++) {
+      out.push('<tr><td><div class="skel skfila"></div></td></tr>');
+    }
+    el.innerHTML = "<tbody>" + out.join("") + "</tbody>";
+    return;
+  } else {
+    for (i = 0; i < (n || 5); i++) out.push('<div class="skel skbloque"></div>');
+  }
+  el.innerHTML = out.join("");
+}
+
+/* Cuántos KPI hay en cada parrilla, escrito donde el CSS pueda leerlo. Se
+   observa en vez de llamarse desde cada vista: las parrillas las pinta cada
+   módulo por su cuenta y con su propio ritmo, y un contador que dependa de que
+   todos se acuerden de avisar es un contador que un día miente. */
+(function contarKpis() {
+  if (!window.MutationObserver) return;
+  document.querySelectorAll(".kpis").forEach(function (el) {
+    var poner = function () {
+      /* El esqueleto también tiene hijos; se cuentan igual, que para repartir
+         columnas es exactamente lo que hace falta. */
+      el.dataset.n = el.children.length;
+    };
+    new MutationObserver(poner).observe(el, { childList: true });
+    poner();
+  });
+})();
+
+function esqueletosDe(vista) {
+  var sec = document.getElementById("v-" + vista);
+  if (!sec) return;
+  sec.querySelectorAll("[data-sk]").forEach(esqueleto);
+}
+
+/* Lo que hay que volver a pintar cuando una vista se muestra.
+
+   Se registra por vista y no se dispara a ciegas en cada cambio de hash: las
+   vistas pesadas no tienen por qué repintarse porque el usuario pasó por otra.
+   `ir` llama a `repintarVista` justo después de mostrar la sección, cuando el
+   contenedor ya tiene ancho. */
+var REPINTAR_VISTA = {};
+function alMostrar(vista, fn) {
+  (REPINTAR_VISTA[vista] = REPINTAR_VISTA[vista] || []).push(fn);
+}
+function repintarVista(id) {
+  (REPINTAR_VISTA[id] || []).forEach(function (f) { f(); });
+}
+
+/* La curva del resumen: se repinta al mostrar la vista y cuando su contenedor
+   cambia de ancho. El ResizeObserver cubre los dos casos que `resize` no ve
+   —la vista que pasa de oculta a visible, y la barra lateral o el zoom que
+   mueven el ancho sin mover la ventana—, y recuerda el último ancho pintado
+   para no entrar en bucle consigo mismo. */
+var ANCHO_CURVA = 0;
+function repintarCurva(forzar) {
+  var cv = document.getElementById("curva");
+  if (!cv || !cache.resumen) return;
+  var w = cv.parentNode.clientWidth;
+  if (!w) return;
+  if (!forzar && w === ANCHO_CURVA) return;
+  ANCHO_CURVA = w;
+  cache.resumen.then(function (D) { dibujarCurva(D.curva); });
+}
+alMostrar("resumen", function () { repintarCurva(false); });
+
+(function observarCurva() {
+  var cv = document.getElementById("curva");
+  if (!cv || !window.ResizeObserver) return;
+  new ResizeObserver(function () { repintarCurva(false); }).observe(cv.parentNode);
+})();
 
 /* Cada unidad del mapa tiene su propia direccion: el mapa de un departamento,
    de un territorio o de una provincia se comparte como cualquier pagina. El
@@ -211,7 +849,7 @@ function aplicarPeriodo(p) {
   try { localStorage.setItem("periodo", p); } catch (e) {}
   document.querySelectorAll("#fPeriodo button").forEach(function (b) {
     b.setAttribute("aria-pressed", String(b.dataset.p === p)); });
-  var id = (location.hash || "#resumen").replace("#", "");
+  var id = leerHash(location.hash || "#resumen").ruta || "resumen";
   var mE = /^empresa=(\d+)$/.exec(id);
   if (mE) { vistaEmpresa(mE[1]); return; }
   if (REPINTAR[id]) REPINTAR[id]();
@@ -250,6 +888,10 @@ function mapaEn(cid, hash) {
       btn.dataset.listo = "1";
       btn.onclick = function () { montarMapa(cid); };
     }
+    /* Se redibuja cada vez que el hueco cambia de destino —la ficha de un
+       departamento mueve el suyo al cambiar de región—, para que la vista
+       previa no se quede mostrando el departamento anterior. */
+    previaMapa(cont);
     return;
   }
   try {
@@ -258,6 +900,80 @@ function mapaEn(cid, hash) {
   } catch (e) {
     f.src = "/mapa?e=1" + hash;
   }
+}
+
+/* La vista previa del mapa.
+
+   El hueco donde vive el atlas medía 520px de alto y estaba vacío, con un
+   botón en el medio. Quinientos veinte píxeles de nada es mucho pedirle al
+   lector para que adivine qué va a salir si pulsa, y en once vistas.
+
+   La vista previa no es una imagen nueva: se dibuja con `geo_min.json`, los
+   contornos de los 25 departamentos que el proyecto ya usa para el localizador
+   de las fichas de empresa. Treinta y cuatro kilobytes que además ya están en
+   caché en varias vistas. Una captura por unidad habría sido otro build, otro
+   formato y doce archivos que se desactualizan solos.
+
+   Cuando el hueco apunta a un departamento, ese departamento va resaltado: la
+   vista previa dice de qué mapa se trata y no solo que hay un mapa. Para un
+   territorio o una provincia se dibuja el país, porque `geo_min` no tiene esas
+   geometrías y dibujar una aproximación sería mentir sobre un mapa. */
+function previaMapa(cont) {
+  if (!cont || MAPAS[cont.id]) return;
+  cargar("geo_min").then(function (GEO) {
+    if (MAPAS[cont.id]) return;
+    var cv = cont.querySelector("canvas.previa");
+    if (!cv) {
+      cv = document.createElement("canvas");
+      cv.className = "previa";
+      cv.setAttribute("aria-hidden", "true");
+      cont.insertBefore(cv, cont.firstChild);
+    }
+    var W = cont.clientWidth, H = cont.clientHeight;
+    if (!W || !H) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.width = W + "px"; cv.style.height = H + "px";
+    var g = cv.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, W, H);
+
+    var mDep = /#dep=([a-z0-9]+)/.exec(cont.dataset.hash || "");
+    var destacado = mDep ? mDep[1] : null;
+
+    var bb = [1e9, 1e9, -1e9, -1e9];
+    GEO.forEach(function (d) {
+      d.r.forEach(function (a) {
+        a.forEach(function (q) {
+          if (q[0] < bb[0]) bb[0] = q[0]; if (q[1] < bb[1]) bb[1] = q[1];
+          if (q[0] > bb[2]) bb[2] = q[0]; if (q[1] > bb[3]) bb[3] = q[1];
+        });
+      });
+    });
+    var pad = 18;
+    var k = Math.min((W - pad * 2) / (bb[2] - bb[0]), (H - pad * 2) / (bb[3] - bb[1]));
+    var ox = (W - (bb[2] - bb[0]) * k) / 2, oy = (H - (bb[3] - bb[1]) * k) / 2;
+    var px = function (x) { return ox + (x - bb[0]) * k; };
+    var py = function (y) { return H - oy - (y - bb[1]) * k; };
+
+    GEO.forEach(function (d) {
+      var esto = destacado && slugU(d.k) === destacado;
+      g.beginPath();
+      d.r.forEach(function (a) {
+        a.forEach(function (q, i) {
+          if (i) g.lineTo(px(q[0]), py(q[1])); else g.moveTo(px(q[0]), py(q[1]));
+        });
+        g.closePath();
+      });
+      g.fillStyle = esto ? css("--forest") : css("--line2");
+      g.globalAlpha = esto ? 0.55 : 1;
+      g.fill();
+      g.globalAlpha = 1;
+      g.strokeStyle = esto ? css("--forest") : css("--line");
+      g.lineWidth = esto ? 1.4 : 0.7;
+      g.stroke();
+    });
+  }).catch(function () { /* sin contornos no hay previa; el botón sigue ahí */ });
 }
 
 function montarMapa(cid) {
@@ -283,23 +999,23 @@ function vistaTerritorios() {
       { k: "dep", t: "Región", l: true, f: function (r) { return esc(r.dep); } },
       { k: "sam", t: "Mercado anual", f: function (r) { return usd(r.sam); } },
       { k: "cli", t: "Clientes", f: function (r) { return nf(r.cli); } },
-      { k: "ha", t: "Hectáreas", f: function (r) { return nf(r.ha); } },
-      { k: "emp", t: "Empresas", f: function (r) { return nf(r.emp); } },
-      { k: "exp", t: "Agroexport.", f: function (r) { return nf(r.exp); } },
+      { k: "ha", p: 2, t: "Hectáreas", f: function (r) { return nf(r.ha); } },
+      { k: "emp", p: 2, t: "Empresas", f: function (r) { return nf(r.emp); } },
+      { k: "exp", p: 2, t: "Agroexport.", f: function (r) { return nf(r.exp); } },
       { k: "hub", t: "Centro", l: true, f: function (r) {
           return r.hub ? esc(r.hub) : "—"; } },
       /* Dos columnas y no una. La promesa vigente es de cuatro horas, pero
          las cifras anteriores de este proyecto se publicaron con vara de dos
          y sin las dos al lado el cambio no se puede leer. */
-      { k: "dpr", t: "Cartera en promesa", f: function (r) {
+      { k: "dpr", p: 3, t: "Cartera en promesa", f: function (r) {
           return r.emp ? nf(r.dpr) + " · " +
                  Math.round(100 * r.dpr / r.emp) + "%" : "—"; } },
-      { k: "d2h", t: "Cartera a <2 h", cls: "faint", f: function (r) {
+      { k: "d2h", p: 3, t: "Cartera a <2 h", cls: "faint", f: function (r) {
           return r.emp ? nf(r.d2h) + " · " +
                  Math.round(100 * r.d2h / r.emp) + "%" : "—"; } },
-      { k: "horas", t: "Horas capital", f: function (r) { return nf(r.horas, 1); } },
-      { k: "ext", t: "Extensión km", f: function (r) { return nf(r.ext); } },
-      { k: "dia", t: "Ruta", l: true, f: function (r) {
+      { k: "horas", p: 2, t: "Horas capital", f: function (r) { return nf(r.horas, 1); } },
+      { k: "ext", p: 3, t: "Extensión km", f: function (r) { return nf(r.ext); } },
+      { k: "dia", p: 3, t: "Ruta", l: true, f: function (r) {
           return r.dia ? '<span class="tag P">un día</span>'
                        : '<span class="tag">pernocte</span>'; } },
       { k: "mapa", t: "Mapa", l: true, f: function (r) {
@@ -324,7 +1040,8 @@ var EMP = null;
 function vistaEmpresas() {
   if (EMP) return;
   var tbl = document.getElementById("tEmpresas");
-  tbl.innerHTML = '<tbody><tr><td class="load">Cargando 22 mil empresas…</td></tr></tbody>';
+  tbl.dataset.sk = "12";
+  esqueleto(tbl);
 
   cargar("empresas").then(function (D) {
     /* El índice de búsqueda se arma aquí y no en el servidor: duplicar el
@@ -421,8 +1138,7 @@ function pintarEmpresas() {
     return true;
   });
   document.getElementById("cCount").textContent =
-    nf(f.length) + " de " + nf(EMP.filas.length) +
-    (f.length > 400 ? " · se muestran 400" : "");
+    nf(f.length) + " de " + nf(EMP.filas.length);
 
   tabla(document.getElementById("tEmpresas"), [
     { k: "n", t: "Razón social", l: true, cls: "name",
@@ -435,16 +1151,16 @@ function pintarEmpresas() {
         return '<span class="tag ' + CL[r.c] + '">' +
                esc(EMP.d.clases[r.c]) + "</span>"; } },
     { k: "dep", t: "Región", l: true, f: function (r) { return esc(r.dep); } },
-    { k: "prov", t: "Provincia", l: true, f: function (r) { return esc(r.prov); } },
-    { k: "z", t: "Territorio de venta", l: true, f: function (r) {
+    { k: "prov", p: 3, t: "Provincia", l: true, f: function (r) { return esc(r.prov); } },
+    { k: "z", p: 2, t: "Territorio de venta", l: true, f: function (r) {
         return r.z && r.z !== "Fuera de territorio" ? esc(r.z) : "—"; } },
-    { k: "h", t: "Centro", l: true, f: function (r) {
+    { k: "h", p: 3, t: "Centro", l: true, f: function (r) {
         return r.h ? esc(r.h) : "—"; } },
     { k: "x", t: "Exporta · " + pSuf(EMP.sem), f: function (r) {
         return r.x ? pFob(r.x, EMP.sem) : "—"; } },
     { k: "i", t: "Importa · " + pSuf(EMP.sem), f: function (r) {
         return r.i ? pFob(r.i, EMP.sem) : "—"; } }
-  ], f, { sort: "x", limite: 400 });
+  ], f, { sort: "x", pagina: 100 });
 }
 REPINTAR.empresas = function () { if (EMP) pintarEmpresas(); };
 
@@ -524,13 +1240,13 @@ function pintarRegistro(D) {
       v: function (r) { return (r.a || [])[0] || "zzz"; }, f: regConc },
     { k: "c", t: "Clase", l: 1,
       f: function (r) { return esc(r.c || "—"); } },
-    { k: "f", t: "Formulación", l: 1,
+    { k: "f", p: 2, t: "Formulación", l: 1,
       f: function (r) { return esc(r.f || "—"); } },
-    { k: "x", t: "Toxicidad", l: 1,
+    { k: "x", p: 2, t: "Toxicidad", l: 1,
       f: function (r) { return esc(r.x || "—"); } },
-    { k: "g", t: "Registro", l: 1,
+    { k: "g", p: 3, t: "Registro", l: 1,
       f: function (r) { return "<code>" + esc(r.g || "—") + "</code>"; } },
-    { k: "t", t: "Titular", l: 1,
+    { k: "t", p: 3, t: "Titular", l: 1,
       f: function (r) { return esc(r.t || "—"); } },
   ];
   var TOPE = 150;
@@ -543,12 +1259,13 @@ function pintarRegistro(D) {
              (p.a || []).join(" ").toLowerCase().indexOf(q) >= 0;
     });
     tabla(document.getElementById("tReg"), cols, filas,
-          { sort: "n", asc: true, limite: TOPE });
-    document.getElementById("regPie").textContent = filas.length > TOPE
-      ? "Se muestran " + nf(TOPE) + " de " + nf(filas.length) +
-        " productos. Escribí en el buscador para acotar."
-      : nf(filas.length) + (filas.length === 1 ? " producto" : " productos") +
-        (q ? " para «" + q + "»" : "");
+          { sort: "n", asc: true, pagina: 100 });
+    /* Ya no hace falta pedir que se acote la búsqueda: el paginador dice
+       cuántos hay y deja llegar a todos. El pie se queda con el recuento, que
+       sigue valiendo. */
+    document.getElementById("regPie").textContent =
+      nf(filas.length) + (filas.length === 1 ? " producto" : " productos") +
+      (q ? " para «" + q + "»" : "");
   }
   document.getElementById("regQ").oninput = pintarPadron;
   pintarPadron();
@@ -620,13 +1337,13 @@ function pintarRegistro(D) {
   /* ── registro de Espana ── */
   var colsEs = [
     { k: "n", t: "Producto", l: 1, f: function (r) { return esc(r.n); } },
-    { k: "F", t: "Formulado", l: 1,
+    { k: "F", p: 2, t: "Formulado", l: 1,
       f: function (r) { return esc(r.F || "—"); } },
     { k: "e", t: "Estado", l: 1,
       f: function (r) { return esc(r.e || "—"); } },
-    { k: "g", t: "Registro", l: 1,
+    { k: "g", p: 3, t: "Registro", l: 1,
       f: function (r) { return "<code>" + esc(r.g || "—") + "</code>"; } },
-    { k: "t", t: "Titular", l: 1, f: function (r) { return esc(r.t || "—"); } },
+    { k: "t", p: 3, t: "Titular", l: 1, f: function (r) { return esc(r.t || "—"); } },
   ];
   function pintarEs() {
     var q = (document.getElementById("regEsQ").value || "").trim().toLowerCase();
@@ -634,7 +1351,7 @@ function pintarRegistro(D) {
       return (p.n + " " + p.t + " " + p.F).toLowerCase().indexOf(q) >= 0;
     });
     tabla(document.getElementById("tRegEs"), colsEs, filas,
-          { sort: "n", asc: true, limite: TOPE });
+          { sort: "n", asc: true, pagina: 100 });
   }
   document.getElementById("regEsQ").oninput = pintarEs;
   pintarEs();
@@ -840,9 +1557,51 @@ function impVar(a, valAct, valPrev) {
     (f ? " (faltan " + f + " días entre ambos)" : "");
 }
 
-function kpi(v, l, s) {
+function kpi(v, l, s, extra) {
   return "<div><span class='v'>" + v + "</span><span class='l'>" + l +
-    "</span><span class='s'>" + esc(s || "") + "</span></div>";
+    "</span><span class='s'>" + esc(s || "") + "</span>" + (extra || "") +
+    "</div>";
+}
+
+/* Una sparkline de barras para meter dentro de un KPI.
+
+   Barras y no línea porque estas series son magnitudes anuales, no una
+   medición continua: unir 2022 con 2023 con una recta sugiere que hubo algo
+   entre medio, y no lo hay.
+
+   El año en curso va aparte, rayado. Es la misma regla que ya usa la serie
+   grande de la vista: un año con cinco meses medidos dibujado como los cerrados
+   parecería una caída, y no es una caída, es un año que todavía no terminó.
+   Quien mire de reojo tiene que ver la diferencia sin leer nada.
+
+   `puntos` es una lista de {n, v, parcial}. */
+function chispa(puntos, etiqueta) {
+  if (!puntos || puntos.length < 2) return "";
+  var W = 78, H = 24, hueco = 2;
+  var max = Math.max.apply(null, puntos.map(function (p) { return p.v || 0; }));
+  if (!max) return "";
+  var an = (W - hueco * (puntos.length - 1)) / puntos.length;
+
+  var barras = puntos.map(function (p, i) {
+    var h = Math.max(1, (H - 2) * (p.v || 0) / max);
+    var x = i * (an + hueco), y = H - h;
+    if (p.parcial) {
+      /* Rayado: el mismo recurso que la serie grande para «medido a medias». */
+      return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' +
+        an.toFixed(1) + '" height="' + h.toFixed(1) +
+        '" fill="url(#rayas)" stroke="currentColor" stroke-width=".6"' +
+        ' opacity=".85"/>';
+    }
+    return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' +
+      an.toFixed(1) + '" height="' + h.toFixed(1) + '" fill="currentColor"/>';
+  }).join("");
+
+  return '<svg class="chispa" viewBox="0 0 ' + W + " " + H + '" width="' + W +
+    '" height="' + H + '" role="img" aria-label="' + esc(etiqueta) + '">' +
+    '<defs><pattern id="rayas" width="3" height="3" patternUnits="userSpaceOnUse"' +
+    ' patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="3"' +
+    ' stroke="currentColor" stroke-width="1.4"/></pattern></defs>' +
+    barras + "</svg>";
 }
 
 /* Serie temporal de FOB por año. Tres estados de barra, que son tres cosas
@@ -1894,7 +2653,7 @@ function pintarSerie(el, valores, fechas, elTitulo, elNota) {
 
 function vistaEmpresa(ruc) {
   var caja = document.getElementById("empPerfil");
-  caja.innerHTML = '<div class="load">Cargando el perfil…</div>';
+  esqueleto(caja);
   var grupo = ruc.slice(-2);
   Promise.all([cargar("perfil/" + grupo), cargar("perfil_idx"),
                cargar("geo_min")]).then(function (r) {
@@ -2394,7 +3153,7 @@ function vistaExpansion(D) {
 
     tabla(document.getElementById("tSom"), [
       { k: "e", t: "Escenario", l: true, f: function (r) { return esc(r.e); } },
-      { k: "pen", t: "Penetración", f: function (r) {
+      { k: "pen", p: 3, t: "Penetración", f: function (r) {
           return pct(100 * r.pen); } },
       { k: "cli", t: "Clientes activos", f: function (r) { return nf(r.cli); } },
       { k: "ventas", t: "Ventas anuales", f: function (r) { return usd(r.ventas); } },
@@ -2425,10 +3184,29 @@ function aplicarTema(t) {
   document.querySelectorAll(".tema button").forEach(function (b) {
     b.setAttribute("aria-pressed", String(b.dataset.tema === t));
   });
-  if (cache.resumen) {
-    cache.resumen.then(function (D) { dibujarCurva(D.curva); });
-  }
+  /* El tema cambia los colores pero no el ancho, así que aquí se fuerza: el
+     repintado normal se salta los anchos repetidos. Lo mismo vale para las
+     vistas previas del mapa, que también leen los colores del CSS. */
+  repintarCurva(true);
+  repintarPrevias();
 }
+
+/* Las vistas previas son píxeles: no se enteran de un cambio de tema ni de un
+   cambio de ancho. Se vuelven a dibujar las que están montadas y visibles; las
+   que ya tienen el atlas dentro se saltan solas. */
+function repintarPrevias() {
+  document.querySelectorAll(".mapaslot").forEach(function (c) {
+    if (c.clientWidth) previaMapa(c);
+  });
+}
+
+(function previasAlRedimensionar() {
+  var t = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(t);
+    t = setTimeout(repintarPrevias, 160);
+  });
+})();
 
 (function initTema() {
   var guardado = "auto";
@@ -2440,9 +3218,7 @@ function aplicarTema(t) {
   // Si el usuario dejó "auto", seguir los cambios del sistema en vivo.
   var mq = window.matchMedia("(prefers-color-scheme: dark)");
   var cb = function () {
-    if (!document.documentElement.dataset.theme && cache.resumen) {
-      cache.resumen.then(function (D) { dibujarCurva(D.curva); });
-    }
+    if (!document.documentElement.dataset.theme) repintarCurva(true);
   };
   if (mq.addEventListener) mq.addEventListener("change", cb);
   else if (mq.addListener) mq.addListener(cb);
@@ -2857,12 +3633,12 @@ function pintarComercio(D, E, W) {
     { k: "n", t: "Empresa", l: 1, f: function (r) {
         return "<b>" + esc(r.n) + "</b><span class='sub2'>" + r.r +
           (r.dep ? " · " + esc(r.dep) : "") + "</span>"; } },
-    { k: "rubro", t: "Rubro", l: 1, f: function (r) {
+    { k: "rubro", p: 2, t: "Rubro", l: 1, f: function (r) {
         return "<span class='tag'>" + esc(r.rubro) + "</span>"; } },
     { k: "fob", t: "CIF " + pSuf(si), f: function (r) {
         return pFob(r.fob, si); } },
-    { k: "tn", t: "Toneladas", f: function (r) { return pNum(r.tn, si); } },
-    { k: "pct", t: "% del total", f: function (r) { return pct(r.pct, 2); } },
+    { k: "tn", p: 2, t: "Toneladas", f: function (r) { return pNum(r.tn, si); } },
+    { k: "pct", p: 3, t: "% del total", f: function (r) { return pct(r.pct, 2); } },
   ], D.importadores, { sort: "fob" });
 
   /* El ranking exportador sale del recorte de cinco años, no de la ventana.
@@ -3107,7 +3883,7 @@ function vistaMetodo() {
       "</dd></dl>" +
       "<p>El paso del TAM al SAM es el que más recorta y el que más se " +
       "discute: de " + nf(k.productores) + " productores agropecuarios, solo " +
-      nf(k.sobre5) + " superan las cinco hectáreas —debajo de ese umbral la " +
+      nf(k.sobre5ha) + " superan las cinco hectáreas —debajo de ese umbral la " +
       "agricultura es de autoconsumo— y " + nf(k.credito) + " compran a " +
       "crédito, que es la forma en que AgroJuntos vende.</p>" +
       "<p>El ordenamiento de las regiones (v3) suma al tamaño dos factores " +
@@ -3546,9 +4322,24 @@ function vistaExportacion() {
 function pintarExportacion() {
   var y = EXPQ.anio, yoy = EXPM.yoy;
 
+  /* La serie que acompaña a la cifra: FOB por año, con el año en curso
+     marcado. No se calcula aquí ninguna variación propia. El `yoy` del archivo
+     compara tramos equivalentes —solo los meses cuya maduración llega al
+     99.5%— y esa es la única comparación que significa algo mientras el año
+     esté abierto; una división entre el total de 2026 y el de 2025 daría una
+     caída inventada por el calendario. */
+  var anios = Object.keys(EXPM.por_anio).sort();
+  var puntos = anios.map(function (a) {
+    return { n: a, v: EXPM.por_anio[a].fob, parcial: expEnCurso(a) };
+  });
+  var leyenda = "FOB por año: " + puntos.map(function (p) {
+    return p.n + " " + usd(p.v) + (p.parcial ? " (año en curso)" : "");
+  }).join("; ");
+
   document.getElementById("expKpis").innerHTML = [
     [usd(EXPM.por_anio[y] ? EXPM.por_anio[y].fob : 0),
-     "agroexportado en " + expEt(y), expPie(y)],
+     "agroexportado en " + expEt(y), expPie(y),
+     chispa(puntos, leyenda)],
     [nf(EXPM.empresas_con_dato), "exportadores con RUC",
      "en " + EXPM.anios_con_dato.length + " años medidos"],
     [nf(EXPM.familias.length), "familias de producto",
@@ -3557,7 +4348,7 @@ function pintarExportacion() {
          : "N/D",
      yoy ? yoy.tramo.replace("-", " a ") + " de " + yoy.anios[1] : "variación",
      yoy ? "contra " + yoy.anios[0] + ", solo meses cerrados" : ""],
-  ].map(function (k) { return kpi(esc(k[0]), k[1], k[2]); }).join("");
+  ].map(function (k) { return kpi(esc(k[0]), k[1], k[2], k[3]); }).join("");
 
   // El total no coincide con el oficial y hay que decirlo donde se lee la
   // cifra, no en una nota al pie: es la diferencia entre publicar una
@@ -4179,7 +4970,10 @@ function vistaFichas() {
    molécula se puede mandar por correo y abre donde tiene que abrir. */
 function fchRutear() {
   if (!FCH) return;
-  var h = decodeURIComponent(location.hash.replace(/^#/, ""));
+  /* La ruta va antes de «?»: el periodo de las cifras puede venir pegado al
+     hash en cualquier vista, y sin apartarlo la última pieza de la ficha se
+     llevaría el «?cifras=medido» dentro del nombre. */
+  var h = decodeURIComponent(leerHash(location.hash).ruta);
   var p = h.split("/");
   if (p[0] === "fichas" && p.length >= 3) {
     fchVer(p[1], p.slice(2).join("/"));
@@ -4218,8 +5012,14 @@ function vistaDecisiones() {
             esc(d.alternativa_historica.por) + "; no se recalcula.</span>"
           : "") + "</p>" +
         "<p><b>Qué la daría vuelta.</b> " + esc(d.bisagra) + "</p>" +
+        /* De dónde sale la cifra importa —es lo que permite auditarla— pero
+           «out/red_elegida.json · build_hubs.py» no le dice nada a quien viene
+           a leer una decisión comercial, y puesto en la tarjeta compite con la
+           bisagra, que es lo que sí tiene que leerse. Va plegado: quien audita
+           lo abre, quien decide no tropieza con él. */
+        "<details class='tecnico'><summary>Detalle técnico</summary>" +
         '<p class="sub">Sale de <span class="mono">' + esc(d.fuente) +
-        "</span></p>" +
+        "</span></p></details>" +
         "</div></div>";
     }
 
@@ -4548,7 +5348,10 @@ function pintarRutas() {
 }
 
 function ir(hash) {
-  var id = (hash || "#resumen").replace("#", "");
+  /* Los filtros viajan tras «?» dentro del hash y no forman parte de la ruta:
+     se apartan antes de decidir qué vista se abre. */
+  var dir = leerHash(hash || "#resumen");
+  var id = dir.ruta || "resumen";
   /* Una ficha lleva su entidad en el propio hash —"fichas/molecula/ABAMECTIN"—
      para que el enlace a una molecula se pueda mandar por correo y abra ahi.
      La vista es el primer tramo; el resto lo atiende fchRutear. */
@@ -4560,7 +5363,12 @@ function ir(hash) {
     document.querySelectorAll(".view").forEach(function (v) {
       v.classList.toggle("on", v.id === "v-empresa"); });
     document.querySelectorAll("nav a").forEach(function (a) {
-      a.classList.toggle("on", a.getAttribute("href") === "#empresas"); });
+      var act = a.getAttribute("href") === "#empresas";
+      a.classList.toggle("on", act);
+      if (act) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+    abrirGrupo("empresas");
     vistaEmpresa(mE[1]);
     return;
   }
@@ -4572,13 +5380,26 @@ function ir(hash) {
   document.querySelectorAll(".view").forEach(function (v) {
     v.classList.toggle("on", v.id === "v-" + id); });
   document.querySelectorAll("nav a").forEach(function (a) {
-    a.classList.toggle("on", a.getAttribute("href") === "#" + id); });
+    var activa = a.getAttribute("href") === "#" + id;
+    a.classList.toggle("on", activa);
+    /* `aria-current` y no solo una clase: el color dice cuál es la vista
+       abierta a quien lo ve, y esto lo dice a quien no. */
+    if (activa) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
+  /* El grupo se abre solo: llegar a una vista por enlace, por marcador o por
+     el buscador tiene que dejar el menú mostrando dónde está uno. */
+  if (GRUPO_DE[id]) abrirGrupo(GRUPO_DE[id]);
 
   var slot = document.querySelector("#v-" + id + " .mapaslot");
   if (slot) mapaEn(slot.id, slot.dataset.hash);
 
   if (!CARGADO[id]) {
     CARGADO[id] = true;
+    /* Antes de pedir nada: el hueco con la forma del dato se ve enseguida y no
+       se mueve cuando el dato llega. Solo la primera vez —después la vista ya
+       está pintada y repintar esqueletos sería borrarla. */
+    esqueletosDe(id);
     if (id === "territorios") vistaTerritorios();
     if (id === "empresas") vistaEmpresas();
     if (id === "departamentos") vistaDepartamentos();
@@ -4588,23 +5409,93 @@ function ir(hash) {
     if (id === "exportacion") vistaExportacion();
     if (id === "logistica") { vistaLogistica(); pintarCoberturaMes(); }
     if (id === "metodo") vistaMetodo();
-    if (id === "expansion") { pintarReclutar(); pintarRutas(); }
+    /* Expansión se dibuja con los datos del resumen, pero no se dibuja desde
+       el resumen: hacerlo ahí arrastraba `canal.json` y `red.json` —30 KB— a
+       todo el que abría la portada sin pisar esta vista. `cargar` cachea, así
+       que al que ya pasó por el resumen esto no le cuesta una petición. */
+    if (id === "expansion") {
+      cargar("resumen").then(vistaExpansion).catch(fallo);
+      pintarReclutar(); pintarRutas();
+    }
     if (id === "canasta") vistaCanasta();
     if (id === "decisiones") vistaDecisiones();
     if (id === "fichas") vistaFichas();
     if (id === "registro") vistaRegistro();
   }
+
+  /* Después de mostrar la sección, no antes: recién ahora el contenedor tiene
+     ancho y un canvas puede medirse. */
+  repintarVista(id);
+
+  /* «#departamentos/junin» abre la vista con esa región ya elegida. Hasta ahora
+     la región solo se podía elegir a mano en el desplegable, de modo que no
+     había forma de enlazar a una: ni desde el buscador, ni desde un correo. El
+     segundo tramo del hash la nombra, igual que «#fichas/molecula/X» nombra su
+     molécula. */
+  if (id === "departamentos" && dir.tramos[1]) elegirDepartamento(dir.tramos[1]);
+
+  /* Después de que la vista arrancó: los controles pueden estar todavía
+     vacíos, y `aplicarFiltro` sabe esperarlos. */
+  aplicarDesdeURL(id, dir.params);
 }
+
+/* Se encadena a la misma promesa de datos que usa la vista: cuando esto corre,
+   el desplegable ya está lleno y tiene la opción que se le va a pedir. */
+function elegirDepartamento(k) {
+  cargar("departamentos").then(function () {
+    setTimeout(function () {
+      var sel = document.getElementById("fDepto");
+      if (!sel || sel.value === k) return;
+      sel.value = k;
+      sel.dispatchEvent(new Event("change"));
+    }, 0);
+  });
+}
+
+/* El scroll al cambiar de vista.
+
+   Cambiar de pestaña y aterrizar a mitad de página es desorientador: se llega
+   al medio de una tabla que no se pidió. Así que se vuelve arriba. La excepción
+   es el botón «atrás», donde lo que el lector espera es reencontrar lo que
+   estaba mirando.
+
+   Distinguir una cosa de otra es simple porque el navegador ya lo hace:
+   `popstate` solo se dispara al navegar por el historial, nunca al poner un
+   hash nuevo, y llega antes que `hashchange`. La bandera dura lo que tarda el
+   siguiente evento. */
+var POS = {};
+var HASH_ACTUAL = location.hash || "#resumen";
+var VOLVIENDO = false;
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+window.addEventListener("popstate", function () { VOLVIENDO = true; });
+
 window.addEventListener("hashchange", function () {
+  /* En este momento el scroll todavía es el de la vista que se deja. */
+  POS[HASH_ACTUAL] = window.scrollY;
+  HASH_ACTUAL = location.hash || "#resumen";
+
   ir(location.hash);
   /* Un hash de ficha —"#fichas/molecula/X"— tiene que mover la
      ficha ademas de la vista. `ir` se queda con el primer tramo. */
-  if (location.hash.indexOf("#fichas/") === 0) fchRutear();
+  if (leerHash(location.hash).ruta.indexOf("fichas/") === 0) fchRutear();
+
+  var guardado = POS[HASH_ACTUAL];
+  window.scrollTo(0, VOLVIENDO && guardado !== undefined ? guardado : 0);
+  VOLVIENDO = false;
 });
 
+/* El resumen se pinta siempre al arrancar, se entre por donde se entre, y por
+   eso queda fuera del arranque perezoso de `ir`. Hay que decírselo a `CARGADO`
+   igualmente: si no, la primera vez que el lector llegue al resumen desde otra
+   vista, `ir` lo tomaría por recién abierto y pintaría esqueletos encima de los
+   datos que ya estaban puestos. */
+esqueletosDe("resumen");
+CARGADO.resumen = true;
 vistaResumen();
 ir(location.hash);
-window.addEventListener("resize", function () {
-  if (cache.resumen) cache.resumen.then(function (D) { dibujarCurva(D.curva); });
-});
+/* Respaldo para navegadores sin ResizeObserver; donde lo hay, el observador
+   del contenedor ya cubre este caso. */
+if (!window.ResizeObserver) {
+  window.addEventListener("resize", function () { repintarCurva(true); });
+}
 })();

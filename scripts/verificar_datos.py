@@ -213,6 +213,41 @@ def documentacion():
                   "datos" % (valor, que))
 
 
+def huellas_de_assets():
+    """Las huellas escritas en el HTML tienen que ser las de los archivos.
+
+    Los assets se cachean un año porque su dirección lleva la huella de su
+    contenido. Eso es seguro mientras el HTML diga la verdad: si alguien toca
+    `app.js` y olvida correr `scripts/versionar_assets.py`, la dirección sigue
+    siendo la vieja y los navegadores se quedan un año con el archivo anterior.
+    No es un despiste recuperable con un despliegue nuevo, así que se comprueba
+    en cada push."""
+    import hashlib
+    print("\nhuella de los assets")
+    base = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        "dashboard")
+    for pagina in ("index.html", "mapa.html"):
+        ruta = os.path.join(base, pagina)
+        if not os.path.exists(ruta):
+            continue
+        with io.open(ruta, encoding="utf-8") as f:
+            txt = f.read()
+        for asset, puesta in re.findall(r'["\']/([a-z]+\.(?:js|css))\?v=([0-9a-f]+)["\']', txt):
+            aruta = os.path.join(base, asset)
+            if not os.path.exists(aruta):
+                falla("%s referencia %s, que no existe" % (pagina, asset))
+                continue
+            with open(aruta, "rb") as f:
+                # Mismos finales de linea que en `versionar_assets.py`: LF.
+                crudo = f.read().replace(b"\r\n", b"\n")
+            real = hashlib.sha256(crudo).hexdigest()[:len(puesta)]
+            if real == puesta:
+                print("  %-12s %-14s %s: ok" % (pagina, asset, puesta))
+            else:
+                falla("%s apunta a %s?v=%s y el archivo es %s: corre "
+                      "scripts/versionar_assets.py" % (pagina, asset, puesta, real))
+
+
 def main():
     print("verificación de los datos publicados")
     for rel in ("exportaciones/mercado.json", "exportaciones/exportadores_min.json",
@@ -224,6 +259,7 @@ def main():
     cuadraturas()
     coherencia()
     documentacion()
+    huellas_de_assets()
     print("\n" + ("TODO OK" if not fallos else "%d FALLAS" % len(fallos)))
     return 1 if fallos else 0
 

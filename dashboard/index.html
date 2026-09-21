@@ -8,7 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles.css?v=708bf91a">
+<link rel="stylesheet" href="/buscador.css?v=016a13f3">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
 <script>
 /* El tema se aplica antes de pintar. Si esto viviera en app.js, la página
@@ -18,6 +19,25 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </script>
 </head>
 <body>
+<!-- El buscador vive fuera de `.wrap` porque se pinta por encima de todo y no
+     debe heredar el ancho máximo de la página. Arranca oculto; lo abre Ctrl/Cmd+K
+     o el botón del encabezado. -->
+<div class="buscador" id="buscador" hidden>
+  <div class="bfondo" data-cerrar></div>
+  <div class="bcaja" role="dialog" aria-modal="true" aria-labelledby="bTitulo">
+    <p id="bTitulo" class="vh">Buscar en AgroJuntos</p>
+    <input id="bq" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Empresa, RUC, provincia, región o territorio…"
+           aria-controls="bres" aria-describedby="bCuenta">
+    <p id="bCuenta" class="bcuenta" role="status" aria-live="polite"></p>
+    <div class="bres" id="bres" role="listbox" aria-label="Resultados"></div>
+    <p class="bpie"><kbd>↑</kbd><kbd>↓</kbd> moverse · <kbd>↵</kbd> abrir ·
+       <kbd>Esc</kbd> cerrar</p>
+  </div>
+</div>
+
+<a class="saltar" href="#vistas">Saltar al contenido</a>
+
 <div class="wrap">
 
 <header class="top">
@@ -33,6 +53,10 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <button data-p="mensual" title="Promedio mensual">Mensual</button>
     <button data-p="anual" aria-pressed="true" title="Anualizado">Anual</button>
   </div>
+  <button class="bbtn" id="bAbrir" type="button"
+          aria-label="Buscar empresas, provincias, regiones y territorios">
+    <span aria-hidden="true">⌕</span> Buscar <kbd>Ctrl K</kbd>
+  </button>
   <div class="tema" role="group" aria-label="Tema de la interfaz">
     <button data-tema="auto" title="Seguir al sistema">Auto</button>
     <button data-tema="light" title="Modo claro" aria-label="Modo claro">☀</button>
@@ -41,29 +65,51 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </header>
 
 <div class="cuerpo">
+<!-- Dieciséis módulos en cinco grupos. El orden de dentro de cada grupo va de
+     lo general a lo particular, que es como se leen: primero cuánto mercado
+     hay, después dónde está, después quién lo compone. Los enlaces no cambian:
+     un marcador viejo a «#registro» sigue cayendo donde caía. -->
 <nav id="nav" aria-label="Módulos">
-  <a href="#resumen" class="on">Resumen</a>
-  <a href="#decisiones">Decisiones</a>
-  <a href="#fichas">Fichas</a>
-  <a href="#canasta">Canasta</a>
-  <a href="#territorios">Territorios</a>
-  <a href="#empresas">Empresas</a>
-  <a href="#logistica">Logística</a>
-  <a href="#expansion">Expansión</a>
-  <a href="#departamentos">Departamentos</a>
-  <a href="#productos">Productos</a>
-  <a href="#comercio">Comercio</a>
-  <a href="#importacion">Importación</a>
-  <a href="#exportacion">Exportación</a>
-  <a href="#registro">Registro</a>
-  <a href="/mapa">Mapa</a>
-  <a href="#metodo">Método</a>
+  <div class="grupo" data-g="mercado">
+    <span class="gt">Mercado</span>
+    <a href="#resumen" class="on">Resumen</a>
+    <a href="#canasta">Canasta</a>
+    <a href="#productos">Productos</a>
+    <a href="#departamentos">Departamentos</a>
+  </div>
+  <div class="grupo" data-g="territorio">
+    <span class="gt">Territorio</span>
+    <a href="#territorios">Territorios</a>
+    <a href="/mapa">Mapa</a>
+    <a href="#logistica">Logística</a>
+    <a href="#expansion">Expansión</a>
+  </div>
+  <div class="grupo" data-g="empresas">
+    <span class="gt">Empresas</span>
+    <a href="#empresas">Directorio</a>
+    <a href="#fichas">Fichas</a>
+    <a href="#registro">Registro</a>
+  </div>
+  <div class="grupo" data-g="comercio">
+    <span class="gt">Comercio exterior</span>
+    <a href="#comercio">Comercio</a>
+    <a href="#importacion">Importación</a>
+    <a href="#exportacion">Exportación</a>
+  </div>
+  <div class="grupo" data-g="metodologia">
+    <span class="gt">Metodología</span>
+    <a href="#metodo">Método</a>
+    <a href="#decisiones">Decisiones</a>
+  </div>
 </nav>
 
-<main id="vistas">
+<!-- `tabindex="-1"` para que el enlace de salto pueda dejar el foco aquí:
+     sin esto el navegador desplaza la página pero el foco se queda atrás y el
+     siguiente tabulador vuelve al menú, que es de donde se venía huyendo. -->
+<main id="vistas" tabindex="-1">
 <!-- ------------------------------------------------------------ resumen -->
 <section class="view on" id="v-resumen">
-  <div class="kpis" id="kpis"><div class="load">Cargando…</div></div>
+  <div class="kpis" id="kpis" data-sk="6"></div>
 
   <div class="grid2">
     <div class="card">
@@ -144,9 +190,9 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="filters">
       <input type="search" id="q" placeholder="Buscar por razón social, RUC o región…"
              autocomplete="off" spellcheck="false">
-      <select id="fReg"><option value="">Todas las regiones</option></select>
-      <select id="fTer"><option value="">Todos los territorios</option></select>
-      <span class="count" id="cCount"></span>
+      <select id="fReg" aria-label="Filtrar por región"><option value="">Todas las regiones</option></select>
+      <select id="fTer" aria-label="Filtrar por territorio de venta"><option value="">Todos los territorios</option></select>
+      <span class="count" id="cCount" role="status" aria-live="polite"></span>
     </div>
     <div class="filters" style="border-top:0">
       <div class="chips" id="fClase"></div>
@@ -194,7 +240,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
 <!-- -------------------------------------------------------- importacion -->
 <section class="view" id="v-importacion">
-  <div class="kpis" id="impKpis"><div class="load">Cargando…</div></div>
+  <div class="kpis" id="impKpis" data-sk="4"></div>
 
   <div class="card" style="margin-top:16px">
     <div class="h"><h3>Qué importa el agro peruano</h3>
@@ -240,7 +286,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
 <!-- -------------------------------------------------------- perfil -->
 <section class="view" id="v-empresa">
-  <div id="empPerfil"><div class="load">Cargando…</div></div>
+  <div id="empPerfil" data-sk="6"></div>
   <div id="empExpHist"></div>
 
   <div class="card mapacard" style="margin-top:16px">
@@ -261,7 +307,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="h"><h3>Qué se compra, para qué cultivo y cuándo</h3>
       <span class="eyebrow" id="canMeta"></span></div>
     <div class="filters">
-      <select id="fCanDep"></select>
+      <select id="fCanDep" aria-label="Elegir departamento"></select>
       <span class="count" id="canDepMeta"></span>
     </div>
     <div class="b"><p id="canIntro"></p></div>
@@ -403,11 +449,11 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <div class="h"><h3>Ficha por departamento</h3>
       <span class="eyebrow" id="depMeta"></span></div>
     <div class="filters">
-      <select id="fDepto"></select>
+      <select id="fDepto" aria-label="Elegir departamento"></select>
       <div class="chips" id="fDeptoOrden"></div>
       <span class="count" id="depPos"></span>
     </div>
-    <div class="b" id="depFicha"><div class="load">Cargando…</div></div>
+    <div class="b" id="depFicha" data-sk="6"></div>
   </div>
 
   <div class="card mapacard" style="margin-top:16px">
@@ -421,7 +467,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
 <!-- ----------------------------------------------------------- comercio -->
 <section class="view" id="v-comercio">
-  <div class="kpis" id="comKpis"><div class="load">Cargando…</div></div>
+  <div class="kpis" id="comKpis" data-sk="4"></div>
 
   <div class="grid2">
     <div class="card">
@@ -478,7 +524,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 <!-- -------------------------------------------------------- exportación -->
 <!-- ----------------------------------------------------------- registro -->
 <section class="view" id="v-registro">
-  <div class="kpis" id="regKpis"><div class="load">Cargando…</div></div>
+  <div class="kpis" id="regKpis" data-sk="4"></div>
 
   <div class="card" style="margin-top:16px">
     <div class="h"><h3>El padrón técnico, y qué dice la etiqueta</h3>
@@ -538,7 +584,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </section>
 
 <section class="view" id="v-exportacion">
-  <div class="kpis" id="expKpis"><div class="load">Cargando…</div></div>
+  <div class="kpis" id="expKpis" data-sk="4"></div>
   <div class="note warn" id="expAviso"></div>
 
   <div class="card">
@@ -618,13 +664,13 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
 <!-- ---------------------------------------------------------- productos -->
 <section class="view" id="v-productos">
-  <div class="kpis" id="proKpis"><div class="load">Cargando…</div></div>
+  <div class="kpis" id="proKpis" data-sk="4"></div>
 
   <div class="card" style="margin-top:16px">
     <div class="h"><h3>Qué se cultiva</h3>
       <span class="eyebrow">Superficie cosechada · MIDAGRI 2023</span></div>
     <div class="filters">
-      <select id="fProDep"></select>
+      <select id="fProDep" aria-label="Elegir departamento"></select>
       <span class="count" id="proDepMeta"></span>
     </div>
     <div class="b">
@@ -774,6 +820,8 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 </footer>
 </div>
 
-<script src="/app.js"></script>
+<!-- El buscador va antes: `app.js` lo monta al arrancar. -->
+<script src="/buscador.js?v=4baf5a2c"></script>
+<script src="/app.js?v=fc7478a0"></script>
 </body>
 </html>

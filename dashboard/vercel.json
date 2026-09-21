@@ -4,7 +4,31 @@
     {
       "source": "/data/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800" }
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/(app.js|styles.css|buscador.js|buscador.css)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*).(jpg|png|svg|woff2)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=2592000" }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/mapa",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=600, s-maxage=86400, stale-while-revalidate=604800" }
       ]
     }
   ]

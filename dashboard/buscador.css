@@ -1,0 +1,53 @@
+/* Estilos del buscador global, compartidos por el sitio y por el atlas.
+
+   Van en su propio archivo por la misma razon que `buscador.js`: las dos
+   paginas montan el mismo componente y solo una carga `styles.css`. Tener el
+   marcado en un sitio y su aspecto duplicado en dos era pedir que se
+   separaran. */
+
+/* ------------------------------------------------------------ buscador -- */
+/* Un texto visible solo para lectores de pantalla: el diálogo necesita un
+   título para anunciarse, pero en pantalla el campo ya dice qué es. */
+.vh{position:absolute; width:1px; height:1px; overflow:hidden;
+  clip-path:inset(50%); white-space:nowrap}
+
+.bbtn{display:inline-flex; align-items:center; gap:7px; background:var(--surf);
+  border:1px solid var(--line); border-radius:7px; color:var(--muted);
+  font:inherit; font-size:12px; padding:7px 10px; cursor:pointer}
+.bbtn:hover{color:var(--ink); border-color:var(--forest)}
+.bbtn kbd,.bpie kbd{font-family:"IBM Plex Mono",monospace; font-size:10px;
+  border:1px solid var(--line); border-radius:4px; padding:1px 5px;
+  color:var(--faint); background:var(--surf2)}
+
+.buscador{position:fixed; inset:0; z-index:100; display:flex;
+  justify-content:center; align-items:flex-start; padding:12vh 16px 16px}
+.buscador[hidden]{display:none}
+.bfondo{position:absolute; inset:0; background:rgba(15,26,22,.45)}
+.bcaja{position:relative; width:100%; max-width:620px; background:var(--surf);
+  border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow);
+  padding:12px; display:flex; flex-direction:column; gap:8px;
+  max-height:76vh}
+#bq{width:100%; font:inherit; font-size:15px; padding:11px 13px;
+  border:1px solid var(--line); border-radius:8px; background:var(--surf2);
+  color:var(--ink)}
+.bcuenta{margin:0; font-size:10.5px; color:var(--muted); min-height:14px}
+.bres{overflow-y:auto; overscroll-behavior:contain; margin:0 -4px}
+.bgrupo{font-size:10px; font-weight:600; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); padding:9px 12px 4px}
+.bitem{display:flex; align-items:baseline; gap:9px; width:100%; text-align:left;
+  background:none; border:0; font:inherit; color:var(--ink); cursor:pointer;
+  padding:7px 12px; border-radius:7px}
+.bitem .bn{font-size:13px; flex:1; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap}
+.bitem .bs{font-size:10.5px; color:var(--muted); white-space:nowrap}
+.bitem .bruc{font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  color:var(--faint)}
+.bitem:hover,.bitem[aria-selected="true"]{background:var(--surf3)}
+.bitem[aria-selected="true"]{box-shadow:inset 2px 0 0 var(--forest)}
+.bpie{margin:0; font-size:10.5px; color:var(--faint); display:flex;
+  align-items:center; gap:5px; flex-wrap:wrap; padding:2px 4px 0}
+.bvacio{padding:18px 12px; font-size:12.5px; color:var(--muted)}
+@media (max-width:600px){
+  .buscador{padding:6vh 10px 10px}
+  .bbtn kbd{display:none}
+}

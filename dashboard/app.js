@@ -29,9 +29,20 @@ function nf(v, d) {
   return (+v).toLocaleString("es-PE",
     { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
 }
+/* Un solo sufijo por monto, nunca dos palabras.
+
+   «US$ 1.73 mil MM» medía quince caracteres y se partía en dos líneas en cuanto
+   la celda bajaba de 180px, que es lo que mide en una pantalla de 1024 y en
+   cualquier móvil. Y obligaba a comparar dos unidades distintas: el TAM en
+   «mil MM» contra el SAM en «MM», que es aritmética mental gratuita.
+
+   Ahora todo lo que pasa del millón se dice en millones. «US$ 1,734 MM» junto a
+   «US$ 512.3 MM» se comparan de un vistazo, y ninguno se parte. Por encima de
+   mil millones se deja el decimal: a esa escala, la décima de millón es ruido
+   y son dos caracteres que hacen la diferencia entre caber y no caber. */
 function usd(v) {
   if (!hayDato(v)) return SIN_DATO;
-  if (v >= 1e9) return "US$ " + nf(v / 1e9, 2) + " mil MM";
+  if (v >= 1e9) return "US$ " + nf(v / 1e6) + " MM";
   if (v >= 1e6) return "US$ " + nf(v / 1e6, 1) + " MM";
   if (v >= 1e3) return "US$ " + nf(v / 1e3) + " mil";
   return "US$ " + nf(v);
@@ -460,6 +471,23 @@ function esqueleto(el) {
   }
   el.innerHTML = out.join("");
 }
+
+/* Cuántos KPI hay en cada parrilla, escrito donde el CSS pueda leerlo. Se
+   observa en vez de llamarse desde cada vista: las parrillas las pinta cada
+   módulo por su cuenta y con su propio ritmo, y un contador que dependa de que
+   todos se acuerden de avisar es un contador que un día miente. */
+(function contarKpis() {
+  if (!window.MutationObserver) return;
+  document.querySelectorAll(".kpis").forEach(function (el) {
+    var poner = function () {
+      /* El esqueleto también tiene hijos; se cuentan igual, que para repartir
+         columnas es exactamente lo que hace falta. */
+      el.dataset.n = el.children.length;
+    };
+    new MutationObserver(poner).observe(el, { childList: true });
+    poner();
+  });
+})();
 
 function esqueletosDe(vista) {
   var sec = document.getElementById("v-" + vista);

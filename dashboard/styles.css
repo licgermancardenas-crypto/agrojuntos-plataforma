@@ -10,6 +10,23 @@
   --forest:#0F4C3F; --forest2:#16624F; --brass:#B07D2E; --brass2:#F7EDD8;
   --sky:#2E6E8E; --danger:#A34A25; --good:#2E7D5B;
   --shadow:0 1px 2px rgba(15,26,22,.05),0 6px 22px -14px rgba(15,26,22,.20);
+
+  /* Escala tipográfica. Los nombres dicen para qué sirve cada tamaño, no
+     cuántos píxeles mide: así se puede subir la escala entera sin recorrer el
+     archivo buscando números sueltos. */
+  --t-micro:9.5px;    /* marcas dentro de un gráfico */
+  --t-etiqueta:11.5px;/* rótulos en mayúsculas */
+  --t-menor:12px;     /* notas al pie, apoyos */
+  --t-apoyo:12.5px;   /* texto secundario */
+  --t-dato:14px;      /* celdas de tabla y párrafos de tarjeta */
+  --t-base:14px;      /* navegación y controles */
+  --t-cuerpo:15px;    /* el texto de la página */
+  --t-titulo:20px;    /* el nombre del sitio */
+  --t-cifra:22px;     /* las cifras de los KPI */
+
+  /* Radios y espaciados, por el mismo motivo. */
+  --r-xs:3px; --r-sm:4px; --r-md:7px; --r-lg:10px; --r-pill:20px;
+  --e-xs:4px; --e-sm:8px; --e-md:12px; --e-lg:16px; --e-xl:24px;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -33,13 +50,13 @@
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink);
   font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased}
+  font-size:var(--t-cuerpo); line-height:1.5; -webkit-font-smoothing:antialiased}
 h1,h2,h3{font-family:Archivo,system-ui,sans-serif; margin:0; text-wrap:balance}
 .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;
   font-variant-numeric:tabular-nums}
 a{color:var(--forest)}
-:focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:3px}
-.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:500;
+:focus-visible{outline:2px solid var(--forest); outline-offset:2px; border-radius:var(--r-xs)}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:var(--t-etiqueta); font-weight:500;
   letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
 
 /* ---------------------------------------------------------------- shell -- */
@@ -47,9 +64,9 @@ a{color:var(--forest)}
 header.top{display:flex; flex-wrap:wrap; align-items:center; gap:14px 26px;
   padding:20px 0 0}
 .brand{display:flex; flex-direction:column; gap:3px; margin-right:auto}
-.brand h1{font-size:20px; font-weight:700; letter-spacing:-.015em}
-.brand span{font-size:11.5px; color:var(--muted)}
-.upd{font-size:10.5px; color:var(--faint); font-family:"IBM Plex Mono",monospace}
+.brand h1{font-size:var(--t-titulo); font-weight:700; letter-spacing:-.015em}
+.brand span{font-size:var(--t-apoyo); color:var(--muted)}
+.upd{font-size:var(--t-menor); color:var(--faint); font-family:"IBM Plex Mono",monospace}
 
 /* La navegacion es una columna y no una barra. Con catorce modulos la barra
    horizontal tenia `overflow-x:auto` y dejaba fuera de pantalla las ultimas
@@ -72,10 +89,10 @@ nav::-webkit-scrollbar{display:none}
 .grupo + .grupo{margin-top:14px}
 /* El rótulo del grupo no es un enlace y no debe parecerlo: ni color de acento
    ni cursor de mano. Solo dice de qué van las cuatro entradas de abajo. */
-.gt{display:block; padding:0 12px 5px 11px; font-size:10px; font-weight:600;
+.gt{display:block; padding:0 12px 5px 11px; font-size:var(--t-etiqueta); font-weight:600;
   letter-spacing:.09em; text-transform:uppercase; color:var(--faint)}
 .gbar{display:none}
-nav a{display:block; padding:7px 12px 7px 11px; font-size:13px;
+nav a{display:block; padding:7px 12px 7px 11px; font-size:var(--t-base);
   color:var(--ink2); text-decoration:none; white-space:nowrap;
   border-left:2px solid transparent; border-radius:0 4px 4px 0}
 nav a:hover{color:var(--ink); background:var(--bg2)}
@@ -104,7 +121,7 @@ nav a.on{color:var(--forest); border-left-color:var(--forest);
   .gbar.masini.masfin{mask-image:linear-gradient(90deg,transparent 0,#000 22px,
     #000 calc(100% - 22px),transparent 100%)}
   .gbar button{flex:1 0 auto; background:none; border:0; font:inherit;
-    font-size:12.5px; color:var(--ink2); padding:10px 12px; cursor:pointer;
+    font-size:var(--t-dato); color:var(--ink2); padding:10px 12px; cursor:pointer;
     border-bottom:2px solid transparent; white-space:nowrap}
   .gbar button[aria-selected="true"]{color:var(--forest); font-weight:600;
     border-bottom-color:var(--forest)}
@@ -128,40 +145,62 @@ nav a.on{color:var(--forest); border-left-color:var(--forest);
 .view.on{display:block}
 
 /* ------------------------------------------------------------------ kpi -- */
-.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+/* La parrilla se reparte según cuántos KPI haya, no según lo que quepa.
+
+   Con `auto-fit` y un mínimo fijo, seis KPI caían en cinco columnas y el sexto
+   quedaba solo en una fila entera: una celda llena y cuatro vacías. El número
+   de hijos lo escribe el JS en `data-n` cuando pinta, y aquí se decide el
+   reparto para cada caso.
+
+   Los cortes están donde el contenido lo pide y no en anchos redondos: una
+   cifra como «US$ 1,734 MM» necesita unos 170px, así que se baja de columnas
+   antes de que la celda llegue a ese ancho. */
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
   gap:1px; background:var(--line2); border:1px solid var(--line2);
-  border-radius:10px; overflow:hidden}
+  border-radius:var(--r-lg); overflow:hidden}
+.kpis[data-n="4"]{grid-template-columns:repeat(4,1fr)}
+.kpis[data-n="5"]{grid-template-columns:repeat(5,1fr)}
+.kpis[data-n="6"]{grid-template-columns:repeat(6,1fr)}
+@media (max-width:1240px){
+  .kpis[data-n="6"]{grid-template-columns:repeat(3,1fr)}
+  .kpis[data-n="5"]{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:820px){
+  .kpis[data-n="4"],.kpis[data-n="5"],.kpis[data-n="6"]{
+    grid-template-columns:repeat(2,1fr)}
+}
 .kpis > div{background:var(--surf); padding:13px 15px}
-.kpis .v{font-family:"IBM Plex Mono",monospace; font-size:20px; font-weight:600;
+.kpis .v{font-variant-numeric:tabular-nums; font-size:var(--t-cifra); font-weight:600;
+  white-space:nowrap;
   letter-spacing:-.025em; display:block; line-height:1.15; color:var(--forest)}
-.kpis .l{display:block; font-size:10px; color:var(--muted); margin-top:4px;
+.kpis .l{display:block; font-size:var(--t-etiqueta); color:var(--muted); margin-top:4px;
   letter-spacing:.09em; text-transform:uppercase; line-height:1.4}
-.kpis .s{display:block; font-size:10.5px; color:var(--faint); margin-top:3px}
+.kpis .s{display:block; font-size:var(--t-menor); color:var(--faint); margin-top:3px}
 
 /* ---------------------------------------------------------------- cards -- */
 .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px}
 .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px}
 @media (max-width:1000px){.grid2,.grid3{grid-template-columns:1fr}}
-.card{background:var(--surf); border:1px solid var(--line); border-radius:10px;
+.card{background:var(--surf); border:1px solid var(--line); border-radius:var(--r-lg);
   box-shadow:var(--shadow); overflow:hidden}
 .card > .h{display:flex; align-items:baseline; justify-content:space-between;
   gap:10px; padding:11px 15px; border-bottom:1px solid var(--line2);
   background:var(--surf2)}
-.card > .h h3{font-size:13px; font-weight:600}
+.card > .h h3{font-size:var(--t-base); font-weight:600}
 .card .b{padding:14px 15px}
-.card .b p{margin:0 0 8px; font-size:12.5px; color:var(--ink2); line-height:1.55}
+.card .b p{margin:0 0 8px; font-size:var(--t-dato); color:var(--ink2); line-height:1.55}
 .card .b p:last-child{margin:0}
 
 /* --------------------------------------------------------------- embudo -- */
 .funnel{display:flex; flex-direction:column; gap:9px}
 .fstep{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:end}
-.fstep .n{font-size:12px; color:var(--ink2)}
-.fstep .v{font-family:"IBM Plex Mono",monospace; font-size:14px;
+.fstep .n{font-size:var(--t-apoyo); color:var(--ink2)}
+.fstep .v{font-variant-numeric:tabular-nums; font-size:var(--t-cuerpo);
   font-weight:600; color:var(--forest)}
 .ftrack{grid-column:1/-1; height:8px; background:var(--line2);
-  border-radius:4px; overflow:hidden}
-.ftrack i{display:block; height:100%; background:var(--forest); border-radius:4px}
-.fpct{grid-column:1/-1; font-size:10px; color:var(--muted); margin-top:-4px}
+  border-radius:var(--r-sm); overflow:hidden}
+.ftrack i{display:block; height:100%; background:var(--forest); border-radius:var(--r-sm)}
+.fpct{grid-column:1/-1; font-size:var(--t-etiqueta); color:var(--muted); margin-top:-4px}
 
 /* ---------------------------------------------------------------- table -- */
 /* La tabla no tiene scroll vertical propio. Tenerlo obligaba a elegir con qué
@@ -187,9 +226,9 @@ nav a.on{color:var(--forest); border-left-color:var(--forest);
    duplicada fuera del contenedor y sincronizada por JS—, y eso es trabajo de
    la fase de tablas, no de un arreglo de CSS. */
 .tw{overflow-x:auto; overscroll-behavior-x:contain}
-table{border-collapse:collapse; width:100%; font-size:12.5px}
+table{border-collapse:collapse; width:100%; font-size:var(--t-dato)}
 thead th{position:sticky; top:0; z-index:2; background:var(--surf2);
-  text-align:right; font-size:10px; font-weight:600; letter-spacing:.07em;
+  text-align:right; font-size:var(--t-etiqueta); font-weight:600; letter-spacing:.07em;
   text-transform:uppercase; color:var(--muted); padding:8px 10px;
   border-bottom:1px solid var(--line); cursor:pointer; user-select:none;
   white-space:nowrap}
@@ -200,7 +239,7 @@ thead th[aria-sort="asc"]::after{content:" ▴"}
 tbody td{padding:6px 10px; border-bottom:1px solid var(--line2);
   text-align:right; white-space:nowrap}
 tbody td.l{text-align:left}
-tbody td.n{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+tbody td.n{font-variant-numeric:tabular-nums}
 tbody tr:hover{background:var(--surf2)}
 tbody td.name{max-width:280px; overflow:hidden; text-overflow:ellipsis}
 
@@ -214,8 +253,8 @@ tbody td.name{max-width:280px; overflow:hidden; text-overflow:ellipsis}
 .tw thead th:first-child{background:var(--surf2); z-index:3}
 .tw tbody tr:hover td:first-child{background:var(--surf2)}
 
-.tag{display:inline-block; padding:1.5px 7px; border-radius:20px;
-  font-size:10px; font-weight:600; background:var(--surf3); color:var(--ink2)}
+.tag{display:inline-block; padding:1.5px 7px; border-radius:var(--r-pill);
+  font-size:var(--t-etiqueta); font-weight:600; background:var(--surf3); color:var(--ink2)}
 .tag.P{background:#E4EFE6; color:#1F6B4C}
 .tag.A{background:#F7EDD8; color:#8E6321}
 .tag.C{background:#E2EEF4; color:#2E6E8E}
@@ -246,58 +285,58 @@ tbody td.name{max-width:280px; overflow:hidden; text-overflow:ellipsis}
   .tag{background:#1E2926; color:#BDC7BF}
 }
 
-.mini{display:inline-block; width:46px; height:5px; border-radius:3px;
+.mini{display:inline-block; width:46px; height:5px; border-radius:var(--r-xs);
   background:var(--line2); overflow:hidden; vertical-align:middle; margin-left:7px}
 .mini i{display:block; height:100%; background:var(--forest)}
 
 /* -------------------------------------------------------------- filtros -- */
 .filters{display:flex; flex-wrap:wrap; gap:9px; align-items:center;
   padding:13px 15px; border-bottom:1px solid var(--line2); background:var(--surf2)}
-input[type="search"],select{font:inherit; font-size:12.5px; color:var(--ink);
-  background:var(--surf); border:1px solid var(--line); border-radius:7px;
+input[type="search"],select{font:inherit; font-size:var(--t-dato); color:var(--ink);
+  background:var(--surf); border:1px solid var(--line); border-radius:var(--r-md);
   padding:7px 10px}
 input[type="search"]{min-width:250px; flex:1}
 input[type="search"]::placeholder{color:var(--faint)}
-.count{font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+.count{font-variant-numeric:tabular-nums; font-size:var(--t-apoyo);
   color:var(--muted); margin-left:auto; white-space:nowrap}
 .chips{display:flex; flex-wrap:wrap; gap:5px}
 .chip{border:1px solid var(--line); background:var(--surf); color:var(--ink2);
-  font:inherit; font-size:11px; padding:4px 10px; border-radius:20px;
+  font:inherit; font-size:var(--t-menor); padding:4px 10px; border-radius:var(--r-pill);
   cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--forest); border-color:var(--forest);
   color:#fff; font-weight:500}
 
 /* ------------------------------------------------------------ calendario -*/
-.cal{width:100%; border-collapse:collapse; font-size:11.5px}
-.cal th{padding:5px 4px; font-size:10px; color:var(--muted); font-weight:500}
+.cal{width:100%; border-collapse:collapse; font-size:var(--t-apoyo)}
+.cal th{padding:5px 4px; font-size:var(--t-etiqueta); color:var(--muted); font-weight:500}
 .cal th.reg{text-align:left; padding-left:0}
 .cal td{padding:0; text-align:center}
 .cal td.reg{text-align:left; padding:3px 8px 3px 0; white-space:nowrap;
-  font-size:11.5px}
+  font-size:var(--t-apoyo)}
 .cel{height:20px; border-radius:2px; display:block; position:relative}
 .cel.pico{outline:1.5px solid var(--brass); outline-offset:-1.5px}
 
 /* ---------------------------------------------------------------- notas -- */
 .note{border-left:2px solid var(--forest); background:var(--surf2);
-  padding:10px 13px; margin-top:12px; font-size:12px; line-height:1.55;
+  padding:10px 13px; margin-top:12px; font-size:var(--t-apoyo); line-height:1.55;
   color:var(--ink2)}
 .note.brass{border-color:var(--brass)}
 .note b{color:var(--ink)}
-.note .h{display:block; font-family:"IBM Plex Mono",monospace; font-size:9.5px;
+.note .h{display:block; font-family:"IBM Plex Mono",monospace; font-size:var(--t-etiqueta);
   letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
   margin-bottom:4px}
 
-.sub{font-size:11px; color:var(--muted); line-height:1.5; margin-top:8px}
-.load{padding:40px; text-align:center; color:var(--muted); font-size:13px}
+.sub{font-size:var(--t-menor); color:var(--muted); line-height:1.5; margin-top:8px}
+.load{padding:40px; text-align:center; color:var(--muted); font-size:var(--t-base)}
 
 /* Lo que se puede plegar sin que se pierda: la procedencia técnica de una
    cifra, que hace falta para auditarla y estorba para leerla. */
 .tecnico{margin-top:10px; border-top:1px solid var(--line2); padding-top:8px}
-.tecnico summary{font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+.tecnico summary{font-size:var(--t-menor); letter-spacing:.06em; text-transform:uppercase;
   color:var(--muted); cursor:pointer; list-style:none; display:inline-flex;
   align-items:center; gap:5px; padding:3px 0}
 .tecnico summary::-webkit-details-marker{display:none}
-.tecnico summary::before{content:"▸"; color:var(--faint); font-size:11px}
+.tecnico summary::before{content:"▸"; color:var(--faint); font-size:var(--t-menor)}
 .tecnico[open] summary::before{content:"▾"}
 .tecnico summary:hover{color:var(--ink2)}
 .tecnico .sub{margin-top:4px}
@@ -310,7 +349,7 @@ input[type="search"]::placeholder{color:var(--faint)}
 
    El brillo desaparece con `prefers-reduced-motion`, pero el bloque se queda:
    quien pidió menos movimiento no pidió menos información. */
-.skel{background:var(--line); border-radius:4px; color:transparent;
+.skel{background:var(--line); border-radius:var(--r-sm); color:transparent;
   position:relative; overflow:hidden}
 .skel::after{content:""; position:absolute; inset:0; transform:translateX(-100%);
   background:linear-gradient(90deg,transparent,var(--surf3),transparent);
@@ -329,11 +368,11 @@ input[type="search"]::placeholder{color:var(--faint)}
 .skbloque:nth-child(3n){width:78%}
 
 footer{margin-top:30px; padding-top:14px; border-top:1px solid var(--line);
-  color:var(--muted); font-size:11px; line-height:1.7}
+  color:var(--muted); font-size:var(--t-menor); line-height:1.7}
 footer b{color:var(--ink2); font-weight:500}
 
 .mapframe{width:100%; height:78vh; min-height:560px; border:0;
-  border-radius:10px; background:var(--surf); box-shadow:var(--shadow)}
+  border-radius:var(--r-lg); background:var(--surf); box-shadow:var(--shadow)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* ----------------------------------------------------------- selector -- */
@@ -342,7 +381,7 @@ footer b{color:var(--ink2); font-weight:500}
 .tema{display:flex; gap:2px; background:var(--surf2); border:1px solid var(--line);
   border-radius:8px; padding:2px}
 .tema button{border:0; background:none; color:var(--muted); font:inherit;
-  font-size:11.5px; line-height:1; padding:5px 9px; border-radius:6px;
+  font-size:var(--t-apoyo); line-height:1; padding:5px 9px; border-radius:6px;
   cursor:pointer}
 .tema button:hover{color:var(--ink)}
 .tema button[aria-pressed="true"]{background:var(--surf); color:var(--forest);
@@ -354,17 +393,17 @@ footer b{color:var(--ink2); font-weight:500}
    entre sí, que es lo que permite compararlas de un vistazo. */
 .barras{display:flex; flex-direction:column; gap:7px}
 .bar{display:grid; grid-template-columns:minmax(90px,1.1fr) auto minmax(60px,1.4fr) 46px;
-  gap:10px; align-items:center; font-size:12px}
+  gap:10px; align-items:center; font-size:var(--t-apoyo)}
 .bar .bn{color:var(--ink2); overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap}
-.bar .bv{font-size:11.5px; color:var(--ink); text-align:right;
+.bar .bv{font-size:var(--t-apoyo); color:var(--ink); text-align:right;
   font-variant-numeric:tabular-nums; white-space:nowrap}
-.bar .bt{height:8px; background:var(--line2); border-radius:4px; overflow:hidden}
+.bar .bt{height:8px; background:var(--line2); border-radius:var(--r-sm); overflow:hidden}
 .bar .bt i{display:block; height:100%; background:var(--forest);
-  border-radius:4px}
-.bar .bp{font-size:11px; color:var(--muted); text-align:right}
+  border-radius:var(--r-sm)}
+.bar .bp{font-size:var(--t-menor); color:var(--muted); text-align:right}
 .barras.compact .bar{grid-template-columns:minmax(80px,1fr) auto minmax(50px,1fr) 46px;
-  font-size:11.5px}
+  font-size:var(--t-apoyo)}
 /* Fila que ademas lleva a algun lado. Es la misma rejilla de siempre con una
    columna mas para el indicador: un bloque que ahora se puede recorrer tiene
    que seguir pareciendo el mismo bloque. */
@@ -372,7 +411,7 @@ footer b{color:var(--ink2); font-weight:500}
   grid-template-columns:minmax(90px,1.1fr) auto minmax(60px,1.4fr) 46px 10px}
 .barras.compact .bar.clic{
   grid-template-columns:minmax(80px,1fr) auto minmax(50px,1fr) 46px 10px}
-.bar.clic .bx{color:var(--faint); font-size:12px; text-align:right;
+.bar.clic .bx{color:var(--faint); font-size:var(--t-apoyo); text-align:right;
   transition:color .12s, transform .12s}
 .bar.clic:hover .bn,.bar.clic:focus-visible .bn{color:var(--ink)}
 .bar.clic:hover .bx,.bar.clic:focus-visible .bx{color:var(--forest);
@@ -402,9 +441,9 @@ footer b{color:var(--ink2); font-weight:500}
 /* Pares clave-valor: la clave se lee a la izquierda y el número se alinea a
    la derecha, de modo que la columna de cifras se recorre sin saltos. */
 .pares{display:grid; grid-template-columns:1fr auto; gap:5px 14px; margin:0;
-  font-size:12px}
+  font-size:var(--t-apoyo)}
 .pares dt{color:var(--muted)}
-.pares dd{margin:0; text-align:right; color:var(--ink); font-size:11.5px;
+.pares dd{margin:0; text-align:right; color:var(--ink); font-size:var(--t-apoyo);
   font-variant-numeric:tabular-nums}
 
 /* Calendario compacto: doce columnas de altura proporcional. Es la misma
@@ -415,12 +454,12 @@ footer b{color:var(--ink2); font-weight:500}
 .mc{display:flex; flex-direction:column; justify-content:flex-end;
   align-items:center; height:100%; gap:3px}
 .mc i{display:block; width:100%; background:var(--forest);
-  border-radius:3px 3px 0 0; min-height:3px}
+  border-radius:var(--r-xs) 3px 0 0; min-height:3px}
 .mc.pico i{background:var(--brass)}
-.mc b{font-size:9px; font-weight:500; color:var(--muted); line-height:1}
+.mc b{font-size:var(--t-micro); font-weight:500; color:var(--muted); line-height:1}
 
 /* ========================================================== tablas + ==== */
-.sub2{display:block; font-size:10px; color:var(--muted); margin-top:1px;
+.sub2{display:block; font-size:var(--t-etiqueta); color:var(--muted); margin-top:1px;
   font-family:"IBM Plex Mono",monospace}
 td.faint{color:var(--muted)}
 .delta{font-variant-numeric:tabular-nums; font-weight:600}
@@ -436,9 +475,9 @@ td.faint{color:var(--muted)}
 /* Perfil de empresa. El localizador es un lienzo y no una imagen porque tiene
    que repintarse al cambiar el tema: el CSS solo alcanza al DOM. */
 .locmap{width:100%; height:210px; display:block; border:1px solid var(--line);
-  border-radius:3px; background:var(--surf); margin-bottom:12px}
+  border-radius:var(--r-xs); background:var(--surf); margin-bottom:12px}
 .pares{display:grid; grid-template-columns:auto 1fr; gap:5px 14px;
-  font-size:12.5px; margin:0}
+  font-size:var(--t-dato); margin:0}
 .pares dt{color:var(--muted)}
 .pares dd{margin:0; color:var(--ink)}
 /* Serie semanal: diez barras y su fecha. Con diez valores un gráfico de línea
@@ -452,7 +491,7 @@ td.faint{color:var(--muted)}
 .serie .sb{flex:1; display:flex; flex-direction:column; justify-content:flex-end;
   height:100%; position:relative}
 .serie .sb i{display:block; width:100%; background:var(--forest2); border-radius:1px}
-.serie .sb b{font-family:"IBM Plex Mono",monospace; font-size:8.5px;
+.serie .sb b{font-variant-numeric:tabular-nums; font-size:var(--t-micro);
   font-weight:400; color:var(--muted); text-align:center; margin-top:4px;
   position:absolute; top:100%; left:0; right:0}
 
@@ -460,11 +499,11 @@ td.faint{color:var(--muted)}
    manda sobre todas: importación, comercio, productos, perfil y directorio
    tienen que hablar del mismo periodo o las cifras no se comparan. */
 .periodo{display:flex; align-items:center; gap:6px; margin-right:10px}
-.periodo .pl{font-family:"IBM Plex Mono",monospace; font-size:9.5px;
+.periodo .pl{font-family:"IBM Plex Mono",monospace; font-size:var(--t-etiqueta);
   letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
 .periodo button{border:1px solid var(--line); background:var(--surf);
-  color:var(--muted); font:inherit; font-size:11.5px; padding:3px 9px;
-  border-radius:3px; cursor:pointer}
+  color:var(--muted); font:inherit; font-size:var(--t-apoyo); padding:3px 9px;
+  border-radius:var(--r-xs); cursor:pointer}
 .periodo button:hover{color:var(--ink)}
 .periodo button[aria-pressed="true"]{background:var(--forest); color:#fff;
   border-color:var(--forest)}
@@ -473,11 +512,11 @@ td.faint{color:var(--muted)}
    pagina, capas y relieve, y quien entra a leer una tabla no tiene por que
    pagarlos. Una vez montado se reenfoca por hash, sin recargar. */
 .mapaslot{position:relative; height:520px; border:1px solid var(--line);
-  border-radius:3px; background:var(--surf2); display:flex;
+  border-radius:var(--r-xs); background:var(--surf2); display:flex;
   align-items:center; justify-content:center; overflow:hidden}
 .mapaslot iframe{width:100%; height:100%; border:0; display:block}
 .mapabtn{border:1px solid var(--line); background:var(--surf); color:var(--ink);
-  font:inherit; font-size:13px; padding:9px 18px; border-radius:3px;
+  font:inherit; font-size:var(--t-base); padding:9px 18px; border-radius:var(--r-xs);
   cursor:pointer}
 .mapabtn:hover{border-color:var(--forest); color:var(--forest)}
 .mapacard .h .eyebrow a{text-transform:none; letter-spacing:0}
@@ -507,5 +546,5 @@ td.faint{color:var(--muted)}
 /* La concentracion leida de la etiqueta, pegada al nombre de la molecula.
    Va en monoespaciada porque es una cifra y se lee comparando: "18 g/L"
    contra "36 g/L" tienen que alinearse a la vista. */
-.conc{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+.conc{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:var(--t-menor);
   font-weight:500; color:var(--muted); white-space:nowrap}

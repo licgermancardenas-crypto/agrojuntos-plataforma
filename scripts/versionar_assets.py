@@ -32,7 +32,7 @@ RAIZ = Path(__file__).resolve().parent.parent / "dashboard"
 
 # Los assets que el HTML referencia por su nombre. Los datos no entran aquí:
 # cambian por su cuenta, con otro ritmo, y ya tienen su propia política.
-ASSETS = ["app.js", "styles.css", "buscador.js", "buscador.css"]
+ASSETS = ["app.js", "tokens.css", "styles.css", "buscador.js", "buscador.css"]
 PAGINAS = ["index.html", "mapa.html"]
 
 

@@ -49,7 +49,7 @@ VISTAS = [
     # bloque de la canasta. Se sigue exigiendo que pinte: fusionar dos vistas
     # es la manera más fácil de perder la mitad de una sin que nadie lo note.
     ("#canasta", ".cal tbody tr", "Canasta · calendario"),
-    ("#precios", "#tPrecios tbody tr td", "Precios"),
+    ("#precios", "#tPrecios tbody td.l", "Precios"),     # el esqueleto también tiene td
     # El calendario se pinta aparte de la tabla y puede fallar solo, con la
     # tabla llena: se exige por separado, como el de la canasta.
     ("#precios", "#preCal .pidx span i", "Precios · calendario"),

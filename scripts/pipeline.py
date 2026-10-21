@@ -179,6 +179,17 @@ ETAPAS = [
       "../../_repo/dashboard/data/logistica.json"],
      "los JSON que sirve el sitio"),
 
+    # Una ficha por empresa. Estuvo fuera del pipeline y con un `import sys`
+    # de menos: nadie la corría, y 5,891 perfiles decían un territorio
+    # distinto del directorio para la misma empresa.
+    ("perfiles", "build_perfiles.py",
+     ["out/comercio_exportadores.csv", "out/comercio_importadores.csv",
+      "out/aduanas_importaciones.csv", "out/import_agro_lineas.csv",
+      "out/aduanas_exportaciones.csv", "out/empresas_agro_activas.csv",
+      "out/cartera_empresa.csv", "out/nombres_ruc.csv", "scripts/nombres.py"],
+     ["../../_repo/dashboard/data/perfil_idx.json"],
+     "la ficha de cada empresa"),
+
     # Con qué puntos de canal trabajar primero. El margen ordena la lista; el
     # resurtido la acorta, y es el mismo examen que a un centro nuevo.
     ("reclutar", "build_reclutar.py",

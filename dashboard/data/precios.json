@@ -1,0 +1,8628 @@
+{
+ "generado": "2026-10-21",
+ "fuente": "EMMSA · Gran Mercado Mayorista de Lima",
+ "unidad": "S/ por kg",
+ "base_real": 2025,
+ "desde": "2013-09",
+ "hasta": "2026-10",
+ "en_curso": true,
+ "ventana": [
+  "2025-10",
+  "2026-09"
+ ],
+ "anios_ref": 5,
+ "meses": [
+  "Ene",
+  "Feb",
+  "Mar",
+  "Abr",
+  "May",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Oct",
+  "Nov",
+  "Dic"
+ ],
+ "n_productos": 62,
+ "n_variedades": 165,
+ "cultivos_cruzados": 64,
+ "usd_cruzado": 622976482.0,
+ "usd_canasta": 1699967679.0,
+ "cobertura_pct": 36.6,
+ "productos": [
+  {
+   "k": "PAPA",
+   "n": "Papa",
+   "var": 14,
+   "ref_var": "Papa amarilla",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.43,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.02,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.6,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.95,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.89,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.64,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.33,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.7,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.53,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.55,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    106.0,
+    100.8,
+    97.3,
+    90.6,
+    86.9,
+    89.2,
+    94.6,
+    99.0,
+    109.4,
+    109.9,
+    105.5,
+    109.6
+   ],
+   "amp": 23.0,
+   "caro": "Oct",
+   "barato": "May",
+   "normal": {
+    "dif": -2.0,
+    "pares": 120,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.23,
+    "real": null
+   },
+   "compra": [
+    1.9,
+    1.1,
+    1.7,
+    2.4,
+    4.8,
+    5.3,
+    5.0,
+    8.0,
+    14.0,
+    25.2,
+    19.8,
+    10.9
+   ],
+   "cultivos": [
+    "Papa"
+   ],
+   "usd_insumos": 188042408.0
+  },
+  {
+   "k": "PALTA",
+   "n": "Palta",
+   "var": 6,
+   "ref_var": "Palta fuerte (costa)",
+   "desde": "2014-04",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 5.13,
+     "meses": 8,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 5.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 6.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 6.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 6.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 6.79,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 6.35,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 6.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 6.09,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 6.43,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 5.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 6.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 5.86,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    102.8,
+    102.0,
+    98.3,
+    85.2,
+    75.5,
+    75.3,
+    84.6,
+    95.8,
+    108.1,
+    129.5,
+    136.5,
+    112.2
+   ],
+   "amp": 61.2,
+   "caro": "Nov",
+   "barato": "Jun",
+   "normal": {
+    "dif": 5.3,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 7.73,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Palta"
+   ],
+   "usd_insumos": 56853207.0
+  },
+  {
+   "k": "ARVEJA",
+   "n": "Arveja",
+   "var": 5,
+   "ref_var": "Arveja verde amer/mej/(criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.14,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 3.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 3.95,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 3.85,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.35,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 3.15,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.85,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 3.09,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 3.57,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.53,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 4.6,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 4.53,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 5.1,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 6.26,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    121.5,
+    127.1,
+    137.3,
+    117.3,
+    96.4,
+    96.7,
+    86.8,
+    78.0,
+    82.3,
+    84.4,
+    83.9,
+    95.0
+   ],
+   "amp": 59.3,
+   "caro": "Mar",
+   "barato": "Ago",
+   "normal": {
+    "dif": 26.3,
+    "pares": 24,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 6.61,
+    "real": null
+   },
+   "compra": [
+    9.8,
+    14.6,
+    15.5,
+    12.8,
+    5.5,
+    2.0,
+    1.8,
+    3.4,
+    5.3,
+    9.5,
+    8.2,
+    11.5
+   ],
+   "cultivos": [
+    "Arveja grano seco",
+    "Arveja grano verde"
+   ],
+   "usd_insumos": 34068881.0
+  },
+  {
+   "k": "FREJOL",
+   "n": "Frejol",
+   "var": 7,
+   "ref_var": "Frejol verde canario",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 3.25,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 3.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 3.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 3.72,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.32,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 3.15,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.87,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 3.11,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.29,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 3.27,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 3.08,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 3.33,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    96.8,
+    94.6,
+    93.8,
+    93.8,
+    96.8,
+    108.2,
+    107.0,
+    110.9,
+    106.7,
+    101.2,
+    95.2,
+    94.1
+   ],
+   "amp": 17.1,
+   "caro": "Ago",
+   "barato": "Abr",
+   "normal": {
+    "dif": 2.1,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 5.65,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    5.8,
+    6.1,
+    8.1,
+    4.9,
+    6.2,
+    4.4,
+    4.4,
+    6.8,
+    15.0,
+    15.0,
+    14.8
+   ],
+   "cultivos": [
+    "Frijol",
+    "Frijol grano verde"
+   ],
+   "usd_insumos": 31321747.0
+  },
+  {
+   "k": "QUINUA",
+   "n": "Quinua",
+   "var": 2,
+   "ref_var": "Quinua perlada chica/grande(lav/pro)",
+   "desde": "2014-06",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 24.3,
+     "meses": 5,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 16.38,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 13.14,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 9.91,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 10.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 15.18,
+     "meses": 7,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    113.5,
+    103.8,
+    103.8,
+    94.9,
+    92.2,
+    104.0,
+    91.1,
+    89.8,
+    88.4,
+    101.4,
+    106.1,
+    107.6
+   ],
+   "amp": 25.1,
+   "caro": "Ene",
+   "barato": "Set",
+   "normal": null,
+   "ultimo": {
+    "per": "2019-07",
+    "nom": 12.0,
+    "real": 15.1
+   },
+   "compra": [
+    4.6,
+    0.9,
+    0.5,
+    0.9,
+    0.9,
+    0.6,
+    0.4,
+    1.9,
+    10.6,
+    41.7,
+    22.9,
+    14.2
+   ],
+   "cultivos": [
+    "Quinua"
+   ],
+   "usd_insumos": 29890520.0
+  },
+  {
+   "k": "HABA",
+   "n": "Haba",
+   "var": 3,
+   "ref_var": "Haba verde serrana",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.44,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.73,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.57,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.92,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.39,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.35,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.57,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.74,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.39,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.58,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    102.9,
+    107.4,
+    107.0,
+    96.6,
+    82.3,
+    92.2,
+    98.5,
+    101.4,
+    100.6,
+    105.4,
+    99.5,
+    105.2
+   ],
+   "amp": 25.1,
+   "caro": "Feb",
+   "barato": "May",
+   "normal": {
+    "dif": -4.3,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 1.21,
+    "real": null
+   },
+   "compra": [
+    6.8,
+    1.6,
+    0.6,
+    0.5,
+    0.5,
+    0.4,
+    0.7,
+    4.6,
+    18.1,
+    31.0,
+    21.3,
+    13.9
+   ],
+   "cultivos": [
+    "Haba grano seco",
+    "Haba grano verde"
+   ],
+   "usd_insumos": 27349704.0
+  },
+  {
+   "k": "ESPARRAGO",
+   "n": "Espárrago",
+   "var": 1,
+   "ref_var": "Esparrago/verde/blanco",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 9.61,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 9.12,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 8.31,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 8.72,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 10.39,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 8.21,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 7.16,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 6.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 6.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 6.34,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 6.84,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 6.95,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 7.06,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 6.53,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    94.9,
+    100.9,
+    104.1,
+    101.7,
+    103.6,
+    99.2,
+    105.4,
+    105.2,
+    102.7,
+    96.0,
+    93.2,
+    93.2
+   ],
+   "amp": 12.2,
+   "caro": "Jul",
+   "barato": "Dic",
+   "normal": {
+    "dif": -2.8,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 6.99,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Espárrago"
+   ],
+   "usd_insumos": 25497723.0
+  },
+  {
+   "k": "MANGO",
+   "n": "Mango",
+   "var": 12,
+   "ref_var": "Mango kent(costa)",
+   "desde": "2013-12",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 3.81,
+     "meses": 6,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 2.59,
+     "meses": 1,
+     "parcial": true
+    },
+    {
+     "a": 2016,
+     "v": 3.14,
+     "meses": 5,
+     "parcial": true
+    },
+    {
+     "a": 2017,
+     "v": 2.12,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2018,
+     "v": 2.49,
+     "meses": 5,
+     "parcial": true
+    },
+    {
+     "a": 2019,
+     "v": 4.4,
+     "meses": 8,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 3.02,
+     "meses": 6,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 3.88,
+     "meses": 9,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 4.36,
+     "meses": 9,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.94,
+     "meses": 11,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 5.2,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 4.27,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 5.4,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    76.9,
+    78.9,
+    85.9,
+    88.9,
+    96.5,
+    132.1,
+    161.0,
+    156.5,
+    124.0,
+    111.4,
+    94.1,
+    78.0
+   ],
+   "amp": 84.1,
+   "caro": "Jul",
+   "barato": "Ene",
+   "normal": {
+    "dif": 22.9,
+    "pares": 31,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 6.23,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Mango"
+   ],
+   "usd_insumos": 24574079.0
+  },
+  {
+   "k": "NARANJA",
+   "n": "Naranja",
+   "var": 3,
+   "ref_var": "Naranja valencia (selva)",
+   "desde": "2013-11",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.42,
+     "meses": 2,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.49,
+     "meses": 10,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.65,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.4,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.26,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.35,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.29,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.38,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.45,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.48,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.54,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    101.0,
+    105.7,
+    118.7,
+    104.6,
+    101.8,
+    97.4,
+    97.2,
+    91.0,
+    99.4,
+    103.7,
+    100.1,
+    86.9
+   ],
+   "amp": 31.8,
+   "caro": "Mar",
+   "barato": "Dic",
+   "normal": {
+    "dif": 6.3,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 1.18,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Naranja"
+   ],
+   "usd_insumos": 19941491.0
+  },
+  {
+   "k": "CHOCLO",
+   "n": "Choclo",
+   "var": 3,
+   "ref_var": "Choclo serrano tipo cuzco",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.9,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.89,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 3.44,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 3.21,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.13,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.7,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.83,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.51,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.82,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.98,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.99,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 3.08,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    97.8,
+    88.8,
+    89.5,
+    90.2,
+    90.1,
+    108.3,
+    121.0,
+    115.0,
+    97.7,
+    102.7,
+    98.2,
+    101.3
+   ],
+   "amp": 32.2,
+   "caro": "Jul",
+   "barato": "Feb",
+   "normal": {
+    "dif": 5.8,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 4.98,
+    "real": null
+   },
+   "compra": [
+    4.4,
+    2.1,
+    1.5,
+    2.1,
+    6.4,
+    6.0,
+    5.7,
+    14.8,
+    19.2,
+    19.0,
+    9.9,
+    9.0
+   ],
+   "cultivos": [
+    "Maíz choclo"
+   ],
+   "usd_insumos": 19522324.0
+  },
+  {
+   "k": "LIMON",
+   "n": "Limón",
+   "var": 4,
+   "ref_var": "Limon citrico bolsa",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.94,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.04,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.74,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.67,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 4.04,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.69,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.81,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.4,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.16,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.24,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 4.11,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.99,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.46,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    75.3,
+    74.3,
+    90.7,
+    80.9,
+    68.6,
+    76.8,
+    101.7,
+    137.7,
+    161.8,
+    130.6,
+    106.7,
+    83.2
+   ],
+   "amp": 93.2,
+   "caro": "Set",
+   "barato": "May",
+   "normal": {
+    "dif": -9.4,
+    "pares": 24,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.78,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Limón",
+    "Limón dulce"
+   ],
+   "usd_insumos": 17374931.0
+  },
+  {
+   "k": "MANDARINA",
+   "n": "Mandarina",
+   "var": 1,
+   "ref_var": "Mandarina",
+   "desde": "2013-11",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 3.1,
+     "meses": 1,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.51,
+     "meses": 9,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 2.95,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.73,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.6,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 3.08,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.99,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.63,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.5,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.84,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 3.23,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 3.05,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 3.22,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    146.1,
+    132.1,
+    115.6,
+    98.2,
+    85.3,
+    82.2,
+    80.3,
+    78.0,
+    78.7,
+    86.7,
+    101.8,
+    124.1
+   ],
+   "amp": 68.1,
+   "caro": "Ene",
+   "barato": "Ago",
+   "normal": {
+    "dif": 15.4,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.02,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Mandarina"
+   ],
+   "usd_insumos": 17063233.0
+  },
+  {
+   "k": "CEBADA",
+   "n": "Cebada",
+   "var": 1,
+   "ref_var": "Cebada tostada(corriente/estaquilla)",
+   "desde": "2014-06",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 4.87,
+     "meses": 7,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 5.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 5.25,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 5.57,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 5.16,
+     "meses": 12,
+     "parcial": false
+    }
+   ],
+   "idx": [
+    95.8,
+    96.2,
+    96.1,
+    95.4,
+    108.4,
+    102.5,
+    101.6,
+    101.6,
+    101.9,
+    101.4,
+    100.0,
+    97.4
+   ],
+   "amp": 13.0,
+   "caro": "May",
+   "barato": "Abr",
+   "normal": null,
+   "ultimo": {
+    "per": "2018-12",
+    "nom": 4.0,
+    "real": 5.1
+   },
+   "compra": [
+    23.9,
+    13.5,
+    2.1,
+    0.2,
+    0.0,
+    0.0,
+    0.0,
+    0.1,
+    0.7,
+    9.4,
+    17.8,
+    32.4
+   ],
+   "cultivos": [
+    "Cebada grano"
+   ],
+   "usd_insumos": 13555542.0
+  },
+  {
+   "k": "YUCA",
+   "n": "Yuca",
+   "var": 2,
+   "ref_var": "Yuca amarilla/legitimo (costa/selva)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.59,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.59,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.51,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.73,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.81,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.5,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.7,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.79,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.24,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.32,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.52,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    111.3,
+    111.6,
+    114.0,
+    114.6,
+    102.5,
+    93.4,
+    88.0,
+    88.0,
+    89.1,
+    90.4,
+    95.6,
+    103.8
+   ],
+   "amp": 26.6,
+   "caro": "Abr",
+   "barato": "Jul",
+   "normal": {
+    "dif": 27.8,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 1.98,
+    "real": null
+   },
+   "compra": [
+    6.2,
+    6.1,
+    5.9,
+    6.1,
+    6.8,
+    7.6,
+    8.4,
+    13.1,
+    12.9,
+    11.4,
+    7.8,
+    7.8
+   ],
+   "cultivos": [
+    "Yuca"
+   ],
+   "usd_insumos": 13100428.0
+  },
+  {
+   "k": "CEBOLLA",
+   "n": "Cebolla",
+   "var": 3,
+   "ref_var": "Cebolla cabeza blanca nacional",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.52,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.31,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.9,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.7,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.48,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.75,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.6,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.9,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.46,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.96,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.52,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.98,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    90.0,
+    89.9,
+    99.2,
+    114.4,
+    115.8,
+    117.0,
+    112.4,
+    106.9,
+    96.5,
+    90.2,
+    83.4,
+    85.3
+   ],
+   "amp": 33.6,
+   "caro": "Jun",
+   "barato": "Nov",
+   "normal": {
+    "dif": 13.6,
+    "pares": 36,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.89,
+    "real": null
+   },
+   "compra": [
+    6.0,
+    10.3,
+    12.2,
+    9.4,
+    6.3,
+    7.2,
+    9.6,
+    12.6,
+    9.6,
+    6.3,
+    5.6,
+    5.0
+   ],
+   "cultivos": [
+    "Cebolla china",
+    "Cebolla de cabeza"
+   ],
+   "usd_insumos": 12696027.0
+  },
+  {
+   "k": "OLLUCO",
+   "n": "Olluco",
+   "var": 2,
+   "ref_var": "Olluco largo (sin lavar/lavado)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.17,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.68,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.5,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.89,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.61,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.76,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.95,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.96,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.82,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.98,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 4.07,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.2,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.9,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.59,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    124.9,
+    114.6,
+    105.1,
+    86.4,
+    82.4,
+    82.3,
+    85.2,
+    88.3,
+    93.6,
+    107.5,
+    114.0,
+    112.4
+   ],
+   "amp": 42.6,
+   "caro": "Ene",
+   "barato": "Jun",
+   "normal": {
+    "dif": -2.4,
+    "pares": 21,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 4.27,
+    "real": null
+   },
+   "compra": [
+    0.9,
+    0.5,
+    0.5,
+    0.6,
+    1.4,
+    2.2,
+    3.5,
+    15.4,
+    26.9,
+    27.3,
+    15.1,
+    5.9
+   ],
+   "cultivos": [
+    "Olluco"
+   ],
+   "usd_insumos": 9015014.0
+  },
+  {
+   "k": "AJI",
+   "n": "Ají",
+   "var": 10,
+   "ref_var": "Aji amarillo seco",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 11.0,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 15.81,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 18.82,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 19.83,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 14.34,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 11.93,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 12.38,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 14.64,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 15.1,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 14.25,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 13.63,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 15.09,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 14.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 13.3,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    98.2,
+    102.7,
+    101.8,
+    99.6,
+    97.1,
+    103.0,
+    103.6,
+    104.4,
+    99.4,
+    98.8,
+    95.6,
+    95.9
+   ],
+   "amp": 8.8,
+   "caro": "Ago",
+   "barato": "Nov",
+   "normal": {
+    "dif": 14.8,
+    "pares": 72,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 10.43,
+    "real": null
+   },
+   "compra": [
+    10.6,
+    10.8,
+    4.7,
+    4.0,
+    4.1,
+    8.2,
+    7.4,
+    10.9,
+    11.6,
+    10.0,
+    10.9,
+    6.8
+   ],
+   "cultivos": [
+    "Ají",
+    "Páprika",
+    "Rocoto"
+   ],
+   "usd_insumos": 7737919.0
+  },
+  {
+   "k": "OCA",
+   "n": "Oca",
+   "var": 1,
+   "ref_var": "Oca/amarillo/rojo",
+   "desde": "2014-04",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 1.14,
+     "meses": 7,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 1.5,
+     "meses": 7,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.3,
+     "meses": 7,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.1,
+     "meses": 5,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.74,
+     "meses": 6,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.39,
+     "meses": 9,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.61,
+     "meses": 6,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.52,
+     "meses": 1,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    null,
+    173.7,
+    130.1,
+    95.0,
+    75.7,
+    83.9,
+    92.9,
+    102.3,
+    107.6,
+    109.1,
+    122.0,
+    121.6
+   ],
+   "amp": 98.0,
+   "caro": "Feb",
+   "barato": "May",
+   "normal": null,
+   "ultimo": {
+    "per": "2024-06",
+    "nom": 1.5,
+    "real": 1.52
+   },
+   "compra": [
+    1.1,
+    0.4,
+    0.1,
+    0.0,
+    0.0,
+    0.9,
+    1.2,
+    12.7,
+    28.3,
+    34.7,
+    15.9,
+    4.7
+   ],
+   "cultivos": [
+    "Oca"
+   ],
+   "usd_insumos": 7554507.0
+  },
+  {
+   "k": "ALCACHOFA",
+   "n": "Alcachofa",
+   "var": 2,
+   "ref_var": "Alcachofa serrana/valle/quebrada/helada",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 4.31,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 5.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 5.79,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 5.29,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 4.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 4.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 5.33,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 4.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 4.59,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 4.7,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 5.04,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 5.12,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 5.84,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 5.55,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    102.8,
+    96.5,
+    88.6,
+    85.2,
+    87.1,
+    97.2,
+    114.3,
+    124.9,
+    113.9,
+    95.3,
+    93.5,
+    98.2
+   ],
+   "amp": 39.7,
+   "caro": "Ago",
+   "barato": "Abr",
+   "normal": {
+    "dif": 14.3,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 5.68,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Alcachofa"
+   ],
+   "usd_insumos": 6678211.0
+  },
+  {
+   "k": "CAMOTE",
+   "n": "Camote",
+   "var": 3,
+   "ref_var": "Camote amarillo/legit/jhonatan/2001/futu",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.96,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.23,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.12,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.29,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.14,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.14,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.19,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.25,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.33,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.5,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.93,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    90.0,
+    89.4,
+    100.3,
+    105.9,
+    103.3,
+    106.2,
+    114.6,
+    116.4,
+    105.2,
+    98.1,
+    86.4,
+    84.8
+   ],
+   "amp": 31.6,
+   "caro": "Ago",
+   "barato": "Dic",
+   "normal": {
+    "dif": 27.6,
+    "pares": 24,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 1.63,
+    "real": null
+   },
+   "compra": [
+    5.8,
+    9.2,
+    6.7,
+    8.4,
+    9.8,
+    11.0,
+    9.8,
+    10.6,
+    8.2,
+    8.6,
+    6.1,
+    5.9
+   ],
+   "cultivos": [
+    "Camote"
+   ],
+   "usd_insumos": 5506007.0
+  },
+  {
+   "k": "PIMIENTO",
+   "n": "Pimiento",
+   "var": 2,
+   "ref_var": "Pimiento morron/injerto/ranger",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.9,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.7,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.23,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.15,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.27,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.18,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.59,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.84,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.2,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.96,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.39,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 3.84,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 3.1,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    66.7,
+    98.9,
+    110.2,
+    100.2,
+    100.1,
+    104.0,
+    104.1,
+    113.6,
+    110.5,
+    104.8,
+    100.5,
+    83.6
+   ],
+   "amp": 46.9,
+   "caro": "Ago",
+   "barato": "Ene",
+   "normal": {
+    "dif": -4.0,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 4.81,
+    "real": null
+   },
+   "compra": [
+    4.3,
+    7.0,
+    5.5,
+    9.0,
+    15.3,
+    18.7,
+    9.1,
+    2.7,
+    4.3,
+    3.0,
+    7.6,
+    13.5
+   ],
+   "cultivos": [
+    "Pimiento",
+    "Pimiento piquillo"
+   ],
+   "usd_insumos": 4804884.0
+  },
+  {
+   "k": "ZAPALLO",
+   "n": "Zapallo",
+   "var": 3,
+   "ref_var": "Zapallo italiano",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 0.92,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.76,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.85,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.48,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.64,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.52,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.65,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.95,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.23,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.47,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.64,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    97.4,
+    98.9,
+    110.4,
+    118.3,
+    124.0,
+    115.4,
+    106.1,
+    94.6,
+    87.5,
+    85.6,
+    79.0,
+    84.9
+   ],
+   "amp": 45.0,
+   "caro": "May",
+   "barato": "Nov",
+   "normal": {
+    "dif": -5.6,
+    "pares": 36,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.83,
+    "real": null
+   },
+   "compra": [
+    5.5,
+    5.2,
+    7.7,
+    8.8,
+    4.1,
+    5.8,
+    8.4,
+    10.9,
+    12.1,
+    13.0,
+    9.8,
+    8.8
+   ],
+   "cultivos": [
+    "Zapallo"
+   ],
+   "usd_insumos": 4786986.0
+  },
+  {
+   "k": "AJO",
+   "n": "Ajo",
+   "var": 5,
+   "ref_var": "Ajo criollo o napuri",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 5.01,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 6.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 4.68,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 7.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 6.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.37,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 4.26,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 9.91,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 7.35,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 5.87,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 6.68,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 11.15,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 8.78,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 5.35,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    91.1,
+    94.5,
+    98.7,
+    105.2,
+    107.7,
+    110.6,
+    116.0,
+    126.6,
+    101.7,
+    83.0,
+    81.1,
+    81.9
+   ],
+   "amp": 45.5,
+   "caro": "Ago",
+   "barato": "Nov",
+   "normal": {
+    "dif": -17.6,
+    "pares": 36,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 4.69,
+    "real": null
+   },
+   "compra": [
+    2.7,
+    5.5,
+    10.1,
+    11.9,
+    26.4,
+    12.1,
+    6.8,
+    3.4,
+    4.1,
+    7.7,
+    5.4,
+    4.0
+   ],
+   "cultivos": [
+    "Ajo"
+   ],
+   "usd_insumos": 4659335.0
+  },
+  {
+   "k": "TOMATE",
+   "n": "Tomate",
+   "var": 5,
+   "ref_var": "Tomate katia",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 3.22,
+     "meses": 1,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.94,
+     "meses": 9,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 2.19,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.14,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.46,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.3,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.91,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.18,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.17,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.1,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.54,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.74,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 3.21,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    84.3,
+    86.9,
+    91.5,
+    89.4,
+    99.0,
+    96.4,
+    112.3,
+    115.3,
+    115.6,
+    114.7,
+    101.6,
+    83.1
+   ],
+   "amp": 32.5,
+   "caro": "Set",
+   "barato": "Dic",
+   "normal": {
+    "dif": -4.4,
+    "pares": 27,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 5.5,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    9.3,
+    5.6,
+    7.9,
+    7.0,
+    9.6,
+    15.4,
+    7.3,
+    7.3,
+    8.7,
+    6.7,
+    6.8
+   ],
+   "cultivos": [
+    "Tomate"
+   ],
+   "usd_insumos": 4558606.0
+  },
+  {
+   "k": "ZANAHORIA",
+   "n": "Zanahoria",
+   "var": 1,
+   "ref_var": "Zanahoria (criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 0.59,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.09,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 0.99,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 0.93,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 0.91,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 0.97,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.05,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 0.87,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.09,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.17,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 0.76,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.25,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.13,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    93.6,
+    89.0,
+    106.7,
+    112.8,
+    110.0,
+    109.6,
+    105.0,
+    101.2,
+    101.9,
+    99.9,
+    85.7,
+    84.5
+   ],
+   "amp": 28.3,
+   "caro": "Abr",
+   "barato": "Dic",
+   "normal": {
+    "dif": 17.5,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.47,
+    "real": null
+   },
+   "compra": [
+    5.7,
+    7.6,
+    7.0,
+    10.1,
+    8.0,
+    5.1,
+    7.2,
+    10.7,
+    10.4,
+    10.4,
+    9.4,
+    8.5
+   ],
+   "cultivos": [
+    "Zanahoria"
+   ],
+   "usd_insumos": 4526093.0
+  },
+  {
+   "k": "MANZANA",
+   "n": "Manzana",
+   "var": 4,
+   "ref_var": "Manzana corriente para agua",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.84,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.32,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.44,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.15,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.43,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.05,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.73,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.98,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.3,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 3.35,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    89.7,
+    84.7,
+    93.7,
+    94.0,
+    102.6,
+    108.7,
+    119.4,
+    118.7,
+    107.9,
+    100.9,
+    89.4,
+    87.0
+   ],
+   "amp": 34.7,
+   "caro": "Jul",
+   "barato": "Feb",
+   "normal": {
+    "dif": 26.1,
+    "pares": 24,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 4.08,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Manzana"
+   ],
+   "usd_insumos": 3328791.0
+  },
+  {
+   "k": "MARACUYA",
+   "n": "Maracuyá",
+   "var": 2,
+   "ref_var": "Maracuya (costa)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 3.87,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 3.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.2,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.29,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.15,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.65,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.85,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.69,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.92,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.07,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.51,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 3.19,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.98,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    103.6,
+    88.8,
+    82.5,
+    92.0,
+    84.8,
+    81.0,
+    79.4,
+    87.7,
+    113.6,
+    141.3,
+    125.0,
+    120.3
+   ],
+   "amp": 61.9,
+   "caro": "Oct",
+   "barato": "Jul",
+   "normal": {
+    "dif": 37.6,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.87,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Maracuyá"
+   ],
+   "usd_insumos": 3091057.0
+  },
+  {
+   "k": "PAPAYA",
+   "n": "Papaya",
+   "var": 1,
+   "ref_var": "Papaya criolla ( costa )",
+   "desde": "2013-11",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.97,
+     "meses": 1,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.54,
+     "meses": 7,
+     "parcial": false
+    }
+   ],
+   "idx": [
+    null,
+    null,
+    null,
+    77.5,
+    106.7,
+    81.6,
+    103.2,
+    102.7,
+    110.7,
+    139.7,
+    78.0,
+    null
+   ],
+   "amp": 62.2,
+   "caro": "Oct",
+   "barato": "Abr",
+   "normal": null,
+   "ultimo": {
+    "per": "2014-10",
+    "nom": 2.4,
+    "real": 3.42
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Papaya"
+   ],
+   "usd_insumos": 2577786.0
+  },
+  {
+   "k": "PALLAR",
+   "n": "Pallar",
+   "var": 2,
+   "ref_var": "Pallar verde serrucho/cachito",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 3.0,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 3.28,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 3.21,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 3.27,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.33,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 3.13,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.96,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.54,
+     "meses": 10,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.78,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.45,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 3.02,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.7,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.88,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    91.2,
+    97.8,
+    106.5,
+    104.2,
+    105.3,
+    110.8,
+    105.1,
+    103.2,
+    101.7,
+    96.0,
+    88.5,
+    89.8
+   ],
+   "amp": 22.3,
+   "caro": "Jun",
+   "barato": "Nov",
+   "normal": {
+    "dif": -8.1,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 4.24,
+    "real": null
+   },
+   "compra": [
+    0.5,
+    2.2,
+    8.8,
+    17.2,
+    19.6,
+    30.5,
+    10.5,
+    8.6,
+    0.6,
+    0.4,
+    0.2,
+    0.9
+   ],
+   "cultivos": [
+    "Pallar grano seco",
+    "Pallar verde"
+   ],
+   "usd_insumos": 2551295.0
+  },
+  {
+   "k": "GRANADILLA",
+   "n": "Granadilla",
+   "var": 2,
+   "ref_var": "Granadilla (selva)",
+   "desde": "2013-11",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 3.89,
+     "meses": 2,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 5.03,
+     "meses": 10,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 4.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 4.44,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 4.32,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 4.72,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 4.54,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 4.59,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 4.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 4.42,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 4.73,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 4.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 5.34,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 5.21,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    117.3,
+    110.4,
+    93.8,
+    94.0,
+    93.5,
+    95.0,
+    99.3,
+    95.7,
+    96.7,
+    97.8,
+    96.9,
+    108.3
+   ],
+   "amp": 23.8,
+   "caro": "Ene",
+   "barato": "May",
+   "normal": {
+    "dif": 15.6,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 5.53,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Granadilla"
+   ],
+   "usd_insumos": 1992324.0
+  },
+  {
+   "k": "LENTEJA",
+   "n": "Lenteja",
+   "var": 4,
+   "ref_var": "Lenteja-verde bocona/sarandaja",
+   "desde": "2014-06",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 3.03,
+     "meses": 2,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 2.65,
+     "meses": 8,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.64,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2021,
+     "v": 2.63,
+     "meses": 8,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.74,
+     "meses": 8,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.42,
+     "meses": 8,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.99,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.98,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.89,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    112.7,
+    117.9,
+    110.6,
+    110.4,
+    99.2,
+    91.5,
+    95.9,
+    91.5,
+    92.7,
+    93.9,
+    101.0,
+    100.1
+   ],
+   "amp": 26.4,
+   "caro": "Feb",
+   "barato": "Jun",
+   "normal": {
+    "dif": 4.8,
+    "pares": 20,
+    "meses": 10
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.96,
+    "real": null
+   },
+   "compra": [
+    30.8,
+    32.5,
+    10.9,
+    0.4,
+    0.0,
+    0.1,
+    0.0,
+    0.0,
+    0.0,
+    0.8,
+    1.8,
+    22.7
+   ],
+   "cultivos": [
+    "Lenteja"
+   ],
+   "usd_insumos": 1747040.0
+  },
+  {
+   "k": "MANI",
+   "n": "Mani",
+   "var": 2,
+   "ref_var": "Mani con cascara (criolla/serrana)",
+   "desde": "2014-08",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 9.18,
+     "meses": 5,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 13.54,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 11.38,
+     "meses": 9,
+     "parcial": false
+    }
+   ],
+   "idx": [
+    102.5,
+    112.5,
+    104.7,
+    113.0,
+    112.1,
+    111.9,
+    110.6,
+    67.1,
+    82.0,
+    103.2,
+    103.8,
+    100.5
+   ],
+   "amp": 45.9,
+   "caro": "Abr",
+   "barato": "Ago",
+   "normal": null,
+   "ultimo": {
+    "per": "2016-09",
+    "nom": 8.0,
+    "real": 10.68
+   },
+   "compra": [
+    5.4,
+    8.7,
+    3.0,
+    4.8,
+    7.8,
+    16.4,
+    18.0,
+    10.2,
+    7.7,
+    9.7,
+    4.9,
+    3.3
+   ],
+   "cultivos": [
+    "Maní"
+   ],
+   "usd_insumos": 1669118.0
+  },
+  {
+   "k": "MAIZ",
+   "n": "Maíz morado",
+   "var": 5,
+   "ref_var": "Maiz morado fresc/mojad/saraso/seco",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.71,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.2,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.59,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.45,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.09,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.93,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.06,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.32,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.74,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 3.2,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    98.8,
+    103.9,
+    107.4,
+    105.7,
+    107.4,
+    103.2,
+    101.2,
+    99.2,
+    97.3,
+    95.9,
+    90.5,
+    90.9
+   ],
+   "amp": 16.9,
+   "caro": "Mar",
+   "barato": "Nov",
+   "normal": {
+    "dif": 50.4,
+    "pares": 24,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 11.4,
+    "real": null
+   },
+   "compra": [
+    5.8,
+    8.5,
+    10.0,
+    3.0,
+    5.8,
+    4.3,
+    6.3,
+    7.8,
+    10.8,
+    9.6,
+    14.1,
+    14.0
+   ],
+   "cultivos": [
+    "Maíz morado"
+   ],
+   "usd_insumos": 1626662.0
+  },
+  {
+   "k": "COCO",
+   "n": "Coco",
+   "var": 1,
+   "ref_var": "Coco(costa/selva)",
+   "desde": "2014-05",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 1.76,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2016,
+     "v": 1.48,
+     "meses": 5,
+     "parcial": true
+    },
+    {
+     "a": 2017,
+     "v": 1.9,
+     "meses": 9,
+     "parcial": true
+    },
+    {
+     "a": 2018,
+     "v": 2.49,
+     "meses": 11,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.3,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.54,
+     "meses": 11,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.74,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.38,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.38,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 3.08,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.15,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.26,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    101.4,
+    106.3,
+    111.7,
+    108.8,
+    103.7,
+    103.1,
+    100.0,
+    96.0,
+    91.2,
+    90.1,
+    94.2,
+    94.9
+   ],
+   "amp": 21.6,
+   "caro": "Mar",
+   "barato": "Oct",
+   "normal": {
+    "dif": -26.8,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.16,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Coco"
+   ],
+   "usd_insumos": 1230271.0
+  },
+  {
+   "k": "LECHUGA",
+   "n": "Lechuga",
+   "var": 5,
+   "ref_var": "Lechuga americana (criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.87,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.12,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.72,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.65,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.68,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.75,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.96,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.54,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.63,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.59,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    97.0,
+    103.3,
+    115.0,
+    114.8,
+    107.9,
+    108.7,
+    110.1,
+    91.7,
+    78.9,
+    89.7,
+    90.5,
+    90.5
+   ],
+   "amp": 36.1,
+   "caro": "Mar",
+   "barato": "Set",
+   "normal": {
+    "dif": -6.0,
+    "pares": 46,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.08,
+    "real": null
+   },
+   "compra": [
+    7.7,
+    10.2,
+    7.7,
+    10.0,
+    7.2,
+    8.4,
+    10.2,
+    7.1,
+    9.5,
+    8.5,
+    6.8,
+    6.8
+   ],
+   "cultivos": [
+    "Lechuga"
+   ],
+   "usd_insumos": 1228345.0
+  },
+  {
+   "k": "PEPINILLO",
+   "n": "Pepinillo",
+   "var": 1,
+   "ref_var": "Pepinillo",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.45,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.51,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.41,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.49,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.45,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.16,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.16,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.29,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.31,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.14,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.12,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.25,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.22,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    94.7,
+    92.5,
+    97.2,
+    80.5,
+    78.7,
+    98.2,
+    115.5,
+    116.8,
+    111.8,
+    114.2,
+    103.8,
+    94.2
+   ],
+   "amp": 38.1,
+   "caro": "Ago",
+   "barato": "May",
+   "normal": {
+    "dif": -1.5,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 1.65,
+    "real": null
+   },
+   "compra": [
+    7.0,
+    11.3,
+    9.2,
+    6.3,
+    6.6,
+    10.5,
+    10.8,
+    8.8,
+    7.8,
+    6.8,
+    7.1,
+    7.7
+   ],
+   "cultivos": [
+    "Pepinillo"
+   ],
+   "usd_insumos": 1008188.0
+  },
+  {
+   "k": "BETARRAGA",
+   "n": "Betarraga",
+   "var": 1,
+   "ref_var": "Betarraga (criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.73,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.67,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.78,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.33,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.51,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.06,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.5,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.87,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.43,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.69,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    82.1,
+    97.4,
+    122.2,
+    125.6,
+    107.8,
+    116.2,
+    131.0,
+    123.5,
+    88.2,
+    73.5,
+    64.2,
+    71.3
+   ],
+   "amp": 66.8,
+   "caro": "Jul",
+   "barato": "Nov",
+   "normal": {
+    "dif": 15.1,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.68,
+    "real": null
+   },
+   "compra": [
+    8.1,
+    9.1,
+    8.7,
+    9.5,
+    7.2,
+    8.4,
+    10.1,
+    6.8,
+    7.9,
+    7.5,
+    8.3,
+    8.4
+   ],
+   "cultivos": [
+    "Betarraga"
+   ],
+   "usd_insumos": 998279.0
+  },
+  {
+   "k": "COL",
+   "n": "Col",
+   "var": 4,
+   "ref_var": "Col corazon/nene/(criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 0.82,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.3,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 0.97,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.02,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.08,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.06,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.09,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 0.82,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.43,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 0.79,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.02,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 0.94,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    83.3,
+    91.5,
+    101.2,
+    118.6,
+    106.7,
+    104.5,
+    106.9,
+    107.3,
+    99.6,
+    100.8,
+    94.9,
+    81.2
+   ],
+   "amp": 37.4,
+   "caro": "Abr",
+   "barato": "Dic",
+   "normal": {
+    "dif": -8.9,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 1.09,
+    "real": null
+   },
+   "compra": [
+    7.8,
+    11.1,
+    8.5,
+    7.7,
+    6.3,
+    7.9,
+    8.9,
+    8.2,
+    8.1,
+    7.8,
+    9.7,
+    8.0
+   ],
+   "cultivos": [
+    "Col"
+   ],
+   "usd_insumos": 968570.0
+  },
+  {
+   "k": "APIO",
+   "n": "Apio",
+   "var": 1,
+   "ref_var": "Apio",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.41,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.23,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.3,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.53,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.9,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.45,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.48,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.83,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.02,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 4.25,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    85.3,
+    95.1,
+    123.4,
+    131.0,
+    125.2,
+    105.5,
+    109.1,
+    108.2,
+    94.8,
+    84.0,
+    68.8,
+    71.2
+   ],
+   "amp": 62.2,
+   "caro": "Abr",
+   "barato": "Nov",
+   "normal": {
+    "dif": 73.6,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 5.3,
+    "real": null
+   },
+   "compra": [
+    9.6,
+    9.2,
+    8.2,
+    9.8,
+    5.8,
+    9.0,
+    10.3,
+    6.3,
+    8.9,
+    7.7,
+    8.2,
+    7.0
+   ],
+   "cultivos": [
+    "Apio"
+   ],
+   "usd_insumos": 886872.0
+  },
+  {
+   "k": "OREGANO",
+   "n": "Orégano",
+   "var": 2,
+   "ref_var": "Oregano (criollo/serrano)",
+   "desde": "2014-04",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 4.72,
+     "meses": 9,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 8.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 8.68,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 4.25,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.64,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.57,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.02,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 8.87,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 10.95,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 10.07,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 10.23,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 10.0,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 10.52,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    97.4,
+    101.4,
+    105.6,
+    100.2,
+    97.4,
+    95.9,
+    100.2,
+    100.0,
+    102.4,
+    103.6,
+    98.7,
+    97.1
+   ],
+   "amp": 9.7,
+   "caro": "Mar",
+   "barato": "Jun",
+   "normal": {
+    "dif": -4.8,
+    "pares": 24,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 12.74,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Orégano"
+   ],
+   "usd_insumos": 752312.0
+  },
+  {
+   "k": "GUANABANA",
+   "n": "Guanabana",
+   "var": 1,
+   "ref_var": "Guanabana",
+   "desde": "2014-04",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 4.56,
+     "meses": 6,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 4.32,
+     "meses": 5,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 4.54,
+     "meses": 4,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 5.17,
+     "meses": 2,
+     "parcial": true
+    },
+    {
+     "a": 2019,
+     "v": 4.84,
+     "meses": 4,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 3.31,
+     "meses": 3,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 4.23,
+     "meses": 2,
+     "parcial": true
+    },
+    {
+     "a": 2022,
+     "v": 4.94,
+     "meses": 6,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 5.07,
+     "meses": 2,
+     "parcial": true
+    },
+    {
+     "a": 2024,
+     "v": 5.73,
+     "meses": 11,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 6.28,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 7.28,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    150.6,
+    127.7,
+    100.8,
+    81.0,
+    79.6,
+    84.0,
+    104.1,
+    116.3,
+    126.1,
+    134.8,
+    123.7,
+    107.0
+   ],
+   "amp": 71.0,
+   "caro": "Ene",
+   "barato": "May",
+   "normal": null,
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 7.31,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Guanábana"
+   ],
+   "usd_insumos": 667522.0
+  },
+  {
+   "k": "MELON",
+   "n": "Melón",
+   "var": 1,
+   "ref_var": "Melon",
+   "desde": "2014-04",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 2.21,
+     "meses": 9,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 2.86,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.83,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.91,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.81,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.88,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.73,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.58,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.96,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.43,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.92,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.71,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    93.1,
+    89.1,
+    92.4,
+    85.0,
+    85.2,
+    96.1,
+    110.3,
+    113.6,
+    123.5,
+    118.4,
+    99.6,
+    91.1
+   ],
+   "amp": 38.5,
+   "caro": "Set",
+   "barato": "Abr",
+   "normal": {
+    "dif": 3.0,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.48,
+    "real": null
+   },
+   "compra": [
+    7.9,
+    6.2,
+    2.2,
+    2.3,
+    4.9,
+    15.2,
+    26.3,
+    14.3,
+    5.7,
+    4.8,
+    6.7,
+    3.3
+   ],
+   "cultivos": [
+    "Melon"
+   ],
+   "usd_insumos": 611986.0
+  },
+  {
+   "k": "ESPINACA",
+   "n": "Espinaca",
+   "var": 1,
+   "ref_var": "Espinaca (criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.97,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.21,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.92,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.69,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.69,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.48,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.86,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.51,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.12,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.29,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.59,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.45,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.82,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    95.1,
+    88.4,
+    121.3,
+    116.7,
+    126.1,
+    122.0,
+    109.3,
+    90.5,
+    71.4,
+    78.3,
+    91.0,
+    93.8
+   ],
+   "amp": 54.7,
+   "caro": "May",
+   "barato": "Set",
+   "normal": {
+    "dif": -3.9,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.06,
+    "real": null
+   },
+   "compra": [
+    5.7,
+    7.6,
+    7.2,
+    7.5,
+    8.0,
+    7.7,
+    7.9,
+    10.5,
+    11.5,
+    10.4,
+    7.9,
+    8.1
+   ],
+   "cultivos": [
+    "Espinaca"
+   ],
+   "usd_insumos": 605643.0
+  },
+  {
+   "k": "CAIGUA",
+   "n": "Caigua",
+   "var": 2,
+   "ref_var": "Caigua (selva)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.8,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.23,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.1,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.92,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.08,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.87,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.02,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.12,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.76,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.98,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 3.7,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    110.0,
+    111.0,
+    112.9,
+    111.1,
+    95.8,
+    98.1,
+    96.7,
+    93.9,
+    95.3,
+    98.3,
+    86.9,
+    93.0
+   ],
+   "amp": 26.0,
+   "caro": "Mar",
+   "barato": "Nov",
+   "normal": {
+    "dif": 47.7,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 5.49,
+    "real": null
+   },
+   "compra": [
+    5.1,
+    7.0,
+    6.5,
+    6.9,
+    5.3,
+    6.3,
+    11.6,
+    11.6,
+    12.5,
+    11.1,
+    8.9,
+    7.4
+   ],
+   "cultivos": [
+    "Caigua"
+   ],
+   "usd_insumos": 572597.0
+  },
+  {
+   "k": "SOYA",
+   "n": "Soya",
+   "var": 2,
+   "ref_var": "Soya importada",
+   "desde": "2014-08",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 4.28,
+     "meses": 5,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 4.61,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 4.67,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 4.6,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 4.63,
+     "meses": 10,
+     "parcial": false
+    }
+   ],
+   "idx": [
+    90.7,
+    101.7,
+    107.9,
+    106.0,
+    106.9,
+    108.4,
+    108.4,
+    95.0,
+    95.0,
+    95.0,
+    92.4,
+    86.8
+   ],
+   "amp": 21.6,
+   "caro": "Jun",
+   "barato": "Dic",
+   "normal": null,
+   "ultimo": {
+    "per": "2018-10",
+    "nom": 3.6,
+    "real": 4.61
+   },
+   "compra": [
+    4.1,
+    5.5,
+    7.5,
+    5.7,
+    16.8,
+    6.1,
+    5.6,
+    3.4,
+    14.7,
+    1.8,
+    26.4,
+    2.3
+   ],
+   "cultivos": [
+    "Soya"
+   ],
+   "usd_insumos": 569551.0
+  },
+  {
+   "k": "COLIFLOR",
+   "n": "Coliflor",
+   "var": 1,
+   "ref_var": "Coliflor (criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.06,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.31,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.25,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.13,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.11,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 0.96,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 0.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 0.89,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 0.9,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 1.08,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 0.78,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 0.91,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 0.96,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    99.5,
+    104.9,
+    110.8,
+    109.8,
+    101.0,
+    107.7,
+    105.7,
+    97.4,
+    91.4,
+    88.4,
+    87.0,
+    98.0
+   ],
+   "amp": 23.8,
+   "caro": "Mar",
+   "barato": "Nov",
+   "normal": {
+    "dif": -0.1,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 1.08,
+    "real": null
+   },
+   "compra": [
+    8.8,
+    12.4,
+    8.8,
+    6.9,
+    6.5,
+    5.8,
+    7.2,
+    9.3,
+    7.3,
+    11.0,
+    8.2,
+    7.8
+   ],
+   "cultivos": [
+    "Coliflor"
+   ],
+   "usd_insumos": 566213.0
+  },
+  {
+   "k": "PORO",
+   "n": "Poro",
+   "var": 1,
+   "ref_var": "Poro (criollo/serrano)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 0.88,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.4,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.61,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.8,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.79,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.57,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.58,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.23,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.65,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.05,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.3,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.64,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.13,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    81.6,
+    82.5,
+    108.5,
+    129.4,
+    134.8,
+    117.4,
+    105.0,
+    101.4,
+    96.0,
+    92.3,
+    77.8,
+    74.2
+   ],
+   "amp": 60.6,
+   "caro": "May",
+   "barato": "Dic",
+   "normal": {
+    "dif": 22.9,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.27,
+    "real": null
+   },
+   "compra": [
+    7.2,
+    10.6,
+    7.7,
+    8.8,
+    7.3,
+    8.4,
+    12.5,
+    8.1,
+    7.1,
+    8.1,
+    6.8,
+    7.3
+   ],
+   "cultivos": [
+    "Poro"
+   ],
+   "usd_insumos": 522818.0
+  },
+  {
+   "k": "CALABAZA",
+   "n": "Calabaza",
+   "var": 1,
+   "ref_var": "Calabaza (criolla/serrana)",
+   "desde": "2014-04",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 1.33,
+     "meses": 9,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 1.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.71,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.77,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 1.97,
+     "meses": 10,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.57,
+     "meses": 8,
+     "parcial": true
+    },
+    {
+     "a": 2022,
+     "v": 1.62,
+     "meses": 8,
+     "parcial": true
+    },
+    {
+     "a": 2023,
+     "v": 2.19,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.69,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.47,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 1.26,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    103.4,
+    107.1,
+    105.6,
+    112.6,
+    102.7,
+    99.2,
+    98.0,
+    97.8,
+    95.9,
+    92.5,
+    93.4,
+    95.3
+   ],
+   "amp": 20.1,
+   "caro": "Abr",
+   "barato": "Oct",
+   "normal": {
+    "dif": -27.4,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 1.29,
+    "real": null
+   },
+   "compra": [
+    2.2,
+    0.0,
+    0.2,
+    0.0,
+    0.4,
+    0.0,
+    0.3,
+    7.0,
+    27.7,
+    27.6,
+    22.7,
+    12.0
+   ],
+   "cultivos": [
+    "Calabaza"
+   ],
+   "usd_insumos": 473374.0
+  },
+  {
+   "k": "TORONJA",
+   "n": "Toronja",
+   "var": 1,
+   "ref_var": "Toronja costa con pepa",
+   "desde": "2014-05",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 2.44,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 2.9,
+     "meses": 4,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 3.22,
+     "meses": 8,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.48,
+     "meses": 2,
+     "parcial": true
+    },
+    {
+     "a": 2018,
+     "v": 2.93,
+     "meses": 2,
+     "parcial": true
+    },
+    {
+     "a": 2019,
+     "v": 3.08,
+     "meses": 5,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 4.11,
+     "meses": 5,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 6.5,
+     "meses": 4,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 4.04,
+     "meses": 10,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 4.5,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 6.01,
+     "meses": 1,
+     "parcial": true
+    },
+    {
+     "a": 2025,
+     "v": 4.05,
+     "meses": 6,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 6.24,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    133.8,
+    122.3,
+    119.6,
+    114.3,
+    97.5,
+    158.1,
+    121.0,
+    94.4,
+    93.7,
+    76.5,
+    68.8,
+    101.3
+   ],
+   "amp": 89.3,
+   "caro": "Jun",
+   "barato": "Nov",
+   "normal": null,
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 6.62,
+    "real": null
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [
+    "Toronja"
+   ],
+   "usd_insumos": 406780.0
+  },
+  {
+   "k": "VAINITA",
+   "n": "Vainita",
+   "var": 3,
+   "ref_var": "Vainita americana/seda/pito/corrient/mad",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.72,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.88,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.78,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.6,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.57,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.37,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.16,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.59,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.66,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.66,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.94,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.73,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.88,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    84.6,
+    90.4,
+    115.1,
+    104.4,
+    98.6,
+    112.8,
+    113.3,
+    108.6,
+    98.5,
+    88.4,
+    98.4,
+    89.5
+   ],
+   "amp": 30.5,
+   "caro": "Mar",
+   "barato": "Ene",
+   "normal": {
+    "dif": -2.2,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.88,
+    "real": null
+   },
+   "compra": [
+    6.3,
+    8.5,
+    10.5,
+    13.2,
+    7.0,
+    8.8,
+    10.3,
+    8.3,
+    8.4,
+    8.0,
+    4.6,
+    6.2
+   ],
+   "cultivos": [
+    "Vainita"
+   ],
+   "usd_insumos": 382758.0
+  },
+  {
+   "k": "GARBANZO",
+   "n": "Garbanzo",
+   "var": 1,
+   "ref_var": "Garbanzo seco criollo nacional",
+   "desde": "2014-06",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 5.72,
+     "meses": 7,
+     "parcial": true
+    },
+    {
+     "a": 2015,
+     "v": 5.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 9.39,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 10.51,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 10.12,
+     "meses": 11,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 8.35,
+     "meses": 7,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    95.1,
+    95.9,
+    98.0,
+    104.5,
+    104.6,
+    102.4,
+    103.4,
+    101.5,
+    101.8,
+    102.1,
+    94.8,
+    93.6
+   ],
+   "amp": 11.0,
+   "caro": "May",
+   "barato": "Dic",
+   "normal": null,
+   "ultimo": {
+    "per": "2019-07",
+    "nom": 6.6,
+    "real": 8.31
+   },
+   "compra": [
+    4.9,
+    0.0,
+    0.3,
+    19.5,
+    19.2,
+    25.0,
+    9.8,
+    5.0,
+    10.1,
+    0.0,
+    0.0,
+    6.1
+   ],
+   "cultivos": [
+    "Garbanzo"
+   ],
+   "usd_insumos": 371981.0
+  },
+  {
+   "k": "RABANITO",
+   "n": "Rabanito",
+   "var": 1,
+   "ref_var": "Rabanito (criollo/serrano)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 3.08,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 4.48,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 4.34,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 4.36,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 4.03,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 4.45,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 4.53,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 3.75,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 4.01,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.91,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 4.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 3.99,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 4.26,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 5.38,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    106.1,
+    119.7,
+    108.0,
+    105.3,
+    107.1,
+    114.3,
+    111.4,
+    90.6,
+    81.6,
+    82.0,
+    85.5,
+    91.2
+   ],
+   "amp": 38.1,
+   "caro": "Feb",
+   "barato": "Set",
+   "normal": {
+    "dif": 21.3,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 4.57,
+    "real": null
+   },
+   "compra": [
+    9.0,
+    8.8,
+    8.5,
+    8.5,
+    8.2,
+    10.5,
+    8.2,
+    5.8,
+    8.4,
+    6.1,
+    9.3,
+    8.6
+   ],
+   "cultivos": [
+    "Rabanito"
+   ],
+   "usd_insumos": 316695.0
+  },
+  {
+   "k": "NABO",
+   "n": "Nabo",
+   "var": 1,
+   "ref_var": "Nabo (criollo/serrano)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.05,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.46,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.3,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.6,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.17,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 3.1,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.55,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.81,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.61,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.68,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.48,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 3.07,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.99,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    97.2,
+    104.4,
+    107.3,
+    110.5,
+    113.3,
+    124.0,
+    115.3,
+    91.5,
+    87.3,
+    89.0,
+    81.3,
+    80.6
+   ],
+   "amp": 43.4,
+   "caro": "Jun",
+   "barato": "Dic",
+   "normal": {
+    "dif": 5.3,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.75,
+    "real": null
+   },
+   "compra": [
+    8.7,
+    7.6,
+    8.5,
+    8.8,
+    7.5,
+    8.5,
+    8.4,
+    7.7,
+    9.6,
+    8.0,
+    9.2,
+    7.6
+   ],
+   "cultivos": [
+    "Nabo"
+   ],
+   "usd_insumos": 223022.0
+  },
+  {
+   "k": "ACELGA",
+   "n": "Acelga",
+   "var": 1,
+   "ref_var": "Acelga",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.0,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 3.14,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 3.08,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 3.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.18,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 3.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 3.88,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 3.32,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 3.31,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 3.24,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 3.64,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 3.88,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 4.04,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 4.19,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    95.5,
+    107.1,
+    100.8,
+    106.0,
+    109.6,
+    121.3,
+    126.7,
+    107.9,
+    87.6,
+    79.7,
+    79.0,
+    81.3
+   ],
+   "amp": 47.7,
+   "caro": "Jul",
+   "barato": "Nov",
+   "normal": {
+    "dif": 14.8,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.77,
+    "real": null
+   },
+   "compra": [
+    9.6,
+    8.2,
+    8.5,
+    9.6,
+    7.2,
+    7.7,
+    9.1,
+    7.5,
+    7.7,
+    8.2,
+    8.8,
+    7.9
+   ],
+   "cultivos": [
+    "Acelga"
+   ],
+   "usd_insumos": 183174.0
+  },
+  {
+   "k": "ALBAHACA",
+   "n": "Albahaca",
+   "var": 1,
+   "ref_var": "Albahaca",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 4.44,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 5.07,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 3.96,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 4.6,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 4.48,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 6.83,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 4.81,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 4.69,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 4.7,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 5.26,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 4.07,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 4.04,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 4.86,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 4.13,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    106.4,
+    100.8,
+    84.6,
+    77.4,
+    91.5,
+    108.9,
+    142.2,
+    115.4,
+    98.6,
+    97.1,
+    85.6,
+    91.8
+   ],
+   "amp": 64.8,
+   "caro": "Jul",
+   "barato": "Abr",
+   "normal": {
+    "dif": -9.2,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 4.81,
+    "real": null
+   },
+   "compra": [
+    7.8,
+    9.3,
+    7.3,
+    8.1,
+    8.4,
+    7.4,
+    8.1,
+    10.1,
+    9.3,
+    5.0,
+    5.8,
+    13.4
+   ],
+   "cultivos": [
+    "Albahaca"
+   ],
+   "usd_insumos": 165650.0
+  },
+  {
+   "k": "ALFALFA",
+   "n": "Alfalfa",
+   "var": 1,
+   "ref_var": "Alfalfa",
+   "desde": "2014-04",
+   "anual": [
+    {
+     "a": 2014,
+     "v": 1.31,
+     "meses": 2,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    null,
+    null,
+    null,
+    106.1,
+    93.9,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "amp": 12.2,
+   "caro": "Abr",
+   "barato": "May",
+   "normal": null,
+   "ultimo": {
+    "per": "2014-05",
+    "nom": 0.85,
+    "real": 1.22
+   },
+   "compra": [
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3,
+    8.3
+   ],
+   "cultivos": [],
+   "usd_insumos": 0
+  },
+  {
+   "k": "BERENJENA",
+   "n": "Berenjena",
+   "var": 1,
+   "ref_var": "Berenjena (criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 5.75,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 5.49,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 5.21,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 5.83,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 5.14,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 5.46,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 5.5,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 5.33,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 5.56,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 5.37,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 5.72,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 5.99,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 6.44,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 7.08,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    95.6,
+    89.7,
+    90.7,
+    92.9,
+    86.8,
+    94.3,
+    105.2,
+    107.9,
+    119.9,
+    109.1,
+    106.1,
+    99.6
+   ],
+   "amp": 33.1,
+   "caro": "Set",
+   "barato": "May",
+   "normal": {
+    "dif": 28.6,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 6.42,
+    "real": null
+   },
+   "compra": null,
+   "cultivos": [],
+   "usd_insumos": 0
+  },
+  {
+   "k": "CULANTRO",
+   "n": "Culantro",
+   "var": 1,
+   "ref_var": "Culantro (criollo/serrano)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.05,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.89,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.79,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 1.92,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.12,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.2,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.78,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.11,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.88,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.49,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.11,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.05,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.26,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    98.0,
+    123.3,
+    118.5,
+    111.9,
+    107.3,
+    107.6,
+    107.3,
+    82.0,
+    76.0,
+    80.9,
+    89.2,
+    101.3
+   ],
+   "amp": 47.3,
+   "caro": "Feb",
+   "barato": "Set",
+   "normal": {
+    "dif": -3.7,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.15,
+    "real": null
+   },
+   "compra": null,
+   "cultivos": [],
+   "usd_insumos": 0
+  },
+  {
+   "k": "HIERBABUENA",
+   "n": "Hierbabuena",
+   "var": 1,
+   "ref_var": "Hierba buena (criolla/serrana)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.52,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.87,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.86,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 1.84,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.2,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.93,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.18,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.79,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.78,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 1.81,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.05,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 1.58,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 1.51,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.12,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    88.7,
+    99.4,
+    111.0,
+    111.7,
+    114.6,
+    121.4,
+    122.4,
+    95.7,
+    85.7,
+    83.7,
+    83.8,
+    84.2
+   ],
+   "amp": 38.7,
+   "caro": "Jul",
+   "barato": "Oct",
+   "normal": {
+    "dif": 11.8,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.09,
+    "real": null
+   },
+   "compra": null,
+   "cultivos": [],
+   "usd_insumos": 0
+  },
+  {
+   "k": "HUACATAY",
+   "n": "Huacatay",
+   "var": 1,
+   "ref_var": "Huacatay (criollo/serrano)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 2.18,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 2.64,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 2.44,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.62,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 3.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 2.53,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.74,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 2.47,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 2.58,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.59,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.91,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.44,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.64,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.91,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    85.1,
+    107.2,
+    108.0,
+    106.7,
+    118.9,
+    130.9,
+    115.2,
+    91.1,
+    85.5,
+    91.4,
+    80.2,
+    81.5
+   ],
+   "amp": 50.7,
+   "caro": "Jun",
+   "barato": "Nov",
+   "normal": {
+    "dif": 5.4,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 3.06,
+    "real": null
+   },
+   "compra": null,
+   "cultivos": [],
+   "usd_insumos": 0
+  },
+  {
+   "k": "PEREJIL",
+   "n": "Perejil",
+   "var": 1,
+   "ref_var": "Perejil nacional(criollo/serrano)",
+   "desde": "2013-09",
+   "anual": [
+    {
+     "a": 2013,
+     "v": 1.95,
+     "meses": 4,
+     "parcial": true
+    },
+    {
+     "a": 2014,
+     "v": 1.86,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2015,
+     "v": 1.85,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2016,
+     "v": 2.31,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2017,
+     "v": 2.93,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2018,
+     "v": 1.86,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2019,
+     "v": 2.22,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2020,
+     "v": 1.85,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2021,
+     "v": 1.95,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2022,
+     "v": 2.08,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2023,
+     "v": 2.26,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2024,
+     "v": 2.65,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2025,
+     "v": 2.44,
+     "meses": 12,
+     "parcial": false
+    },
+    {
+     "a": 2026,
+     "v": 2.54,
+     "meses": 9,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    89.4,
+    119.3,
+    142.1,
+    139.2,
+    107.6,
+    94.7,
+    90.4,
+    81.1,
+    79.0,
+    98.2,
+    83.9,
+    76.9
+   ],
+   "amp": 65.2,
+   "caro": "Mar",
+   "barato": "Dic",
+   "normal": {
+    "dif": 9.9,
+    "pares": 12,
+    "meses": 12
+   },
+   "ultimo": {
+    "per": "2026-10",
+    "nom": 2.35,
+    "real": null
+   },
+   "compra": null,
+   "cultivos": [],
+   "usd_insumos": 0
+  },
+  {
+   "k": "TRIGO",
+   "n": "Trigo",
+   "var": 2,
+   "ref_var": "Trigo entero nacional",
+   "desde": "2014-07",
+   "anual": [
+    {
+     "a": 2022,
+     "v": 5.19,
+     "meses": 3,
+     "parcial": true
+    }
+   ],
+   "idx": [
+    null,
+    null,
+    99.9,
+    101.3,
+    106.3,
+    null,
+    92.5,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "amp": 13.8,
+   "caro": "May",
+   "barato": "Jul",
+   "normal": null,
+   "ultimo": {
+    "per": "2022-05",
+    "nom": 4.79,
+    "real": 5.36
+   },
+   "compra": [
+    29.9,
+    25.4,
+    9.7,
+    3.3,
+    0.4,
+    0.4,
+    0.2,
+    0.0,
+    0.5,
+    4.0,
+    6.2,
+    19.9
+   ],
+   "cultivos": [],
+   "usd_insumos": 0
+  }
+ ],
+ "cultivos": [
+  {
+   "c": "Papa",
+   "k": "PAPA",
+   "p": "Papa",
+   "usd": 188042408.0,
+   "compra": "Oct",
+   "idx_compra": 109.9,
+   "caro": "Oct",
+   "barato": "May",
+   "amp": 23.0,
+   "dif": -2.0
+  },
+  {
+   "c": "Palta",
+   "k": "PALTA",
+   "p": "Palta",
+   "usd": 56853207.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Nov",
+   "barato": "Jun",
+   "amp": 61.2,
+   "dif": 5.3
+  },
+  {
+   "c": "Quinua",
+   "k": "QUINUA",
+   "p": "Quinua",
+   "usd": 29890520.0,
+   "compra": "Oct",
+   "idx_compra": 101.4,
+   "caro": "Ene",
+   "barato": "Set",
+   "amp": 25.1,
+   "dif": null
+  },
+  {
+   "c": "Frijol",
+   "k": "FREJOL",
+   "p": "Frejol",
+   "usd": 28781718.0,
+   "compra": "Nov",
+   "idx_compra": 95.2,
+   "caro": "Ago",
+   "barato": "Abr",
+   "amp": 17.1,
+   "dif": 2.1
+  },
+  {
+   "c": "Espárrago",
+   "k": "ESPARRAGO",
+   "p": "Espárrago",
+   "usd": 25497723.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Jul",
+   "barato": "Dic",
+   "amp": 12.2,
+   "dif": -2.8
+  },
+  {
+   "c": "Mango",
+   "k": "MANGO",
+   "p": "Mango",
+   "usd": 24574079.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Jul",
+   "barato": "Ene",
+   "amp": 84.1,
+   "dif": 22.9
+  },
+  {
+   "c": "Haba grano seco",
+   "k": "HABA",
+   "p": "Haba",
+   "usd": 22114218.0,
+   "compra": "Oct",
+   "idx_compra": 105.4,
+   "caro": "Feb",
+   "barato": "May",
+   "amp": 25.1,
+   "dif": -4.3
+  },
+  {
+   "c": "Naranja",
+   "k": "NARANJA",
+   "p": "Naranja",
+   "usd": 19941491.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Mar",
+   "barato": "Dic",
+   "amp": 31.8,
+   "dif": 6.3
+  },
+  {
+   "c": "Maíz choclo",
+   "k": "CHOCLO",
+   "p": "Choclo",
+   "usd": 19522324.0,
+   "compra": "Set",
+   "idx_compra": 97.7,
+   "caro": "Jul",
+   "barato": "Feb",
+   "amp": 32.2,
+   "dif": 5.8
+  },
+  {
+   "c": "Arveja grano seco",
+   "k": "ARVEJA",
+   "p": "Arveja",
+   "usd": 18234492.0,
+   "compra": "Feb",
+   "idx_compra": 127.1,
+   "caro": "Mar",
+   "barato": "Ago",
+   "amp": 59.3,
+   "dif": 26.3
+  },
+  {
+   "c": "Limón",
+   "k": "LIMON",
+   "p": "Limón",
+   "usd": 17148738.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Set",
+   "barato": "May",
+   "amp": 93.2,
+   "dif": -9.4
+  },
+  {
+   "c": "Mandarina",
+   "k": "MANDARINA",
+   "p": "Mandarina",
+   "usd": 17063233.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Ene",
+   "barato": "Ago",
+   "amp": 68.1,
+   "dif": 15.4
+  },
+  {
+   "c": "Arveja grano verde",
+   "k": "ARVEJA",
+   "p": "Arveja",
+   "usd": 15834389.0,
+   "compra": "Mar",
+   "idx_compra": 137.3,
+   "caro": "Mar",
+   "barato": "Ago",
+   "amp": 59.3,
+   "dif": 26.3
+  },
+  {
+   "c": "Cebada grano",
+   "k": "CEBADA",
+   "p": "Cebada",
+   "usd": 13555542.0,
+   "compra": "Dic",
+   "idx_compra": 97.4,
+   "caro": "May",
+   "barato": "Abr",
+   "amp": 13.0,
+   "dif": null
+  },
+  {
+   "c": "Yuca",
+   "k": "YUCA",
+   "p": "Yuca",
+   "usd": 13100428.0,
+   "compra": "Ago",
+   "idx_compra": 88.0,
+   "caro": "Abr",
+   "barato": "Ago",
+   "amp": 26.6,
+   "dif": 27.8
+  },
+  {
+   "c": "Cebolla de cabeza",
+   "k": "CEBOLLA",
+   "p": "Cebolla",
+   "usd": 11068050.0,
+   "compra": "Ago",
+   "idx_compra": 106.9,
+   "caro": "Jun",
+   "barato": "Nov",
+   "amp": 33.6,
+   "dif": 13.6
+  },
+  {
+   "c": "Olluco",
+   "k": "OLLUCO",
+   "p": "Olluco",
+   "usd": 9015014.0,
+   "compra": "Oct",
+   "idx_compra": 107.5,
+   "caro": "Ene",
+   "barato": "Jun",
+   "amp": 42.6,
+   "dif": -2.4
+  },
+  {
+   "c": "Oca",
+   "k": "OCA",
+   "p": "Oca",
+   "usd": 7554507.0,
+   "compra": "Oct",
+   "idx_compra": 109.1,
+   "caro": "Feb",
+   "barato": "Jun",
+   "amp": 89.8,
+   "dif": null
+  },
+  {
+   "c": "Alcachofa",
+   "k": "ALCACHOFA",
+   "p": "Alcachofa",
+   "usd": 6678211.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Ago",
+   "barato": "Abr",
+   "amp": 39.7,
+   "dif": 14.3
+  },
+  {
+   "c": "Camote",
+   "k": "CAMOTE",
+   "p": "Camote",
+   "usd": 5506007.0,
+   "compra": "Jun",
+   "idx_compra": 106.2,
+   "caro": "Ago",
+   "barato": "Dic",
+   "amp": 31.6,
+   "dif": 27.6
+  },
+  {
+   "c": "Haba grano verde",
+   "k": "HABA",
+   "p": "Haba",
+   "usd": 5235486.0,
+   "compra": "Oct",
+   "idx_compra": 105.4,
+   "caro": "Feb",
+   "barato": "May",
+   "amp": 25.1,
+   "dif": -4.3
+  },
+  {
+   "c": "Zapallo",
+   "k": "ZAPALLO",
+   "p": "Zapallo",
+   "usd": 4786986.0,
+   "compra": "Oct",
+   "idx_compra": 85.6,
+   "caro": "May",
+   "barato": "Nov",
+   "amp": 45.0,
+   "dif": -5.6
+  },
+  {
+   "c": "Ajo",
+   "k": "AJO",
+   "p": "Ajo",
+   "usd": 4659335.0,
+   "compra": "May",
+   "idx_compra": 107.7,
+   "caro": "Ago",
+   "barato": "Nov",
+   "amp": 45.5,
+   "dif": -17.6
+  },
+  {
+   "c": "Tomate",
+   "k": "TOMATE",
+   "p": "Tomate",
+   "usd": 4558606.0,
+   "compra": "Jul",
+   "idx_compra": 112.3,
+   "caro": "Set",
+   "barato": "Dic",
+   "amp": 32.5,
+   "dif": -4.4
+  },
+  {
+   "c": "Zanahoria",
+   "k": "ZANAHORIA",
+   "p": "Zanahoria",
+   "usd": 4526093.0,
+   "compra": "Ago",
+   "idx_compra": 101.2,
+   "caro": "Abr",
+   "barato": "Dic",
+   "amp": 28.3,
+   "dif": 17.5
+  },
+  {
+   "c": "Ají",
+   "k": "AJI",
+   "p": "Ají",
+   "usd": 3834344.0,
+   "compra": "Set",
+   "idx_compra": 99.4,
+   "caro": "Ago",
+   "barato": "Nov",
+   "amp": 8.8,
+   "dif": 14.8
+  },
+  {
+   "c": "Páprika",
+   "k": "AJI",
+   "p": "Ají",
+   "usd": 3479063.0,
+   "compra": "Ago",
+   "idx_compra": 104.4,
+   "caro": "Ago",
+   "barato": "Nov",
+   "amp": 8.8,
+   "dif": 14.8
+  },
+  {
+   "c": "Manzana",
+   "k": "MANZANA",
+   "p": "Manzana",
+   "usd": 3328791.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Jul",
+   "barato": "Feb",
+   "amp": 34.7,
+   "dif": 26.1
+  },
+  {
+   "c": "Maracuyá",
+   "k": "MARACUYA",
+   "p": "Maracuyá",
+   "usd": 3091057.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Oct",
+   "barato": "Jul",
+   "amp": 61.9,
+   "dif": 37.6
+  },
+  {
+   "c": "Pimiento piquillo",
+   "k": "PIMIENTO",
+   "p": "Pimiento",
+   "usd": 2833394.0,
+   "compra": "Jun",
+   "idx_compra": 104.0,
+   "caro": "Ago",
+   "barato": "Ene",
+   "amp": 46.9,
+   "dif": -4.0
+  },
+  {
+   "c": "Papaya",
+   "k": "PAPAYA",
+   "p": "Papaya",
+   "usd": 2577786.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Oct",
+   "barato": "Abr",
+   "amp": 62.2,
+   "dif": null
+  },
+  {
+   "c": "Frijol grano verde",
+   "k": "FREJOL",
+   "p": "Frejol",
+   "usd": 2540030.0,
+   "compra": "Oct",
+   "idx_compra": 101.2,
+   "caro": "Ago",
+   "barato": "Abr",
+   "amp": 17.1,
+   "dif": 2.1
+  },
+  {
+   "c": "Pallar grano seco",
+   "k": "PALLAR",
+   "p": "Pallar",
+   "usd": 2405883.0,
+   "compra": "Jun",
+   "idx_compra": 110.8,
+   "caro": "Jun",
+   "barato": "Nov",
+   "amp": 22.3,
+   "dif": -8.1
+  },
+  {
+   "c": "Granadilla",
+   "k": "GRANADILLA",
+   "p": "Granadilla",
+   "usd": 1992324.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Ene",
+   "barato": "May",
+   "amp": 23.8,
+   "dif": 15.6
+  },
+  {
+   "c": "Pimiento",
+   "k": "PIMIENTO",
+   "p": "Pimiento",
+   "usd": 1971490.0,
+   "compra": "Jun",
+   "idx_compra": 104.0,
+   "caro": "Ago",
+   "barato": "Ene",
+   "amp": 46.9,
+   "dif": -4.0
+  },
+  {
+   "c": "Lenteja",
+   "k": "LENTEJA",
+   "p": "Lenteja",
+   "usd": 1747040.0,
+   "compra": "Feb",
+   "idx_compra": 117.9,
+   "caro": "Feb",
+   "barato": "Jun",
+   "amp": 26.4,
+   "dif": 4.8
+  },
+  {
+   "c": "Maní",
+   "k": "MANI",
+   "p": "Mani",
+   "usd": 1669118.0,
+   "compra": "Jul",
+   "idx_compra": 110.6,
+   "caro": "Abr",
+   "barato": "Ago",
+   "amp": 45.9,
+   "dif": null
+  },
+  {
+   "c": "Cebolla china",
+   "k": "CEBOLLA",
+   "p": "Cebolla",
+   "usd": 1627977.0,
+   "compra": "Jul",
+   "idx_compra": 112.4,
+   "caro": "Jun",
+   "barato": "Nov",
+   "amp": 33.6,
+   "dif": 13.6
+  },
+  {
+   "c": "Maíz morado",
+   "k": "MAIZ",
+   "p": "Maíz morado",
+   "usd": 1626662.0,
+   "compra": "Nov",
+   "idx_compra": 90.5,
+   "caro": "Mar",
+   "barato": "Nov",
+   "amp": 16.9,
+   "dif": 50.4
+  },
+  {
+   "c": "Coco",
+   "k": "COCO",
+   "p": "Coco",
+   "usd": 1230271.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Mar",
+   "barato": "Oct",
+   "amp": 21.6,
+   "dif": -26.8
+  },
+  {
+   "c": "Lechuga",
+   "k": "LECHUGA",
+   "p": "Lechuga",
+   "usd": 1228345.0,
+   "compra": "Jul",
+   "idx_compra": 110.1,
+   "caro": "Mar",
+   "barato": "Set",
+   "amp": 36.1,
+   "dif": -6.0
+  },
+  {
+   "c": "Pepinillo",
+   "k": "PEPINILLO",
+   "p": "Pepinillo",
+   "usd": 1008188.0,
+   "compra": "Feb",
+   "idx_compra": 92.5,
+   "caro": "Ago",
+   "barato": "May",
+   "amp": 38.1,
+   "dif": -1.5
+  },
+  {
+   "c": "Betarraga",
+   "k": "BETARRAGA",
+   "p": "Betarraga",
+   "usd": 998279.0,
+   "compra": "Jul",
+   "idx_compra": 131.0,
+   "caro": "Jul",
+   "barato": "Nov",
+   "amp": 66.8,
+   "dif": 15.1
+  },
+  {
+   "c": "Col",
+   "k": "COL",
+   "p": "Col",
+   "usd": 968570.0,
+   "compra": "Feb",
+   "idx_compra": 91.5,
+   "caro": "Abr",
+   "barato": "Dic",
+   "amp": 37.4,
+   "dif": -8.9
+  },
+  {
+   "c": "Apio",
+   "k": "APIO",
+   "p": "Apio",
+   "usd": 886872.0,
+   "compra": "Jul",
+   "idx_compra": 109.1,
+   "caro": "Abr",
+   "barato": "Nov",
+   "amp": 62.2,
+   "dif": 73.6
+  },
+  {
+   "c": "Orégano",
+   "k": "OREGANO",
+   "p": "Orégano",
+   "usd": 752312.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Mar",
+   "barato": "Jun",
+   "amp": 9.7,
+   "dif": -4.8
+  },
+  {
+   "c": "Guanábana",
+   "k": "GUANABANA",
+   "p": "Guanabana",
+   "usd": 667522.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Ene",
+   "barato": "May",
+   "amp": 71.0,
+   "dif": null
+  },
+  {
+   "c": "Melon",
+   "k": "MELON",
+   "p": "Melón",
+   "usd": 611986.0,
+   "compra": "Jul",
+   "idx_compra": 110.3,
+   "caro": "Set",
+   "barato": "Abr",
+   "amp": 38.5,
+   "dif": 3.0
+  },
+  {
+   "c": "Espinaca",
+   "k": "ESPINACA",
+   "p": "Espinaca",
+   "usd": 605643.0,
+   "compra": "Set",
+   "idx_compra": 71.4,
+   "caro": "May",
+   "barato": "Set",
+   "amp": 54.7,
+   "dif": -3.9
+  },
+  {
+   "c": "Caigua",
+   "k": "CAIGUA",
+   "p": "Caigua",
+   "usd": 572597.0,
+   "compra": "Set",
+   "idx_compra": 95.3,
+   "caro": "Mar",
+   "barato": "Nov",
+   "amp": 26.0,
+   "dif": 47.7
+  },
+  {
+   "c": "Soya",
+   "k": "SOYA",
+   "p": "Soya",
+   "usd": 569551.0,
+   "compra": "Nov",
+   "idx_compra": 92.4,
+   "caro": "Jul",
+   "barato": "Dic",
+   "amp": 21.6,
+   "dif": null
+  },
+  {
+   "c": "Coliflor",
+   "k": "COLIFLOR",
+   "p": "Coliflor",
+   "usd": 566213.0,
+   "compra": "Feb",
+   "idx_compra": 104.9,
+   "caro": "Mar",
+   "barato": "Nov",
+   "amp": 23.8,
+   "dif": -0.1
+  },
+  {
+   "c": "Poro",
+   "k": "PORO",
+   "p": "Poro",
+   "usd": 522818.0,
+   "compra": "Jul",
+   "idx_compra": 105.0,
+   "caro": "May",
+   "barato": "Dic",
+   "amp": 60.6,
+   "dif": 22.9
+  },
+  {
+   "c": "Calabaza",
+   "k": "CALABAZA",
+   "p": "Calabaza",
+   "usd": 473374.0,
+   "compra": "Set",
+   "idx_compra": 95.9,
+   "caro": "Mar",
+   "barato": "Oct",
+   "amp": 13.1,
+   "dif": -27.4
+  },
+  {
+   "c": "Rocoto",
+   "k": "AJI",
+   "p": "Ají",
+   "usd": 424512.0,
+   "compra": "Set",
+   "idx_compra": 99.4,
+   "caro": "Ago",
+   "barato": "Nov",
+   "amp": 8.8,
+   "dif": 14.8
+  },
+  {
+   "c": "Toronja",
+   "k": "TORONJA",
+   "p": "Toronja",
+   "usd": 406780.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Jun",
+   "barato": "Nov",
+   "amp": 89.3,
+   "dif": null
+  },
+  {
+   "c": "Vainita",
+   "k": "VAINITA",
+   "p": "Vainita",
+   "usd": 382758.0,
+   "compra": "Abr",
+   "idx_compra": 104.4,
+   "caro": "Mar",
+   "barato": "Ene",
+   "amp": 30.5,
+   "dif": -2.2
+  },
+  {
+   "c": "Garbanzo",
+   "k": "GARBANZO",
+   "p": "Garbanzo",
+   "usd": 371981.0,
+   "compra": "Jun",
+   "idx_compra": 102.4,
+   "caro": "May",
+   "barato": "Dic",
+   "amp": 11.0,
+   "dif": null
+  },
+  {
+   "c": "Rabanito",
+   "k": "RABANITO",
+   "p": "Rabanito",
+   "usd": 316695.0,
+   "compra": "Jun",
+   "idx_compra": 114.3,
+   "caro": "Feb",
+   "barato": "Set",
+   "amp": 38.1,
+   "dif": 21.3
+  },
+  {
+   "c": "Limón dulce",
+   "k": "LIMON",
+   "p": "Limón",
+   "usd": 226193.0,
+   "compra": "",
+   "idx_compra": null,
+   "caro": "Set",
+   "barato": "May",
+   "amp": 93.2,
+   "dif": -9.4
+  },
+  {
+   "c": "Nabo",
+   "k": "NABO",
+   "p": "Nabo",
+   "usd": 223022.0,
+   "compra": "Set",
+   "idx_compra": 87.3,
+   "caro": "Jun",
+   "barato": "Dic",
+   "amp": 43.4,
+   "dif": 5.3
+  },
+  {
+   "c": "Acelga",
+   "k": "ACELGA",
+   "p": "Acelga",
+   "usd": 183174.0,
+   "compra": "Abr",
+   "idx_compra": 106.0,
+   "caro": "Jul",
+   "barato": "Nov",
+   "amp": 47.7,
+   "dif": 14.8
+  },
+  {
+   "c": "Albahaca",
+   "k": "ALBAHACA",
+   "p": "Albahaca",
+   "usd": 165650.0,
+   "compra": "Dic",
+   "idx_compra": 91.8,
+   "caro": "Jul",
+   "barato": "Abr",
+   "amp": 64.8,
+   "dif": -9.2
+  },
+  {
+   "c": "Pallar verde",
+   "k": "PALLAR",
+   "p": "Pallar",
+   "usd": 145413.0,
+   "compra": "Mar",
+   "idx_compra": 106.5,
+   "caro": "Jun",
+   "barato": "Nov",
+   "amp": 22.3,
+   "dif": -8.1
+  }
+ ],
+ "fuera": [
+  {
+   "c": "Maíz amiláceo",
+   "k": "MAIZ",
+   "usd": 78948503.0,
+   "motivo": "En EMMSA «maíz» es maíz morado y su coronta: ninguna variedad de amiláceo se cotiza en Lima desde 2020. Darle el precio del morado le atribuía una subida que es de otro grano."
+  }
+ ],
+ "salvedad": "Precio mayorista en Lima, no en chacra: entre uno y otro hay flete, merma e intermediación. Sirve para saber cuándo un cultivo vale más y si este año vale más que otros, no cuánto cobra el productor.",
+ "no_dice": "El mes de compra es el de siembra. El de cosecha no está en ninguna de las dos bases, y deducirlo del precio se probó contra ocho calendarios conocidos y acertó en cuatro: Lima recibe de muchas regiones a la vez, y el mes barato no es la cosecha de nadie en particular."
+}

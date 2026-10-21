@@ -157,10 +157,19 @@ ETAPAS = [
       "out/hubs_asignacion.csv", "out/h3_r5.csv"],
      ["out/mapa_geo.json", "out/mapa_capas.json"],
      "el atlas geoespacial que baja el navegador"),
+    # La razón social entera. Aduanas la corta en 40 caracteres; el padrón de
+    # SUNAT la trae completa, y de él se saca la de cada RUC de comercio.
+    ("nombres", "build_nombres_ruc.py",
+     ["out/comercio_exportadores.csv", "out/comercio_importadores.csv",
+      "out/aduanas_importaciones.csv", "out/import_agro_lineas.csv"],
+     ["out/nombres_ruc.csv"],
+     "el nombre completo de cada RUC, del padrón"),
+
     ("dashboard", "build_dashboard_data.py",
      ["out/ruteo_departamento.csv", "out/clusters_territorio.csv",
       "out/cartera_territorio.csv", "out/hubs_asignacion.csv",
       "out/aduanas_exportaciones.csv", "out/aduanas_importaciones.csv",
+      "out/nombres_ruc.csv", "scripts/nombres.py",
       "scripts/universo.py"],
      # En el repositorio, que es donde el sitio los lee. Antes apuntaban al
      # dashboard viejo que esta al lado de MAPEO, y de ahi habia que copiarlos

@@ -1145,8 +1145,10 @@ function pintarEmpresas() {
   tabla(document.getElementById("tEmpresas"), [
     { k: "n", t: "Razón social", l: true, cls: "name",
       f: function (r) {
-        return '<a class="vermapa" href="#empresa=' + r.ruc + '">' +
-               esc(r.n) + "</a>"; } },
+        /* La celda recorta con puntos suspensivos y el nombre llega entero:
+           el `title` lo devuelve completo a quien pasa el puntero. */
+        return '<a class="vermapa" href="#empresa=' + r.ruc + '" title="' +
+               esc(r.n) + '">' + esc(r.n) + "</a>"; } },
     { k: "ruc", t: "RUC", l: true, f: function (r) {
         return '<span class="mono">' + r.ruc + "</span>"; } },
     { k: "c", t: "Clase", l: true, f: function (r) {

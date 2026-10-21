@@ -23,6 +23,7 @@ Uso:
 """
 import json
 import os
+import sys
 import unicodedata
 from collections import defaultdict
 
@@ -30,6 +31,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import sitio                                          # noqa: E402
+from nombres import razon_social                       # noqa: E402
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = sitio.DATA
@@ -181,7 +183,8 @@ NOMBRE = {}
 # que hace falta despues.
 for d in (imp, expr, emp):
     for r, n in zip(d["ruc"], d["razon_social"]):
-        NOMBRE.setdefault(r, str(n))
+        if r not in NOMBRE:
+            NOMBRE[r] = razon_social(r, n)
 
 SEMS = sorted(imp["semana"].dropna().unique())
 SEMANAS = len(SEMS)

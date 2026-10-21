@@ -22,6 +22,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import sitio                                                  # noqa: E402
+from nombres import razon_social                              # noqa: E402
 from universo import es_agro                                  # noqa: E402
 
 # Se escribe directo en el sitio y no en out/, que obligaba a copiar a mano
@@ -194,7 +195,7 @@ for _, r in emp.iterrows():
     ruc = r["ruc"]
     vistos.add(ruc)
     filas.append({
-        "r": ruc, "n": r["razon_social"][:70],
+        "r": ruc, "n": razon_social(ruc, r["razon_social"]),
         "c": CLASE.get(r["clase"], "O"),
         "d": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
         "p": cap(r["provincia"]) if pd.notna(r.get("provincia")) else "",
@@ -214,7 +215,7 @@ for df, campo, clase in ((expo, "x", "E"), (impo, "i", "I")):
             continue
         vistos.add(r["ruc"])
         filas.append({
-            "r": r["ruc"], "n": str(r["razon_social"])[:70], "c": clase,
+            "r": r["ruc"], "n": razon_social(r["ruc"], r["razon_social"]), "c": clase,
             "d": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
             "p": cap(r["provincia"]) if pd.notna(r.get("provincia")) else "",
             "t": cap(r["distrito"]) if pd.notna(r.get("distrito")) else "",
@@ -466,7 +467,7 @@ guardar("comercio.json", {
     "familias": agrupar(imp_l, "familia"),
     "origenes": agrupar(imp_l, "pais_origen", 20),
     "importadores": [{
-        "r": str(r["ruc"]), "n": str(r["razon_social"])[:60],
+        "r": str(r["ruc"]), "n": razon_social(r["ruc"], r["razon_social"]),
         "rubro": str(r["rubro"]), "fob": int(r["fob"]),
         "tn": num(r["tn"], 1), "pct": num(r["pct"], 2),
         "dep": cap(r["dep"]) if pd.notna(r.get("dep")) else "",
@@ -572,8 +573,12 @@ imp_l = imp_l[imp_l.categoria != "referencia"]
 # o a quien le compra un canal que quiera entrar en ese rubro.
 top_cat = {}
 for k, g in imp_l.groupby("categoria"):
-    t = g.groupby("razon_social").fob_usd.sum().nlargest(6)
-    top_cat[k] = [{"n": n[:44], "fob": int(v)} for n, v in t.items()]
+    # Por RUC y no por nombre: si el manifiesto escribe el mismo importador
+    # de dos maneras, agrupar por el texto lo parte en dos.
+    t = g.groupby("ruc").agg(n=("razon_social", "first"),
+                             fob=("fob_usd", "sum")).nlargest(6, "fob")
+    top_cat[k] = [{"n": razon_social(ruc, r["n"]), "fob": int(r["fob"])}
+                  for ruc, r in t.iterrows()]
 
 glosas = {}
 for k, g in imp_g.groupby("categoria"):

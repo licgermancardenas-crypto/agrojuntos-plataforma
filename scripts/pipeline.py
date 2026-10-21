@@ -166,8 +166,8 @@ ETAPAS = [
      # dashboard viejo que esta al lado de MAPEO, y de ahi habia que copiarlos
      # a mano: ver `scripts/sitio.py`, que es donde se explica por que habia
      # dos arboles y cual sobrevive.
-     ["../../../_repo/dashboard/data/resumen.json",
-      "../../../_repo/dashboard/data/logistica.json"],
+     ["../../_repo/dashboard/data/resumen.json",
+      "../../_repo/dashboard/data/logistica.json"],
      "los JSON que sirve el sitio"),
 
     # Con qué puntos de canal trabajar primero. El margen ordena la lista; el
@@ -175,7 +175,7 @@ ETAPAS = [
     ("reclutar", "build_reclutar.py",
      ["out/canal_punto.csv", "out/canal.json"],
      ["out/reclutar.json", "out/reclutar.csv",
-      "../../../_repo/dashboard/data/reclutar.json"],
+      "../../_repo/dashboard/data/reclutar.json"],
      "con qué puntos de venta trabajar primero"),
 
     # En qué orden se recorren los puntos reclutables. Los tiempos son
@@ -184,7 +184,7 @@ ETAPAS = [
      ["out/reclutar.json", "out/canal_punto.csv", "out/red_elegida.json",
       "data/vial/compacto/PE-LIM.npz"],
      ["out/rutas.json", "out/rutas.csv",
-      "../../../_repo/dashboard/data/rutas.json"],
+      "../../_repo/dashboard/data/rutas.json"],
      "las rutas de visita, en jornadas que vuelven al centro"),
 
     # La cobertura de la red pesada por la demanda de cada mes. La cifra plana
@@ -193,7 +193,7 @@ ETAPAS = [
     ("cobertura-mes", "build_cobertura_mes.py",
      ["out/hubs_asignacion.csv", "out/estacionalidad_region.csv"],
      ["out/cobertura_mes.json",
-      "../../../_repo/dashboard/data/cobertura_mes.json"],
+      "../../_repo/dashboard/data/cobertura_mes.json"],
      "la cobertura mes a mes, pesada por la demanda"),
 
     # Qué compra un centro más sobre la red vigente. Era un diagnóstico de una
@@ -213,7 +213,7 @@ ETAPAS = [
     ("canasta", "build_canasta.py",
      ["out/estacionalidad_detalle.csv", "out/costos_cultivo.csv"],
      ["out/canasta.json", "out/canasta_detalle.csv",
-      "../../../_repo/dashboard/data/canasta.json"],
+      "../../_repo/dashboard/data/canasta.json"],
      "el insumo por cultivo, región y mes"),
 
     # Qué compran las empresas que trajo el universo ampliado. El embarque dice
@@ -250,7 +250,7 @@ ETAPAS = [
       "out/ampliacion.json", "out/cobertura_mes.json", "out/reclutar.json",
       "out/costos.json", EXP + "mercado.json"],
      ["out/decisiones.json",
-      "../../../_repo/dashboard/data/decisiones.json"],
+      "../../_repo/dashboard/data/decisiones.json"],
      "cada decisión con su alternativa medida y su bisagra"),
 
     ("reporte", "reporte.py",

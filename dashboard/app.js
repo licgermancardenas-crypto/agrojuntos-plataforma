@@ -478,6 +478,7 @@ var FILTROS = {
     { id: "fClase", p: "clase", tipo: "chips", attr: "c" }
   ],
   canasta: [{ id: "fCanDep", p: "dep", tipo: "select" }],
+  precios: [{ id: "fPreProd", p: "producto", tipo: "select" }],
   productos: [{ id: "fProDep", p: "dep", tipo: "select" }],
   expansion: [{ id: "fUmbral", p: "h", tipo: "chips", attr: "u" }],
   departamentos: [{ id: "fDeptoOrden", p: "orden", tipo: "chips", attr: "o" }],
@@ -595,7 +596,8 @@ var LISTA_LA_VISTA = {
   productos: "#tProductos tbody tr td",
   expansion: "#fUmbral .chip",
   departamentos: "#fDeptoOrden .chip",
-  canasta: "#fCanDep option"
+  canasta: "#fCanDep option",
+  precios: "#fPreProd option"
 };
 
 function aplicarDesdeURL(vista, params) {
@@ -5187,6 +5189,212 @@ function vistaCanasta() {
   });
 }
 
+/* --------------------------------------------------------------- precios --
+   La otra mitad de la cuenta del cliente. La canasta dice qué compra y cuándo;
+   esto dice cuánto vale lo que vende, y si este año vale más o menos que de
+   costumbre, que es lo que un comercial quiere saber antes de ofrecer crédito.
+
+   «Contra lo normal» viene calculado variedad contra variedad en
+   `build_precios.py`, y la serie anual es de una sola variedad: el promedio del
+   producto cambia de mezcla cada año, y con él el tomate salía +16% cuando el
+   tomate, comparado consigo mismo, estaba −4%. */
+var UMBRAL_NORMAL = 5;     // ±5% contra lo normal ya es «caro» o «barato»
+
+function preMes(s) {
+  if (!s) return SIN_DATO;
+  var t = String(s).split("-");
+  return MES_COR[+t[1] - 1].toLowerCase() + " " + t[0];
+}
+function preDif(v) {
+  if (!hayDato(v)) return SIN_DATO;
+  return (v > 0 ? "+" : v < 0 ? "−" : "") + nf(Math.abs(v), 1) + "%";
+}
+function soles(v) {
+  return hayDato(v) ? "S/ " + nf(v, 2) : SIN_DATO;
+}
+
+function vistaPrecios() {
+  cargar("precios").then(function (D) {
+    var conDif = D.cultivos.filter(function (c) { return hayDato(c.dif); });
+    function suma(f) {
+      var l = conDif.filter(f);
+      return { n: l.length,
+               usd: l.reduce(function (a, c) { return a + c.usd; }, 0) };
+    }
+    var caros = suma(function (c) { return c.dif >= UMBRAL_NORMAL; });
+    var baratos = suma(function (c) { return c.dif <= -UMBRAL_NORMAL; });
+
+    document.getElementById("preKpis").innerHTML = [
+      kpi(nf(D.n_productos), "productos con precio",
+          "mayorista en Lima, " + preMes(D.desde) + " a " + preMes(D.hasta)),
+      kpi(pct(D.cobertura_pct, 0), "del gasto en insumos tiene precio",
+          D.cultivos_cruzados + " cultivos de la canasta"),
+      kpi(usd(caros.usd), "en cultivos que hoy venden caro",
+          caros.n + " cultivos, " + UMBRAL_NORMAL + "% o más sobre lo normal"),
+      kpi(usd(baratos.usd), "en cultivos que hoy venden barato",
+          baratos.n + " cultivos, " + UMBRAL_NORMAL + "% o más bajo lo normal")
+    ].join("");
+    document.getElementById("preMeta").textContent =
+      D.fuente + " · " + D.unidad;
+
+    var sel = document.getElementById("fPreProd");
+    /* Primero lo que la canasta compra, por gasto; después el resto, por
+       nombre. Quien abre la vista quiere la papa, no la acelga. */
+    sel.innerHTML = D.productos.map(function (p) {
+      return '<option value="' + esc(p.k) + '">' + esc(p.n) +
+        (p.usd_insumos ? " · " + usd(p.usd_insumos) + " en insumos" : "") +
+        "</option>";
+    }).join("");
+
+    function pintar() {
+      var p = D.productos.filter(function (x) { return x.k === sel.value; })[0] ||
+              D.productos[0];
+      document.getElementById("preProdMeta").textContent =
+        p.var + (p.var === 1 ? " variedad" : " variedades") +
+        (p.cultivos.length ? " · precio de " + p.cultivos.join(", ") : "");
+
+      var n = p.normal;
+      var sinComp = p.anual.length &&
+        p.anual[p.anual.length - 1].a < +D.hasta.slice(0, 4) - 1
+          ? "no se cotiza desde " + p.anual[p.anual.length - 1].a
+          : "menos de nueve meses o tres años comparables";
+      document.getElementById("preFicha").innerHTML = [
+        kpi(n ? preDif(n.dif) : SIN_DATO, "contra lo normal",
+            n ? preMes(D.ventana[0]) + " a " + preMes(D.ventana[1]) +
+                " contra los mismos meses de los " + D.anios_ref +
+                " años previos" : sinComp),
+        kpi(soles(p.ultimo.nom), "por kg en " + preMes(p.ultimo.per),
+            (D.en_curso && p.ultimo.per === D.hasta
+              ? "mes en curso; " : "") +
+            "promedio de sus variedades, sin deflactar"),
+        kpi(p.caro, "el mes más caro",
+            "índice " + nf(Math.max.apply(null, p.idx.filter(hayDato))) +
+            " (100 = promedio del año)"),
+        kpi(p.barato, "el mes más barato",
+            "índice " + nf(Math.min.apply(null, p.idx.filter(hayDato))))
+      ].join("");
+
+      /* La serie: barras y no línea, el año incompleto rayado —la misma regla
+         que la serie de importación—. */
+      var mx = Math.max.apply(null, p.anual.map(function (a) { return a.v || 0; })) || 1;
+      var serie = document.getElementById("preSerie");
+      serie.innerHTML = p.anual.map(function (a) {
+        var h = Math.max(2, Math.round(100 * (a.v || 0) / mx));
+        return '<div class="sb' + (a.parcial ? " parcial" : "") + '" title="' +
+          esc(a.a + " · " + soles(a.v) + " por kg, soles de " + D.base_real +
+              (a.parcial ? "\n" + a.meses + " meses con precio: no se compara " +
+                           "con un año entero" : "")) +
+          '"><i style="height:' + h + '%"></i><b>' + String(a.a).slice(2) +
+          (a.parcial ? "*" : "") + "</b></div>";
+      }).join("");
+      serie.setAttribute("aria-label", "Precio por año de " + p.n + ": " +
+        p.anual.map(function (a) { return a.a + " " + soles(a.v); }).join(", "));
+      document.getElementById("preSerieT").textContent =
+        "Precio por año, en soles de " + D.base_real;
+      document.getElementById("preSerieNota").textContent =
+        "Una sola variedad, " + (p.ref_var || "").toLowerCase() + ", la que " +
+        "más se cotizó en los últimos cinco años: el promedio del producto " +
+        "cambia de mezcla de un año a otro y se mueve sin que el precio se " +
+        "mueva. Con asterisco, años incompletos.";
+
+      pintarPreCal(p, D);
+    }
+
+    sel.onchange = pintar;
+    pintar();
+
+    document.getElementById("preTabMeta").textContent =
+      D.cultivos_cruzados + " cultivos · " + usd(D.usd_cruzado) + " en insumos";
+    document.getElementById("preTabIntro").textContent =
+      "El índice es el precio del mes sobre el promedio del año: 110 quiere " +
+      "decir 10% más caro que de costumbre en ese mes. «Contra lo normal» es " +
+      "el último año contra los cinco anteriores, en soles constantes.";
+    tabla(document.getElementById("tPrecios"), [
+      { k: "c", t: "Cultivo", l: 1, f: function (r) { return esc(r.c); } },
+      { k: "p", t: "Precio de", l: 1, p: 3, f: function (r) { return esc(r.p); } },
+      { k: "usd", t: "Insumos", f: function (r) { return usd(r.usd); } },
+      { k: "compra", t: "Compra", l: 1, p: 2,
+        f: function (r) { return r.compra || "todo el año"; } },
+      { k: "idx_compra", t: "Índice ese mes", p: 2,
+        v: function (r) { return hayDato(r.idx_compra) ? r.idx_compra : -1; },
+        f: function (r) { return hayDato(r.idx_compra) ? nf(r.idx_compra) : SIN_DATO; } },
+      { k: "caro", t: "Caro", l: 1, p: 3, f: function (r) { return esc(r.caro); } },
+      { k: "barato", t: "Barato", l: 1, p: 3, f: function (r) { return esc(r.barato); } },
+      { k: "amp", t: "Amplitud", p: 4, f: function (r) { return nf(r.amp); } },
+      { k: "dif", t: "Contra lo normal",
+        v: function (r) { return hayDato(r.dif) ? r.dif : -999; },
+        f: function (r) { return preDif(r.dif); } }
+    ], D.cultivos, { sort: "usd", pagina: 15 });
+
+    document.getElementById("preNota").innerHTML = esc(D.salvedad) + " " +
+      esc(D.no_dice) + (D.fuera.length ? " Fuera del cruce: " +
+        D.fuera.map(function (f) {
+          return "<b>" + esc(f.c) + "</b> (" + usd(f.usd) + " en insumos). " +
+            esc(f.motivo); }).join(" ") : "");
+  }).catch(fallo);
+}
+
+/* El calendario: arriba el precio de cada mes contra su promedio —barra hacia
+   arriba si es más caro, hacia abajo si es más barato—; abajo, qué parte del
+   gasto en insumos de ese cultivo cae en cada mes. Juntos dicen si el cliente
+   compra cuando lo que vende está caro o barato. No dicen cuándo cobra: eso
+   necesita el mes de cosecha, y la nota lo explica. */
+function pintarPreCal(p, D) {
+  var dev = p.idx.map(function (v) { return hayDato(v) ? v - 100 : null; });
+  var mxD = Math.max.apply(null, dev.map(function (d) { return Math.abs(d || 0); })) || 1;
+  var cmp = p.compra;
+  var mxC = cmp ? Math.max.apply(null, cmp) || 1 : 1;
+  var plano = cmp && Math.max.apply(null, cmp) - Math.min.apply(null, cmp) < 0.5;
+
+  var html = '<div class="pidx" role="img" aria-label="' + esc("Índice de " +
+    "precio por mes de " + p.n + ": " + D.meses.map(function (m, i) {
+      return m + " " + (hayDato(p.idx[i]) ? nf(p.idx[i]) : "sin dato"); })
+      .join(", ")) + '">' +
+    D.meses.map(function (m, i) {
+      var d = dev[i];
+      if (d === null) return '<span title="' + m + ' · sin dato"></span>';
+      var h = (50 * Math.abs(d) / mxD).toFixed(1);
+      return '<span title="' + esc(m + " · índice " + nf(p.idx[i])) + '"><i class="' +
+        (d >= 0 ? "arr" : "aba") + '" style="height:' + h + '%"></i></span>';
+    }).join("") + "</div>";
+
+  if (cmp && !plano) {
+    html += '<div class="serie compra" role="img" aria-label="' + esc(
+      "Gasto en insumos por mes: " + D.meses.map(function (m, i) {
+        return m + " " + nf(cmp[i], 1) + "%"; }).join(", ")) + '">' +
+      D.meses.map(function (m, i) {
+        var h = Math.max(cmp[i] > 0 ? 2 : 0, Math.round(100 * cmp[i] / mxC));
+        return '<div class="sb" title="' + esc(m + " · " + nf(cmp[i], 1) +
+          "% del gasto en insumos") + '"><i style="height:' + h + '%"></i><b>' +
+          m + "</b></div>";
+      }).join("") + "</div>";
+  } else {
+    html += '<div class="serie compra">' + D.meses.map(function (m) {
+      return '<div class="sb vacio"><i></i><b>' + m + "</b></div>"; }).join("") +
+      "</div>";
+  }
+  document.getElementById("preCal").innerHTML = html;
+
+  var i0 = p.idx.indexOf(Math.max.apply(null, p.idx.filter(hayDato)));
+  var nota = "Arriba, el precio de cada mes contra el promedio del año: hacia " +
+    "arriba más caro, hacia abajo más barato. " + p.n + " va de " +
+    nf(Math.min.apply(null, p.idx.filter(hayDato))) + " a " +
+    nf(p.idx[i0]) + ", " + nf(p.amp) + " puntos de amplitud. ";
+  if (!cmp) {
+    nota += "Abajo no hay nada: ningún cultivo de la canasta toma este precio.";
+  } else if (plano) {
+    nota += "Abajo no hay barras porque los cultivos que lo usan son " +
+      "permanentes: reparten el gasto parejo en los doce meses y no tienen " +
+      "mes de compra.";
+  } else {
+    var mC = cmp.indexOf(Math.max.apply(null, cmp));
+    nota += "Abajo, cuánto del gasto en insumos cae en cada mes; el mayor es " +
+      D.meses[mC] + ", con el precio en " + nf(p.idx[mC]) + ". El mes es " +
+      "el de siembra, no el de cosecha.";
+  }
+  document.getElementById("preCalNota").textContent = nota;
+}
+
 /* ------------------------------------------- la cobertura, mes a mes ------
    El sitio publicaba «64.4% del mercado dentro de la promesa» y esa cifra pesa
    cada celda por su SAM anual, como si el país comprara parejo los doce meses.
@@ -5418,6 +5626,7 @@ function ir(hash) {
     if (id === "departamentos") vistaDepartamentos();
     if (id === "comercio") vistaComercio();
     if (id === "productos") vistaProductos();
+    if (id === "precios") vistaPrecios();
     if (id === "importacion") vistaImportacion();
     if (id === "exportacion") vistaExportacion();
     if (id === "logistica") { vistaLogistica(); pintarCoberturaMes(); }

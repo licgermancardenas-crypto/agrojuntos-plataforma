@@ -651,3 +651,18 @@ td.faint{color:var(--muted)}
    contra "36 g/L" tienen que alinearse a la vista. */
 .conc{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:var(--t-menor);
   font-weight:500; color:var(--muted); white-space:nowrap}
+
+/* Precios · el calendario del precio. El índice gira en torno a 100, así que
+   la barra sale de una línea media: hacia arriba el mes es más caro que el
+   promedio, hacia abajo más barato. Una barra desde cero dibujaría doce
+   columnas casi iguales, porque 87 y 110 se ven parecidos medidos desde el
+   piso; lo que importa es de qué lado del promedio cae cada mes. */
+#v-precios h4{margin:0 0 4px; font-weight:400}
+.pidx{display:flex; gap:4px; height:72px; position:relative; margin:6px 0 4px}
+.pidx::before{content:""; position:absolute; left:0; right:0; top:50%;
+  border-top:1px dashed var(--line)}
+.pidx span{flex:1; position:relative}
+.pidx i{position:absolute; left:0; right:0; border-radius:1px}
+.pidx i.arr{bottom:50%; background:var(--forest2)}
+.pidx i.aba{top:50%; background:var(--brass)}
+.serie.compra{height:40px}

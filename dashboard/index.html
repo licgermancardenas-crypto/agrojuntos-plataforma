@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="/styles.css?v=708bf91a">
+<link rel="stylesheet" href="/styles.css?v=c23faa57">
 <link rel="stylesheet" href="/buscador.css?v=016a13f3">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
 <script>
@@ -74,6 +74,7 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
     <span class="gt">Mercado</span>
     <a href="#resumen" class="on">Resumen</a>
     <a href="#canasta">Canasta</a>
+    <a href="#precios">Precios</a>
     <a href="#productos">Productos</a>
     <a href="#departamentos">Departamentos</a>
   </div>
@@ -344,6 +345,49 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
   <div class="card" style="margin-top:16px">
     <div class="b"><p class="sub" id="canNota"></p></div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------ precios -->
+<!-- La otra mitad de la cuenta del cliente: la canasta dice qué compra y
+     cuándo; esto, cuánto vale lo que vende. Precio mayorista de Lima, no de
+     chacra, y la vista lo dice antes que nada. -->
+<section class="view" id="v-precios">
+  <div class="kpis" id="preKpis" data-sk="4"></div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Cuánto vale lo que vende el cliente</h3>
+      <span class="eyebrow" id="preMeta"></span></div>
+    <div class="filters">
+      <select id="fPreProd" aria-label="Elegir producto"></select>
+      <span class="count" id="preProdMeta"></span>
+    </div>
+    <div class="b">
+      <div class="kpis" id="preFicha" data-sk="4"></div>
+      <div class="grid2" style="margin-top:16px">
+        <div>
+          <h4 class="eyebrow" id="preSerieT">Precio por año, en soles de hoy</h4>
+          <div class="serie" id="preSerie" role="img"></div>
+          <p class="sub" id="preSerieNota"></p>
+        </div>
+        <div>
+          <h4 class="eyebrow">El año del precio y el de la compra</h4>
+          <div id="preCal"></div>
+          <p class="sub" id="preCalNota"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="h"><h3>Los cultivos de la canasta, contra su precio</h3>
+      <span class="eyebrow" id="preTabMeta"></span></div>
+    <div class="b"><p id="preTabIntro" class="sub"></p></div>
+    <div class="tw"><table id="tPrecios" data-sk="10"></table></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="b"><p class="sub" id="preNota"></p></div>
   </div>
 </section>
 
@@ -822,6 +866,6 @@ if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}}
 
 <!-- El buscador va antes: `app.js` lo monta al arrancar. -->
 <script src="/buscador.js?v=4baf5a2c"></script>
-<script src="/app.js?v=fc3aa457"></script>
+<script src="/app.js?v=d44d9775"></script>
 </body>
 </html>

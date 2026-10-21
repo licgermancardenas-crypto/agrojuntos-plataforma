@@ -216,6 +216,18 @@ ETAPAS = [
       "../../_repo/dashboard/data/canasta.json"],
      "el insumo por cultivo, región y mes"),
 
+    # Cuánto vale lo que vende el cliente. El precio lo baja y lo deflacta
+    # SISAP_PERU, que tiene su propio pipeline; esto solo lo arma para el
+    # sitio. La canasta entra porque da el gasto total contra el que se mide
+    # la cobertura.
+    ("precios", "build_precios.py",
+     ["../../SISAP_PERU/02_DATA_PROCESADA/emmsa_precios_mensuales_reales.parquet",
+      "../../SISAP_PERU/02_DATA_PROCESADA/cruce_insumos_precio.csv",
+      "../../SISAP_PERU/02_DATA_PROCESADA/cruce_insumos_precio_detalle.csv",
+      "out/canasta.json", "scripts/build_cultivos.py"],
+     ["out/precios.json"],
+     "el precio mayorista de lo que vende el cliente"),
+
     # Qué compran las empresas que trajo el universo ampliado. El embarque dice
     # qué venden; solo la importación dice si compran lo que la plataforma
     # vende, y la diferencia entre las dos cosas es la decisión.
